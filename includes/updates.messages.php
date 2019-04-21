@@ -1,14 +1,12 @@
 <?php
 /**
- * Define the common functions used on the installer and updates.
+ * Show updates status messages.
  *
  * @package		ProjectSend
  * @subpackage	Updates
  */
 
-	/**
-	 * If any update was made to the database structure, show the message
-	 */
+	// If any update was made to the database structure, show the message
 	if (isset( $updates_made ) ) {
 		if ( $updates_made > 0 ) {
 ?>
@@ -31,33 +29,28 @@
 				</div>
 			</div>
 <?php
-			/**
-			 * Resets the database so it doesn't show the
-			 * 'vew version' message.
-			 */
-			reset_update_status();
+			// Resets the database so it doesn't show the 'vew version' message.
+			// reset_update_status();
 		}
 		else {
-			/**
-			 * Used when a new version is found, but not
-			 * if the current installation has just been
-			 * updated.
-			 */
-             if (VERSION_NEW_FOUND == '1') {
-				if ( CURRENT_USER_LEVEL != '0' ) {
-	?>
+			// Used when a new version is found, but not if the current installation has just been updated.
+            if ( CURRENT_USER_LEVEL != '0') {
+                $update_data = get_latest_version_data();
+                $update_data = json_decode($update_data);
+                if ($update_data->update_available == '1') {
+?>
                     <div class="alert alert-warning update_msg">
                         <div class="row">
                             <div class="col-sm-8">
-                                <strong><?php _e('Update available!', 'cftp_admin'); ?></strong> <?php echo sprintf( __('ProjectSend %s has been released', 'cftp_admin'), VERSION_NEW_NUMBER); ?>
+                                <strong><?php _e('Update available!', 'cftp_admin'); ?></strong> <?php echo sprintf( __('ProjectSend %s has been released', 'cftp_admin'), $update_data->latest_version); ?>
                             </div>
                             <div class="col-sm-4 text-right">
-                                <a href="<?php echo VERSION_NEW_URL; ?>" class="btn btn-default btn-xs" target="_blank"><?php _e('Download', 'cftp_admin');?></a> <a href="<?php echo VERSION_NEW_CHLOG; ?>" target="_blank" class="btn btn-default btn-xs"><?php _e('Changelog', 'cftp_admin');?></a>
+                                <a href="<?php echo $update_data->url; ?>" class="btn btn-default btn-xs" target="_blank"><?php _e('Download', 'cftp_admin');?></a> <a href="<?php echo $update_data->chlog; ?>" target="_blank" class="btn btn-default btn-xs"><?php _e('Changelog', 'cftp_admin');?></a>
                             </div>
                         </div>
                     </div>
-	<?php
-				}
+<?php
+                }
 			}
 		}
 	}

@@ -1,10 +1,54 @@
 <?php
+use function GuzzleHttp\json_encode;
+
 /**
  * Define the common functions used on the installer and updates.
  *
  * @package		ProjectSend
  * @subpackage	Functions
  */
+
+function get_latest_version_data()
+{
+    /** Remove "r" from version */
+    $current_version = substr(CURRENT_VERSION, 1);
+    
+    /**
+     * Compare against the online value.
+     */
+    $versions = getJson(UPDATES_FEED_URI, '-1 days');
+    $versions = json_decode($versions);
+
+    $latest = $versions[0];
+
+    $online_version = substr($latest->version, 1);
+
+    if ($online_version > $current_version) {
+        $return = [
+            'local_version' => $current_version,
+            'latest_version' => $online_version,
+            'update_available' => '1',
+            'url' => $latest->download,
+            'chlog' => $latest->changelog,
+            'diff' => [
+                'security' => $latest->diff->security,
+                'features' => $latest->diff->features,
+                'important' => $latest->diff->important,
+            ],
+        ];
+
+        return json_encode($return);
+    }
+    else {
+        $return = [
+            'local_version' => $current_version,
+            'latest_version' => $online_version,
+            'update_available' => '0',
+        ];
+
+        return json_encode($return);
+    }
+}
 
 /** Add a new row to the options table */
 function add_option_if_not_exists ($row, $value) {

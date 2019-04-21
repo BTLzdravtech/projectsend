@@ -13,80 +13,12 @@
 
 $allowed_update = array(9,8,7);
 if (current_role_in($allowed_update)) {
+    $update_data = get_latest_version_data();
+    $update_data = json_decode($update_data);
 
-	/** Remove "r" from version */
-	$current_version = substr(CURRENT_VERSION, 1);
-	$updates_made = 0;
-	$updates_errors = 0;
-	$updates_error_messages = array();
-	
-	/**
-	 * Check for updates only if the option exists.
-	 */
-	if (defined('VERSION_LAST_CHECK')) {
-		/**
-		 * Compare the date for the last checked with
-		 * today's. Checks are done only once per day.
-		 */
-		 $today = date('d-m-Y');
-		 $today_timestamp = strtotime($today);
-		 if (VERSION_LAST_CHECK != $today) {
-			if (VERSION_NEW_FOUND == '0') {
-				/**
-				 * Compare against the online value.
-				 */
-				$feed = simplexml_load_file(UPDATES_FEED_URI);
-				$v = 0;
-				$max_items = 1;
-				foreach ($feed->channel->item as $item) {
-					while ($v < $max_items) {
-						$namespaces = $item->getNameSpaces(true);
-						$release = $item->children($namespaces['release']);
-						$diff = $item->children($namespaces['diff']);
-						$online_version = substr($release->version, 1);
-
-						 if ($online_version > $current_version) {
-							/**
-							 * The values are set here since they didn't
-							 * come from the database.
-							 */
-							define('VERSION_NEW_NUMBER',$online_version);
-							define('VERSION_NEW_URL',$item->link);
-							define('VERSION_NEW_CHLOG',$release->changelog);
-							define('VERSION_NEW_SECURITY',$diff->security);
-							define('VERSION_NEW_FEATURES',$diff->features);
-							define('VERSION_NEW_IMPORTANT',$diff->important);
-							/**
-							 * Save the information from the new release
-							 * to the database.
-							 */
-							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :version WHERE name='version_new_number'");		$statement->bindParam(':version', $release->version); $statement->execute();
-							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :link WHERE name='version_new_url'");				$statement->bindParam(':link', $item->link); $statement->execute();
-							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :changelog WHERE name='version_new_chlog'");		$statement->bindParam(':changelog', $release->changelog); $statement->execute();
-							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :security WHERE name='version_new_security'");		$statement->bindParam(':security', $diff->security); $statement->execute();
-							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :features WHERE name='version_new_features'");		$statement->bindParam(':features', $diff->features); $statement->execute();
-							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :important WHERE name='version_new_important'");	$statement->bindParam(':important', $diff->important); $statement->execute();
-							$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value ='1' WHERE name='version_new_found'");
-						 }
-						 else {
-							 reset_update_status();
-						 }
-
-						/**
-						 * Change the date and versions values on the
-						 * database so it's not checked again today.
-						 */
-						$statement = $dbh->prepare("UPDATE " . TABLE_OPTIONS . " SET value = :today WHERE name='version_last_check'");
-						$statement->bindParam(':today', $today);
-						$statement->execute();
-
-						/** Stop the foreach loop */
-						$v++;
-					}
-				}
-			 }
-		 }
-	}
+    $updates_made = 0;
+    $updates_errors = 0;
+    $updates_error_messages = array();
 
 	/**
 	 * r264 updates
@@ -107,7 +39,7 @@ if (current_role_in($allowed_update)) {
 		}
 	}
 	
-	if ($last_update < $current_version || !isset($last_update)) {
+	if ($last_update < $update_data->local_version || !isset($last_update)) {
 
 		/**
 		 * r92 updates
