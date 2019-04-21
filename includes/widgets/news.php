@@ -9,37 +9,31 @@
 		<div class="widget">
 			<h4><?php _e('ProjectSend news','cftp_admin'); ?></h4>
 			<div class="widget_int">
-                <?php if ( function_exists( 'simplexml_load_file' ) ) { ?>
-                    <ul class="home_news">
-                        <?php
-                            // $feed = simplexml_load_file(NEWS_FEED_URI);
-                            $feed = getJson(NEWS_FEED_URI, '-1 hours');
-                            $news = json_decode($feed);
-            
-                            $max_news = 3;
-                            $n = 0;
-                            foreach ($news->items as $item) {
-                                if ($n < $max_news) {
-                                    $published_date = format_date($item->date_published);
-                            ?>
-                                    <li>
-                                        <span class="date"><?php echo $published_date; ?></span>
-                                        <a href="<?php echo html_output($item->url); ?>" target="_blank">
-                                            <h5><?php echo html_output($item->title); ?></h5>
-                                        </a>
-                                        <p><?php echo make_excerpt(html_output(strip_tags($item->content_text, '<br />')),200); ?>
-                                    </li>
-                            <?php
-                                    $n++;
-                                }
-                            }
+                <ul class="home_news">
+                    <?php
+                        // $feed = simplexml_load_file(NEWS_FEED_URI);
+                        $feed = getJson(NEWS_FEED_URI, '-1 hours');
+                        $news = json_decode($feed);
+        
+                        $max_news = 3;
+                        $n = 0;
+                        foreach ($news->items as $item) {
+                            if ($n < $max_news) {
+                                $published_date = format_date($item->date_published);
                         ?>
-                    </ul>
-                <?php } else { ?>
-                    <div class="alert alert-warning">
- 						<?php echo sprintf(__('News cannot be loaded. Please enable the %s php module to fix this issue.', 'cftp_admin'), 'simplexml_load_file'); ?>
- 					</div>
-                <?php } ?>
+                                <li>
+                                    <span class="date"><?php echo $published_date; ?></span>
+                                    <a href="<?php echo html_output($item->url); ?>" target="_blank">
+                                        <h5><?php echo html_output($item->title); ?></h5>
+                                    </a>
+                                    <p><?php echo make_excerpt(html_output(strip_tags($item->content_text, '<br />')),200); ?>
+                                </li>
+                        <?php
+                                $n++;
+                            }
+                        }
+                    ?>
+                </ul>
             </div>
 		</div>
 <?php
