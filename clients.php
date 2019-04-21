@@ -306,7 +306,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         $created_at = format_date($client_data['created_date']);
 
                         /* Count uploads */
-                        $count_files = count($client_data['files']);
+                        $count_files = (!empty($client_data['files'])) ? count($client_data['files']) : 0;
 						
 						/* Count OWN and GROUP files */
 						$own_files = 0;

@@ -595,7 +595,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						 */
                         $assignations = get_file_assignations($row['id']);
 
-                        $count_assignations = count($assignations['clients']) + count($assignations['groups']);
+                        $count_assignations = 0;
+                        if (!empty($assignations['clients'])) { $count_assignations += count($assignations['clients']); }
+                        if (!empty($assignations['groups'])) { $count_assignations += count($assignations['groups']); }
 
                         switch ($results_type) {
                             case 'client':
