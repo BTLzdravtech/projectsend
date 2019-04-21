@@ -9,7 +9,7 @@
 /**
  *  Call the required system files
  */
-require_once('../bootstrap.php');
+require_once '../bootstrap.php';
 
 if (!check_for_admin()) {
     return;

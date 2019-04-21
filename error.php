@@ -1,6 +1,6 @@
 <?php
 $allowed_levels = array(9,8,7,0);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $error_type = (!empty($_GET['e'])) ? $_GET['e'] : '401';
 
@@ -40,7 +40,7 @@ switch ($error_type) {
         <?php meta_favicon(); ?>
         
         <?php
-            require_once( 'includes/assets.php' );
+            require_once INCLUDES_DIR . DS . 'assets.php';
     
             load_js_header_files();
             load_css_files();

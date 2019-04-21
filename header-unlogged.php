@@ -57,7 +57,7 @@ else {
 	/**
 	 * Silent updates that are needed even if no user is logged in.
 	 */
-	require_once(ROOT_DIR.'/includes/core.update.silent.php');
+	require_once INCLUDES_DIR . DS . 'core.update.silent.php';
 }
 
 if ( !isset( $body_class ) ) { $body_class = ''; }
@@ -76,7 +76,7 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
 
 	<?php
 		$load_theme_css = true;
-		require_once( 'includes/assets.php' );
+		require_once INCLUDES_DIR . DS . 'assets.php';
 
         load_js_header_files();
 		load_css_files();

@@ -43,7 +43,7 @@ $body_class[] = 'menu_hidden';
 /**
  * Silent updates that are needed even if no user is logged in.
  */
-require_once(ROOT_DIR.'/includes/core.update.silent.php');
+require_once INCLUDES_DIR . DS .'core.update.silent.php';
 
 /**
  * Call the database update file to see if any change is needed,
@@ -51,7 +51,7 @@ require_once(ROOT_DIR.'/includes/core.update.silent.php');
  */
 $core_update_allowed = array(9,8,7);
 if (current_role_in($core_update_allowed)) {
-	require_once(ROOT_DIR.'/includes/core.update.php');
+	require_once INCLUDES_DIR . DS . 'core.update.php';
 }
 ?>
 <!doctype html>
@@ -65,7 +65,7 @@ if (current_role_in($core_update_allowed)) {
 	<?php meta_favicon(); ?>
 
 	<?php
-		require_once( 'includes/assets.php' );
+		require_once INCLUDES_DIR . DS . 'assets.php';
 
         load_js_header_files();
 		load_css_files();
@@ -82,7 +82,7 @@ if (current_role_in($core_update_allowed)) {
 			</ul>
 
 			<div class="navbar-header">
-				<span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include('assets/img/ps-icon.svg'); ?></a> <?php echo html_output(THIS_INSTALL_TITLE); ?></span>
+				<span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php include_once 'assets/img/ps-icon.svg'; ?></a> <?php echo html_output(THIS_INSTALL_TITLE); ?></span>
 			</div>
 
 			<ul class="nav pull-right nav_account">
@@ -104,22 +104,17 @@ if (current_role_in($core_update_allowed)) {
 
 		<div class="main_side_menu">
 			<?php
-				include('header-menu.php');
+				include_once 'header-menu.php';
 			?>
 		</div>
 
 		<div class="main_content">
 			<div class="container-fluid">
 				<?php
-					/**
-					 * Gets the mark up and values for the System Updated and
-					 * errors messages.
-					 */
-					include(ROOT_DIR.'/includes/updates.messages.php');
+					// Gets the mark up and values for the System Updated and errors messages.
+					include_once INCLUDES_DIR . DS . 'updates.messages.php';
 
-					/**
-					 * Check if we are on a development version
-					 */
+					// Check if we are on a development version
 					if ( IS_DEV == true ) {
 				?>
 						<div class="row">

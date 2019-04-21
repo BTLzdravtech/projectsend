@@ -80,13 +80,14 @@ define('UPLOAD_TIME_LIMIT', 120*60);
  * Define the RSS url to use on the home news list.
  */
 // define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
-define('NEWS_FEED_URI','https://www.projectsend.org/feed/json/');
+define('NEWS_FEED_URI','https://www.projectsend.org/serve/news.php');
 
 /**
  * Define the Feed from where to take the latest version
  * number.
  */
-define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
+// define('UPDATES_FEED_URI','https://projectsend.org/updates/versions.xml');
+define('UPDATES_FEED_URI','https://projectsend.org/serve/versions.php');
 
 /**
  * Check if the personal configuration file exists
@@ -106,7 +107,7 @@ if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
 	}
 }
 else {
-	include(ROOT_DIR.'/includes/sys.config.php');
+	include_once ROOT_DIR.'/includes/sys.config.php';
 }
 
 /**

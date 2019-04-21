@@ -27,12 +27,12 @@ $is_template = true;
  */
 $lang = SITE_LANG;
 if(!isset($ld)) { $ld = 'cftp_admin'; }
-require_once(ROOT_DIR.'/includes/classes/i18n.php');
-I18n::LoadDomain(ROOT_DIR."/templates/".SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
+require_once ROOT_DIR.'/includes/classes/i18n.php';
+I18n::LoadDomain(ROOT_DIR.DS."templates".DS.SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
 
 $this_template = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/';
 
-include_once(ROOT_DIR.'/templates/session_check.php');
+include_once ROOT_DIR.'/templates/session_check.php';
 
 /**
  * URI to the default template CSS file.

@@ -7,7 +7,7 @@
  * @subpackage Options
  */
 $allowed_levels = array(9);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $section = ( !empty( $_GET['section'] ) ) ? $_GET['section'] : $_POST['section'];
 

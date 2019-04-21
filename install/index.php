@@ -8,7 +8,7 @@
 define( 'IS_INSTALL', true );
 
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
-require_once( ABS_PARENT . '/bootstrap.php' );
+require_once ABS_PARENT . '/bootstrap.php';
 
 /** Version requirements check */
 $version_php	= phpversion();
@@ -25,7 +25,7 @@ if ( version_compare( $version_mysql, REQUIRED_VERSION_MYSQL, "<" ) ) {
 }
 
 if ( !empty( $error_msg ) ) {
-	include_once( ABS_PARENT . '/header-unlogged.php' );
+	include_once ABS_PARENT . '/header-unlogged.php';
 ?>
 	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 		<div class="white-box">
@@ -39,7 +39,7 @@ if ( !empty( $error_msg ) ) {
 		</div>
 	</div>
 <?php
-	include_once( ABS_PARENT . '/footer.php' );
+	include_once ABS_PARENT . '/footer.php';
 	exit;
 }
 
@@ -88,7 +88,7 @@ $page_title_install		= __('Install','cftp_admin');
 $install_no_sitename	= __('Sitename was not completed.','cftp_admin');
 $install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
 
-include_once('../header-unlogged.php');
+include_once '../header-unlogged.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -142,7 +142,7 @@ include_once('../header-unlogged.php');
 								 * Call the file that creates the tables and fill it with the data we got previously
 								 */
 								define('TRY_INSTALL',true);
-								include_once(ROOT_DIR.'/install/database.php');
+								include_once ROOT_DIR.'/install/database.php';
 								/**
 								 * Try to execute each query individually
 								 */
@@ -326,4 +326,4 @@ include_once('../header-unlogged.php');
 
 
 <?php
-	include('../footer.php');
+	include_once '../footer.php';

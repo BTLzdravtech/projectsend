@@ -1,7 +1,7 @@
 <?php
 /** Process an action */
 $allowed_levels = array(9,8,7,0);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $_SESSION['last_call'] = time();
 

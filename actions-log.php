@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $active_nav = 'tools';
 

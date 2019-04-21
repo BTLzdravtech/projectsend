@@ -16,13 +16,13 @@ if ( !empty( $_GET['category'] ) ) {
 	$category_filter = $_GET['category'];
 }
 
-include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
+include_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
 
 $window_title = __('File downloads','cftp_template');
 
 $body_class = array('template', 'default-template', 'hide_title');
 
-include_once(ROOT_DIR.'/header.php');
+include_once ROOT_DIR.'/header.php';
 
 define('TEMPLATE_THUMBNAILS_WIDTH', '50');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '50');

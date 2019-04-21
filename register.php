@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8,7,0);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $page_title = __('Register new account','cftp_admin');
 

@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 if (!check_for_admin()) { return; }
 

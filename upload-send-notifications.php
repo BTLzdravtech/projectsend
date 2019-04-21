@@ -8,7 +8,7 @@
  */
 
 /** This file MUST be included by another one */
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 prevent_direct_access();
 
 $get_file_info = array();

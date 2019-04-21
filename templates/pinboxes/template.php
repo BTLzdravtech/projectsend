@@ -15,7 +15,7 @@ if ( !empty( $_GET['category'] ) ) {
 	$category_filter = $_GET['category'];
 }
 
-include_once(ROOT_DIR.'/templates/common.php'); // include the required functions for every template
+include_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
 
 $window_title = __('Available files','pinboxes_template');
 

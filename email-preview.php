@@ -6,7 +6,7 @@
  * @subpackage Options
  */
 $allowed_levels = array(9);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $page_title = __('E-mail templates','cftp_admin') . ': ' . __('Preview','cftp_admin');
 

@@ -6,7 +6,7 @@
  * @subpackage Design
  */
 $allowed_levels = array(9);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $page_title	= __("Templates",'cftp_admin');
 

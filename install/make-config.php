@@ -11,7 +11,7 @@ define( 'IS_INSTALL', true );
 define( 'IS_MAKE_CONFIG', true );
 
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
-require_once( ABS_PARENT . '/bootstrap.php' );
+require_once ABS_PARENT . '/bootstrap.php';
 
 /** Config file exists. Do not continue and show the message */
 if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
@@ -19,7 +19,7 @@ if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
 }
 
 if ( !empty( $error_msg ) ) {
-	include_once( ABS_PARENT . '/header-unlogged.php' );
+	include_once ABS_PARENT . '/header-unlogged.php';
 ?>
 	<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 		<div class="white-box">
@@ -33,7 +33,7 @@ if ( !empty( $error_msg ) ) {
 		</div>
 	</div>
 <?php
-	include_once( ABS_PARENT . '/footer.php' );
+	include_once ABS_PARENT . '/footer.php';
 	exit;
 }
 
@@ -181,7 +181,7 @@ function pdo_status_label() {
 	}
 }
 
-include_once( ABS_PARENT . '/header-unlogged.php' );
+include_once ABS_PARENT . '/header-unlogged.php';
 ?>
 
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
@@ -448,4 +448,4 @@ include_once( ABS_PARENT . '/header-unlogged.php' );
 </div>
 
 <?php
-	include_once( ABS_PARENT . '/footer.php' );
+	include_once ABS_PARENT . '/footer.php';

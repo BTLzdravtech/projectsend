@@ -7,7 +7,7 @@
  *
  */
 $allowed_levels = array(9,8);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $active_nav = 'clients';
 $this_page = 'clients-requests.php';
