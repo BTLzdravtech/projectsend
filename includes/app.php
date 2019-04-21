@@ -79,7 +79,7 @@ define('UPLOAD_TIME_LIMIT', 120*60);
 /**
  * Define the RSS url to use on the home news list.
  */
-define('NEWS_FEED_URI','https://www.projectsend.org/serve/');
+define('NEWS_FEED_URI','https://www.projectsend.org/serve/news');
 
 /**
  * Define the Feed from where to take the latest version
