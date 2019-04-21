@@ -10,6 +10,10 @@ assets/css
 assets/fonts
 assets/js
 
+# Cache
+cache/*
+!cache/.gitkeep
+
 # NPM / Yarn
 .npm
 .node_repl_history

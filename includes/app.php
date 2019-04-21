@@ -79,7 +79,8 @@ define('UPLOAD_TIME_LIMIT', 120*60);
 /**
  * Define the RSS url to use on the home news list.
  */
-define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
+// define('NEWS_FEED_URI','https://www.projectsend.org/feed/');
+define('NEWS_FEED_URI','https://www.projectsend.org/feed/json/');
 
 /**
  * Define the Feed from where to take the latest version
@@ -239,6 +240,7 @@ define('FORMS_DIR', INCLUDES_DIR . DS . 'forms');
 define('ADMIN_VIEWS_DIR', ROOT_DIR);
 define('EMAIL_TEMPLATES_DIR', ADMIN_VIEWS_DIR . DS . 'emails');
 define('TEMPLATES_DIR', ROOT_DIR . DS . 'templates');
+define('JSON_CACHE_DIR', ROOT_DIR . DS . 'cache');
 
 /* Branding */
 define('ADMIN_UPLOADS_DIR', UPLOADED_FILES_ROOT . DS . 'admin');

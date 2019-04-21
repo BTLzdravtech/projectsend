@@ -12,19 +12,22 @@
                 <?php if ( function_exists( 'simplexml_load_file' ) ) { ?>
                     <ul class="home_news">
                         <?php
-                            $feed = simplexml_load_file(NEWS_FEED_URI);
+                            // $feed = simplexml_load_file(NEWS_FEED_URI);
+                            $feed = getJson(NEWS_FEED_URI, '-1 hours');
+                            $news = json_decode($feed);
+            
                             $max_news = 3;
                             $n = 0;
-                            foreach ($feed->channel->item as $item) {
+                            foreach ($news->items as $item) {
                                 if ($n < $max_news) {
-                                    $published_date = format_date($item->pubDate);
+                                    $published_date = format_date($item->date_published);
                             ?>
                                     <li>
                                         <span class="date"><?php echo $published_date; ?></span>
-                                        <a href="<?php echo html_output($item->link); ?>" target="_blank">
+                                        <a href="<?php echo html_output($item->url); ?>" target="_blank">
                                             <h5><?php echo html_output($item->title); ?></h5>
                                         </a>
-                                        <p><?php echo make_excerpt(html_output(strip_tags($item->description, '<br />')),200); ?>
+                                        <p><?php echo make_excerpt(html_output(strip_tags($item->content_text, '<br />')),200); ?>
                                     </li>
                             <?php
                                     $n++;

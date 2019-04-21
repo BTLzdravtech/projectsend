@@ -62,6 +62,36 @@ function return_account_type()
     return $type;
 }
 
+
+/** Gets a Json file from and url and caches the result */
+function getJson($url, $cache_time) {
+    $cache_dir = JSON_CACHE_DIR;
+    $cacheFile = $cache_dir . DS . md5($url);
+    
+    if (file_exists($cacheFile)) {
+        $fh = fopen($cacheFile, 'r');
+        $cacheTime = trim(fgets($fh));
+
+        // if data was cached recently, return cached data
+        if ($cacheTime > strtotime($cache_time)) {
+            return fread($fh, filesize($cacheFile));
+        }
+
+        // else delete cache file
+        fclose($fh);
+        unlink($cacheFile);
+    }
+
+    $json = file_get_contents($url);
+
+    $fh = fopen($cacheFile, 'w');
+    fwrite($fh, time() . "\n");
+    fwrite($fh, $json);
+    fclose($fh);
+
+    return $json;
+}
+
 /**
  * To successfully add the orderby and order parameters to a query,
  * check if the column exists on the table and validate that order
