@@ -12,7 +12,7 @@
                 <ul class="home_news">
                     <?php
                         // $feed = simplexml_load_file(NEWS_FEED_URI);
-                        $feed = getJson(NEWS_FEED_URI, '-1 hours');
+                        $feed = getJson(NEWS_FEED_URI, '-1 days');
                         $news = json_decode($feed);
         
                         $max_news = 99;
