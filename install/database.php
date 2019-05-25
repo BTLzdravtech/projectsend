@@ -22,12 +22,12 @@ if (defined('TRY_INSTALL')) {
 								  `original_url` text NOT NULL,
 								  `filename` text NOT NULL,
 								  `description` text NOT NULL,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
 								  `expiry_date` TIMESTAMP NOT NULL DEFAULT "' . $expiry_default . '",
 								  `public_allow` INT(1) NOT NULL default \'0\',
 								  `public_token` varchar(32) NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -55,7 +55,6 @@ if (defined('TRY_INSTALL')) {
 								  `name` text NOT NULL,
 								  `email` varchar(60) NOT NULL,
 								  `level` tinyint(1) NOT NULL DEFAULT \'0\',
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `address` text COLLATE utf8_general_ci NULL,
 								  `phone` varchar(32) COLLATE utf8_general_ci NULL,
 								  `notify` tinyint(1) NOT NULL DEFAULT \'0\',
@@ -65,6 +64,7 @@ if (defined('TRY_INSTALL')) {
 								  `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `max_file_size` int(20)  NOT NULL DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -75,12 +75,12 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_GROUPS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_GROUPS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  `created_by` varchar(32) NOT NULL,
 								  `name` varchar(32) NOT NULL,
 								  `description` text NOT NULL,
 								  `public` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `public_token` varchar(32) NULL,
+								  `created_by` varchar(32) NOT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -91,10 +91,10 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_MEMBERS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `added_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`),
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -107,11 +107,11 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_MEMBERS_REQUESTS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS_REQUESTS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `requested_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
 								  `denied` int(1) NOT NULL DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`),
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -142,13 +142,13 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_FILES_RELATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES_RELATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `file_id` int(11) NOT NULL,
 								  `client_id` int(11) DEFAULT NULL,
 								  `group_id` int(11) DEFAULT NULL,
 								  `folder_id` int(11) DEFAULT NULL,
 								  `hidden` int(1) NOT NULL,
 								  `download_count` int(16) NOT NULL DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -163,7 +163,6 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_LOG,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOG.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `action` int(2) NOT NULL,
 								  `owner_id` int(11) NOT NULL,
 								  `owner_user` text DEFAULT NULL,
@@ -171,6 +170,7 @@ if (defined('TRY_INSTALL')) {
 								  `affected_account` int(11) DEFAULT NULL,
 								  `affected_file_name` text DEFAULT NULL,
 								  `affected_account_name` text DEFAULT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
@@ -181,12 +181,12 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_NOTIFICATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_NOTIFICATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `file_id` int(11) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `upload_type` int(11) NOT NULL,
 								  `sent_status` int(2) NOT NULL,
 								  `times_failed` int(11) NOT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
@@ -201,8 +201,8 @@ if (defined('TRY_INSTALL')) {
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) DEFAULT NULL,
 								  `token` varchar(32) NOT NULL,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `used` int(1) DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -216,10 +216,10 @@ if (defined('TRY_INSTALL')) {
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) DEFAULT NULL,
 								  `file_id` int(11) NOT NULL,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `remote_ip` varchar(45) DEFAULT NULL,
 								  `remote_host` text NULL,
 								  `anonymous` tinyint(1) DEFAULT \'0\',
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
@@ -380,9 +380,9 @@ if (defined('TRY_INSTALL')) {
 					'table'	=> TABLE_CATEGORIES_RELATIONS,
 					'query'	=> 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES_RELATIONS.'` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `file_id` int(11) NOT NULL,
 								  `cat_id` int(11) NOT NULL,
+								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
