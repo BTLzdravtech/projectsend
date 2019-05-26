@@ -52,6 +52,11 @@ function form_add_existing_parameters( $ignore = array() )
  */
 function format_form_value( $value )
 {
+    // 0 is considered empty, so just return it (used on max_file_size for clients and users)
+    if ($value === '0') {
+        return '0';
+    }
+
     if ( isset($value) && !empty( $value ) )
     {
         return html_output( stripslashes( $value ) );
