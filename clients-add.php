@@ -13,6 +13,8 @@ $active_nav = 'clients';
 
 $page_title = __('Add client','cftp_admin');
 
+$page_id = 'client_form';
+
 $new_client = new \ProjectSend\Classes\Users($dbh);
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';

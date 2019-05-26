@@ -545,7 +545,20 @@ body.login {
 	}
 
 
-	// VALIDATION
+    // VALIDATION
+    .form-group {
+        label.error {
+			font-size:.85rem;
+			color:#B94A48;
+			background:#F2DEDE;
+			margin:0;
+			padding:.5rem;
+			border:1px solid #EED3D7;
+			position:relative;
+            display: block;
+			@include border-radius(0 0 3px 3px);
+        }
+    }
 
 	.field_error {
 		border:1px solid #B94A48 !important;
@@ -681,7 +694,7 @@ body.login {
 	}
 
 	.list_mass_members {
-		margin:10px 0 0;
+		margin:10px 0 30px;
 		padding:0;
 
 		a {

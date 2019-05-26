@@ -8,7 +8,7 @@
 define('IS_FILE_EDITOR', true);
 
 $allowed_levels = array(9,8,7,0);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 //Add a session check here
 if(!check_for_session()) {
@@ -18,6 +18,8 @@ if(!check_for_session()) {
 $active_nav = 'files';
 
 $page_title = __('Edit file','cftp_admin');
+$page_id = 'file_editor';
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 define('CAN_INCLUDE_FILES', true);
@@ -140,30 +142,32 @@ $get_categories = get_categories();
 				$n = 0;
 				foreach ($_POST['file'] as $file) {
 					$n++;
-					if(!empty($file['name'])) {
+					if (!empty($file['name'])) {
 						/**
 						* If the uploader is a client, set the "client" var to the current
 						* uploader username, since the "client" field is not posted.
 						*/
 						if (CURRENT_USER_LEVEL == 0) {
-							$file['assignments'] = 'c'.$global_user;
+							$file['assignments']['clients'] = $global_user;
 						}
 
-						$this_upload = new ProjectSend\Classes\UploadFile;
-						/**
+                        $this_upload = new ProjectSend\Classes\UploadFile;
+                        $this_upload->setId($this_file_id);
+
+                        /**
 						 * Unassigned files are kept as orphans and can be related
 						 * to clients or groups later.
 						 */
 
 						/** Add to the database for each client / group selected */
 						$add_arguments = array(
-												'file_original'	=> $edit_file_info['url'],
-												'name'			=> $file['name'],
-												'description'	=> $file['description'],
-												'uploader'		=> $global_user,
-												'uploader_id'	=> CURRENT_USER_ID,
-												'expiry_date'	=> $file['expiry_date']
-											);
+                            'file_original' => $edit_file_info['url'],
+                            'name' => $file['name'],
+                            'description' => $file['description'],
+                            'uploader' => $global_user,
+                            'uploader_id' => CURRENT_USER_ID,
+                            'expiry_date' => $file['expiry_date']
+                        );
 
 						/** Set notifications to YES by default */
 						$send_notifications = true;
@@ -181,23 +185,28 @@ $get_categories = get_categories();
 
 							if (!empty($file['public'])) {
 								$add_arguments['public'] = '1';
-							}
+                            }
+                            
+                            $this_upload->saveAssignments($file['assignments']);
 
-							if (!empty($file['assignments'])) {
+
+							if (!empty($file['assignments']['clients']) || !empty($file['assignments']['groups'])) {
 								/**
 								 * Remove already assigned clients/groups from the list.
 								 * Only adds assignments to the NEWLY selected ones.
 								 */
-								$full_list = $file['assignments'];
-								foreach ($file_on_clients as $this_client) { $compare_clients[] = 'c'.$this_client; }
-								foreach ($file_on_groups as $this_group) { $compare_groups[] = 'g'.$this_group; }
+                                $selected_clients = $file['assignments']['clients'];
+                                $selected_groups = $file['assignments']['groups'];
+								foreach ($file_on_clients as $this_client) { $compare_clients[] = $this_client; }
+								foreach ($file_on_groups as $this_group) { $compare_groups[] = $this_group; }
 								if (!empty($compare_clients)) {
-									$full_list = array_diff($full_list,$compare_clients);
+									$selected_clients = array_diff($selected_clients,$compare_clients);
 								}
 								if (!empty($compare_groups)) {
-									$full_list = array_diff($full_list,$compare_groups);
+									$selected_groups = array_diff($selected_groups,$compare_groups);
 								}
-								$add_arguments['assign_to'] = $full_list;
+                                $add_arguments['assign_to']['clients'] = $selected_clients;
+                                $add_arguments['assign_to']['groups'] = $selected_groups;
 
 								/**
 								 * On cleaning the DB, only remove the clients/groups
@@ -207,7 +216,9 @@ $get_categories = get_categories();
 							}
 							else {
 								$clean_who = 'All';
-							}
+                            }
+                            
+                            print_r($clean_who); exit;
 
 							/** CLEAN deletes the removed users/groups from the assignments table */
 							if ($clean_who == 'All') {
@@ -239,7 +250,7 @@ $get_categories = get_categories();
 
 						/** Uploader is a client */
 						if (CURRENT_USER_LEVEL == 0) {
-							$add_arguments['assign_to'] = array('c'.CURRENT_USER_ID);
+							$add_arguments['assign_to']['clients'] = array(CURRENT_USER_ID);
 							$add_arguments['hidden'] = '0';
 							$add_arguments['uploader_type'] = 'client';
 							$action_log_number = 33;
@@ -251,8 +262,8 @@ $get_categories = get_categories();
 						/**
 						 * 1- Add the file to the database
 						 */
-						$process_file = $this_upload->addFileToDatabase($add_arguments);
-						if($process_file['database'] == true) {
+						$process_file = $this_upload->saveExisting($add_arguments);
+						if ($process_file['database'] == true) {
 							$add_arguments['new_file_id'] = $process_file['new_file_id'];
 							$add_arguments['all_users'] = $users;
 							$add_arguments['all_groups'] = $groups;
@@ -289,9 +300,9 @@ $get_categories = get_categories();
 							$new_record_action = $logger->addEntry($log_action_args);
 
 							$msg = __('The file has been edited succesfuly.','cftp_admin');
-							echo system_message('success',$msg);
-
-							include(ROOT_DIR.'/upload-send-notifications.php');
+                            echo system_message('success',$msg);
+                            
+                            require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
 						}
 					}
 				}
@@ -331,7 +342,6 @@ $get_categories = get_categories();
 							}
 						}
 
-
 						$i = 1;
 						$statement = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id");
 						$statement->bindParam(':id', $this_file_id, PDO::PARAM_INT);
@@ -358,7 +368,7 @@ $get_categories = get_categories();
 
 															<div class="form-group">
 																<label><?php _e('Title', 'cftp_admin');?></label>
-																<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" />
+																<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" required />
 															</div>
 
 															<div class="form-group">
@@ -445,42 +455,46 @@ $get_categories = get_categories();
 																*/
 															?>
 															<h3><?php _e('Assignations', 'cftp_admin');?></h3>
-															<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
-															<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-																<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
-																	<?php
-																		/**
-																		 * The clients list is generated early on the file so the
-																		 * array doesn't need to be made once on every file.
-																		 */
-																		foreach($clients as $client => $client_name) {
-																		?>
-																			<option value="<?php echo 'c'.$client; ?>"<?php if (in_array($client,$file_on_clients)) { echo ' selected="selected"'; } ?>>
-																				<?php echo $client_name; ?>
-																			</option>
-																		<?php
-																		}
-																	?>
-																</optgroup>
-																<optgroup label="<?php _e('Groups', 'cftp_admin');?>">
-																	<?php
-																		/**
-																		 * The groups list is generated early on the file so the
-																		 * array doesn't need to be made once on every file.
-																		 */
-																		foreach($groups as $group => $group_name) {
-																		?>
-																			<option value="<?php echo 'g'.$group; ?>"<?php if (in_array($group,$file_on_groups)) { echo ' selected="selected"'; } ?>>
-																				<?php echo $group_name; ?>
-																			</option>
-																		<?php
-																		}
-																	?>
-																</optgroup>
+															<label><?php _e('Clients', 'cftp_admin');?>:</label>
+															<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][clients][]" id="select_clients_<?php echo $i; ?>" class="form-control chosen-select select_clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                                <?php
+                                                                    /**
+                                                                     * The clients list is generated early on the file so the
+                                                                     * array doesn't need to be made once on every file.
+                                                                     */
+                                                                    foreach($clients as $client => $client_name) {
+                                                                ?>
+                                                                        <option value="<?php echo $client; ?>"<?php if (in_array($client,$file_on_clients)) { echo ' selected="selected"'; } ?>>
+                                                                            <?php echo $client_name; ?>
+                                                                        </option>
+                                                                <?php
+                                                                    }
+                                                                ?>
+                                                            </select>
+															<div class="list_mass_members">
+                                                                <span class="btn btn-xs btn-primary add-all" data-type="clients" data-fileid="<?php echo $i; ?>"><?php _e('Add all','cftp_admin'); ?></span>
+                                                                <span class="btn btn-xs btn-primary remove-all" data-type="clients" data-fileid="<?php echo $i; ?>"><?php _e('Remove all','cftp_admin'); ?></span>
+															</div>
+
+															<label><?php _e('Groups', 'cftp_admin');?>:</label>
+															<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][groups][]" id="select_groups_<?php echo $i; ?>" class="form-control chosen-select select_groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                                <?php
+                                                                    /**
+                                                                     * The groups list is generated early on the file so the
+                                                                     * array doesn't need to be made once on every file.
+                                                                     */
+                                                                    foreach($groups as $group => $group_name) {
+                                                                ?>
+                                                                        <option value="<?php echo $group; ?>"<?php if (in_array($group,$file_on_groups)) { echo ' selected="selected"'; } ?>>
+                                                                            <?php echo $group_name; ?>
+                                                                        </option>
+                                                                <?php
+                                                                    }
+                                                                ?>
 															</select>
 															<div class="list_mass_members">
-																<a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
-																<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
+																<span class="btn btn-xs btn-primary add-all" data-type="groups" data-fileid="<?php echo $i; ?>"><?php _e('Add all','cftp_admin'); ?></span>
+																<span class="btn btn-xs btn-primary remove-all" data-type="groups" data-fileid="<?php echo $i; ?>"><?php _e('Remove all','cftp_admin'); ?></span>
 															</div>
 
 															<div class="divider"></div>
@@ -502,7 +516,7 @@ $get_categories = get_categories();
 														<div class="file_data">
 															<h3><?php _e('Categories', 'cftp_admin');?></h3>
 															<label><?php _e('Add to', 'cftp_admin');?>:</label>
-															<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+															<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" id="select_categories_<?php echo $i; ?>" class="form-control chosen-select select_categories" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 																<?php
 																	/**
 																	 * The categories list is generated early on the file so the
@@ -512,8 +526,8 @@ $get_categories = get_categories();
 																?>
 															</select>
 															<div class="list_mass_members">
-																<a href="#" class="btn btn-xs btn-primary add-all" data-type="categories"><?php _e('Add all','cftp_admin'); ?></a>
-																<a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories"><?php _e('Remove all','cftp_admin'); ?></a>
+																<a href="#" class="btn btn-xs btn-primary add-all" data-type="categories" data-fileid="<?php echo $i; ?>"><?php _e('Add all','cftp_admin'); ?></a>
+																<a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories" data-fileid="<?php echo $i; ?>"><?php _e('Remove all','cftp_admin'); ?></a>
 															</div>
 														</div>
 													</div>
@@ -537,22 +551,6 @@ $get_categories = get_categories();
 		}
 	?>
 </div>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("form").submit(function() {
-			clean_form(this);
-
-			$(this).find('input[name$="[name]"]').each(function() {
-				is_complete($(this)[0],json_strings.validation.no_title);
-			});
-
-			// show the errors or continue if everything is ok
-			if (show_form_errors() == false) { return false; }
-
-		});
-	});
-</script>
 
 <?php
 	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

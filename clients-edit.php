@@ -143,6 +143,8 @@ if (isset($client_arguments['username']) && CURRENT_USER_USERNAME == $client_arg
 	$page_title = __('My account','cftp_admin');
 }
 
+$page_id = 'client_form';
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 

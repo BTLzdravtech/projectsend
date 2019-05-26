@@ -90,6 +90,8 @@ switch ( $section ) {
 
 $page_title = $section_title;
 
+$page_id = 'email_templates';
+
 $active_nav = 'emails';
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
@@ -438,37 +440,6 @@ if ($_POST) {
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript">
-	$(document).ready(function(e) {
-		$('.load_default').click(function(e) {
-			e.preventDefault();
-			var file		= jQuery(this).data('file');
-			var textarea	= '#'+jQuery(this).data('textarea');
-			var accept		= confirm('<?php _e('Please confirm: replace the custom template text with the default one?','cftp_admin'); ?>');
-			if ( accept ) {
-				$.ajax({
-					url: "emails/"+file,
-					async: false,
-					cache: false,
-					success: function (data){
-						$(textarea).val(data);
-					},
-					error: function() {
-						alert("<?php _e('Error: the content could not be loaded','cftp_admin'); ?>");
-					}
-				});
-			}
-		});
-
-		$('.preview').click(function(e) {
-			e.preventDefault();
-			var type	= jQuery(this).data('preview');
-			var url		= '<?php echo BASE_URI; ?>email-preview.php?t=' + type;
-		    window.open(url, "previewWindow", "width=800,height=600,scrollbars=yes");
-		});
-	});
-</script>
 
 <?php
 	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

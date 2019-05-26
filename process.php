@@ -14,7 +14,7 @@ $process = new \ProjectSend\Classes\DoProcess($dbh);
 
 switch ($_GET['do']) {
     case 'login':
-        $process->login($_GET['username'], $_GET['password'], $_GET['language']);
+        $process->login($_POST['username'], $_POST['password'], $_POST['language']);
         break;
     case 'logout':
         $process->logout();

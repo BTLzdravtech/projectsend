@@ -13,6 +13,8 @@ $active_nav = 'files';
 
 $page_title = __('Categories administration','cftp_admin');
 
+$page_id = 'categories_list';
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /**
@@ -183,19 +185,6 @@ if ( isset( $_POST['btn_process'] ) ) {
 			<?php show_search_form('categories.php'); ?>
 		</div>
 	</div>
-
-    <script type="text/javascript">
-        $(document).ready( function() {
-            $("#process_category").submit(function() {
-                clean_form( this );
-
-                is_complete( this.category_name, '<?php echo $json_strings['validation']['no_name']; ?>' );
-
-                // show the errors or continue if everything is ok
-                if (show_form_errors() == false) { return false; }
-            });
-        });
-    </script>
 
 	<form action="categories.php" class="form-inline batch_actions" name="selected_categories" id="selected_categories" method="get">
 

@@ -20,7 +20,7 @@
 <div class="form-group">
     <label for="clients_auto_group" class="col-sm-4 control-label"><?php _e('Add clients to this group:','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <select class="form-control" name="clients_auto_group" id="clients_auto_group">
+        <select class="form-control" name="clients_auto_group" id="clients_auto_group" required>
             <option value="0"><?php _e('None (does not enable this feature)','cftp_admin'); ?></option>
             <?php
                 /** Fill the groups array that will be used on the form */
@@ -47,7 +47,7 @@
 <div class="form-group">
     <label for="clients_can_select_group" class="col-sm-4 control-label"><?php _e('Groups for which clients can request membership to:','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <select class="form-control" name="clients_can_select_group" id="clients_can_select_group">
+        <select class="form-control" name="clients_can_select_group" id="clients_can_select_group" required>
             <?php
                 $pub_groups_options = array(
                                             'none'		=> __("None",'cftp_admin'),
@@ -96,7 +96,7 @@
 <div class="form-group">
     <label for="expired_files_hide" class="col-sm-4 control-label"><?php _e('When a file expires:','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <select class="form-control" name="expired_files_hide" id="expired_files_hide">
+        <select class="form-control" name="expired_files_hide" id="expired_files_hide" required>
             <option value="1" <?php echo (EXPIRED_FILES_HIDE == '1') ? 'selected="selected"' : ''; ?>><?php _e("Don't show it on the files list",'cftp_admin'); ?></option>
             <option value="0" <?php echo (EXPIRED_FILES_HIDE == '0') ? 'selected="selected"' : ''; ?>><?php _e("Show it anyway, but prevent download.",'cftp_admin'); ?></option>
         </select>

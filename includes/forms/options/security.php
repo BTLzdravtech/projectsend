@@ -5,7 +5,7 @@
 <div class="form-group">
     <label for="file_types_limit_to" class="col-sm-4 control-label"><?php _e('Limit file types uploading to','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <select class="form-control" name="file_types_limit_to" id="file_types_limit_to">
+        <select class="form-control" name="file_types_limit_to" id="file_types_limit_to" required>
             <option value="noone" <?php echo (FILE_TYPES_LIMIT_TO == 'noone') ? 'selected="selected"' : ''; ?>><?php _e('No one','cftp_admin'); ?></option>
             <option value="all" <?php echo (FILE_TYPES_LIMIT_TO == 'all') ? 'selected="selected"' : ''; ?>><?php _e('Everyone','cftp_admin'); ?></option>
             <option value="clients" <?php echo (FILE_TYPES_LIMIT_TO == 'clients') ? 'selected="selected"' : ''; ?>><?php _e('Clients only','cftp_admin'); ?></option>
@@ -14,7 +14,7 @@
 </div>
 
 <div class="form-group">
-    <input name="allowed_file_types" id="allowed_file_types" value="<?php echo $allowed_file_types; ?>" />
+    <input name="allowed_file_types" id="allowed_file_types" value="<?php echo $allowed_file_types; ?>" required />
 </div>
 
 <?php
@@ -77,14 +77,14 @@
 <div class="form-group">
     <label for="recaptcha_site_key" class="col-sm-4 control-label"><?php _e('Site key','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="text" name="recaptcha_site_key" id="recaptcha_site_key" class="form-control empty" value="<?php echo html_output(RECAPTCHA_SITE_KEY); ?>" />
+        <input type="text" name="recaptcha_site_key" id="recaptcha_site_key" class="form-control" value="<?php echo html_output(RECAPTCHA_SITE_KEY); ?>" />
     </div>
 </div>
 
 <div class="form-group">
     <label for="recaptcha_secret_key" class="col-sm-4 control-label"><?php _e('Secret key','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="text" name="recaptcha_secret_key" id="recaptcha_secret_key" class="form-control empty" value="<?php echo html_output(RECAPTCHA_SECRET_KEY); ?>" />
+        <input type="text" name="recaptcha_secret_key" id="recaptcha_secret_key" class="form-control" value="<?php echo html_output(RECAPTCHA_SECRET_KEY); ?>" />
     </div>
 </div>
 

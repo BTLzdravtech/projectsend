@@ -6,21 +6,7 @@
  * @subpackage	Groups
  *
  */
-?>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("form").submit(function() {
-			clean_form(this);
-
-			is_complete(this.name,'<?php echo $json_strings['validation']['no_name']; ?>');
-			// show the errors or continue if everything is ok
-			if (show_form_errors() == false) { return false; }
-		});
-	});
-</script>
-
-<?php
 switch ($groups_form_type) {
 	case 'new_group':
 		$submit_value = __('Create group','cftp_admin');
@@ -33,13 +19,13 @@ switch ($groups_form_type) {
 }
 ?>
 
-<form action="<?php echo html_output($form_action); ?>" name="addgroup" method="post" class="form-horizontal">
+<form action="<?php echo html_output($form_action); ?>" name="group_form" id="group_form" method="post" class="form-horizontal">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
 	<div class="form-group">
 		<label for="name" class="col-sm-4 control-label"><?php _e('Group name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($group_arguments['name'])) ? html_output(stripslashes($group_arguments['name'])) : ''; ?>" />
+			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($group_arguments['name'])) ? html_output(stripslashes($group_arguments['name'])) : ''; ?>" required />
 		</div>
 	</div>
 

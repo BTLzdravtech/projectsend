@@ -13,6 +13,8 @@ $active_nav = 'groups';
 
 $page_title = __('Edit group','cftp_admin');
 
+$page_id = 'group_form';
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /** Create the object */

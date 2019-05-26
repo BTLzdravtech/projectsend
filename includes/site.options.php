@@ -14,7 +14,7 @@ global $dbh;
 
 try {
 	$options = $dbh->query("SELECT * FROM " . TABLE_OPTIONS);
-	$options->setFetchMode(PDO::FETCH_ASSOC);
+    $options->setFetchMode(PDO::FETCH_ASSOC);
 
 	if ( $options->rowCount() > 0) {
         $options = new ProjectSend\Classes\Options;

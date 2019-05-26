@@ -13,6 +13,8 @@ $active_nav = 'groups';
 
 $page_title = __('Add clients group','cftp_admin');
 
+$page_id = 'group_form';
+
 $new_group = new \ProjectSend\Classes\Groups($dbh);
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';

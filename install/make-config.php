@@ -13,6 +13,8 @@ define( 'IS_MAKE_CONFIG', true );
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
 require_once ABS_PARENT . '/bootstrap.php';
 
+$page_id = 'make_config';
+
 /** Config file exists. Do not continue and show the message */
 if ( file_exists( ROOT_DIR.'/includes/sys.config.php' ) ) {
 	$error_msg[] = __('The configuration file already exists.','cftp_admin');

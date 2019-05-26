@@ -18,11 +18,14 @@
 define('IS_FILE_EDITOR', true);
 
 $allowed_levels = array(9,8,7,0);
-require_once('bootstrap.php');
+require_once 'bootstrap.php';
 
 $active_nav = 'files';
 
 $page_title = __('Upload files', 'cftp_admin');
+
+$page_id = 'new_uploads_editor';
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 define('CAN_INCLUDE_FILES', true);
@@ -148,7 +151,11 @@ while( $row = $statement->fetch() ) {
 
                     if (!empty($new_filename)) {
 						$delete_key = array_search($file['original'], $uploaded_files);
-						unset($uploaded_files[$delete_key]);
+                        unset($uploaded_files[$delete_key]);
+                        
+                        // Patch by lmsilva
+                        $new_filename = basename($new_filename);
+                        $original_filename = basename($original_filename);
 
 						/**
 						 * Unassigned files are kept as orphans and can be related
@@ -201,14 +208,16 @@ while( $row = $statement->fetch() ) {
 						}
 
 						if (!in_array($new_filename,$urls_db_files)) {
-							$add_arguments['add_to_db'] = true;
-						}
+                            $process_file = $this_upload->addNew($add_arguments);
+                        }
+                        else {
+                            $process_file = $this_upload->saveExisting($add_arguments);
+                        }
 
 						/**
 						 * 1- Add the file to the database
 						 */
-						$process_file = $this_upload->addFileToDatabase($add_arguments);
-						if($process_file['database'] == true) {
+						if ($process_file['database'] == true) {
 							$add_arguments['new_file_id']	= $process_file['new_file_id'];
 							$add_arguments['all_users']		= $users;
 							$add_arguments['all_groups']	= $groups;
@@ -383,23 +392,7 @@ while( $row = $statement->fetch() ) {
 		}
 ?>
 
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$("form").submit(function() {
-					clean_form(this);
-
-					$(this).find('input[name$="[name]"]').each(function() {
-						is_complete($(this)[0],json_strings.validation.no_title);
-					});
-
-					// show the errors or continue if everything is ok
-					if (show_form_errors() == false) { return false; }
-
-				});
-			});
-		</script>
-
-		<form action="upload-process-form.php" name="save_files" id="save_files" method="post">
+		<form action="upload-process-form.php" name="files" id="files" method="post" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
 			<?php
@@ -649,13 +642,13 @@ while( $row = $statement->fetch() ) {
 	 * Send the notifications
 	 */
 	else {
-		include(ROOT_DIR.'/upload-send-notifications.php');
+        require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
 	}
 
 	/**
 	 * Generate the table for the failed files.
 	 */
-	if(count($upload_failed) > 0) {
+	if (count($upload_failed) > 0) {
 ?>
 		<h3><?php _e('Files not uploaded','cftp_admin'); ?></h3>
 		<table id="failed_files_tbl" class="footable" data-page-size="<?php echo FOOTABLE_PAGING_NUMBER; ?>">
@@ -679,47 +672,7 @@ while( $row = $statement->fetch() ) {
 <?php
 	}
 ?>
-
 </div>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		<?php
-			if(!empty($uploaded_files)) {
-		?>
-				$('.copy-all').click(function() {
-					if ( confirm( "<?php _e('Copy selection to all files?','cftp_admin'); ?>" ) ) {
-						var type = $(this).data('type');
-						var selector = $(this).closest('.' + type).find('select');
-
-						var selected = new Array();
-						$(selector).find('option:selected').each(function() {
-							selected.push($(this).val());
-						});
-
-						$('.' + type + ' .chosen-select').each(function() {
-							$(this).find('option').each(function() {
-								if ($.inArray($(this).val(), selected) === -1) {
-									$(this).removeAttr('selected');
-								}
-								else {
-									$(this).attr('selected', 'selected');
-								}
-							});
-						});
-						$('select').trigger('chosen:updated');
-					}
-
-					return false;
-				});
-
-				// Autoclick the continue button
-				//$('#upload-continue').click();
-		<?php
-			}
-		?>
-	});
-</script>
 
 <?php
 	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

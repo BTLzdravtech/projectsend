@@ -11,6 +11,8 @@ require_once 'bootstrap.php';
 
 $page_title = __('Register new account','cftp_admin');
 
+$page_id = 'client_form';
+
 $new_client = new \ProjectSend\Classes\Users($dbh);
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';

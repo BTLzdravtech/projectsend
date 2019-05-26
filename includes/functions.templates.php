@@ -64,7 +64,7 @@ function extract_template_info($template_directory)
     $screenshot_url	    = TEMPLATES_URL . DS . $folder . DS . 'screenshot.png';
     $cover_url			= TEMPLATES_URL . DS . $folder . DS . 'cover.png';
 
-    $template_info['screenshot']	= ( file_exists( $screenshot_file ) ) ? $screenshot_url : ASSETS_IMG_URI . 'template-screenshot.png';
+    $template_info['screenshot']	= ( file_exists( $screenshot_file ) ) ? $screenshot_url : ASSETS_IMG_URL . 'template-screenshot.png';
     if ( file_exists( $cover_file ) ) {
         $template_info['cover']	= $cover_url;
     }

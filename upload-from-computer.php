@@ -15,6 +15,8 @@ $active_nav = 'files';
 
 $page_title = __('Upload files', 'cftp_admin');
 
+$page_id = 'upload_form';
+
 $allowed_levels = array(9,8,7);
 if (CLIENTS_CAN_UPLOAD == 1) {
 	$allowed_levels[] = 0;
@@ -43,22 +45,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		</p>
 
 		<script type="text/javascript">
-			$(document).ready(function() {
-				setInterval(function(){
-					// Send a keep alive action every 1 minute
-					var timestamp = new Date().getTime()
-					$.ajax({
-						type:	'GET',
-						cache:	false,
-						url:	'includes/ajax-keep-alive.php',
-						data:	'timestamp='+timestamp,
-						success: function(result) {
-							var dummy = result;
-						}
-					});
-				},1000*60);
-			});
-
 			$(function() {
 				$("#uploader").pluploadQueue({
 					runtimes : 'html5,flash,silverlight,html4',
@@ -85,8 +71,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						Init: function (up, info) {
 							//$('#uploader_container').removeAttr("title");
 						}
-					}
-					,init : {
+					},
+					init : {
 						/*
 						FilesAdded: function(up, files) {
 					   uploader.start();
@@ -98,57 +84,6 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						*/
 					}
 				});
-
-				var uploader = $('#uploader').pluploadQueue();
-
-				$('form').submit(function(e) {
-
-					if (uploader.files.length > 0) {
-						uploader.bind('StateChanged', function() {
-							if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
-								$('form')[0].submit();
-							}
-						});
-
-						uploader.start();
-
-						$("#btn-submit").hide();
-						$(".message_uploading").fadeIn();
-
-						uploader.bind('FileUploaded', function (up, file, info) {
-							var obj = JSON.parse(info.response);
-							var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
-							$('form').append(new_file_field);
-						});
-
-						return false;
-					} else {
-						alert('<?php _e("You must select at least one file to upload.",'cftp_admin'); ?>');
-					}
-
-					return false;
-				});
-
-				window.onbeforeunload = function (e) {
-					var e = e || window.event;
-
-					console.log('state? ' + uploader.state);
-
-					// if uploading
-					if(uploader.state === 2) {
-						<?php
-							$confirmation_msg = "Are you sure? Files currently being uploaded will be discarded if you leave this page.";
-						?>
-						//IE & Firefox
-						if (e) {
-							e.returnValue = '<?php _e($confirmation_msg,'cftp_admin'); ?>';
-						}
-
-						// For Safari
-						return '<?php _e($confirmation_msg,'cftp_admin'); ?>';
-					}
-
-				};
 			});
 		</script>
 

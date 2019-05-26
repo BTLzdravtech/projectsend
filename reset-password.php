@@ -10,6 +10,11 @@ require_once 'bootstrap.php';
 
 $page_title = __('Lost password','cftp_admin');
 
+$page_id = 'reset_password_enter_email';
+if (!empty($_GET['token']) && !empty($_GET['user'])) {
+    $page_id = 'reset_password_enter_new';
+}
+
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 	$show_form = 'enter_email';
 
@@ -62,7 +67,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 			 * The form submited contains a new token request
 			 */
             case 'new_request':
-                $get_user = get_user_by('user', 'email', $_POST['reset_password_email']);
+                $get_user = get_user_by('user', 'email', $_POST['email']);
 		
 				if ( $get_user ) {
 					/** Email exists on the database */
@@ -119,7 +124,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 			 */
 			case 'new_password':
 				if (!empty($user_data['id'])) {
-					$reset_password_new = $_POST['reset_password_new'];
+					$reset_password_new = $_POST['password'];
 	
                     /** Password checks */
                     $validation = new \ProjectSend\Classes\Validation;

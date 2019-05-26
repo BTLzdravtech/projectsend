@@ -24,6 +24,7 @@ if ( version_compare( $version_mysql, REQUIRED_VERSION_MYSQL, "<" ) ) {
 	$error_msg[] = 'MySQL' . ' ' . $version_not_met . ' ' . REQUIRED_VERSION_MYSQL;
 }
 
+
 if ( !empty( $error_msg ) ) {
 	include_once ABS_PARENT . '/header-unlogged.php';
 ?>
@@ -71,22 +72,12 @@ function try_query($queries)
 	return $statement;
 }
 
-/** Collect data from form */
-if($_POST) {
-	$this_install_title		= $_POST['this_install_title'];
-	$base_uri				= $_POST['base_uri'];
-	$got_admin_name			= $_POST['install_user_fullname'];
-	$got_admin_username		= $_POST['install_user_username'];
-	$got_admin_email		= $_POST['install_user_mail'];
-    $got_admin_pass 		= password_hash($_POST['install_user_pass'], PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
-	//$got_admin_pass		= md5($_POST['install_user_pass']);
-	//$got_admin_pass2		= md5($_POST['install_user_repeat']);
-}
-
 /** Define the installation text strings */
 $page_title_install		= __('Install','cftp_admin');
 $install_no_sitename	= __('Sitename was not completed.','cftp_admin');
 $install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
+
+$page_id = 'install';
 
 include_once '../header-unlogged.php';
 ?>
@@ -117,27 +108,37 @@ include_once '../header-unlogged.php';
 					}
 					else {
 						if ($_POST) {
-
+                            $install_title = $_POST['install_title'];
+                            $base_uri = $_POST['base_uri'];
+                            $admin_name = $_POST['admin_name'];
+                            $admin_username = $_POST['admin_username'];
+                            $admin_email = $_POST['admin_email'];
+                            $admin_pass = password_hash($_POST['admin_pass'], PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+                        
 							/**
 							 * The URI must end with a /, so add it if it wasn't posted.
 							 */
 							if ($base_uri{(strlen($base_uri) - 1)} != '/') { $base_uri .= '/'; }
 							/** Begin form validation */
-							$valid_me->validate('completed',$this_install_title,$json_strings['validation']['install_no_sitename']);
-							$valid_me->validate('completed',$base_uri,$json_strings['validation']['install_no_baseuri']);
-							$valid_me->validate('completed',$got_admin_name,$json_strings['validation']['no_name']);
-							$valid_me->validate('completed',$got_admin_email,$json_strings['validation']['no_email']);
-							/** Username validation */
-							$valid_me->validate('completed',$got_admin_username,$json_strings['validation']['no_user']);
-							$valid_me->validate('length',$got_admin_username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
-							$valid_me->validate('alpha_dot',$got_admin_username,$json_strings['validation']['alpha_user']);
-							/** Password fields validation */
-							$valid_me->validate('completed',$_POST['install_user_pass'],$json_strings['validation']['no_pass']);
-							$valid_me->validate('email',$got_admin_email,$json_strings['validation']['invalid_email']);
-							$valid_me->validate('length',$_POST['install_user_pass'],$json_strings['validation']['length_pass'],MIN_USER_CHARS,MAX_USER_CHARS);
-							$valid_me->validate('password',$_POST['install_user_pass'],$json_strings['validation']['alpha_pass']);
+                            $validation = new \ProjectSend\Classes\Validation;
 
-							if ($valid_me->return_val) {
+                            global $json_strings;
+                    
+                            $validation->validate('completed',$install_title,$json_strings['validation']['install_no_sitename']);
+							$validation->validate('completed',$base_uri,$json_strings['validation']['install_no_baseuri']);
+							$validation->validate('completed',$admin_name,$json_strings['validation']['no_name']);
+							$validation->validate('completed',$admin_email,$json_strings['validation']['no_email']);
+							/** Username validation */
+							$validation->validate('completed',$admin_username,$json_strings['validation']['no_user']);
+							$validation->validate('length',$admin_username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
+							$validation->validate('alpha_dot',$admin_username,$json_strings['validation']['alpha_user']);
+							/** Password fields validation */
+							$validation->validate('completed',$_POST['admin_pass'],$json_strings['validation']['no_pass']);
+							$validation->validate('email',$admin_email,$json_strings['validation']['invalid_email']);
+							$validation->validate('length',$_POST['admin_pass'],$json_strings['validation']['length_pass'],MIN_USER_CHARS,MAX_USER_CHARS);
+							$validation->validate('password',$_POST['admin_pass'],$json_strings['validation']['alpha_pass']);
+
+							if ($validation->passed()) {
 								/**
 								 * Call the file that creates the tables and fill it with the data we got previously
 								 */
@@ -162,9 +163,9 @@ include_once '../header-unlogged.php';
 					?>
 
 					<?php
-						if(isset($valid_me)) {
+						if(isset($validation)) {
 							/** If the form was submited with errors, show them here */
-							$valid_me->list_errors();
+							$validation->list_errors();
 						}
 
 						if (isset($query_state)) {
@@ -197,7 +198,7 @@ include_once '../header-unlogged.php';
 									$log_action_args = array(
 															'action' => 0,
 															'owner_id' => 1,
-															'owner_user' => $got_admin_name
+															'owner_user' => $admin_name
 														);
 									$new_record_action = $logger->addEntry($log_action_args);
 
@@ -218,32 +219,7 @@ include_once '../header-unlogged.php';
 						else {
 						?>
 
-							<script type="text/javascript">
-								$(document).ready(function() {
-									$("form").submit(function() {
-										clean_form(this);
-
-										is_complete(this.this_install_title, json_strings.validation.install_no_sitename);
-										is_complete(this.base_uri, json_strings.validation.install_no_baseuri);
-										is_complete(this.install_user_fullname, json_strings.validation.no_name);
-										is_complete(this.install_user_mail, json_strings.validation.no_email);
-										// username
-										is_complete(this.install_user_username, json_strings.validation.no_user);
-										is_length(this.install_user_username,json_strings.validation.user_min, json_strings.validation.user_max, json_strings.validation.length_user);
-										is_alpha_or_dot(this.install_user_username, json_strings.validation.alpha_user);
-										// password fields
-										is_complete(this.install_user_pass, json_strings.validation.no_pass);
-										is_email(this.install_user_mail, json_strings.validation.invalid_email);
-										is_length(this.install_user_pass, json_strings.validation.password_min, json_strings.validation.password_max, json_strings.validation.length_pass);
-										is_password(this.install_user_pass, json_strings.validation.valid_pass'] . " " . addslashes($json_strings.validation.valid_chars']); ?>');
-
-										// show the errors or continue if everything is ok
-										if (show_form_errors() == false) { return false; }
-									});
-								});
-							</script>
-
-							<form action="index.php" name="installform" method="post" class="form-horizontal">
+							<form action="index.php" name="install_form" id="install_form" method="post" class="form-horizontal">
 
 								<h3><?php _e('Basic system options','cftp_admin'); ?></h3>
 								<p><?php _e("You need to provide this data for a correct system installation. The site name will be visible in the system panel, and the client's lists.",'cftp_admin'); ?><br />
@@ -251,9 +227,9 @@ include_once '../header-unlogged.php';
 								</p>
 
 								<div class="form-group">
-									<label for="this_install_title" class="col-sm-4 control-label"><?php _e('Site name','cftp_admin'); ?></label>
+									<label for="install_title" class="col-sm-4 control-label"><?php _e('Site name','cftp_admin'); ?></label>
 									<div class="col-sm-8">
-										<input type="text" name="this_install_title" id="this_install_title" class="form-control required" value="<?php echo (isset($this_install_title) ? $this_install_title : ''); ?>" />
+										<input type="text" name="install_title" id="install_title" class="form-control required" value="<?php echo (isset($install_title) ? $install_title : ''); ?>" />
 									</div>
 								</div>
 
@@ -270,37 +246,37 @@ include_once '../header-unlogged.php';
 								<p><?php _e("This info will be used to create a default system user, which can't be deleted afterwards. Password should be between",'cftp_admin'); ?> <strong><?php echo MIN_PASS_CHARS; ?> <?php _e("and",'cftp_admin'); ?> <?php echo MAX_PASS_CHARS; ?> <?php _e("characters long.",'cftp_admin'); ?></strong></p>
 
 								<div class="form-group">
-									<label for="install_user_fullname" class="col-sm-4 control-label"><?php _e('Full name','cftp_admin'); ?></label>
+									<label for="admin_name" class="col-sm-4 control-label"><?php _e('Full name','cftp_admin'); ?></label>
 									<div class="col-sm-8">
-										<input type="text" name="install_user_fullname" id="install_user_fullname" class="form-control required" value="<?php echo (isset($got_admin_name) ? $got_admin_name : ''); ?>" />
+										<input type="text" name="admin_name" id="admin_name" class="form-control required" value="<?php echo (isset($admin_name) ? $admin_name : ''); ?>" />
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label for="install_user_mail" class="col-sm-4 control-label"><?php _e('E-mail address','cftp_admin'); ?></label>
+									<label for="admin_email" class="col-sm-4 control-label"><?php _e('E-mail address','cftp_admin'); ?></label>
 									<div class="col-sm-8">
-										<input type="text" name="install_user_mail" id="install_user_mail" class="form-control required" value="<?php echo (isset($got_admin_email) ? $got_admin_email : ''); ?>" />
+										<input type="text" name="admin_email" id="admin_email" class="form-control required" value="<?php echo (isset($admin_email) ? $admin_email : ''); ?>" />
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label for="install_user_username" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
+									<label for="admin_username" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
 									<div class="col-sm-8">
-										<input type="text" name="install_user_username" id="install_user_username" class="form-control required" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($got_admin_username) ? $got_admin_username : ''); ?>" />
+										<input type="text" name="admin_username" id="admin_username" class="form-control required" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($admin_username) ? $admin_username : ''); ?>" />
 									</div>
 								</div>
 
 
 								<div class="form-group">
-									<label for="install_user_pass" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
+									<label for="admin_pass" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 									<div class="col-sm-8">
 										<div class="input-group">
-											<input type="password" name="install_user_pass" id="install_user_pass" class="form-control password_toggle required" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+											<input type="password" name="admin_pass" id="admin_pass" class="form-control password_toggle required" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
 											<div class="input-group-btn password_toggler">
 												<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 											</div>
 										</div>
-										<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="install_user_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
+										<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="admin_pass" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
 									</div>
 								</div>
 

@@ -6,55 +6,6 @@
  * @subpackage	Users
  *
  */
-?>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$("form").submit(function() {
-			clean_form(this);
-
-			is_complete(this.name,'<?php echo $json_strings['validation']['no_name']; ?>');
-			is_complete(this.username,'<?php echo $json_strings['validation']['no_user']; ?>');
-			is_complete(this.email,'<?php echo $json_strings['validation']['no_email']; ?>');
-			is_complete(this.level,'<?php echo $json_strings['validation']['no_role']; ?>');
-			is_length(this.username,<?php echo MIN_USER_CHARS; ?>,<?php echo MAX_USER_CHARS; ?>,'<?php echo $json_strings['validation']['length_user']; ?>');
-			is_email(this.email,'<?php echo $json_strings['validation']['invalid_email']; ?>');
-			is_alpha_or_dot(this.username,'<?php echo $json_strings['validation']['alpha_user']; ?>');
-			is_number(this.max_file_size,'<?php echo $json_strings['validation']['file_size']; ?>');
-			
-			<?php
-				/**
-				 * Password validation is optional only when editing a user.
-				 */
-				if ($user_form_type == 'edit_user' || $user_form_type == 'edit_user_self') {
-			?>
-					// Only check password if any of the 2 fields is completed
-					var password_1 = $("#password").val();
-					if ($.trim(password_1).length > 0) {
-			<?php
-				}
-			?>
-
-						is_complete(this.password,'<?php echo $json_strings['validation']['no_pass']; ?>');
-						is_length(this.password,<?php echo MIN_PASS_CHARS; ?>,<?php echo MAX_PASS_CHARS; ?>,'<?php echo $json_strings['validation']['length_pass']; ?>');
-						is_password(this.password,'<?php echo $json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']); ?>');
-
-			<?php
-				/** Close the jquery IF statement. */
-				if ($user_form_type == 'edit_user' || $user_form_type == 'edit_user_self') {
-			?>
-					}
-			<?php
-				}
-			?>
-
-			// show the errors or continue if everything is ok
-			if (show_form_errors() == false) { return false; }
-		});
-	});
-</script>
-
-<?php
 switch ($user_form_type) {
 	case 'new_user':
 		$submit_value = __('Add user','cftp_admin');
@@ -79,20 +30,20 @@ switch ($user_form_type) {
 		break;
 }
 ?>
-<form action="<?php echo html_output($form_action); ?>" name="adduser" method="post" class="form-horizontal">
+<form action="<?php echo html_output($form_action); ?>" name="user_form" id="user_form" method="post" class="form-horizontal" data-form-type="<?php echo $user_form_type; ?>">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
 	<div class="form-group">
 		<label for="name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($user_arguments['name'])) ? format_form_value($user_arguments['name']) : ''; ?>" />
+			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($user_arguments['name'])) ? format_form_value($user_arguments['name']) : ''; ?>" required />
 		</div>
 	</div>
 
 	<div class="form-group">
 		<label for="username" class="col-sm-4 control-label"><?php _e('Log in username','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="username" id="username" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($user_arguments['username'])) ? format_form_value($user_arguments['username']) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; } ?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" />
+			<input type="text" name="username" id="username" class="form-control <?php if (!$disable_user) { echo 'required'; } ?>" maxlength="<?php echo MAX_USER_CHARS; ?>" value="<?php echo (isset($user_arguments['username'])) ? format_form_value($user_arguments['username']) : ''; ?>" <?php if ($disable_user) { echo 'readonly'; } ?> placeholder="<?php _e("Must be alphanumeric",'cftp_admin'); ?>" required />
 		</div>
 	</div>
 
@@ -100,7 +51,7 @@ switch ($user_form_type) {
 		<label for="password" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<div class="input-group">
-				<input name="password" id="password" class="form-control <?php if ($require_pass) { echo 'required'; } ?> password_toggle" type="password" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
+				<input type="password" name="password" id="password" class="form-control <?php if ($require_pass) { echo 'required'; } ?> password_toggle" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
 				<div class="input-group-btn password_toggler">
 					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 				</div>
@@ -113,7 +64,7 @@ switch ($user_form_type) {
 	<div class="form-group">
 		<label for="email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="email" id="email" class="form-control required" value="<?php echo (isset($user_arguments['email'])) ? format_form_value($user_arguments['email']) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" />
+			<input type="text" name="email" id="email" class="form-control required" value="<?php echo (isset($user_arguments['email'])) ? format_form_value($user_arguments['email']) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" required />
 		</div>
 	</div>
 
@@ -123,7 +74,7 @@ switch ($user_form_type) {
 			<div class="form-group">
 				<label for="level" class="col-sm-4 control-label"><?php _e('Role','cftp_admin'); ?></label>
 				<div class="col-sm-8">
-					<select name="level" id="level" class="form-control">
+					<select name="level" id="level" class="form-control" required>
                         <?php
                             $roles = [
                                 '9' => USER_ROLE_LVL_9,

@@ -14,6 +14,7 @@ class UploadFile
     private $dbh;
     private $logger;
 
+    var $file_id;
 	var $folder;
 	var $assign_to;
 	var $uploader;
@@ -31,6 +32,27 @@ class UploadFile
 
         $this->dbh = $dbh;
         $this->logger = new \ProjectSend\Classes\ActionsLog;
+    }
+
+        /**
+     * Set the ID
+     */
+    public function setId($id)
+    {
+        $this->file_id = $id;
+    }
+  
+    /**
+     * Return the ID
+     * @return int
+     */
+    public function getId()
+    {
+        if (!empty($this->file_id)) {
+            return $this->file_id;
+        }
+
+        return false;
     }
 
 	/**
@@ -154,7 +176,7 @@ class UploadFile
 	/**
 	 * Called after correctly moving the file to the final location.
 	 */
-	function addFileToDatabase($arguments)
+	function addNew($arguments)
 	{
 		$this->file_on_disk		= (!empty($arguments['file_disk'])) ? $arguments['file_disk'] : '';
 		$this->post_file		= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
@@ -169,81 +191,42 @@ class UploadFile
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
 		
-		if (isset($arguments['add_to_db'])) {
-			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
-											."VALUES (:url, :original_url, :name, :description, :uploader, :expires, :expiry_date, :public, :token)");
-			$this->statement->bindParam(':url', $this->file_on_disk);
-			$this->statement->bindParam(':original_url', $this->post_file);
-			$this->statement->bindParam(':name', $this->name);
-			$this->statement->bindParam(':description', $this->description);
-			$this->statement->bindParam(':uploader', $this->uploader);
-			$this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
-			$this->statement->bindParam(':expiry_date', $this->expiry_date);
-			$this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
-			$this->statement->bindParam(':token', $this->public_token);
-			$this->statement->execute();
+        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
+                                        ."VALUES (:url, :original_url, :name, :description, :uploader, :expires, :expiry_date, :public, :token)");
+        $this->statement->bindParam(':url', $this->file_on_disk);
+        $this->statement->bindParam(':original_url', $this->post_file);
+        $this->statement->bindParam(':name', $this->name);
+        $this->statement->bindParam(':description', $this->description);
+        $this->statement->bindParam(':uploader', $this->uploader);
+        $this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
+        $this->statement->bindParam(':expiry_date', $this->expiry_date);
+        $this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
+        $this->statement->bindParam(':token', $this->public_token);
+        $this->statement->execute();
 
-			$this->file_id = $this->dbh->lastInsertId();
-			$this->state['new_file_id'] = $this->file_id;
+        $this->file_id = $this->dbh->lastInsertId();
+        $this->state['new_file_id'] = $this->file_id;
 
-			$this->state['public_token'] = $this->public_token;
+        $this->state['public_token'] = $this->public_token;
 
-			/** Record the action log */
-			if ($this->uploader_type == 'user') {
-				$this->action_type = 5;
-			}
-			elseif ($this->uploader_type == 'client') {
-				$this->action_type = 6;
-			}
-			$new_record_action = $this->logger->addEntry([
+		if (!empty($this->statement)) {
+            /** Record the action log */
+            if ($this->uploader_type == 'user') {
+                $this->action_type = 5;
+            }
+            elseif ($this->uploader_type == 'client') {
+                $this->action_type = 6;
+            }
+
+            $new_record_action = $this->logger->addEntry([
                 'action' => $this->action_type,
                 'owner_id' => $this->uploader_id,
                 'affected_file' => $this->file_id,
                 'affected_file_name' => $this->name,
                 'affected_account_name' => $this->uploader
             ]);
-		}
-		else {
-			$this->statement = $this->dbh->prepare("SELECT id, public_allow, public_token FROM " . TABLE_FILES . " WHERE url = :url");
-			$this->statement->bindParam(':url', $this->post_file);
-			$this->statement->execute();
-			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-			while( $row = $this->statement->fetch() ) {
-				$this->file_id = $row["id"];
-				$this->state['new_file_id'] = $this->file_id;
-				if (!empty($row["public_token"])) {
-					$this->public_token				= $row["public_token"];
-					$this->state['public_token']	= $row["public_token"];
-				}
-				/**
-				 * If a client is editing a file, the public settings should
-				 * not be reset.
-				 */
-				if ( CURRENT_USER_LEVEL == 0 ) {
-					$this->is_public = $row["public_allow"];
-				}
-			}
-			$this->statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET
-												filename = :title,
-												description = :description,
-												expires = :expires,
-												expiry_date = :expiry_date,
-												public_allow = :public,
-												public_token = :token
-												WHERE id = :id
-											");
-			$this->statement->bindParam(':title', $this->name);
-			$this->statement->bindParam(':description', $this->description);
-			$this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
-			$this->statement->bindParam(':expiry_date', $this->expiry_date);
-			$this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
-			$this->statement->bindParam(':token', $this->public_token);
-			$this->statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
-			$this->statement->execute();
-		}
 
-		if(!empty($this->statement)) {
-			$this->state['database'] = true;
+            $this->state['database'] = true;
 		}
 		else {
 			$this->state['database'] = false;
@@ -252,54 +235,248 @@ class UploadFile
 		return $this->state;
 	}
 
+    	/**
+	 * Called after correctly moving the file to the final location.
+	 */
+	function saveExisting($arguments)
+	{
+		$this->file_on_disk		= (!empty($arguments['file_disk'])) ? $arguments['file_disk'] : '';
+		$this->post_file		= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
+		$this->name				= encode_html($arguments['name']);
+		$this->description		= encode_html($arguments['description']);
+		$this->uploader			= $arguments['uploader'];
+		$this->uploader_id		= $arguments['uploader_id'];
+		$this->uploader_type	= $arguments['uploader_type'];
+		$this->hidden			= (!empty($arguments['hidden'])) ? 1 : 0;
+		$this->expires			= (!empty($arguments['expires'])) ? 1 : 0;
+		$this->expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
+		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
+		$this->public_token		= generateRandomString(32);
+		
+        $this->statement = $this->dbh->prepare("SELECT id, public_allow, public_token FROM " . TABLE_FILES . " WHERE url = :url");
+        $this->statement->bindParam(':url', $this->post_file);
+        $this->statement->execute();
+        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+        while( $row = $this->statement->fetch() ) {
+            $this->file_id = $row["id"];
+            $this->state['new_file_id'] = $this->file_id;
+            if (!empty($row["public_token"])) {
+                $this->public_token				= $row["public_token"];
+                $this->state['public_token']	= $row["public_token"];
+            }
+            /**
+             * If a client is editing a file, the public settings should
+             * not be reset.
+             */
+            if ( CURRENT_USER_LEVEL == 0 ) {
+                $this->is_public = $row["public_allow"];
+            }
+        }
+        $this->statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET
+                                            filename = :title,
+                                            description = :description,
+                                            expires = :expires,
+                                            expiry_date = :expiry_date,
+                                            public_allow = :public,
+                                            public_token = :token
+                                            WHERE id = :id
+                                        ");
+        $this->statement->bindParam(':title', $this->name);
+        $this->statement->bindParam(':description', $this->description);
+        $this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
+        $this->statement->bindParam(':expiry_date', $this->expiry_date);
+        $this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
+        $this->statement->bindParam(':token', $this->public_token);
+        $this->statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
+        $this->statement->execute();
+
+		if (!empty($this->statement)) {
+            /** Record the action log */
+            if ($this->uploader_type == 'user') {
+                $this->action_type = 32;
+            }
+            elseif ($this->uploader_type == 'client') {
+                $this->action_type = 33;
+            }
+
+            $new_record_action = $this->logger->addEntry([
+                'action' => $this->action_type,
+                'owner_id' => $this->uploader_id,
+                'affected_file' => $this->file_id,
+                'affected_file_name' => $this->name,
+                'affected_account_name' => $this->uploader
+            ]);
+
+			$this->state['database'] = true;
+		}
+		else {
+			$this->state['database'] = false;
+		}
+		
+		return $this->state;
+    }
+    
+    public function saveAssignments($new_values)
+    {
+        if (empty($this->file_id)) {
+            return false;
+        }
+
+        // Get current assignments from database to compare with new values
+        $current = [
+            'clients' => [],
+            'groups' => [],
+        ];
+        $assignments = $this->dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
+        $assignments->bindParam(':id', $this->file_id, PDO::PARAM_INT);
+        $assignments->execute();
+        if ($assignments->rowCount() > 0) {
+            while ( $row = $assignments->fetch() ) {
+                if (!empty($row['client_id'])) {
+                    $current['clients'][] = $row['client_id'];
+                }
+                elseif (!empty($row['group_id'])) {
+                    $current['groups'][] = $row['group_id'];
+                }
+            }
+        }
+
+        $remove = [
+            'clients' => [],
+            'groups' => [],
+        ];
+        $create = [
+            'clients' => [],
+            'groups' => [],
+        ];
+
+        // Remove each item that is current but not on POST values
+        foreach ($current['clients'] as $client_id) {
+            if (!in_array($client_id, $new_values['clients'])) {
+                self::removeAssignment('client', $client_id);
+            }
+        }
+        foreach ($current['groups'] as $group_id) {
+            if (!in_array($group_id, $new_values['groups'])) {
+                self::removeAssignment('group', $group_id);
+            }
+        }
+
+        // Create new relations
+        foreach ($new_values['clients'] as $client_id) {
+            if (!in_array($client_id, $current['clients'])) {
+                self::addAssignment('client', $client_id);
+            }
+        }
+        foreach ($new_values['groups'] as $group_id) {
+            if (!in_array($group_id, $current['groups'])) {
+                self::addAssignment('group', $group_id);
+            }
+        }
+
+        exit;
+    }
+
+    public function removeAssignment($type, $id)
+    {
+        if (empty($type) || empty($id)) {
+            return false;
+        }
+
+        if ($type != 'client' && $type != 'group') {
+            return false;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	 * Used to add new assignments and notifications
 	 */
-	function addFileAssignment($arguments)
+	public function addFileAssignment($arguments)
 	{
 		$this->name = encode_html($arguments['name']);
 		$this->uploader_id = $arguments['uploader_id'];
 		$this->groups = $arguments['all_groups'];
 		$this->users = $arguments['all_users'];
 
-		if (!empty($arguments['assign_to'])) {
-			$this->assign_to = $arguments['assign_to'];
-			foreach ($this->assign_to as $this->assignment) {
-				$this->id_only = substr($this->assignment, 1);
-				switch ($this->assignment[0]) {
-					case 'c':
-						$this->add_to = 'client_id';
-						$this->account_name = $this->users[$this->id_only];
-						$this->action_number = 25;
-						break;
-					case 'g':
-						$this->add_to = 'group_id';
-						$this->account_name = $this->groups[$this->id_only];
-						$this->action_number = 26;
-						break;
-				}
-				$this->assignment = substr($this->assignment, 1);
-				$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, $this->add_to, hidden)"
-														."VALUES (:file_id, :assignment, :hidden)");
-				$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-				$this->statement->bindParam(':assignment', $this->assignment);
-				$this->statement->bindParam(':hidden', $this->hidden, PDO::PARAM_INT);
-				$this->statement->execute();
-				
-				if ($this->uploader_type == 'user') {
-					/** Record the action log */
-					$new_record_action = $this->logger->addEntry([
-                        'action' => $this->action_number,
-                        'owner_id' => $this->uploader_id,
-                        'affected_file' => $this->file_id,
-                        'affected_file_name' => $this->name,
-                        'affected_account' => $this->assignment,
-                        'affected_account_name' => $this->account_name
-                    ]);
-				}
-			}
-		}
-	}
+		if (!empty($arguments['assign_to']['clients'])) {
+			foreach ($arguments['assign_to']['clients'] as $client_id) {
+                self::saveAssignment('client', $client_id);
+            }
+        }
+
+		if (!empty($arguments['assign_to']['groups'])) {
+			foreach ($arguments['assign_to']['groups'] as $group_id) {
+                self::saveAssignment('group', $group_id);
+            }
+        }
+    }
+    
+    private function saveAssignment($type, $id)
+    {
+        if (empty($type) || empty($id)) {
+            return false;
+        }
+
+        if ($type != 'client' && $type != 'group') {
+            return false;
+        }
+
+        switch ($type) {
+            case 'client':
+                $this->add_to = 'client_id';
+                $this->account_name = $this->users[$id];
+                $this->action_number = 25;
+                break;
+            case 'group':
+                $this->add_to = 'group_id';
+                $this->account_name = $this->groups[$id];
+                $this->action_number = 26;
+                break;
+            default:
+                return false;
+                break;
+        }
+
+        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, $this->add_to, hidden) VALUES (:file_id, :assignment, :hidden)");
+        $this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+        $this->statement->bindParam(':assignment', $id);
+        $this->statement->bindParam(':hidden', $this->hidden, PDO::PARAM_INT);
+        $this->statement->execute();
+
+        if ($this->uploader_type == 'user') {
+            /** Record the action log */
+            $new_record_action = $this->logger->addEntry([
+                'action' => $this->action_number,
+                'owner_id' => $this->uploader_id,
+                'affected_file' => $this->file_id,
+                'affected_file_name' => $this->name,
+                'affected_account' => $id,
+                'affected_account_name' => $this->account_name
+            ]);
+        }
+
+        return true;
+    }
 
 	/**
 	 * Used to create the new notifications on the database

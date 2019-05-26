@@ -32,6 +32,7 @@ let assetsJs = [
     'node_modules/node-jen/jen.js',
     'node_modules/@yaireo/tagify/dist/jQuery.tagify.min.js',
     'node_modules/js-cookie/src/js.cookie.js',
+    'node_modules/jquery-validation/dist/jquery.validate.min.js',
     'node_modules/sprintf-js/dist/sprintf.min.js',
     'assets/lib/flot/jquery.flot.min.js',
     'assets/lib/flot/jquery.flot.resize.min.js',
@@ -41,12 +42,10 @@ let assetsJs = [
 ];
 
 let appJs = [
-    'assets/src/js/jquery.psendmodal.js',
-    'assets/src/js/jquery.validations.js',
-    'assets/src/js/bulk.actions.js',
-    'assets/src/js/dashboard.widgets.js',
-    'assets/src/js/jquery.functions.js',
-    'assets/src/js/main.js'
+    'assets/src/js/obj.js',
+    'assets/src/js/main.js',
+    'assets/src/js/pages/*.js',
+    'assets/src/js/parts/*.js'
 ];
 
 let dest = 'assets/';

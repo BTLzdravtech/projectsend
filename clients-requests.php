@@ -15,35 +15,6 @@ $this_page = 'clients-requests.php';
 $page_title = __('Account requests','cftp_admin');
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.change_all').click(function(e) {
-			e.preventDefault();
-			var target = $(this).data('target');
-			var check = $(this).data('check');
-			$("input[data-client='"+target+"']").prop("checked",check).change();
-			check_client(target);
-		});
-		
-		$('.account_action').on("change", function() {
-			if ( $(this).prop('checked') == false )  {
-				var target = $(this).data('client');
-				$(".membership_action[data-client='"+target+"']").prop("checked",false).change();
-			}
-		});
-
-		$('.checkbox_toggle').change(function() {
-			var target = $(this).data('client');
-			check_client(target);
-		});
-
-		function check_client(client_id) {
-			$("input[data-clientid='"+client_id+"']").prop("checked",true);
-		}
-	});
-</script>
-
 <div class="col-xs-12">
 <?php
 	if (isset($_GET['action'])) {
@@ -257,10 +228,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 							<select name="action" id="action" class="txtfield form-control">
 								<?php
 									$actions_options = array(
-															'none'				=> __('Select action','cftp_admin'),
-															'apply'				=> __('Apply selection','cftp_admin'),
-															'delete'			=> __('Delete requests','cftp_admin'),
-														);
+                                        'none' => __('Select action','cftp_admin'),
+                                        'apply' => __('Apply selection','cftp_admin'),
+                                        'delete' => __('Delete requests','cftp_admin'),
+                                    );
 									foreach ( $actions_options as $val => $text ) {
 								?>
 										<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
@@ -282,16 +253,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 			<div class="form_results_filter">
 				<?php
 					$filters = array(
-									'new'		=> array(
-														'title'	=> __('New account requests','cftp_admin'),
-														'link'	=> $this_page,
-														'count'	=> COUNT_CLIENTS_REQUESTS,
-													),
-									'denied'	=> array(
-														'title'	=> __('Denied accounts','cftp_admin'),
-														'link'	=> $this_page . '?denied=1',
-														'count'	=> COUNT_CLIENTS_DENIED,
-													),
+									'new' => array(
+                                        'title'	=> __('New account requests','cftp_admin'),
+                                        'link' => $this_page,
+                                        'count'	=> COUNT_CLIENTS_REQUESTS,
+                                    ),
+									'denied' => array(
+                                        'title'	=> __('Denied accounts','cftp_admin'),
+                                        'link' => $this_page . '?denied=1',
+                                        'count'	=> COUNT_CLIENTS_DENIED,
+                                    ),
 								);
 					foreach ( $filters as $type => $filter ) {
 				?>
@@ -494,11 +465,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * PAGINATION
 					 */
 					$pagination_args = array(
-											'link'		=> $this_page,
-											'current'	=> $pagination_page,
-											'pages'		=> ceil( $count_for_pagination / RESULTS_PER_PAGE ),
-										);
-					
+                        'link' => $this_page,
+                        'current' => $pagination_page,
+                        'pages' => ceil( $count_for_pagination / RESULTS_PER_PAGE ),
+                    );
+
 					echo $table->pagination( $pagination_args );
 				}
 			?>

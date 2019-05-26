@@ -153,14 +153,14 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Activities actions','cftp_admin'); ?>:</label>
 						<select name="action" id="action" class="form-control">
 								<?php
-								$actions_options = array(
-														'none'				=> __('Select action','cftp_admin'),
-														'log_download'		=> __('Download as csv','cftp_admin'),
-														'delete'			=> __('Delete selected','cftp_admin'),
-														'log_clear'			=> __('Clear entire log','cftp_admin'),
-													);
-								foreach ( $actions_options as $val => $text ) {
-							?>
+                                    $actions_options = array(
+                                        'none'				=> __('Select action','cftp_admin'),
+                                        'log_download'		=> __('Download as csv','cftp_admin'),
+                                        'delete'			=> __('Delete selected','cftp_admin'),
+                                        'log_clear'			=> __('Clear entire log','cftp_admin'),
+                                    );
+                                    foreach ( $actions_options as $val => $text ) {
+                                ?>
 									<option value="<?php echo $val; ?>"><?php echo $text; ?></option>
 							<?php
 								}

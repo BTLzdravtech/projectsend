@@ -53,7 +53,7 @@ else {
 }
 
 /**
- * Compare the client editing this account to the on the db.
+ * Compare the user editing this account to the on the db.
  */
 if (CURRENT_USER_LEVEL != 9) {
 	if (CURRENT_USER_USERNAME != $user_arguments['username']) {
@@ -132,6 +132,8 @@ if ($_POST) {
 
 $page_title = __('Edit system user','cftp_admin');
 
+$page_id = 'user_form';
+
 if (CURRENT_USER_USERNAME == $user_arguments['username']) {
 	$page_title = __('My account','cftp_admin');
 }
@@ -160,7 +162,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		
 			<?php
                 // If the form was submited with errors, show them here.
-                echo $new_client->getValidationErrors();
+                echo $edit_user->getValidationErrors();
 
                 $direct_access_error = __('This page is not intended to be accessed directly.','cftp_admin');
 				if ($page_status === 0) {

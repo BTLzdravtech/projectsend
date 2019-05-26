@@ -31,24 +31,3 @@ var check_log_download_cookie = function() {
         logdownloadTimeout = setTimeout(check_log_download_cookie, 1000);
     }
 };
-
-/**
- * Backend functions
- */
-function resizeChosen() {
-    $(".chosen-container").each(function() {
-        $(this).attr('style', 'width: 100%');
-    });
- }
- 
- function prepare_sidebar() {
-     var window_width = jQuery(window).width();
-     if ( window_width < 769 ) {
-         $('.main_menu .active .dropdown_content').hide();
-         $('.main_menu li').removeClass('active');
- 
-         if ( !$('body').hasClass('menu_contracted') ) {
-             $('body').addClass('menu_contracted');
-         }
-     }
- }

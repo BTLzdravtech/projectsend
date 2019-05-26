@@ -77,6 +77,8 @@ switch ( $section ) {
 
 $page_title = $section_title;
 
+$page_id = 'options';
+
 $active_nav = 'options';
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
@@ -91,6 +93,7 @@ if ($_POST) {
 	 */
 	/** Values that can be empty */
 	$allowed_empty_values	= array(
+                                'footer_custom_content',
 								'mail_copy_addresses',
 								'mail_smtp_host',
 								'mail_smtp_port',
@@ -133,7 +136,13 @@ if ($_POST) {
 
 	/** If every option is completed, continue */
 	if ($query_state == '0') {
-		$updated = 0;
+        // Convert file types, they are posted as a json string via tagify
+        $_POST['allowed_file_types'] = str_replace(' ', '', implode(', ', array_column(json_decode($_POST['allowed_file_types']), 'value')));
+
+        // Base URI should always end with /
+        if ($_POST['base_uri']{(strlen($_POST['base_uri']) - 1)} != '/') { $_POST['base_uri'] .= '/'; }
+
+        $updated = 0;
 		for ($j = 0; $j < $options_total; $j++) {
 			$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
 			$save->bindParam(':value', $_POST[$keys[$j]]);
@@ -241,26 +250,7 @@ $allowed_file_types = implode(',',$allowed_file_types);
 	<div class="white-box">
 		<div class="white-box-interior">
 
-			<script type="text/javascript">
-				$(document).ready(function() {
-                    $('#allowed_file_types')
-                    .tagify()
-                    .on('add', function(e, tagName){
-                        console.log('added', tagName)
-                    });
-
-					$("form").submit(function() {
-						clean_form(this);
-
-						is_complete_all_options(this,'<?php _e('Please complete all the fields.','cftp_admin'); ?>');
-
-						// show the errors or continue if everything is ok
-						if (show_form_errors() == false) { alert('<?php _e('Please complete all the fields.','cftp_admin'); ?>'); return false; }
-					});
-				});
-			</script>
-
-			<form action="options.php" name="optionsform" method="post" enctype="multipart/form-data" class="form-horizontal">
+			<form action="options.php" name="options" id="options" method="post" enctype="multipart/form-data" class="form-horizontal">
                 <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 				<input type="hidden" name="section" value="<?php echo $section; ?>">
 

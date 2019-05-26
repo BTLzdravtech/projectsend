@@ -7,17 +7,17 @@
  *
  */
 ?>
-<form action="process.php" name="login_admin" role="form" id="login_form">
+<form action="process.php?do=login" name="login_admin" role="form" id="login_form" method="post">
     <input type="hidden" name="do" value="login">
     <fieldset>
         <div class="form-group">
             <label for="username"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
-            <input type="text" name="username" id="username" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" autofocus />
+            <input type="text" name="username" id="username" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" autofocus required />
         </div>
 
         <div class="form-group">
             <label for="password"><?php _e('Password','cftp_admin'); ?></label>
-            <input type="password" name="password" id="password" class="form-control" />
+            <input type="password" name="password" id="password" class="form-control" required />
         </div>
 
         <div class="form-group">
@@ -43,7 +43,7 @@
         </div>
 
         <div class="inside_form_buttons">
-            <button type="submit" id="submit" class="btn btn-wide btn-primary"><?php echo $login_button_text; ?></button>
+            <button type="submit" id="submit" class="btn btn-wide btn-primary" data-text="<?php echo $json_strings['login']['button_text']; ?>" data-loading-text="<?php echo $json_strings['login']['logging_in']; ?>"><?php echo $json_strings['login']['button_text']; ?></button>
         </div>
 
         <div class="social-login">

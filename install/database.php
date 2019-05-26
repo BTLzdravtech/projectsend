@@ -340,8 +340,8 @@ if (defined('TRY_INSTALL')) {
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
-										':title'	=> $this_install_title,
-										':email'	=> $got_admin_email,
+										':title'	=> $install_title,
+										':email'	=> $admin_email,
 										':version'	=> $current_version,
 										':from'		=> $this_install_title,
 										':now'		=> $now,
@@ -353,10 +353,10 @@ if (defined('TRY_INSTALL')) {
 						'query'	=> "INSERT INTO ".TABLE_USERS." (id, user, password, name, email, level, active) VALUES
 									(1, :username, :password, :name, :email, 9, 1)",
 						'params' => array(
-										':username'	=> $got_admin_username,
-										':password'	=> $got_admin_pass,
-										':name'		=> $got_admin_name,
-										':email'	=> $got_admin_email,
+										':username'	=> $admin_username,
+										':password'	=> $admin_pass,
+										':name'		=> $admin_name,
+										':email'	=> $admin_email,
 						),
 		),
 

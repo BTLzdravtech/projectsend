@@ -1,24 +1,10 @@
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("form").submit(function() {
-            clean_form(this);
-
-            is_complete(this.reset_password_email, json_strings.validation.no_email);
-            is_email(this.reset_password_email, json_strings.validation.invalid_email);
-
-            // show the errors or continue if everything is ok
-            if (show_form_errors() == false) { return false; }
-        });
-    });
-</script>
-
-<form action="reset-password.php" name="resetpassword" method="post" role="form">
+<form action="reset-password.php" name="reset_password_enter_email" id="reset_password_enter_email" method="post" role="form">
     <fieldset>
         <input type="hidden" name="form_type" id="form_type" value="new_request" />
 
         <div class="form-group">
-            <label for="reset_password_email"><?php _e('E-mail','cftp_admin'); ?></label>
-            <input type="text" name="reset_password_email" id="reset_password_email" class="form-control" />
+            <label for="email"><?php _e('E-mail','cftp_admin'); ?></label>
+            <input type="email" name="email" id="email" class="form-control" required />
         </div>
 
         <p><?php _e("Please enter your account's e-mail address. You will receive a link to continue the process.",'cftp_admin'); ?></p>

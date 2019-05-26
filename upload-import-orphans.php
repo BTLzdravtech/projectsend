@@ -16,140 +16,117 @@ require_once 'bootstrap.php';
 $active_nav = 'files';
 
 $page_title = __('Find orphan files', 'cftp_admin');
+
+$page_id = 'import_orphans';
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
-?>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$("#upload_by_ftp").submit(function() {
-				var checks = $("td>input:checkbox").serializeArray(); 
-				
-				if (checks.length == 0) { 
-					alert('<?php _e('Please select at least one file to proceed.','cftp_admin'); ?>');
-					return false; 
-				} 
-			});
-			
-			/**
-			 * Only select the current file when clicking an "edit" button
-			 */
-			$('.btn-edit-file').click(function(e) {
-				$('#select_all').prop('checked', false);
-				$('td .select_file_checkbox').prop('checked', false);
-				$(this).parents('tr').find('td .select_file_checkbox').prop('checked', true);
-				$('#upload-continue').click();
-			});
+if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
+    $msg = __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin');
+    echo system_message('warning',$msg);
+}
 
-		});
-	</script>
+/** Count clients to show an error message, or the form */
+$statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
+$count_clients	= $statement->rowCount();
+$statement		= $dbh->query("SELECT id FROM " . TABLE_GROUPS);
+$count_groups	= $statement->rowCount();
 
-    <?php
-        if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
-            $msg = __('This list only shows the files that are allowed according to your security settings. If the file type you need to add is not listed here, add the extension to the "Allowed file extensions" box on the options page.', 'cftp_admin');
-            echo system_message('warning',$msg);
+if ( ( !$count_clients or $count_clients < 1 ) && ( !$count_groups or $count_groups < 1 ) ) {
+    message_no_clients();
+}
+
+/**
+ * Make a list of existing files on the database.
+ * When a file doesn't correspond to a record, it can
+ * be safely renamed.
+ */
+$sql = $dbh->query("SELECT original_url, url, id, public_allow FROM " . TABLE_FILES );
+$db_files = array();
+$sql->setFetchMode(PDO::FETCH_ASSOC);
+while ( $row = $sql->fetch() ) {
+    $db_files[$row["url"]] = $row["id"];
+    $db_files[$row["original_url"]] = $row["id"];
+    if ($row['public_allow'] == 1) {$db_files_public[$row["url"]] = $row["id"];}
+}
+
+/** Make an array of already assigned files */
+$sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
+$assigned = array();
+$sql->setFetchMode(PDO::FETCH_ASSOC);
+while ( $row = $sql->fetch() ) {
+    $assigned[] = $row["file_id"];
+}
+
+/** We consider public file as assigned file */
+if ( !empty( $db_files_public ) ) {
+    foreach ($db_files_public as $file_id){
+        $assigned[] = $file_id;
+    }
+}
+
+$files_to_add = array();
+
+/** Read the temp folder and list every allowed file */
+if ($handle = opendir(UPLOADED_FILES_DIR)) {
+    while (false !== ($filename = readdir($handle))) {
+        $filename_path = UPLOADED_FILES_DIR.DS.$filename;
+        if(!is_dir($filename_path)) {
+            $ignore = [
+                ".",
+                "..",
+                ".htaccess",
+                "index.php"
+            ];
+            if (!in_array($filename, $ignore)) {
+                /** Check types of files that are not on the database */							
+                if (!array_key_exists($filename,$db_files)) {
+                    $file_object = new ProjectSend\Classes\UploadFile;
+                    $new_filename = $file_object->safeRenameOnDisk($filename,UPLOADED_FILES_DIR);
+                    /** Check if the filetype is allowed */
+                    if ($file_object->isFiletypeAllowed($new_filename)) {
+
+                        /** Add it to the array of available files */
+                        $new_filename_path = UPLOADED_FILES_DIR.DS.$new_filename;
+                        //$files_to_add[$new_filename] = $new_filename_path;
+                        $files_to_add[] = array(
+                                                'path'		=> $new_filename_path,
+                                                'name'		=> $new_filename,
+                                                'reason'	=> 'not_on_db',
+                                            );
+                    }
+                }
+            }
         }
+    }
+    closedir($handle);
+}
 
-        /** Count clients to show an error message, or the form */
-		$statement		= $dbh->query("SELECT id FROM " . TABLE_USERS . " WHERE level = '0'");
-		$count_clients	= $statement->rowCount();
-		$statement		= $dbh->query("SELECT id FROM " . TABLE_GROUPS);
-		$count_groups	= $statement->rowCount();
+if (!empty($_GET['search'])) {
+    $no_results_error = 'search';
+    $search = htmlspecialchars($_GET['search']);
+    
+    function search_text($item) {
+        global $search;
+        if (stripos($item['name'], $search) !== false) {
+            /**
+             * Items that match the search
+             */
+            return true;
+        }
+        else {
+            /**
+             * Remove other items
+             */
+            unset($item);
+        }
+        return false;
+    }
 
-		if ( ( !$count_clients or $count_clients < 1 ) && ( !$count_groups or $count_groups < 1 ) ) {
-			message_no_clients();
-		}
-
-		/**
-		 * Make a list of existing files on the database.
-		 * When a file doesn't correspond to a record, it can
-		 * be safely renamed.
-		 */
-		$sql = $dbh->query("SELECT original_url, url, id, public_allow FROM " . TABLE_FILES );
-		$db_files = array();
-		$sql->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $row = $sql->fetch() ) {
-			$db_files[$row["url"]] = $row["id"];
-			$db_files[$row["original_url"]] = $row["id"];
-			if ($row['public_allow'] == 1) {$db_files_public[$row["url"]] = $row["id"];}
-		}
-
-		/** Make an array of already assigned files */
-		$sql = $dbh->query("SELECT DISTINCT file_id FROM " . TABLE_FILES_RELATIONS . " WHERE client_id IS NOT NULL OR group_id IS NOT NULL OR folder_id IS NOT NULL");
-		$assigned = array();
-		$sql->setFetchMode(PDO::FETCH_ASSOC);
-		while ( $row = $sql->fetch() ) {
-			$assigned[] = $row["file_id"];
-		}
+    $files_to_add = array_filter($files_to_add, 'search_text');
+}
 		
-		/** We consider public file as assigned file */
-		if ( !empty( $db_files_public ) ) {
-			foreach ($db_files_public as $file_id){
-				$assigned[] = $file_id;
-			}
-		}
-
-		$files_to_add = array();
-
-        /** Read the temp folder and list every allowed file */
-		if ($handle = opendir(UPLOADED_FILES_DIR)) {
-			while (false !== ($filename = readdir($handle))) {
-				$filename_path = UPLOADED_FILES_DIR.DS.$filename;
-				if(!is_dir($filename_path)) {
-                    $ignore = [
-                        ".",
-                        "..",
-                        ".htaccess",
-                        "index.php"
-                    ];
-                    if (!in_array($filename, $ignore)) {
-						/** Check types of files that are not on the database */							
-						if (!array_key_exists($filename,$db_files)) {
-                            $file_object = new ProjectSend\Classes\UploadFile;
-                            $new_filename = $file_object->safeRenameOnDisk($filename,UPLOADED_FILES_DIR);
-							/** Check if the filetype is allowed */
-							if ($file_object->isFiletypeAllowed($new_filename)) {
-
-                                /** Add it to the array of available files */
-								$new_filename_path = UPLOADED_FILES_DIR.DS.$new_filename;
-								//$files_to_add[$new_filename] = $new_filename_path;
-								$files_to_add[] = array(
-														'path'		=> $new_filename_path,
-														'name'		=> $new_filename,
-														'reason'	=> 'not_on_db',
-													);
-							}
-						}
-					}
-				}
-			}
-			closedir($handle);
-		}
-		
-		if (!empty($_GET['search'])) {
-			$no_results_error = 'search';
-			$search = htmlspecialchars($_GET['search']);
-			
-			function search_text($item) {
-				global $search;
-				if (stripos($item['name'], $search) !== false) {
-					/**
-					 * Items that match the search
-					 */
-					return true;
-				}
-				else {
-					/**
-					 * Remove other items
-					 */
-					unset($item);
-				}
-				return false;
-			}
-
-			$files_to_add = array_filter($files_to_add, 'search_text');
-		}
-		
-//			var_dump($result);
+// var_dump($result);
 ?>
 <div class="col-xs-12">
 	<div class="form_actions_limit_results">
@@ -161,7 +138,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 	</div>
 
 
-	<form action="upload-process-form.php" name="upload_by_ftp" id="upload_by_ftp" method="post" enctype="multipart/form-data">
+	<form action="upload-process-form.php" name="import_orphans" id="import_orphans" method="post" enctype="multipart/form-data">
         <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
 		<?php		

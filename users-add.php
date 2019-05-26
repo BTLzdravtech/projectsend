@@ -17,6 +17,8 @@ $active_nav = 'users';
 
 $page_title = __('Add system user','cftp_admin');
 
+$page_id = 'user_form';
+
 $new_user = new \ProjectSend\Classes\Users($dbh);
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -62,7 +64,7 @@ if ($_POST) {
 		
 			<?php
                 // If the form was submited with errors, show them here.
-                echo $new_client->getValidationErrors();
+                echo $new_user->getValidationErrors();
 
 				if (isset($new_response)) {
 					/**
