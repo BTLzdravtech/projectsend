@@ -6,6 +6,8 @@
  * @subpackage	Functions
  */
 
+use enshrined\svgSanitize\Sanitizer;
+
 /**
  * Check if ProjectSend is installed by trying to find the main users table.
  * If it is missing, the installation is invalid.
@@ -1138,11 +1140,10 @@ function generate_logo_url()
 {
 	$branding = array();
 	$branding['exists'] = false;
-
     // LOGO_FILENAME: filename gotten from the database
     if ( empty( LOGO_FILENAME ) ) {
         $branding['dir'] = ASSETS_IMG_DIR . DS . DEFAULT_LOGO_FILENAME;
-        $branding['url'] = ASSETS_IMG_URI . DEFAULT_LOGO_FILENAME;
+        $branding['url'] = ASSETS_IMG_URL . '/' . DEFAULT_LOGO_FILENAME;
     }
     else {
         $branding['dir'] = ADMIN_UPLOADS_DIR . DS . LOGO_FILENAME;
@@ -1176,27 +1177,29 @@ function generate_logo_url()
  */
 function get_branding_layout($return_thumbnail = false)
 {
-    $layout = '';
+    $layout = '<div class="row">
+                <div class="col-xs-12 branding_unlogged">
+                    %LOGO%
+                </div>
+                </div>';
+
     $branding = generate_logo_url();
 
 	if ($branding['exists'] === true) {
         $branding_image = ( $return_thumbnail === true ) ? $branding['thumbnail'] : $branding['url'];
 	}
 	else {
-		$branding_image = ASSETS_IMG_URI . DEFAULT_LOGO_FILENAME;
+		$branding_image = ASSETS_IMG_URL . DEFAULT_LOGO_FILENAME;
     }
     
     if ($branding['type'] == 'raster') {
-        $layout = '
-            <div class="row">
-                <div class="col-xs-12 branding_unlogged">
-                    <img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />
-					</div>
-				</div>';
+        $replace = '<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />';
     }
     elseif ($branding['type'] == 'vector') {
-        $layout = file_is_svg($branding['dir']);
+        $replace = file_is_svg($branding['dir']);
     }
+
+    $layout = str_replace('%LOGO%', $replace, $layout);
 
 	return $layout;
 }
@@ -1324,6 +1327,16 @@ function add_body_class( $custom = '' )
 	return $render;
 }
 
+function add_page_id($id)
+{
+    $return = '';
+
+    if (!empty($id)) {
+        $return .= 'data-page-id="'.$id.'"';
+    }
+
+    return $return;
+}
 
 /**
  * Creates a standarized download link. Used on

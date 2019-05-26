@@ -36,7 +36,7 @@ $load_css_files[]	= ASSETS_LIB_URL . '/font-awesome/css/font-awesome.min.css';
  */
 if ( LOADED_LANG != 'en' ) {
     $plupload_lang_file = 'plupload/js/i18n/'.LOADED_LANG.'.js';
-    if ( file_exists( ASSETS_LIB_DIR . $plupload_lang_file ) ) {
+    if ( file_exists( ASSETS_LIB_DIR . DS . $plupload_lang_file ) ) {
         $load_js_files[] = ASSETS_LIB_URL . '/' . $plupload_lang_file;
     }
 }

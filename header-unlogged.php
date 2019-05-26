@@ -11,10 +11,6 @@
  * where is it being called from.
  */
 if ( defined('IS_INSTALL') ) {
-	if ( !defined('BASE_URI') ) {
-		define( 'BASE_URI', '../' );
-	}
-
 	$lang = ( defined('SITE_LANG') ) ? SITE_LANG : 'en';
 
 	$header_vars = array(
@@ -83,7 +79,7 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
 	?>
 </head>
 
-<body <?php echo add_body_class( $body_class ); ?>>
+<body <?php echo add_body_class( $body_class ); ?> <?php if (!empty($page_id)) { echo add_page_id($page_id); } ?>>
 	<div class="container-custom">
 		<header id="header" class="navbar navbar-static-top navbar-fixed-top header_unlogged">
 			<div class="navbar-header text-center">

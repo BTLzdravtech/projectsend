@@ -72,7 +72,7 @@ if (current_role_in($core_update_allowed)) {
 	?>
 </head>
 
-<body <?php echo add_body_class( $body_class ); ?>>
+<body <?php echo add_body_class( $body_class ); ?> <?php if (!empty($page_id)) { echo add_page_id($page_id); } ?>>
 	<div class="container-custom">
 		<header id="header" class="navbar navbar-static-top navbar-fixed-top">
 			<ul class="nav pull-left nav_toggler">

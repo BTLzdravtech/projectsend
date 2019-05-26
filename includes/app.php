@@ -227,10 +227,10 @@ define('UPLOADED_FILES_URL', 'upload/files/');
 
 /* Assets */
 define('ASSETS_DIR', ROOT_DIR . DS . 'assets');
-define('ASSETS_CSS_DIR', ASSETS_DIR . DS . 'css/');
-define('ASSETS_IMG_DIR', ASSETS_DIR . DS . 'img/');
-define('ASSETS_JS_DIR', ASSETS_DIR . DS . 'js/');
-define('ASSETS_LIB_DIR', ASSETS_DIR . DS . 'lib/');
+define('ASSETS_CSS_DIR', ASSETS_DIR . DS . 'css');
+define('ASSETS_IMG_DIR', ASSETS_DIR . DS . 'img');
+define('ASSETS_JS_DIR', ASSETS_DIR . DS . 'js');
+define('ASSETS_LIB_DIR', ASSETS_DIR . DS . 'lib');
 
 /** Directories */
 define('CORE_LANG_DIR', ROOT_DIR . DS . 'lang');
