@@ -68,6 +68,12 @@ if ($_POST) {
     
             $memberships->client_add_to_groups($arguments);
         }
+
+        if (!empty($new_response['id'])) {
+            $rediret_to = BASE_URI . 'clients-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
+            header('Location:' . $rediret_to);
+            exit;
+        }
     }
 }
 ?>
@@ -78,37 +84,14 @@ if ($_POST) {
             <?php
                 // If the form was submited with errors, show them here.
                 echo $new_client->getValidationErrors();
-            ?>
-            
-            <?php
+
                 if (isset($new_response)) {
                     /**
                      * Get the process state and show the corresponding ok or error messages.
                      */
                     switch ($new_response['query']) {
-                        case 1:
-                            $msg = __('Client added correctly.','cftp_admin');
-                            echo system_message('success',$msg);
-                        break;
                         case 0:
                             $msg = __('There was an error. Please try again.','cftp_admin');
-                            echo system_message('danger',$msg);
-                        break;
-                    }
-                    /**
-                     * Show the ok or error message for the email notification.
-                     */
-                    switch ($new_response['email']) {
-                        case 2:
-                            $msg = __('A welcome message was not sent to your client.','cftp_admin');
-                            echo system_message('info',$msg);
-                        break;
-                        case 1:
-                            $msg = __('A welcome message with login information was sent to your client.','cftp_admin');
-                            echo system_message('success',$msg);
-                        break;
-                        case 0:
-                            $msg = __("E-mail notification couldn't be sent.",'cftp_admin');
                             echo system_message('danger',$msg);
                         break;
                     }

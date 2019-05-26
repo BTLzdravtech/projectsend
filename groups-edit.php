@@ -75,11 +75,18 @@ if ($_POST) {
 
 <div class="col-xs-12 col-sm-12 col-lg-6">
 	<?php
+        /**
+         * Get the process state and show the corresponding ok or error message.
+         */
 		if (isset($_GET['status'])) {
 			switch ($_GET['status']) {
 				case 1:
-					$msg = __('Group edited correctly.','cftp_admin');
-					echo system_message('success',$msg);
+                    $msg = __('Group edited correctly.','cftp_admin');
+                    if (isset($_GET['is_new'])) {
+                        $msg = __('Group created successfuly.','cftp_admin');
+                    }
+
+                    echo system_message('success',$msg);
 				break;
 				case 0:
 					$msg = __('There was an error. Please try again.','cftp_admin');

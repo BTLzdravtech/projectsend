@@ -143,10 +143,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 <div class="col-xs-12 col-sm-12 col-lg-6">
 	<?php
+        /**
+         * Get the process state and show the corresponding ok or error message.
+         */
 		if (isset($_GET['status'])) {
 			switch ($_GET['status']) {
 				case 1:
-					$msg = __('User edited correctly.','cftp_admin');
+                    $msg = __('User edited correctly.','cftp_admin');
+                    if (isset($_GET['is_new'])) {
+                        $msg = __('User created successfuly.','cftp_admin');
+                    }
 					echo system_message('success',$msg);
 				break;
 				case 0:
@@ -155,7 +161,27 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				break;
 			}
 		}
-	?>
+
+        /**
+         * Email notification with account information after creating it
+         */
+        if (isset($_GET['notification'])) {
+            switch ($_GET['notification']) {
+                case 2:
+                    $msg = __('A welcome message was not sent to the new account owner.','cftp_admin');
+                    echo system_message('info',$msg);
+                break;
+                case 1:
+                    $msg = __('A welcome message with login information was sent to the new account owner.','cftp_admin');
+                    echo system_message('success',$msg);
+                break;
+                case 0:
+                    $msg = __("E-mail notification couldn't be sent.",'cftp_admin');
+                    echo system_message('danger',$msg);
+                break;
+            }
+        }
+?>
 	
 	<div class="white-box">
 		<div class="white-box-interior">

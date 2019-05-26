@@ -377,6 +377,7 @@ class Users
 
 			if ($this->statement) {
                 $this->id = $this->dbh->lastInsertId();
+                $this->state['id'] = $this->id;
 
                 $this->state['query'] = 1;
 

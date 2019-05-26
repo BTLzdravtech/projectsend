@@ -35,6 +35,12 @@ if ($_POST) {
     $new_group->set($group_arguments);
 	if ($new_group->validate()) {
         $new_response = $new_group->create();
+
+        if (!empty($new_response['id'])) {
+            $rediret_to = BASE_URI . 'groups-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1';
+            header('Location:' . $rediret_to);
+            exit;
+        }
 	}
 }
 ?>
@@ -51,10 +57,6 @@ if ($_POST) {
 					 * Get the process state and show the corresponding ok or error messages.
 					 */
 					switch ($new_response['query']) {
-						case 1:
-							$msg = __('Group added correctly.','cftp_admin');
-							echo system_message('success',$msg);
-						break;
 						case 0:
 							$msg = __('There was an error. Please try again.','cftp_admin');
 							echo system_message('danger',$msg);

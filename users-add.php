@@ -55,6 +55,12 @@ if ($_POST) {
     $new_user->set($user_arguments);
 	if ($new_user->validate()) {
         $new_response = $new_user->create();
+
+        if (!empty($new_response['id'])) {
+            $rediret_to = BASE_URI . 'users-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
+            header('Location:' . $rediret_to);
+            exit;
+        }
     }
 }
 ?>
@@ -71,29 +77,8 @@ if ($_POST) {
 					 * Get the process state and show the corresponding ok or error message.
 					 */
 					switch ($new_response['query']) {
-						case 1:
-							$msg = __('User added correctly.','cftp_admin');
-							echo system_message('success',$msg);
-						break;
 						case 0:
 							$msg = __('There was an error. Please try again.','cftp_admin');
-							echo system_message('danger',$msg);
-						break;
-					}
-					/**
-					 * Show the ok or error message for the email notification.
-					 */
-					switch ($new_response['email']) {
-						case 2:
-							$msg = __('A welcome message was not sent to the new user.','cftp_admin');
-							echo system_message('info',$msg);
-						break;
-						case 1:
-							$msg = __('A welcome message with login information was sent to the new user.','cftp_admin');
-							echo system_message('success',$msg);
-						break;
-						case 0:
-							$msg = __("E-mail notification couldn't be sent.",'cftp_admin');
 							echo system_message('danger',$msg);
 						break;
 					}

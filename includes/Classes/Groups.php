@@ -228,7 +228,7 @@ class Groups
             $this->sql_query->execute();
 
             $this->id = $this->dbh->lastInsertId();
-            $this->state['new_id'] = $this->id;
+            $this->state['id'] = $this->id;
             $this->state['public_token'] = $this->public_token;
 
             /** Create the members records */
