@@ -30,7 +30,7 @@ define('CURRENT_VERSION', 'r1105');
 /**
  * Required software versions
  */
-define('REQUIRED_VERSION_PHP', '5.6');
+define('REQUIRED_VERSION_PHP', '7.0');
 define('REQUIRED_VERSION_MYSQL', '5.0');
 
 /**

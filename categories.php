@@ -107,10 +107,7 @@ $form_information = array(
 						);
 
 /** Loading the form in EDIT mode */
-if (
-	( !empty( $_GET['action'] ) && $_GET['action'] == 'edit' ) or
-	!empty( $_POST['editing_id'] )
-) {
+if ( (!empty( $_GET['action'] ) && $_GET['action'] == 'edit' ) or !empty( $_POST['editing_id'] )) {
 	$action				= 'edit';
 	$editing			= !empty( $_POST['editing_id'] ) ? $_POST['editing_id'] : $_GET['id'];
 	$form_information	= array(
@@ -172,7 +169,8 @@ if ( isset( $_POST['btn_process'] ) ) {
 	/** Redirect so the actions are reflected immediatly */
 	if ( isset( $redirect ) && $redirect === true ) {
 		while (ob_get_level()) ob_end_clean();
-		$location = BASE_URI . 'categories.php?status=' . $form_information['redirect_status'];
+        // $location = BASE_URI . 'categories.php?action=edit&id='.$process['id'].'&status=' . $form_information['redirect_status'];
+        $location = BASE_URI . 'categories.php?status=' . $form_information['redirect_status'];
 		header("Location: $location");
 		die();
 	}

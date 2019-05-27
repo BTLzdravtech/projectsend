@@ -183,6 +183,7 @@ class Categories
         if ($this->statement) {
             $this->state['query'] = 1;
             $this->id = $this->dbh->lastInsertId();
+            $this->state['id'] = $this->id;
 
             /** Record the action log */
             $new_record_action = $this->logger->addEntry([
@@ -234,6 +235,7 @@ class Categories
 
         $this->statement->execute();
 
+        $this->state['id'] = $this->id;
 
         if ($this->statement) {
             $this->state['query'] = 1;
