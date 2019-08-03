@@ -75,8 +75,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					init : {
 						/*
 						FilesAdded: function(up, files) {
-					   uploader.start();
-					 }
+					        uploader.start();
+					    },
 						QueueChanged: function(up) {
 							var uploader = $('#uploader').pluploadQueue();
 							uploader.start();

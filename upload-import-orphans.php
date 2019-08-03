@@ -149,7 +149,7 @@ if (!empty($_GET['search'])) {
 			if ( isset( $files_to_add ) && count( $files_to_add ) > 0 ) {
 	
 				$table_attributes	= array(
-											'id'				=> 'add_files_from_ftp',
+											'id'				=> 'import_orphans_table',
 											'class'				=> 'footable table',
 											'data-page-size'	=> FOOTABLE_PAGING_NUMBER,
 										);
@@ -195,29 +195,29 @@ if (!empty($_GET['search'])) {
 					 * Add the cells to the row
 					 */
 					$tbody_cells = array(
-											array(
-													'content'		=> '<input type="checkbox" name="add[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
-												),
-											array(
-													'content'		=> html_output( $add_file['name'] ),
-												),
-											array(
-													'content'		=> html_output( format_file_size( get_real_size( $add_file['path'] ) ) ),
-													'attributes'	=> array(
-																			'data-value'	=> filesize( $add_file['path'] ),
-																		),
-												),
-											array(
-													'content'		=> date( TIMEFORMAT, filemtime( $add_file['path'] ) ),
-													'attributes'	=> array(
-																			'data-value'	=> filemtime( $add_file['path'] ),
-																		),
-												),
-											array(
-													'actions'		=> true,
-													'content'		=>  '<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></button>' . "\n"
-												),
-										);
+                                        array(
+                                                'content'		=> '<input type="checkbox" name="file_ids[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+                                            ),
+                                        array(
+                                                'content'		=> html_output( $add_file['name'] ),
+                                            ),
+                                        array(
+                                                'content'		=> html_output( format_file_size( get_real_size( $add_file['path'] ) ) ),
+                                                'attributes'	=> array(
+                                                                        'data-value'	=> filesize( $add_file['path'] ),
+                                                                    ),
+                                            ),
+                                        array(
+                                                'content'		=> date( TIMEFORMAT, filemtime( $add_file['path'] ) ),
+                                                'attributes'	=> array(
+                                                                        'data-value'	=> filemtime( $add_file['path'] ),
+                                                                    ),
+                                            ),
+                                        array(
+                                                'actions'		=> true,
+                                                'content'		=>  '<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></button>' . "\n"
+                                            ),
+                                    );
 
 					foreach ( $tbody_cells as $cell ) {
 						$table->addCell( $cell );

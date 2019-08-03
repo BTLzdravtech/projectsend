@@ -21,12 +21,12 @@
 
             var uploader = $('#uploader').pluploadQueue();
 
-            $('form').submit(function(e) {
+            $('#upload_form').submit(function(e) {
 
                 if (uploader.files.length > 0) {
                     uploader.bind('StateChanged', function() {
                         if (uploader.files.length === (uploader.total.uploaded + uploader.total.failed)) {
-                            $('form')[0].submit();
+                            $('#upload_form')[0].submit();
                         }
                     });
 
@@ -37,8 +37,9 @@
 
                     uploader.bind('FileUploaded', function (up, file, info) {
                         var obj = JSON.parse(info.response);
-                        var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
-                        $('form').append(new_file_field);
+                        var new_file_field = '<input type="hidden" name="file_ids[]" value="'+obj.id+'" />'
+                        // var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
+                        $('#upload_form').append(new_file_field);
                     });
 
                     return false;

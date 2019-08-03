@@ -40,12 +40,12 @@ class MembersActions
 								);
 
 		foreach ( $this->client_ids as $this->client_id ) {
-			$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+			$statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
 												." VALUES (:admin, :id, :group)");
-			$statemente->bindParam(':admin', $this->added_by);
-			$statemente->bindParam(':id', $this->client_id, PDO::PARAM_INT);
-			$statemente->bindParam(':group', $this->group_id, PDO::PARAM_INT);
-			$this->status = $statemente->execute();
+			$statement->bindParam(':admin', $this->added_by);
+			$statement->bindParam(':id', $this->client_id, PDO::PARAM_INT);
+			$statement->bindParam(':group', $this->group_id, PDO::PARAM_INT);
+			$this->status = $statement->execute();
 			
 			if ( $this->status ) {
 				$this->results['added']++;
@@ -72,10 +72,10 @@ class MembersActions
 								);
 
 		foreach ( $this->client_ids as $this->client_id ) {
-			$statemente = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE client_id = :client AND group_id = :group");
-			$statemente->bindParam(':client', $this->client_id, PDO::PARAM_INT);
-			$statemente->bindParam(':group_id', $this->group_id, PDO::PARAM_INT);
-			$this->status = $statemente->execute();
+			$statement = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE client_id = :client AND group_id = :group");
+			$statement->bindParam(':client', $this->client_id, PDO::PARAM_INT);
+			$statement->bindParam(':group_id', $this->group_id, PDO::PARAM_INT);
+			$this->status = $statement->execute();
 			
 			if ( $this->status ) {
 				$this->results['removed']++;
@@ -134,12 +134,12 @@ class MembersActions
 									);
 	
 			foreach ( $this->group_ids as $this->group_id ) {
-				$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+				$statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
 													." VALUES (:admin, :id, :group)");
-				$statemente->bindParam(':admin', $this->added_by);
-				$statemente->bindParam(':id', $this->client_id, PDO::PARAM_INT);
-				$statemente->bindParam(':group', $this->group_id, PDO::PARAM_INT);
-				$this->status = $statemente->execute();
+				$statement->bindParam(':admin', $this->added_by);
+				$statement->bindParam(':id', $this->client_id, PDO::PARAM_INT);
+				$statement->bindParam(':group', $this->group_id, PDO::PARAM_INT);
+				$this->status = $statement->execute();
 				
 				if ( $this->status ) {
 					$this->results['added']++;
@@ -323,12 +323,12 @@ class MembersActions
 							}
 						}
 	
-						$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS_REQUESTS . " (requested_by,client_id,group_id)"
+						$statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS_REQUESTS . " (requested_by,client_id,group_id)"
 															." VALUES (:username, :id, :group)");
-						$statemente->bindParam(':username', $this->request_by);
-						$statemente->bindParam(':id', $this->client_id, PDO::PARAM_INT);
-						$statemente->bindParam(':group', $this->group_id, PDO::PARAM_INT);
-						$this->status = $statemente->execute();
+						$statement->bindParam(':username', $this->request_by);
+						$statement->bindParam(':id', $this->client_id, PDO::PARAM_INT);
+						$statement->bindParam(':group', $this->group_id, PDO::PARAM_INT);
+						$this->status = $statement->execute();
 						
 						if ( $this->status ) {
 							$this->results['added']++;
@@ -392,12 +392,12 @@ class MembersActions
 			$this->requests_to_remove = array();
 			if ( in_array( $this->request, $this->approve ) ) {
 				/** Insert into memberships */
-				$statemente = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+				$statement = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
 													." VALUES (:added_by, :client_id, :group_id)");
-				$statemente->bindValue(':added_by', 'SELFREGISTERED');
-				$statemente->bindValue(':client_id', $this->client_id, PDO::PARAM_INT);
-				$statemente->bindValue(':group_id', $this->request, PDO::PARAM_INT);
-				$statemente->execute();
+				$statement->bindValue(':added_by', 'SELFREGISTERED');
+				$statement->bindValue(':client_id', $this->client_id, PDO::PARAM_INT);
+				$statement->bindValue(':group_id', $this->request, PDO::PARAM_INT);
+				$statement->execute();
 				/** Add to delete from requests array */
 				$this->requests_to_remove[] = $this->request;
 				$this->return_info['memberships']['approved'][] = $this->request;

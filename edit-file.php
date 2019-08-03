@@ -333,11 +333,11 @@ $get_categories = get_categories();
 
 						/** Get the current assigned categories */
 						$current_categories = array();
-						$current_statemente = $dbh->prepare("SELECT cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :id");
-						$current_statemente->bindParam(':id', $this_file_id, PDO::PARAM_INT);
-						$current_statemente->execute();
-						if ($current_statemente->rowCount() > 0) {
-							while ( $assignment_row = $current_statemente->fetch() ) {
+						$current_statement = $dbh->prepare("SELECT cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :id");
+						$current_statement->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+						$current_statement->execute();
+						if ($current_statement->rowCount() > 0) {
+							while ( $assignment_row = $current_statement->fetch() ) {
 								$current_categories[] = $assignment_row['cat_id'];
 							}
 						}
