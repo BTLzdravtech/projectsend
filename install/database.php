@@ -21,7 +21,7 @@ if (defined('TRY_INSTALL')) {
 								  `url` text NOT NULL,
 								  `original_url` text NOT NULL,
 								  `filename` text NOT NULL,
-								  `description` text NOT NULL,
+								  `description` text NULL,
 								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
 								  `expiry_date` TIMESTAMP NOT NULL DEFAULT "' . $expiry_default . '",
