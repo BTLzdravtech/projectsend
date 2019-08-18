@@ -41,6 +41,9 @@ require_once ROOT_DIR.'/includes/text.strings.php';
 /** Basic functions to be accessed from anywhere */
 require_once ROOT_DIR.'/includes/functions.php';
 
+/** Options functions */
+require_once ROOT_DIR.'/includes/functions.options.php';
+
 /** Require the updates functions */
 require_once ROOT_DIR.'/includes/updates.functions.php';
 

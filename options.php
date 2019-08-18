@@ -80,7 +80,6 @@ $page_title = $section_title;
 $page_id = 'options';
 
 $active_nav = 'options';
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /* Logo */
 $logo_file_info = generate_logo_url();
@@ -112,7 +111,16 @@ if ($_POST) {
 
 	foreach ($checkboxes as $checkbox) {
 		$_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
-	}
+    }
+    
+    // Remove values that should not be saved
+    $remove_keys = array(
+        'csrf_token',
+    );
+
+    foreach ($remove_keys as $key) {
+        unset($_POST[$key]);
+    }
 
 	$keys = array_keys($_POST);
 
@@ -144,10 +152,7 @@ if ($_POST) {
 
         $updated = 0;
 		for ($j = 0; $j < $options_total; $j++) {
-			$save = $dbh->prepare( "UPDATE " . TABLE_OPTIONS . " SET value=:value WHERE name=:name" );
-			$save->bindParam(':value', $_POST[$keys[$j]]);
-			$save->bindParam(':name', $keys[$j]);
-			$save->execute();
+            $save = save_option($keys[$j], $_POST[$keys[$j]]);
 
 			if ($save) {
 				$updated++;
@@ -183,6 +188,8 @@ if ($_POST) {
 	header("Location: $location");
 	die();
 }
+
+include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /**
  * Replace | with , to use the tags system when showing
