@@ -144,8 +144,8 @@ class Options
             /* Set a page for each status code */
             define('STATUS_PAGES_DIR', ADMIN_VIEWS_DIR . DS . 'http_status_pages');
             define('PAGE_STATUS_CODE_URL', BASE_URI . 'error.php');
-            define('PAGE_STATUS_CODE_403', STATUS_PAGES_DIR . DS . '?403');
-            define('PAGE_STATUS_CODE_404', STATUS_PAGES_DIR . DS . '?404');
+            define('PAGE_STATUS_CODE_403', PAGE_STATUS_CODE_URL . '?e=403');
+            define('PAGE_STATUS_CODE_404', PAGE_STATUS_CODE_URL . '?e=404');
 
             /** Oauth login callback */
             define('OAUTH_LOGIN_CALLBACK_URL', BASE_URI . 'login-callback.php');

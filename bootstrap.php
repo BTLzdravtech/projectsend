@@ -11,9 +11,6 @@ define('DS', DIRECTORY_SEPARATOR);
 /** Composer autoload */
 require_once ROOT_DIR . '/vendor/autoload.php';
 
-/** Security */
-require_once ROOT_DIR . '/includes/security/xsrf.php';
-
 /** Basic system constants */
 require_once ROOT_DIR.'/includes/app.php';
 
@@ -70,11 +67,5 @@ require_once ROOT_DIR.'/includes/functions.forms.php';
 /** Search, filters and actions forms */
 require_once ROOT_DIR.'/includes/functions.groups.php';
 
-/**
- * Google Login
- */
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_ServiceResource.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Service.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/service/Google_Model.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/contrib/Google_Oauth2Service.php';
-require_once ROOT_DIR . '/includes/Google/Oauth2/Google_Client.php';
+/** Security */
+require_once ROOT_DIR . '/includes/security/csrf.php';

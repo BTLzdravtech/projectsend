@@ -14,10 +14,6 @@
 /** Check for an active session or cookie */
 check_for_session();
 
-if ($_POST && !validateCsrfToken()) {
-    permission_denied_page('csrf');
-}
-
 /**
  * Check if the current user has permission to view this page.
  * If not, an error message is generated instead of the actual content.
