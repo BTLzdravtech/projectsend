@@ -8,7 +8,7 @@
             function ajax_widget_statistics( days ) {
                 var target = $('.statistics_graph');
                 target.html('<div class="loading-graph">'+
-                                '<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" />'+
+                                '<img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" />'+
                             '</div>'
                         );
                 $.ajax({
@@ -25,7 +25,7 @@
             function ajax_widget_log( action ) {
                 var target = $('.activities_log');
                 target.html('<div class="loading-graph">'+
-                                '<img src="'+json_strings.uri.assets_img+'ajax-loader.gif" alt="Loading" />'+
+                                '<img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" />'+
                             '</div>'
                         );
                 $.ajax({

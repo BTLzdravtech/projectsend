@@ -793,6 +793,32 @@ function get_current_user_level()
     return $level;
 }
 
+/**
+ * Wrap print_r with pre tags
+ */
+function print_array($array)
+{
+    echo '<pre>';
+        print_r($array);
+    echo '</pre>';
+}
+
+/**
+ * Alias for previous function
+ */
+function pa($array)
+{
+    print_array($array);
+}
+
+/**
+ * Prints array and ends execution
+ */
+function pax($array)
+{
+    print_array($array);
+    exit;
+}
 
 /**
  * Returns the current logged in account username either from the active
@@ -1347,16 +1373,6 @@ function make_download_link($file_info)
 	$download_link = BASE_URI.'process.php?do=download&amp;id='.$file_info['id'];
 
     return $download_link;
-}
-
-/**
- * print_r a variable with a more human readable format
- */
-function print_array( $data = array() )
-{
-	echo '<pre>';
-	print_r($data);
-	echo '</pre>';
 }
 
 /**

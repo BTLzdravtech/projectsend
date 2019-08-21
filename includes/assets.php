@@ -24,7 +24,6 @@ $load_js_files[]	= ASSETS_JS_URL . '/app.js';
 
 /** Fonts*/
 $load_css_files[]	= 'https://fonts.googleapis.com/css?family=Open+Sans:400,700,300';
-$load_css_files[]	= ASSETS_LIB_URL . '/font-awesome/css/font-awesome.min.css';
 
 /**
  * Optional scripts
