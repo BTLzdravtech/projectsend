@@ -343,7 +343,7 @@ if (defined('TRY_INSTALL')) {
 										':title'	=> $install_title,
 										':email'	=> $admin_email,
 										':version'	=> $current_version,
-										':from'		=> $install_title,
+                                        ':from'		=> $this_install_title,
 										':now'		=> $now,
 								),
 		),
