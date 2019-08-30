@@ -220,6 +220,7 @@ include_once '../header-unlogged.php';
 						?>
 
 							<form action="index.php" name="install_form" id="install_form" method="post" class="form-horizontal">
+                                <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
 
 								<h3><?php _e('Basic system options','cftp_admin'); ?></h3>
 								<p><?php _e("You need to provide this data for a correct system installation. The site name will be visible in the system panel, and the client's lists.",'cftp_admin'); ?><br />

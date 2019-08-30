@@ -9,6 +9,7 @@
 ?>
 <form action="process.php?do=login" name="login_admin" role="form" id="login_form" method="post">
     <input type="hidden" name="do" value="login">
+    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
     <fieldset>
         <div class="form-group">
             <label for="username"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
