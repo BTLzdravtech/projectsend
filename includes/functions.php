@@ -667,6 +667,7 @@ function default_footer_info($logged = true)
 		<div id="footer">
 			<?php
 				if ( defined('FOOTER_CUSTOM_ENABLE') && FOOTER_CUSTOM_ENABLE == '1' ) {
+				    echo '© ' . date("Y") . ', ';
 					echo strip_tags(FOOTER_CUSTOM_CONTENT, '<br><span><a><strong><em><b><i><u><s>');
 				}
 				else {
