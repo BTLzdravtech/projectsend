@@ -11,7 +11,7 @@
 			<dt><?php _e('Version','cftp_admin'); ?></dt>
 			<dd>
 				<?php echo CURRENT_VERSION; ?> <?php
-					if (defined('VERSION_NEW_NUMBER')) {
+					if (defined('VERSION_NEW_NUMBER') && !empty(VERSION_NEW_NUMBER)) {
 						echo ' - <strong>'; _e('New version available','cftp_admin'); echo ':</strong> <a href="'. VERSION_NEW_URL . '">' . VERSION_NEW_NUMBER . '</a>';
 					}
 				?>
