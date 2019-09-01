@@ -220,7 +220,12 @@ $session_expire_time = 31*24*60*60; // 31 days * 24 hours * 60 minutes * 60 seco
 define('SESSION_EXPIRE_TIME', $session_expire_time);
 
 /* Define the folder where uploaded files will reside */
-define('UPLOADED_FILES_ROOT', ROOT_DIR . DS . 'upload');
+if (defined('UPLOAD_DIR')) {
+    define('UPLOADED_FILES_ROOT', UPLOAD_DIR . DS . 'upload');
+} else {
+    define('UPLOADED_FILES_ROOT', ROOT_DIR . DS . 'upload');
+}
+
 define('UPLOADED_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'files');
 define('THUMBNAILS_FILES_DIR', UPLOADED_FILES_ROOT . DS . 'thumbnails');
 define('UPLOADED_FILES_URL', 'upload/files/');
