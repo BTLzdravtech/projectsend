@@ -57,3 +57,6 @@ test-results
 
 # Misc
 .idea/
+
+# Logs
+log
