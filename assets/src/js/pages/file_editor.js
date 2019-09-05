@@ -20,6 +20,33 @@
                     }
                 });
             });
+
+            file.filter('input[name$="[expiry_date]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_expires
+                    }
+                });
+            });
+
+            file.filter('input[name$="[expires]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_file_expires
+                    }
+                });
+            });
+
+            file.filter('input[name$="[public]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_public
+                    }
+                });
+            });
         });
     };
 })();

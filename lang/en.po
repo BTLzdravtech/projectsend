@@ -2399,6 +2399,22 @@ msgstr ""
 msgid "Name was not completed"
 msgstr ""
 
+#: includes/text.strings.php:63
+msgid "Expiration date was not completed"
+msgstr ""
+
+#: includes/text.strings.php:64
+msgid "File expires was not completed"
+msgstr ""
+
+#: includes/text.strings.php:65
+msgid "Public was downloading not completed"
+msgstr ""
+
+#: includes/text.strings.php:66
+msgid "Description was not completed"
+msgstr ""
+
 #: includes/text.strings.php:52
 msgid "No client was selected"
 msgstr ""

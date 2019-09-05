@@ -187,7 +187,7 @@ $get_categories = get_categories();
 								$add_arguments['public'] = '1';
                             }
                             
-                            $this_upload->saveAssignments($file['assignments']);
+                            //$this_upload->saveAssignments($file['assignments']);
 
 
 							if (!empty($file['assignments']['clients']) || !empty($file['assignments']['groups'])) {
@@ -218,7 +218,7 @@ $get_categories = get_categories();
 								$clean_who = 'All';
                             }
                             
-                            print_r($clean_who); exit;
+                            //print_r($clean_who); exit;
 
 							/** CLEAN deletes the removed users/groups from the assignments table */
 							if ($clean_who == 'All') {

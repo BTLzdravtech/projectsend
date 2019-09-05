@@ -178,6 +178,7 @@ class Groups
 		 * when editing an existing one.
 		 */
 		$validation->validate('completed',$this->name,$json_strings['validation']['no_name']);
+        $validation->validate('completed',$this->description,$json_strings['validation']['no_description']);
 
         if ($validation->passed()) {
             $this->validation_passed = true;
