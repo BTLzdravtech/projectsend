@@ -146,10 +146,7 @@
             }
 
             $('.add-all').click(function(){
-                var type = $(this).data('type');
-                var id = $(this).data('fileid');
-                var selector = $('#select_' + type + '_' + id);
-                //var selector = $(this).previous('.select_' + type);
+                var selector = $(this).parent().prev().prev('select');
                 $(selector).find('option').each(function(){
                     $(this).prop('selected', true);
                 });
@@ -158,10 +155,7 @@
             });
 
             $('.remove-all').click(function(){
-                var type = $(this).data('type');
-                var id = $(this).data('fileid');
-                var selector = $('#select_' + type + '_' + id);
-                //var selector = $(this).previous('.select_' + type);
+                var selector = $(this).parent().prev().prev('select');
                 $(selector).find('option').each(function(){
                     $(this).prop('selected', false);
                 });

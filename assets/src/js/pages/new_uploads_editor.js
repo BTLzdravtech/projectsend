@@ -61,10 +61,10 @@
                     $('.' + type + ' .chosen-select').each(function() {
                         $(this).find('option').each(function() {
                             if ($.inArray($(this).val(), selected) === -1) {
-                                $(this).removeAttr('selected');
+                                $(this).prop('selected', false);
                             }
                             else {
-                                $(this).attr('selected', 'selected');
+                                $(this).prop('selected', true);
                             }
                         });
                     });
