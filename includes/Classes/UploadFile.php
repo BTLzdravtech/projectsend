@@ -315,98 +315,6 @@ class UploadFile
 		
 		return $this->state;
     }
-    
-    public function saveAssignments($new_values)
-    {
-        if (empty($this->file_id)) {
-            return false;
-        }
-
-        // Get current assignments from database to compare with new values
-        $current = [
-            'clients' => [],
-            'groups' => [],
-        ];
-        $assignments = $this->dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
-        $assignments->bindParam(':id', $this->file_id, PDO::PARAM_INT);
-        $assignments->execute();
-        if ($assignments->rowCount() > 0) {
-            while ( $row = $assignments->fetch() ) {
-                if (!empty($row['client_id'])) {
-                    $current['clients'][] = $row['client_id'];
-                }
-                elseif (!empty($row['group_id'])) {
-                    $current['groups'][] = $row['group_id'];
-                }
-            }
-        }
-
-        $remove = [
-            'clients' => [],
-            'groups' => [],
-        ];
-        $create = [
-            'clients' => [],
-            'groups' => [],
-        ];
-
-        // Remove each item that is current but not on POST values
-        foreach ($current['clients'] as $client_id) {
-            if (!in_array($client_id, $new_values['clients'])) {
-                self::removeAssignment('client', $client_id);
-            }
-        }
-        foreach ($current['groups'] as $group_id) {
-            if (!in_array($group_id, $new_values['groups'])) {
-                self::removeAssignment('group', $group_id);
-            }
-        }
-
-        // Create new relations
-        foreach ($new_values['clients'] as $client_id) {
-            if (!in_array($client_id, $current['clients'])) {
-                self::addAssignment('client', $client_id);
-            }
-        }
-        foreach ($new_values['groups'] as $group_id) {
-            if (!in_array($group_id, $current['groups'])) {
-                self::addAssignment('group', $group_id);
-            }
-        }
-
-        exit;
-    }
-
-    public function removeAssignment($type, $id)
-    {
-        if (empty($type) || empty($id)) {
-            return false;
-        }
-
-        if ($type != 'client' && $type != 'group') {
-            return false;
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * Used to add new assignments and notifications
@@ -566,14 +474,14 @@ class UploadFile
 		$this->delete_from_db_clients = array();
 		$this->delete_from_db_groups = array();
 
-		foreach ($this->assign_to as $this->assignment) {
-			$this->id_only = substr($this->assignment, 1);
-			switch ($this->assignment[0]) {
-				case 'c':
-					$this->assign_to_clients[] = $this->id_only;
+		foreach ($this->assign_to as $type => $ids) {
+			$this->id_only = $ids;
+			switch ($type) {
+				case 'clients':
+					$this->assign_to_clients = $this->id_only;
 					break;
-				case 'g':
-					$this->assign_to_groups[] = $this->id_only;
+				case 'groups':
+					$this->assign_to_groups = $this->id_only;
 					break;
 			}
 		}
