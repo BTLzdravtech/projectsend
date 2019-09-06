@@ -542,8 +542,8 @@ $get_categories = get_categories();
 						}
 					?>
 					<div class="after_form_buttons">
-						<a href="<?php echo BASE_URI; ?>manage-files.php" name="cancel" class="btn btn-default btn-wide"><?php _e('Cancel','cftp_admin'); ?></a>
-						<button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Save','cftp_admin'); ?></button>
+                        <button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Save','cftp_admin'); ?></button>
+                        <a href="<?php echo BASE_URI; ?>manage-files.php" name="cancel" class="btn btn-default btn-wide"><?php _e('Cancel','cftp_admin'); ?></a>
 					</div>
 				</div>
 			</form>

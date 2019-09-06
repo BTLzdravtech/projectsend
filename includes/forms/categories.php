@@ -63,10 +63,10 @@ switch ( $form_information['type'] ) {
         </div>
 
         <div class="inside_form_buttons">
+            <button type="submit" name="btn_process" id="btn_process" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
             <?php if ( $show_cancel === true ) { ?>
                 <a href="<?php echo BASE_URI; ?>categories.php" name="cancel" class="btn btn-wide btn-default"><?php _e('Cancel','cftp_admin'); ?></a>
             <?php } ?>
-            <button type="submit" name="btn_process" id="btn_process" class="btn btn-wide btn-primary"><?php echo html_output($submit_value); ?></button>
         </div>
     </div>
 </form>
