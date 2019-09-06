@@ -407,10 +407,12 @@ $get_categories = get_categories();
 																</div>
 															</div>
 
-															<div class="checkbox">
+															<div class="checkbox form-group">
 																<label for="exp_checkbox">
-																	<input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
-																</label>
+                                                                    <div class="input-group">
+                                                                        <input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?><span class="mandatory"> *</span>
+                                                                    </div>
+                                                                </label>
 															</div>
 
 															<?php
@@ -420,10 +422,12 @@ $get_categories = get_categories();
 															<div class="divider"></div>
 
 															<h3><?php _e('Public downloading', 'cftp_admin');?></h3>
-															<div class="checkbox">
+															<div class="checkbox form-group">
 																<label for="pub_checkbox">
-																	<input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
-																</label>
+                                                                    <div class="input-group">
+																	    <input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?><span class="mandatory"> *</span>
+                                                                    </div>
+                                                                </label>
 															</div>
 
 															<div class="divider"></div>
@@ -499,15 +503,19 @@ $get_categories = get_categories();
 
 															<div class="divider"></div>
 
-															<div class="checkbox">
+															<div class="checkbox form-group">
 																<label for="hid_checkbox">
-																	<input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Mark as hidden (will not send notifications) for new assigned clients and groups.', 'cftp_admin');?>
-																</label>
+                                                                    <div class="input-group">
+																	    <input type="checkbox" id="hid_checkbox" name="file[<?php echo $i; ?>][hidden]" value="1" /> <?php _e('Mark as hidden (will not send notifications) for new assigned clients and groups.', 'cftp_admin');?>
+                                                                    </div>
+                                                                </label>
 															</div>
-															<div class="checkbox">
+															<div class="checkbox form-group">
 																<label for="hid_existing_checkbox">
-																	<input type="checkbox" id="hid_existing_checkbox" name="file[<?php echo $i; ?>][hideall]" value="1" /> <?php _e('Hide from every already assigned clients and groups.', 'cftp_admin');?>
-																</label>
+                                                                    <div class="input-group">
+																	    <input type="checkbox" id="hid_existing_checkbox" name="file[<?php echo $i; ?>][hideall]" value="1" /> <?php _e('Hide from every already assigned clients and groups.', 'cftp_admin');?>
+                                                                    </div>
+                                                                </label>
 															</div>
 														</div>
 													</div>

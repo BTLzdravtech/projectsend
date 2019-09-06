@@ -1392,16 +1392,6 @@ li .required.password_toggle {
 	}
 }
 
-.form_actions_limit_results {
-	.txtfield {
-		width:140px;
-	}
-
-	.form_actions_search_box {
-		width:80px !important;
-	}
-}
-
 #btn_proceed_search {
 	margin-right:10px !important;
 }
@@ -1621,6 +1611,10 @@ li .required.password_toggle {
 			}
 		}
 	}
+}
+
+.mandatory {
+	color: red;
 }
 
 // Misc Mobile only styles
