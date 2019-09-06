@@ -22,7 +22,7 @@
                     }
                 },
                 errorPlacement: function(error, element) {
-                    error.appendTo(element.parent('div'));
+                    error.appendTo(element.closest('div'));
                 },
                 submitHandler: function(form) {
                     var button_text = json_strings.login.button_text;

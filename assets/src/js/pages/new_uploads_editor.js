@@ -6,7 +6,7 @@
         $(document).ready(function(){
             var validator = $("#files").validate({
                 errorPlacement: function(error, element) {
-                    error.appendTo(element.parent('div'));
+                    error.appendTo(element.closest('div'));
                 }
             });
 
