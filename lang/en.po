@@ -2400,15 +2400,15 @@ msgid "Name was not completed"
 msgstr ""
 
 #: includes/text.strings.php:63
-msgid "Expiration date was not completed"
+msgid "Expiration date not selected"
 msgstr ""
 
 #: includes/text.strings.php:64
-msgid "File expires was not completed"
+msgid "File expires was not checked"
 msgstr ""
 
 #: includes/text.strings.php:65
-msgid "Public was downloading not completed"
+msgid "Public downloading not checked"
 msgstr ""
 
 #: includes/text.strings.php:66
