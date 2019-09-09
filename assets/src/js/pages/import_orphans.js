@@ -4,7 +4,7 @@
     admin.pages.importOrphans = function () {
 
         $(document).ready(function(){
-            $("#upload_by_ftp").submit(function() {
+            $("#import_orphans").submit(function() {
 				var checks = $("td>input:checkbox").serializeArray(); 
 				
 				if (checks.length == 0) { 
