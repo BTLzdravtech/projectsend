@@ -32,7 +32,7 @@ class Auth
      * @param $password
      * @param $language
      */
-    public function login($username, $password, $language)
+    public function login($username, $password, $language, $use_ldap = true)
     {
         global $logger;
         global $hasher;
@@ -42,101 +42,159 @@ class Auth
 
 		$this->selected_form_lang	= (!empty( $language ) ) ? $language : SITE_LANG;
 
-		/** Look up the system users table to see if the entered username exists */
-		$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
-		$this->statement->execute(
-						array(
-							':username'	=> $username,
-							':email'	=> $username,
-						)
-					);
-		$this->count_user = $this->statement->rowCount();
-		if ($this->count_user > 0) {
-			/** If the username was found on the users table */
-			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $this->row = $this->statement->fetch() ) {
-				$this->db_username	    = $this->row['user'];
-				$this->db_pass			= $this->row['password'];
-				$this->user_level		= $this->row["level"];
-				$this->active_status	= $this->row['active'];
-				$this->logged_id		= $this->row['id'];
-				$this->name	        	= $this->row['name'];
-			}
 
-			if (password_verify($password, $this->db_pass)) {
-				if ($this->active_status != '0') {
-					/** Set SESSION values */
-					$_SESSION['loggedin']	= $this->db_username;
-					$_SESSION['userlevel']	= $this->user_level;
-					$_SESSION['lang']		= $this->selected_form_lang;
+        /** Look up the system users table to see if the entered username exists */
+        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
+        $this->statement->execute(
+            array(
+                ':username'	=> $username,
+                ':email'	=> $username,
+            )
+        );
+        $this->count_user = $this->statement->rowCount();
+        if ($this->count_user > 0) {
+            /** If the username was found on the users table */
+            $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+            while ( $this->row = $this->statement->fetch() ) {
+                $this->db_username	    = $this->row['user'];
+                $this->db_pass			= $this->row['password'];
+                $this->user_level		= $this->row["level"];
+                $this->active_status	= $this->row['active'];
+                $this->logged_id		= $this->row['id'];
+                $this->name	        	= $this->row['name'];
+            }
 
-					/**
-					 * Language cookie
-                     * Must decide how to refresh language in the form when the user
-                     * changes the language <select> field.
-                     * By using a cookie and not refreshing here, the user is
-                     * stuck in a language and must use it to recover password or
-                     * create account, since the lang cookie is only at login now.
-                     * 
-					 * @todo Implement.
-					 */
-					//setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
+            if ($use_ldap) {
+                $ldapconfig['host'] = 'mtph5.e-btlnet.local';
+                $ldapconfig['port'] = '389';
+                $ldapconfig['basedn'] = 'OU=BTL,DC=e-btlnet,DC=local';
+                $ldaprdn = 'E-BTLNET' . "\\" . $username;
 
-					if ($this->user_level != '0') {
-						$this->access_string	= 'admin';
-						$_SESSION['access']		= $this->access_string;
-					}
-					else {
-						$this->access_string	= $this->db_username;
-						$_SESSION['access']		= $this->db_username;
-					}
+                $ldap = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
+                ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+                ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
-					/** Record the action log */
-					$this->new_record_action = $this->logger->addEntry([
-                        'action' => 1,
-                        'owner_id' => $this->logged_id,
-                        'owner_user' => $this->name,
-                        'affected_account_name' => $this->name
-                    ]);
+                $authenticated = ldap_bind($ldap, $ldaprdn, $password);
+            } else {
+                $authenticated = password_verify($password, $this->db_pass);
+            }
+            if (!$authenticated) {
+                //$errorstate = 'wrong_password';
+                $this->errorstate = 'invalid_credentials';
+            }
+        } else {
+            if ($use_ldap) {
+                $ldapconfig['host'] = 'mtph5.e-btlnet.local';
+                $ldapconfig['port'] = '389';
+                $ldapconfig['basedn'] = 'OU=BTL,DC=e-btlnet,DC=local';
+                $ldaprdn = 'E-BTLNET' . "\\" . $username;
 
+                $ldap = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
+                ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+                ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
 
-					$results = array(
-									'status'	=> 'success',
-									'message'	=> system_message('success','Login success. Redirecting...','login_response'),
-								);
-					if ($this->user_level == '0') {
-						$results['location']	= CLIENT_VIEW_FILE_LIST_URL;
-					}
-					else {
-						$results['location']	= BASE_URI."dashboard.php";
-					}
+                if ($authenticated = ldap_bind($ldap, $ldaprdn, $password)) {
+                    $this->new_user = new Users($this->dbh);
 
-					/** Using an external form */
-					if ( !empty( $_GET['external'] ) && $_GET['external'] == '1' && empty( $_GET['ajax'] ) ) {
-						/** Success */
-						if ( $results['status'] == 'success' ) {
-							header('Location: ' . $results['location']);
-							exit;
-						}
-					}
+                    $filter='(sAMAccountName=' . $username . ')';
+                    $attributes = array('sAMAccountName', 'displayName', 'mail', 'mail');
+                    $search_result = ldap_search($ldap, $ldapconfig['basedn'], $filter, $attributes);
 
-					echo json_encode($results);
-					exit;
-				}
-				else {
-					$this->errorstate = 'inactive_client';
-				}
-			}
-			else {
-				//$errorstate = 'wrong_password';
-				$this->errorstate = 'invalid_credentials';
-			}
-		}
-		else {
-			//$errorstate = 'wrong_username';
-			$this->errorstate = 'invalid_credentials';
+                    $ldap_user = ldap_first_entry($ldap, $search_result);
+                    $attributes = ldap_get_attributes($ldap, $ldap_user);
+                    $user_arguments = array(
+                        'username' => $attributes['sAMAccountName'][0],
+                        'password' => '',
+                        'name' => $attributes['displayName'][0],
+                        'email' => $attributes['mail'][0],
+                        'role' => '9',
+                        'max_file_size' => '',
+                        'notify_account' => '0',
+                        'active' => '1',
+                        'type' => 'new_user',
+                    );
+
+                    $this->new_user->setType('new_user');
+                    $this->new_user->set($user_arguments);
+                    $created_user = $this->new_user->create();
+
+                    $this->db_username	    = $attributes['sAMAccountName'][0];
+                    $this->user_level		= '9';
+                    $this->active_status	= '1';
+                    $this->logged_id		= $created_user['id'];
+                    $this->name	        	= $attributes['displayName'][0];
+                } else {
+                    //$errorstate = 'wrong_username';
+                    $this->errorstate = 'invalid_credentials';
+                }
+            } else {
+                $authenticated = false;
+                //$errorstate = 'wrong_username';
+                $this->errorstate = 'invalid_credentials';
+            }
         }
-        
+
+        if ($authenticated) {
+            if ($this->active_status != '0') {
+                /** Set SESSION values */
+                $_SESSION['loggedin'] = $this->db_username;
+                $_SESSION['userlevel'] = $this->user_level;
+                $_SESSION['lang'] = $this->selected_form_lang;
+
+                /**
+                 * Language cookie
+                 * Must decide how to refresh language in the form when the user
+                 * changes the language <select> field.
+                 * By using a cookie and not refreshing here, the user is
+                 * stuck in a language and must use it to recover password or
+                 * create account, since the lang cookie is only at login now.
+                 *
+                 * @todo Implement.
+                 */
+                //setcookie('projectsend_language', $selected_form_lang, time() + (86400 * 30), '/');
+
+                if ($this->user_level != '0') {
+                    $this->access_string = 'admin';
+                    $_SESSION['access'] = $this->access_string;
+                } else {
+                    $this->access_string = $this->db_username;
+                    $_SESSION['access'] = $this->db_username;
+                }
+
+                /** Record the action log */
+                $this->new_record_action = $this->logger->addEntry([
+                    'action' => 1,
+                    'owner_id' => $this->logged_id,
+                    'owner_user' => $this->name,
+                    'affected_account_name' => $this->name
+                ]);
+
+                $results = array(
+                    'status' => 'success',
+                    'message' => system_message('success', 'Login success. Redirecting...', 'login_response'),
+                );
+                if ($this->user_level == '0') {
+                    $results['location'] = CLIENT_VIEW_FILE_LIST_URL;
+                } else {
+                    $results['location'] = BASE_URI . "dashboard.php";
+                }
+
+                /** Using an external form */
+                if (!empty($_GET['external']) && $_GET['external'] == '1' && empty($_GET['ajax'])) {
+                    /** Success */
+                    if ($results['status'] == 'success') {
+                        header('Location: ' . $results['location']);
+                        exit;
+                    }
+                }
+
+                echo json_encode($results);
+                exit;
+            } else {
+                $this->errorstate = 'inactive_client';
+            }
+        }
+
         $this->error_message = $this->getLoginError($this->errorstate);
 		$results = array(
 						'status'	=> 'error',
