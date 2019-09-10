@@ -75,7 +75,11 @@
                     }
                 },
                 errorPlacement: function(error, element) {
-                    error.appendTo(element.closest('div'));
+                    if (element.attr('id') === 'password') {
+                        error.insertAfter(element.closest('div'));
+                    } else {
+                        error.appendTo(element.closest('div'));
+                    }
                 }
             });
         });
