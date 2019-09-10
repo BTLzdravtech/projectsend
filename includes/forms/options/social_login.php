@@ -13,13 +13,13 @@
     <div class="form-group">
         <label for="google_client_id" class="col-sm-4 control-label"><?php _e('Client ID','cftp_admin'); ?></label>
         <div class="col-sm-8">
-            <input type="text" name="google_client_id" id="google_client_id" class="form-control empty" value="<?php echo html_output(GOOGLE_CLIENT_ID); ?>" />
+            <input type="text" name="google_client_id" id="google_client_id" class="form-control <?php echo GOOGLE_SIGNIN_ENABLED ? ' required' : ''; ?>" value="<?php echo html_output(GOOGLE_CLIENT_ID); ?>"<?php echo GOOGLE_SIGNIN_ENABLED ? ' required' : ''; ?> />
         </div>
     </div>
     <div class="form-group">
         <label for="google_client_secret" class="col-sm-4 control-label"><?php _e('Client Secret','cftp_admin'); ?></label>
         <div class="col-sm-8">
-            <input type="text" name="google_client_secret" id="google_client_secret" class="form-control empty" value="<?php echo html_output(GOOGLE_CLIENT_SECRET); ?>" />
+            <input type="text" name="google_client_secret" id="google_client_secret" class="form-control <?php echo GOOGLE_SIGNIN_ENABLED ? ' required' : ''; ?>" value="<?php echo html_output(GOOGLE_CLIENT_SECRET); ?>"<?php echo GOOGLE_SIGNIN_ENABLED ? ' required' : ''; ?> />
         </div>
     </div>
     <div class="form-group">
