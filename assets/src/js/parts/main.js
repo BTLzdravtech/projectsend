@@ -212,7 +212,10 @@
 
             // CKEditor
             if ( typeof CKEDITOR !== "undefined" ) {
-                CKEDITOR.replaceAll( 'ckeditor' );
+                CKEDITOR.replaceAll( '.ckeditor' );
+                for (var i in CKEDITOR.instances) {
+                    CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
+                }
             }
 
         });

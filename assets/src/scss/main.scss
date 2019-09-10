@@ -1311,8 +1311,13 @@ form .alert {
 }
 
 .required {
-	background:url(#{$img_path}/req-text.png) no-repeat right -2px;
-	padding-right: 50px;
+	background:url(#{$img_path}/req-text.png) no-repeat right -2px !important;
+	padding-right: 50px !important;
+}
+
+.required_ck_editor {
+	background:url(#{$img_path}/req-text.png) no-repeat right/42px !important;
+	padding-right: 50px !important;
 }
 
 li .password_toggle {
@@ -1615,6 +1620,13 @@ li .required.password_toggle {
 
 .mandatory {
 	color: red;
+}
+
+.cke {
+	border-radius: 4px;
+	.cke_inner, .cke_top, .cke_contents {
+		border-radius: 4px;
+	}
 }
 
 // Misc Mobile only styles
