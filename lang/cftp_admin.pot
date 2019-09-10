@@ -1620,7 +1620,7 @@ msgstr ""
 
 #: includes/forms/groups.php:75
 msgid ""
-"Allows clients to request access to this group in the registraron process "
+"Allows clients to request access to this group in the registration process "
 "and when editing their own profile. This feature requires the corresponding "
 "option to be enabled on the CLIENTS OPTIONS page."
 msgstr ""
@@ -2443,7 +2443,7 @@ msgid "reCAPTCHA verification failed"
 msgstr ""
 
 #: includes/text.strings.php:63
-msgid "Name was not completed"
+msgid "Name is required"
 msgstr ""
 
 #: includes/text.strings.php:64
@@ -2459,7 +2459,7 @@ msgid "Public downloading not checked"
 msgstr ""
 
 #: includes/text.strings.php:67
-msgid "Description was not completed"
+msgid "Description is required"
 msgstr ""
 
 #: includes/text.strings.php:68
@@ -2467,23 +2467,23 @@ msgid "No client was selected"
 msgstr ""
 
 #: includes/text.strings.php:69
-msgid "Username was not completed"
+msgid "Username is required"
 msgstr ""
 
 #: includes/text.strings.php:70
-msgid "Password was not completed"
+msgid "Password is required"
 msgstr ""
 
 #: includes/text.strings.php:71
-msgid "Password verification was not completed"
+msgid "Password verification is required"
 msgstr ""
 
 #: includes/text.strings.php:72
-msgid "E-mail was not completed"
+msgid "E-mail is required"
 msgstr ""
 
 #: includes/text.strings.php:73
-msgid "Title was not completed"
+msgid "Title is required"
 msgstr ""
 
 #: includes/text.strings.php:74
@@ -2554,11 +2554,11 @@ msgid "1 special character"
 msgstr ""
 
 #: includes/text.strings.php:98 install/index.php:77
-msgid "Sitename was not completed."
+msgid "Sitename is required."
 msgstr ""
 
 #: includes/text.strings.php:99 install/index.php:78
-msgid "ProjectSend URI was not completed."
+msgid "ProjectSend URI is required."
 msgstr ""
 
 #: includes/updates.functions.php:97

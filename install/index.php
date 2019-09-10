@@ -74,8 +74,8 @@ function try_query($queries)
 
 /** Define the installation text strings */
 $page_title_install		= __('Install','cftp_admin');
-$install_no_sitename	= __('Sitename was not completed.','cftp_admin');
-$install_no_baseuri		= __('ProjectSend URI was not completed.','cftp_admin');
+$install_no_sitename	= __('Sitename is required.','cftp_admin');
+$install_no_baseuri		= __('ProjectSend URI is required.','cftp_admin');
 
 $page_id = 'install';
 

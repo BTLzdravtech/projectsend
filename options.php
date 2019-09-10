@@ -109,6 +109,12 @@ if ($_POST) {
 		$allowed_empty_values[] = 'google_client_id';
 		$allowed_empty_values[] = 'google_client_secret';
 	}
+    if ( empty( $_POST['ldap_signin_enabled'] ) ) {
+        $allowed_empty_values[] = 'ldap_host';
+        $allowed_empty_values[] = 'ldap_port';
+        $allowed_empty_values[] = 'ldap_basedn';
+        $allowed_empty_values[] = 'ldap_domain';
+    }
 	if ( empty( $_POST['recaptcha_enabled'] ) ) {
 		$allowed_empty_values[] = 'recaptcha_site_key';
 		$allowed_empty_values[] = 'recaptcha_secret_key';
