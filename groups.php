@@ -345,7 +345,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					$table->end_row();
 				}
 
-				echo $table->render();
+				echo html_entity_decode($table->render());
 
 				/**
 				 * PAGINATION

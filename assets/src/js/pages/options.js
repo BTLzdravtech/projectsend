@@ -10,9 +10,17 @@
                 console.log('added', tagName)
             });
 
+            $('#ldap_signin_enabled, #google_signin_enabled').on('change', function() {
+                if (this.value === '1') {
+                    $(this).closest('div.options_column').find('input').prop('required', true).addClass('required');
+                } else {
+                    $(this).closest('div.options_column').find('input').prop('required', false).removeClass('required');
+                }
+            });
+
             var validator = $("#options").validate({
                 errorPlacement: function(error, element) {
-                    error.appendTo(element.parent('div'));
+                    error.appendTo(element.closest('div'));
                 },
             });
         });

@@ -87,6 +87,9 @@
     padding: 7px 4px;
     text-align: left;
     vertical-align: middle;
+    p {
+        margin: 0;
+    }
 }
 .footable > tbody > tr.odd > td {
     background:#F6F6F6;

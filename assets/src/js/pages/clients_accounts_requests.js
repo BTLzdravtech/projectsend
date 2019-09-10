@@ -21,11 +21,11 @@
     
             $('.checkbox_toggle').change(function() {
                 var target = $(this).data('client');
-                check_client(target);
+                check_client(target, $(this).prop('checked'));
             });
     
-            function check_client(client_id) {
-                $("input[data-clientid='"+client_id+"']").prop("checked",true);
+            function check_client(client_id, checked) {
+                $("input[data-clientid='"+client_id+"']").prop("checked",checked);
             }
         });
     };

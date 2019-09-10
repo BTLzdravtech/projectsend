@@ -53,6 +53,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					rename : true,
 					dragdrop: true,
 					multipart : true,
+                    multipart_params : {
+                        csrf_token: '<?php echo getCsrfToken(); ?>'
+                    },
 					filters : {
 						max_file_size : '<?php echo UPLOAD_MAX_FILESIZE; ?>mb'
 						<?php

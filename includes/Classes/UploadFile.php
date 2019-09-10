@@ -315,98 +315,6 @@ class UploadFile
 		
 		return $this->state;
     }
-    
-    public function saveAssignments($new_values)
-    {
-        if (empty($this->file_id)) {
-            return false;
-        }
-
-        // Get current assignments from database to compare with new values
-        $current = [
-            'clients' => [],
-            'groups' => [],
-        ];
-        $assignments = $this->dbh->prepare("SELECT file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
-        $assignments->bindParam(':id', $this->file_id, PDO::PARAM_INT);
-        $assignments->execute();
-        if ($assignments->rowCount() > 0) {
-            while ( $row = $assignments->fetch() ) {
-                if (!empty($row['client_id'])) {
-                    $current['clients'][] = $row['client_id'];
-                }
-                elseif (!empty($row['group_id'])) {
-                    $current['groups'][] = $row['group_id'];
-                }
-            }
-        }
-
-        $remove = [
-            'clients' => [],
-            'groups' => [],
-        ];
-        $create = [
-            'clients' => [],
-            'groups' => [],
-        ];
-
-        // Remove each item that is current but not on POST values
-        foreach ($current['clients'] as $client_id) {
-            if (!in_array($client_id, $new_values['clients'])) {
-                self::removeAssignment('client', $client_id);
-            }
-        }
-        foreach ($current['groups'] as $group_id) {
-            if (!in_array($group_id, $new_values['groups'])) {
-                self::removeAssignment('group', $group_id);
-            }
-        }
-
-        // Create new relations
-        foreach ($new_values['clients'] as $client_id) {
-            if (!in_array($client_id, $current['clients'])) {
-                self::addAssignment('client', $client_id);
-            }
-        }
-        foreach ($new_values['groups'] as $group_id) {
-            if (!in_array($group_id, $current['groups'])) {
-                self::addAssignment('group', $group_id);
-            }
-        }
-
-        exit;
-    }
-
-    public function removeAssignment($type, $id)
-    {
-        if (empty($type) || empty($id)) {
-            return false;
-        }
-
-        if ($type != 'client' && $type != 'group') {
-            return false;
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	/**
 	 * Used to add new assignments and notifications
@@ -498,51 +406,52 @@ class UploadFile
 			$this->assign_to = $arguments['assign_to'];
 			$this->distinct_notifications = array();
 
-			foreach ($this->assign_to as $this->assignment) {
-				$this->id_only = substr($this->assignment, 1);
-				switch ($this->assignment[0]) {
-					case 'c':
-						$this->add_to = 'client_id';
-						break;
-					case 'g':
-						$this->add_to = 'group_id';
-						break;
-				}
-				/**
-				 * Add the notification to the table
-				 */
-				$this->members_to_notify = array();
-				
-				if ($this->add_to == 'group_id') {
+			foreach ($this->assign_to as $key => $this->assignments) {
+			    foreach ($this->assignments as $this->assignment) {
+                    $this->id_only = $this->assignment;
+                    switch ($key) {
+                        case 'clients':
+                            $this->add_to = 'client_id';
+                            break;
+                        case 'groups':
+                            $this->add_to = 'group_id';
+                            break;
+                    }
+                    /**
+                     * Add the notification to the table
+                     */
+                    $this->members_to_notify = array();
 
-					$this->statement = $this->dbh->prepare("SELECT DISTINCT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
-					$this->statement->bindParam(':id', $this->id_only, PDO::PARAM_INT);
-					$this->statement->execute();
-					$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-					while( $this->row = $this->statement->fetch() ) {
-						$this->members_to_notify[] = $this->row['client_id'];
-					}
-				}
-				else {
-					$this->members_to_notify[] = $this->id_only;
-				}
-				
-				if (!empty($this->members_to_notify)) {
-					foreach ($this->members_to_notify as $this->add_notify) {
-						$this->current_assignment = $this->file_id.'-'.$this->add_notify;
-						if (!in_array($this->current_assignment, $this->distinct_notifications)) {
+                    if ($this->add_to == 'group_id') {
 
-							$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, client_id, upload_type, sent_status, times_failed)
-																	VALUES (:file_id, :client_id, :type, '0', '0')");
-							$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-							$this->statement->bindParam(':client_id', $this->add_notify, PDO::PARAM_INT);
-							$this->statement->bindParam(':type', $this->notif_uploader_type);
-							$this->statement->execute();
+                        $this->statement = $this->dbh->prepare("SELECT DISTINCT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
+                        $this->statement->bindParam(':id', $this->id_only, PDO::PARAM_INT);
+                        $this->statement->execute();
+                        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+                        while ($this->row = $this->statement->fetch()) {
+                            $this->members_to_notify[] = $this->row['client_id'];
+                        }
+                    } else {
+                        $this->members_to_notify[] = $this->id_only;
+                    }
 
-							$this->distinct_notifications[] = $this->current_assignment;
-						}
-					}
-				}
+                    if (!empty($this->members_to_notify)) {
+                        foreach ($this->members_to_notify as $this->add_notify) {
+                            $this->current_assignment = $this->file_id . '-' . $this->add_notify;
+                            if (!in_array($this->current_assignment, $this->distinct_notifications)) {
+
+                                $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, client_id, upload_type, sent_status, times_failed)
+                                                                        VALUES (:file_id, :client_id, :type, '0', '0')");
+                                $this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+                                $this->statement->bindParam(':client_id', $this->add_notify, PDO::PARAM_INT);
+                                $this->statement->bindParam(':type', $this->notif_uploader_type);
+                                $this->statement->execute();
+
+                                $this->distinct_notifications[] = $this->current_assignment;
+                            }
+                        }
+                    }
+                }
 			}
 		}
 
@@ -565,14 +474,14 @@ class UploadFile
 		$this->delete_from_db_clients = array();
 		$this->delete_from_db_groups = array();
 
-		foreach ($this->assign_to as $this->assignment) {
-			$this->id_only = substr($this->assignment, 1);
-			switch ($this->assignment[0]) {
-				case 'c':
-					$this->assign_to_clients[] = $this->id_only;
+		foreach ($this->assign_to as $type => $ids) {
+			$this->id_only = $ids;
+			switch ($type) {
+				case 'clients':
+					$this->assign_to_clients = $this->id_only;
 					break;
-				case 'g':
-					$this->assign_to_groups[] = $this->id_only;
+				case 'groups':
+					$this->assign_to_groups = $this->id_only;
 					break;
 			}
 		}

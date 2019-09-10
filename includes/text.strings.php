@@ -60,13 +60,17 @@ $json_strings = [
         'errors_found_title' => __('The following errors were found','cftp_admin'),
         'default' => __('Validation "%s" failed for field "%s"','cftp_admin'),
         'recaptcha' => __('reCAPTCHA verification failed','cftp_admin'),
-        'no_name' => __('Name was not completed','cftp_admin'),
+        'no_name' => __('Name is required','cftp_admin'),
+        'no_expires' => __('Expiration date not selected','cftp_admin'),
+        'no_file_expires' => __('File expires not checked','cftp_admin'),
+        'no_public' => __('Public downloading not checked','cftp_admin'),
+        'no_description' => __('Description is required','cftp_admin'),
         'no_client' => __('No client was selected','cftp_admin'),
-        'no_user' => __('Username was not completed','cftp_admin'),
-        'no_pass' => __('Password was not completed','cftp_admin'),
-        'no_pass2' => __('Password verification was not completed','cftp_admin'),
-        'no_email' => __('E-mail was not completed','cftp_admin'),
-        'no_title' => __('Title was not completed','cftp_admin'),
+        'no_user' => __('Username is required','cftp_admin'),
+        'no_pass' => __('Password is required','cftp_admin'),
+        'no_pass2' => __('Password verification is required','cftp_admin'),
+        'no_email' => __('E-mail is required','cftp_admin'),
+        'no_title' => __('Title is required','cftp_admin'),
         'invalid_email' => __('E-mail address is not valid','cftp_admin'),
         'alpha_user' => __('Username must be alphanumeric and may contain dot (a-z,A-Z,0-9 and . allowed)','cftp_admin'),
         'alpha_pass' => __('Password must be alphanumeric (a-z,A-Z,0-9 allowed)','cftp_admin'),
@@ -79,6 +83,7 @@ $json_strings = [
         'valid_pass' => __('Your password can only contain letters, numbers and the following characters:','cftp_admin'),
         'valid_chars' => ('` ! " ? $ ? % ^ & * ( ) _ - + = { [ } ] : ; @ ~ # | < , > . ? \' / \ '),
         'complete_all_options' => __('Please complete all the fields.','cftp_admin'),
+        'one_checkbox' => __('Please select at least one checkbox.','cftp_admin'),
         
         /* Validation strings for the length of usernames and passwords. */
         'length_user' => sprintf(__('Length should be between %d and %d characters long', 'cftp_admin'), MIN_USER_CHARS, MAX_USER_CHARS),
@@ -91,8 +96,8 @@ $json_strings = [
         'req_special' => __('1 special character','cftp_admin'),
         
         /* Installation strings */
-        'install_no_sitename' => __('Sitename was not completed.','cftp_admin'),
-        'install_no_baseuri' => __('ProjectSend URI was not completed.','cftp_admin'),
+        'install_no_sitename' => __('Sitename is required.','cftp_admin'),
+        'install_no_baseuri' => __('ProjectSend URI is required.','cftp_admin'),
     ],
     'character_limits' => [
         'user_min' => MIN_USER_CHARS,

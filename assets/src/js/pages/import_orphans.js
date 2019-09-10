@@ -4,15 +4,27 @@
     admin.pages.importOrphans = function () {
 
         $(document).ready(function(){
-            $("#upload_by_ftp").submit(function() {
-				var checks = $("td>input:checkbox").serializeArray(); 
-				
-				if (checks.length == 0) { 
-					alert(json_strings.translations.select_one_or_more);
-					return false; 
-				} 
+			$("#import_orphans").validate({
+				rules: {
+					"add[]": {
+						required: true,
+						minlength: 1
+					}
+				},
+				messages: {
+					"add[]": {
+						required: json_strings.validation.one_checkbox
+					}
+				},
+				errorPlacement: function(error, element) {
+					$('<div>', { class: 'alert alert-danger'}).append(error).insertAfter(element.closest('form').find('.alert-info'));
+				}
 			});
-			
+
+			$('input[name="add[]"]').on('change', function() {
+				$(this).closest('form').find('.alert-danger').remove();
+			});
+
 			/**
 			 * Only select the current file when clicking an "edit" button
 			 */

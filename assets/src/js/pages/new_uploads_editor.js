@@ -6,7 +6,7 @@
         $(document).ready(function(){
             var validator = $("#files").validate({
                 errorPlacement: function(error, element) {
-                    error.appendTo(element.parent('div'));
+                    error.appendTo(element.closest('div'));
                 }
             });
 
@@ -21,6 +21,32 @@
                 });
             });
 
+            file.filter('input[name$="[expiry_date]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_expires
+                    }
+                });
+            });
+
+            file.filter('input[name$="[expires]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_file_expires
+                    }
+                });
+            });
+
+            file.filter('input[name$="[public]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_public
+                    }
+                });
+            });
 
             $('.copy-all').click(function() {
                 if ( confirm( json_strings.translations.upload_form.copy_selection ) ) {
@@ -35,10 +61,10 @@
                     $('.' + type + ' .chosen-select').each(function() {
                         $(this).find('option').each(function() {
                             if ($.inArray($(this).val(), selected) === -1) {
-                                $(this).removeAttr('selected');
+                                $(this).prop('selected', false);
                             }
                             else {
-                                $(this).attr('selected', 'selected');
+                                $(this).prop('selected', true);
                             }
                         });
                     });

@@ -22,7 +22,7 @@
                     }
                 },
                 errorPlacement: function(error, element) {
-                    error.appendTo(element.parent('div'));
+                    error.appendTo(element.closest('div'));
                 },
                 submitHandler: function(form) {
                     var button_text = json_strings.login.button_text;
@@ -47,7 +47,7 @@
                             }
                             else {
                                 $('.ajax_response').addClass('alert-danger').slideDown().html(json.message);
-                                $('#submit').html("'"+button_text+"'");
+                                $('#submit').html(button_text);
                             }
                         }
                     });

@@ -18,7 +18,7 @@
                     },
                 },
                 errorPlacement: function(error, element) {
-                    error.appendTo(element.parent('div'));
+                    error.appendTo(element.closest('div'));
                 }
             });
         });

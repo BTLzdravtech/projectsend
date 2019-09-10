@@ -196,7 +196,7 @@ if (!empty($_GET['search'])) {
 					 */
 					$tbody_cells = array(
                                         array(
-                                                'content'		=> '<input type="checkbox" name="file_ids[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
+                                                'content'		=> '<input type="checkbox" name="add[]" class="batch_checkbox select_file_checkbox" value="' . html_output( $add_file['name'] ) . '" />',
                                             ),
                                         array(
                                                 'content'		=> html_output( $add_file['name'] ),
@@ -215,7 +215,7 @@ if (!empty($_GET['search'])) {
                                             ),
                                         array(
                                                 'actions'		=> true,
-                                                'content'		=>  '<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></button>' . "\n"
+                                                'content'		=>  '<button type="button" name="file_edit" class="btn btn-primary btn-sm btn-edit-file"><i class="fa fa-upload"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></button>' . "\n"
                                             ),
                                     );
 

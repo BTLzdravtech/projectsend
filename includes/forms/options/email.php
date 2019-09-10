@@ -3,14 +3,14 @@
 <div class="form-group">
     <label for="admin_email_address" class="col-sm-4 control-label"><?php _e('E-mail address','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="text" name="admin_email_address" id="admin_email_address" class="form-control" value="<?php echo html_output(ADMIN_EMAIL_ADDRESS); ?>" required />
+        <input type="text" name="admin_email_address" id="admin_email_address" class="form-control required" value="<?php echo html_output(ADMIN_EMAIL_ADDRESS); ?>" required />
     </div>
 </div>
 
 <div class="form-group">
     <label for="mail_from_name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="text" name="mail_from_name" id="mail_from_name" class="form-control" value="<?php echo html_output(MAIL_FROM_NAME); ?>" required />
+        <input type="text" name="mail_from_name" id="mail_from_name" class="form-control required" value="<?php echo html_output(MAIL_FROM_NAME); ?>" required />
     </div>
 </div>
 
@@ -61,7 +61,7 @@
 <div class="form-group">
     <label for="notifications_max_tries" class="col-sm-4 control-label"><?php _e('Maximum sending attemps','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="number" name="notifications_max_tries" id="notifications_max_tries" class="form-control" value="<?php echo NOTIFICATIONS_MAX_TRIES; ?>" min="1" max="10" step="1" required />
+        <input type="number" name="notifications_max_tries" id="notifications_max_tries" class="form-control required" value="<?php echo NOTIFICATIONS_MAX_TRIES; ?>" min="1" max="10" step="1" required />
         <p class="field_note"><?php _e('Define how many times will the system attemp to send each notification.','cftp_admin'); ?></p>
     </div>
 </div>
@@ -69,7 +69,7 @@
 <div class="form-group">
     <label for="notifications_max_days" class="col-sm-4 control-label"><?php _e('Days before expiring','cftp_admin'); ?></label>
     <div class="col-sm-8">
-        <input type="number" name="notifications_max_days" id="notifications_max_days" class="form-control" value="<?php echo NOTIFICATIONS_MAX_DAYS; ?>" min="0" max="365" step="1" required />
+        <input type="number" name="notifications_max_days" id="notifications_max_days" class="form-control required" value="<?php echo NOTIFICATIONS_MAX_DAYS; ?>" min="0" max="365" step="1" required />
         <p class="field_note"><?php _e('Notifications older than this will not be sent.','cftp_admin'); ?><br /><strong><?php _e('Set to 0 to disable.','cftp_admin'); ?></strong></p>
     </div>
 </div>

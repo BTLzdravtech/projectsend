@@ -6,7 +6,7 @@
         $(document).ready(function(){
             var validator = $("#edit_file").validate({
                 errorPlacement: function(error, element) {
-                    error.appendTo(element.parent('div'));
+                    error.appendTo(element.closest('div'));
                 }
             });
 
@@ -17,6 +17,33 @@
                     required: true,
                     messages: {
                         required: json_strings.validation.no_name
+                    }
+                });
+            });
+
+            file.filter('input[name$="[expiry_date]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_expires
+                    }
+                });
+            });
+
+            file.filter('input[name$="[expires]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_file_expires
+                    }
+                });
+            });
+
+            file.filter('input[name$="[public]"]').each(function() {
+                $(this).rules("add", {
+                    required: true,
+                    messages: {
+                        required: json_strings.validation.no_public
                     }
                 });
             });

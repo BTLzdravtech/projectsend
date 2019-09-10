@@ -25,7 +25,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1105');
+define('CURRENT_VERSION', 'r1107');
 
 /**
  * Required software versions
