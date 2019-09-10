@@ -14,6 +14,7 @@ class Auth
     private $logger;
 
     private $user;
+    private $ldap;
 
     public function __construct(PDO $dbh = null)
     {
@@ -32,7 +33,7 @@ class Auth
      * @param $password
      * @param $language
      */
-    public function login($username, $password, $language, $use_ldap = true)
+    public function login($username, $password, $language)
     {
         global $logger;
         global $hasher;
@@ -42,6 +43,7 @@ class Auth
 
 		$this->selected_form_lang	= (!empty( $language ) ) ? $language : SITE_LANG;
 
+        $this->ldap = new LDAP();
 
         /** Look up the system users table to see if the entered username exists */
         $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
@@ -63,19 +65,11 @@ class Auth
                 $this->logged_id		= $this->row['id'];
                 $this->name	        	= $this->row['name'];
             }
-
-            if ($use_ldap) {
-                $ldapconfig['host'] = 'mtph5.e-btlnet.local';
-                $ldapconfig['port'] = '389';
-                $ldapconfig['basedn'] = 'OU=BTL,DC=e-btlnet,DC=local';
-                $ldaprdn = 'E-BTLNET' . "\\" . $username;
-
-                $ldap = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
-                ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-                ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-
-                $authenticated = ldap_bind($ldap, $ldaprdn, $password);
-            } else {
+            $authenticated = false;
+            if (LDAP_SIGNIN_ENABLED && ($this->user_level == '8' || $this->user_level == '9')) {
+                $authenticated = $this->ldap->bind($username, $password);
+            }
+            if (!$authenticated) {
                 $authenticated = password_verify($password, $this->db_pass);
             }
             if (!$authenticated) {
@@ -83,31 +77,17 @@ class Auth
                 $this->errorstate = 'invalid_credentials';
             }
         } else {
-            if ($use_ldap) {
-                $ldapconfig['host'] = 'mtph5.e-btlnet.local';
-                $ldapconfig['port'] = '389';
-                $ldapconfig['basedn'] = 'OU=BTL,DC=e-btlnet,DC=local';
-                $ldaprdn = 'E-BTLNET' . "\\" . $username;
-
-                $ldap = ldap_connect($ldapconfig['host'], $ldapconfig['port']);
-                ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
-                ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
-
-                if ($authenticated = ldap_bind($ldap, $ldaprdn, $password)) {
+            if (LDAP_SIGNIN_ENABLED) {
+                if ($authenticated = $this->ldap->bind($username, $password)) {
                     $this->new_user = new Users($this->dbh);
 
-                    $filter='(sAMAccountName=' . $username . ')';
-                    $attributes = array('sAMAccountName', 'displayName', 'mail', 'mail');
-                    $search_result = ldap_search($ldap, $ldapconfig['basedn'], $filter, $attributes);
-
-                    $ldap_user = ldap_first_entry($ldap, $search_result);
-                    $attributes = ldap_get_attributes($ldap, $ldap_user);
+                    $attributes = $this->ldap->get_entry_attributes($username);
                     $user_arguments = array(
                         'username' => $attributes['sAMAccountName'][0],
                         'password' => '',
                         'name' => $attributes['displayName'][0],
                         'email' => $attributes['mail'][0],
-                        'role' => '9',
+                        'role' => '8',
                         'max_file_size' => '',
                         'notify_account' => '0',
                         'active' => '1',
@@ -119,7 +99,7 @@ class Auth
                     $created_user = $this->new_user->create();
 
                     $this->db_username	    = $attributes['sAMAccountName'][0];
-                    $this->user_level		= '9';
+                    $this->user_level		= '8';
                     $this->active_status	= '1';
                     $this->logged_id		= $created_user['id'];
                     $this->name	        	= $attributes['displayName'][0];
