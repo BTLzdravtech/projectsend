@@ -13,6 +13,9 @@ $active_nav = 'clients';
 $this_page = 'clients-requests.php';
 
 $page_title = __('Account requests','cftp_admin');
+
+$page_id = 'clients_accounts_requests';
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 <div class="col-xs-12">
