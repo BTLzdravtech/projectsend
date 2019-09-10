@@ -88,9 +88,24 @@
                         // Manage files actions
                         if (action == 'unassign') {
                             var _formatted = sprintf(json_strings.translations.confirm_unassign, checks.length);
-                            if (!confirm(_formatted)) {
-                                e.preventDefault();
-                            }
+                            bootbox.confirm({
+                                message: _formatted,
+                                buttons: {
+                                    confirm: {
+                                        label: json_strings.modal.ok
+                                    },
+                                    cancel: {
+                                        label: json_strings.modal.cancel
+                                    }
+                                },
+                                callback: function(result) {
+                                    if (result) {
+                                        $('.batch_actions').unbind('submit');
+                                        $('.batch_actions').find('button[type="submit"]').click();
+                                    }
+                                }
+                            });
+                            e.preventDefault();
                         }
 
                         // Templates

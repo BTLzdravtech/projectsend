@@ -48,29 +48,41 @@
                 });
             });
 
-            $('.copy-all').click(function() {
-                if ( confirm( json_strings.translations.upload_form.copy_selection ) ) {
-                    var type = $(this).data('type');
-                    var selector = $(this).closest('.' + type).find('select');
+            $('.copy-all').click(function(event) {
+                bootbox.confirm({
+                    message: json_strings.translations.upload_form.copy_selection,
+                    buttons: {
+                        confirm: {
+                            label: json_strings.modal.ok
+                        },
+                        cancel: {
+                            label: json_strings.modal.cancel
+                        }
+                    },
+                    callback: function(result) {
+                        if (result) {
+                            var type = $(event.target).data('type');
+                            var selector = $(event.target).closest('.' + type).find('select');
 
-                    var selected = new Array();
-                    $(selector).find('option:selected').each(function() {
-                        selected.push($(this).val());
-                    });
+                            var selected = new Array();
+                            $(selector).find('option:selected').each(function() {
+                                selected.push($(this).val());
+                            });
 
-                    $('.' + type + ' .chosen-select').each(function() {
-                        $(this).find('option').each(function() {
-                            if ($.inArray($(this).val(), selected) === -1) {
-                                $(this).prop('selected', false);
-                            }
-                            else {
-                                $(this).prop('selected', true);
-                            }
-                        });
-                    });
-                    $('select').trigger('chosen:updated');
-                }
-
+                            $('.' + type + ' .chosen-select').each(function() {
+                                $(this).find('option').each(function() {
+                                    if ($.inArray($(this).val(), selected) === -1) {
+                                        $(this).prop('selected', false);
+                                    }
+                                    else {
+                                        $(this).prop('selected', true);
+                                    }
+                                });
+                            });
+                            $('select').trigger('chosen:updated');
+                        }
+                    }
+                });
                 return false;
             });
 
