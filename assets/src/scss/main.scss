@@ -1629,6 +1629,13 @@ li .required.password_toggle {
 	}
 }
 
+.alert-danger {
+	label {
+		margin: 0;
+		font-weight: normal;
+	}
+}
+
 // Misc Mobile only styles
 
 @include bk(xs) {
