@@ -68,6 +68,11 @@ switch ( $section ) {
 		$checkboxes		= array(
 							);
 		break;
+    case 'ldap':
+        $section_title	= __('LDAP','cftp_admin');
+        $checkboxes		= array(
+                            );
+        break;
 	default:
 		$location = BASE_URI . 'options.php?section=general';
 		header("Location: $location");

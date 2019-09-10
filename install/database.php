@@ -336,7 +336,12 @@ if (defined('TRY_INSTALL')) {
 								('public_listing_page_enable', '0'),
 								('public_listing_logged_only', '0'),
 								('public_listing_show_all_files', '0'),
-								('public_listing_use_download_link', '0')
+								('public_listing_use_download_link', '0'),
+								('ldap_signin_enabled', '0'),
+								('ldap_host', ''),
+								('ldap_port', ''),
+								('ldap_basedn', ''),
+								('ldap_domain', '')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,
