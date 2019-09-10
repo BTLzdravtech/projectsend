@@ -24,6 +24,7 @@ let assetsCss = [
 ];
 
 let assetsJs = [
+    'node_modules/bootbox/bootbox.js',
     'node_modules/bootstrap/dist/js/bootstrap.min.js',
     'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
     'node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js',

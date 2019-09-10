@@ -20,6 +20,7 @@
             },1000*60);
 
             var uploader = $('#uploader').pluploadQueue();
+            var fading;
 
             $('form').submit(function(e) {
 
@@ -44,7 +45,19 @@
 
                     return false;
                 } else {
-                    alert(json_strings.translations.upload_form.no_files);
+                    var alert_info = $('form').siblings('div.alert-info');
+                    var alert_danger = $('form').siblings('div.alert-danger');
+                    if (fading !== undefined) {
+                        clearTimeout(fading);
+                    }
+                    alert_info.hide();
+                    alert_danger.hide();
+                    alert_danger.fadeIn("slow");
+                    fading = setTimeout(function(){
+                        alert_info.hide();
+                        alert_danger.hide();
+                        alert_info.fadeIn("slow");
+                    }, 3000);
                 }
 
                 return false;

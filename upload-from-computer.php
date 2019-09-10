@@ -43,6 +43,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				echo system_message('info', $msg);
 			?>
 		</p>
+        <p>
+            <?php
+                $msg = __('You must select at least one file to upload.','cftp_admin');
+                echo system_message('danger', $msg);
+            ?>
+        </p>
 
 		<script type="text/javascript">
 			$(function() {

@@ -51,7 +51,6 @@ $json_strings = [
             'loading_error' => __('Error: the content could not be loaded','cftp_admin'),
         ],
         'upload_form' => [
-            'no_files' => __("You must select at least one file to upload.",'cftp_admin'),
             'leave_confirm' => __("Are you sure? Files currently being uploaded will be discarded if you leave this page.",'cftp_admin'),
             'copy_selection' => __("Copy selection to all files?",'cftp_admin'),
         ]
@@ -83,7 +82,6 @@ $json_strings = [
         'valid_pass' => __('Your password can only contain letters, numbers and the following characters:','cftp_admin'),
         'valid_chars' => ('` ! " ? $ ? % ^ & * ( ) _ - + = { [ } ] : ; @ ~ # | < , > . ? \' / \ '),
         'complete_all_options' => __('Please complete all the fields.','cftp_admin'),
-        'one_checkbox' => __('Please select at least one checkbox.','cftp_admin'),
         
         /* Validation strings for the length of usernames and passwords. */
         'length_user' => sprintf(__('Length should be between %d and %d characters long', 'cftp_admin'), MIN_USER_CHARS, MAX_USER_CHARS),
@@ -104,5 +102,10 @@ $json_strings = [
         'user_max' => MAX_USER_CHARS,
         'password_min' => MIN_PASS_CHARS,
         'password_max' => MAX_PASS_CHARS,
+    ],
+    'modal' => [
+        'ok' => __('OK','cftp_admin'),
+        'confirm' => __('OK','cftp_admin'),
+        'cancel' => __('Cancel','cftp_admin'),
     ]
 ];

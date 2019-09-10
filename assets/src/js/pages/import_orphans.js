@@ -4,25 +4,40 @@
     admin.pages.importOrphans = function () {
 
         $(document).ready(function(){
-			$("#import_orphans").validate({
+			var fading;
+
+        	$("#import_orphans").validate({
 				rules: {
 					"add[]": {
 						required: true,
 						minlength: 1
 					}
 				},
-				messages: {
-					"add[]": {
-						required: json_strings.validation.one_checkbox
+				showErrors: function(errorMap, errorList) {
+					var alert_info = $('form').find('.alert-info');
+					var alert_danger = $('form').find('.alert-danger');
+					var errors = this.numberOfInvalids();
+					if (errors) {
+						if (fading !== undefined) {
+							clearTimeout(fading);
+						}
+						$(alert_info).hide();
+						$(alert_danger).hide();
+						$(alert_danger).fadeIn('slow');
+						fading = setTimeout(function(){
+							alert_info.hide();
+							alert_danger.hide();
+							alert_info.fadeIn("slow");
+						}, 3000);
+					} else {
+						if (fading !== undefined) {
+							clearTimeout(fading);
+						}
+						$(alert_info).hide();
+						$(alert_danger).hide();
+						$(alert_info).fadeIn('slow');
 					}
-				},
-				errorPlacement: function(error, element) {
-					$('<div>', { class: 'alert alert-danger'}).append(error).insertAfter(element.closest('form').find('.alert-info'));
 				}
-			});
-
-			$('input[name="add[]"]').on('change', function() {
-				$(this).closest('form').find('.alert-danger').remove();
 			});
 
 			/**

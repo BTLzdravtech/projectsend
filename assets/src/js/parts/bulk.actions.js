@@ -14,23 +14,60 @@
                         // Generic actions
                         if (action == 'delete') {
                             if (checks.length == 0) {
-                                alert(json_strings.translations.select_one_or_more);
+                                bootbox.alert({
+                                    title: json_strings.validation.errors_found_title + ':',
+                                    message: json_strings.translations.select_one_or_more,
+                                    buttons: {
+                                        ok: {
+                                            label: json_strings.modal.ok
+                                        }
+                                    },
+                                });
                                 return false;
                             }
                             else {
-                                _formatted = sprintf(json_strings.translations.confirm_delete, checks.length);
-                                if (!confirm(_formatted)) {
-                                    e.preventDefault();
-                                }
+                                var _formatted = sprintf(json_strings.translations.confirm_delete, checks.length);
+                                bootbox.confirm({
+                                    message: _formatted,
+                                    buttons: {
+                                        confirm: {
+                                            label: json_strings.modal.ok
+                                        },
+                                        cancel: {
+                                            label: json_strings.modal.cancel
+                                        }
+                                    },
+                                    callback: function(result) {
+                                        if (result) {
+                                            $('.batch_actions').unbind('submit');
+                                            $('.batch_actions').find('button[type="submit"]').click();
+                                        }
+                                    }
+                                });
+                                e.preventDefault();
                             }
                         }
 
                         // Activities log actions
                         if (action == 'log_clear') {
-                            var msg = json_strings.translations.confirm_delete_log;
-                            if (!confirm(msg)) {
-                                e.preventDefault();
-                            }
+                            bootbox.confirm({
+                                message: json_strings.translations.confirm_delete_log,
+                                buttons: {
+                                    confirm: {
+                                        label: json_strings.modal.ok
+                                    },
+                                    cancel: {
+                                        label: json_strings.modal.cancel
+                                    }
+                                },
+                                callback: function(result) {
+                                    if (result) {
+                                        $('.batch_actions').unbind('submit');
+                                        $('.batch_actions').find('button[type="submit"]').click();
+                                    }
+                                }
+                            });
+                            e.preventDefault();
                         }
 
                         if (action == 'log_download') {
@@ -50,7 +87,7 @@
 
                         // Manage files actions
                         if (action == 'unassign') {
-                            _formatted = sprintf(json_strings.translations.confirm_unassign, checks.length);
+                            var _formatted = sprintf(json_strings.translations.confirm_unassign, checks.length);
                             if (!confirm(_formatted)) {
                                 e.preventDefault();
                             }

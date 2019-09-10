@@ -236,6 +236,9 @@ if (!empty($_GET['search'])) {
 		<?php
 				$msg = __('Please note that the listed files will be renamed if they contain invalid characters.','cftp_admin');
 				echo system_message('info',$msg);
+
+                $msg = __('Please select at least one checkbox.','cftp_admin');
+                echo system_message('danger', $msg);
 		?>
 				<div class="after_form_buttons">
 					<button type="submit" class="btn btn-wide btn-primary" id="upload-continue"><?php _e('Continue','cftp_admin'); ?></button>

@@ -1636,6 +1636,12 @@ li .required.password_toggle {
 	}
 }
 
+.upload-from-computer, .upload-import-orphans {
+	.alert-danger {
+		display: none;
+	}
+}
+
 // Misc Mobile only styles
 
 @include bk(xs) {
