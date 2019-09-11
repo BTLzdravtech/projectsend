@@ -1336,5 +1336,16 @@ if (current_role_in($allowed_update)) {
                 $updates_made++;
             }
         }
+
+        /**
+         * r1108 updates
+         * Added objectguid to users.
+         */
+        if ($last_update < 1108) {
+            $q = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD COLUMN objectguid text");
+            if ($q) {
+                $updates_made++;
+            }
+        }
     }
 }

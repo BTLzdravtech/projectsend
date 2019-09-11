@@ -133,6 +133,7 @@ class Users
         $this->active = (!empty($arguments['active'])) ? (int)$arguments['active'] : 0;
 		$this->notify_account = (!empty($arguments['notify_account'])) ? $arguments['notify_account'] : 0;
         $this->max_file_size = (!empty($arguments['max_file_size'])) ? $arguments['max_file_size'] : 0;
+        $this->objectguid = (!empty($arguments['objectguid'])) ? encode_html($arguments['objectguid']) : null;
 
         // Specific for clients
 		$this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
@@ -353,10 +354,10 @@ class Users
 			/** Insert the client information into the database */
 			$this->timestamp = time();
 			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
-                    name, user, password, level, address, phone, email, notify, contact, created_by, active, account_requested, max_file_size
+                    name, user, password, level, address, phone, email, notify, contact, created_by, active, account_requested, max_file_size, objectguid
                 )
 			    VALUES (
-                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :created_by, :active, :request, :max_file_size 
+                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :created_by, :active, :request, :max_file_size , :objectguid
                 )"
             );
 			$this->statement->bindParam(':name', $this->name);
@@ -372,6 +373,7 @@ class Users
 			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
+            $this->statement->bindParam(':objectguid', $this->objectguid);
 
 			$this->statement->execute();
 

@@ -43,7 +43,7 @@ class Auth
 
 		$this->selected_form_lang	= (!empty( $language ) ) ? $language : SITE_LANG;
 
-        $this->ldap = new LDAP();
+        $this->ldap = new LDAP($this->dbh);
 
         /** Look up the system users table to see if the entered username exists */
         $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
@@ -68,6 +68,9 @@ class Auth
             $authenticated = false;
             if (LDAP_SIGNIN_ENABLED && ($this->user_level == '8' || $this->user_level == '9')) {
                 $authenticated = $this->ldap->bind($username, $password);
+                if ($authenticated) {
+                    $this->ldap->update_db($username);
+                }
             }
             if (!$authenticated) {
                 $authenticated = password_verify($password, $this->db_pass);
@@ -79,29 +82,35 @@ class Auth
         } else {
             if (LDAP_SIGNIN_ENABLED) {
                 if ($authenticated = $this->ldap->bind($username, $password)) {
-                    $this->new_user = new Users($this->dbh);
-
                     $attributes = $this->ldap->get_entry_attributes($username);
-                    $user_arguments = array(
-                        'username' => $attributes['sAMAccountName'][0],
-                        'password' => '',
-                        'name' => $attributes['displayName'][0],
-                        'email' => $attributes['mail'][0],
-                        'role' => '8',
-                        'max_file_size' => '',
-                        'notify_account' => '0',
-                        'active' => '1',
-                        'type' => 'new_user',
-                    );
 
-                    $this->new_user->setType('new_user');
-                    $this->new_user->set($user_arguments);
-                    $created_user = $this->new_user->create();
+                    $already_present = $this->ldap->check_by_guid(bin2hex($attributes['objectGUID'][0]));
+                    if ($already_present) {
+                        $id = $this->ldap->update_db(null, $attributes);
+                    } else {
+                        $this->new_user = new Users($this->dbh);
+                        $user_arguments = array(
+                            'username' => $attributes['sAMAccountName'][0],
+                            'password' => '',
+                            'name' => $attributes['displayName'][0],
+                            'email' => $attributes['mail'][0],
+                            'role' => '8',
+                            'max_file_size' => '',
+                            'notify_account' => '0',
+                            'active' => '1',
+                            'type' => 'new_user',
+                            'objectguid' => bin2hex($attributes['objectGUID'][0])
+                        );
+
+                        $this->new_user->setType('new_user');
+                        $this->new_user->set($user_arguments);
+                        $created_user = $this->new_user->create();
+                    }
 
                     $this->db_username	    = $attributes['sAMAccountName'][0];
                     $this->user_level		= '8';
                     $this->active_status	= '1';
-                    $this->logged_id		= $created_user['id'];
+                    $this->logged_id		= $id ?? $created_user['id'] ;
                     $this->name	        	= $attributes['displayName'][0];
                 } else {
                     //$errorstate = 'wrong_username';
