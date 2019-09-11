@@ -33,6 +33,7 @@ class Users
     private $max_file_size;
     private $created_by;
     private $created_date;
+    private $objectguid;
 
     // Uploaded files
     private $files;
@@ -46,7 +47,7 @@ class Users
     // @todo Move this to meta
     private $address;
     private $phone;
-    private $contact_name;
+    private $contact;
     private $notify_upload;
     private $account_request;
     private $recaptcha;
@@ -173,6 +174,7 @@ class Users
             $this->max_file_size = html_output($this->row['max_file_size']);
             $this->created_date = html_output($this->row['timestamp']);
             $this->created_by = html_output($this->row['created_by']);
+            $this->objectguid = html_output($this->row['objectguid']);
 
             // Specific for clients
             $this->address = html_output($this->row['address']);
@@ -228,6 +230,7 @@ class Users
             'files' => $this->files,
             'groups' => $this->groups,
             'meta' => $this->meta,
+            'objectguid' => $this->objectguid,
         ];
 
         return $return;
