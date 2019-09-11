@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ProjectSend admin\n"
-"POT-Creation-Date: 2019-09-10 17:17+0200\n"
+"POT-Creation-Date: 2019-09-11 14:07+0200\n"
 "PO-Revision-Date: 2016-09-14 15:19-0300\n"
 "Last-Translator: \n"
 "Language-Team: ProjectSend <contact@projectsend.org>\n"
@@ -166,7 +166,7 @@ msgstr ""
 
 #: categories.php:226 clients-membership-requests.php:225
 #: clients-requests.php:285 clients.php:199 groups.php:183 manage-files.php:452
-#: upload-import-orphans.php:251 users.php:250
+#: upload-import-orphans.php:254 users.php:250
 msgid "Your search keywords returned no results."
 msgstr ""
 
@@ -176,7 +176,7 @@ msgstr ""
 
 #: categories.php:255 includes/forms/categories.php:37
 #: includes/forms/clients.php:74 includes/forms/options/email.php:11
-#: includes/forms/users.php:37
+#: includes/forms/users.php:39
 msgid "Name"
 msgstr ""
 
@@ -318,14 +318,14 @@ msgid "Full name"
 msgstr ""
 
 #: clients-membership-requests.php:276 clients-requests.php:334 clients.php:238
-#: includes/forms/clients.php:81 includes/forms/users.php:44
+#: includes/forms/clients.php:81 includes/forms/users.php:46
 #: install/index.php:264 users.php:285
 msgid "Log in username"
 msgstr ""
 
 #: clients-membership-requests.php:282 clients-requests.php:340 clients.php:244
 #: includes/forms/clients.php:102 includes/forms/login.php:15
-#: includes/forms/reset-password/enter-email.php:7 includes/forms/users.php:65
+#: includes/forms/reset-password/enter-email.php:7 includes/forms/users.php:71
 #: users.php:291
 msgid "E-mail"
 msgstr ""
@@ -643,6 +643,7 @@ msgid "Save"
 msgstr ""
 
 #: edit-file.php:554 includes/forms/categories.php:68
+#: includes/text.strings.php:109
 msgid "Cancel"
 msgstr ""
 
@@ -1279,43 +1280,43 @@ msgstr ""
 msgid "A client's groups membership requests were processed."
 msgstr ""
 
-#: includes/Classes/Auth.php:219
+#: includes/Classes/Auth.php:228
 msgid "Error during log in."
 msgstr ""
 
-#: includes/Classes/Auth.php:224 index.php:60
+#: includes/Classes/Auth.php:233 index.php:60
 msgid "The supplied credentials are not valid."
 msgstr ""
 
-#: includes/Classes/Auth.php:227
+#: includes/Classes/Auth.php:236
 msgid "The supplied username doesn't exist."
 msgstr ""
 
-#: includes/Classes/Auth.php:230
+#: includes/Classes/Auth.php:239
 msgid "The supplied password is incorrect."
 msgstr ""
 
-#: includes/Classes/Auth.php:233
+#: includes/Classes/Auth.php:242
 msgid "This account is not active."
 msgstr ""
 
-#: includes/Classes/Auth.php:235
+#: includes/Classes/Auth.php:244
 msgid ""
 "If you just registered, please wait until a system administrator approves "
 "your account."
 msgstr ""
 
-#: includes/Classes/Auth.php:239 register.php:120
+#: includes/Classes/Auth.php:248 register.php:120
 msgid ""
 "Client self registration is not allowed. If you need an account, please "
 "contact a system administrator."
 msgstr ""
 
-#: includes/Classes/Auth.php:242
+#: includes/Classes/Auth.php:251
 msgid "Sign-in with Google cannot be used to create new accounts at this time."
 msgstr ""
 
-#: includes/Classes/Auth.php:245
+#: includes/Classes/Auth.php:254
 msgid "You must approve the requested permissions to sign in with Google."
 msgstr ""
 
@@ -1509,7 +1510,7 @@ msgstr ""
 msgid "Go to:"
 msgstr ""
 
-#: includes/Classes/Validation.php:270 includes/text.strings.php:60
+#: includes/Classes/Validation.php:270 includes/text.strings.php:59
 msgid "The following errors were found"
 msgstr ""
 
@@ -1550,23 +1551,23 @@ msgstr ""
 msgid "Update account"
 msgstr ""
 
-#: includes/forms/clients.php:83 includes/forms/users.php:46
+#: includes/forms/clients.php:83 includes/forms/users.php:48
 msgid "Must be alphanumeric"
 msgstr ""
 
 #: includes/forms/clients.php:88 includes/forms/login.php:20
-#: includes/forms/options/email.php:107 includes/forms/users.php:51
+#: includes/forms/options/email.php:107 includes/forms/users.php:54
 #: install/index.php:272 install/make-config.php:262
 msgid "Password"
 msgstr ""
 
 #: includes/forms/clients.php:96
 #: includes/forms/reset-password/enter-password.php:14
-#: includes/forms/users.php:59 install/index.php:280
+#: includes/forms/users.php:63 install/index.php:280
 msgid "Generate"
 msgstr ""
 
-#: includes/forms/clients.php:104 includes/forms/users.php:67
+#: includes/forms/clients.php:104 includes/forms/users.php:73
 msgid "Must be valid and unique"
 msgstr ""
 
@@ -1582,11 +1583,11 @@ msgstr ""
 msgid "Internal contact name"
 msgstr ""
 
-#: includes/forms/clients.php:133 includes/forms/users.php:95
+#: includes/forms/clients.php:133 includes/forms/users.php:103
 msgid "Max. upload filesize"
 msgstr ""
 
-#: includes/forms/clients.php:139 includes/forms/users.php:101
+#: includes/forms/clients.php:139 includes/forms/users.php:109
 msgid "Set to 0 to use the default system limit"
 msgstr ""
 
@@ -1598,7 +1599,7 @@ msgstr ""
 msgid "Notify new uploads by e-mail"
 msgstr ""
 
-#: includes/forms/clients.php:245 includes/forms/users.php:120
+#: includes/forms/clients.php:245 includes/forms/users.php:128
 msgid "Send welcome email"
 msgstr ""
 
@@ -1606,7 +1607,7 @@ msgstr ""
 msgid "Verification"
 msgstr ""
 
-#: includes/forms/clients.php:275 includes/forms/users.php:135
+#: includes/forms/clients.php:275 includes/forms/users.php:143
 msgid "This account information will be e-mailed to the address supplied above"
 msgstr ""
 
@@ -2106,11 +2107,11 @@ msgstr ""
 msgid "Save user"
 msgstr ""
 
-#: includes/forms/users.php:75 users.php:297
+#: includes/forms/users.php:82 users.php:297
 msgid "Role"
 msgstr ""
 
-#: includes/forms/users.php:108
+#: includes/forms/users.php:116
 msgid "Active (user can log in)"
 msgstr ""
 
@@ -2420,149 +2421,145 @@ msgid "Error: the content could not be loaded"
 msgstr ""
 
 #: includes/text.strings.php:54
-msgid "You must select at least one file to upload."
-msgstr ""
-
-#: includes/text.strings.php:55
 msgid ""
 "Are you sure? Files currently being uploaded will be discarded if you leave "
 "this page."
 msgstr ""
 
-#: includes/text.strings.php:56
+#: includes/text.strings.php:55
 msgid "Copy selection to all files?"
 msgstr ""
 
-#: includes/text.strings.php:61
+#: includes/text.strings.php:60
 #, php-format
 msgid "Validation \"%s\" failed for field \"%s\""
 msgstr ""
 
-#: includes/text.strings.php:62
+#: includes/text.strings.php:61
 msgid "reCAPTCHA verification failed"
 msgstr ""
 
-#: includes/text.strings.php:63
+#: includes/text.strings.php:62
 msgid "Name is required"
 msgstr ""
 
-#: includes/text.strings.php:64
+#: includes/text.strings.php:63
 msgid "Expiration date not selected"
 msgstr ""
 
-#: includes/text.strings.php:65
+#: includes/text.strings.php:64
 msgid "File expires not checked"
 msgstr ""
 
-#: includes/text.strings.php:66
+#: includes/text.strings.php:65
 msgid "Public downloading not checked"
 msgstr ""
 
-#: includes/text.strings.php:67
+#: includes/text.strings.php:66
 msgid "Description is required"
 msgstr ""
 
-#: includes/text.strings.php:68
+#: includes/text.strings.php:67
 msgid "No client was selected"
 msgstr ""
 
-#: includes/text.strings.php:69
+#: includes/text.strings.php:68
 msgid "Username is required"
 msgstr ""
 
-#: includes/text.strings.php:70
+#: includes/text.strings.php:69
 msgid "Password is required"
 msgstr ""
 
-#: includes/text.strings.php:71
+#: includes/text.strings.php:70
 msgid "Password verification is required"
 msgstr ""
 
-#: includes/text.strings.php:72
+#: includes/text.strings.php:71
 msgid "E-mail is required"
 msgstr ""
 
-#: includes/text.strings.php:73
+#: includes/text.strings.php:72
 msgid "Title is required"
 msgstr ""
 
-#: includes/text.strings.php:74
+#: includes/text.strings.php:73
 msgid "E-mail address is not valid"
 msgstr ""
 
-#: includes/text.strings.php:75
+#: includes/text.strings.php:74
 msgid ""
 "Username must be alphanumeric and may contain dot (a-z,A-Z,0-9 and . allowed)"
 msgstr ""
 
-#: includes/text.strings.php:76
+#: includes/text.strings.php:75
 msgid "Password must be alphanumeric (a-z,A-Z,0-9 allowed)"
 msgstr ""
 
-#: includes/text.strings.php:77
+#: includes/text.strings.php:76
 msgid "Passwords do not match"
 msgstr ""
 
-#: includes/text.strings.php:78
+#: includes/text.strings.php:77
 msgid "Password does not meet the required characters rules"
 msgstr ""
 
-#: includes/text.strings.php:79
+#: includes/text.strings.php:78
 msgid "File size value must be a whole number"
 msgstr ""
 
-#: includes/text.strings.php:80
+#: includes/text.strings.php:79
 msgid "User role was not specified"
 msgstr ""
 
-#: includes/text.strings.php:81
+#: includes/text.strings.php:80
 msgid "An account with this username already exists."
 msgstr ""
 
-#: includes/text.strings.php:82
+#: includes/text.strings.php:81
 msgid "An account with this e-mail address already exists."
 msgstr ""
 
-#: includes/text.strings.php:83
+#: includes/text.strings.php:82
 msgid ""
 "Your password can only contain letters, numbers and the following characters:"
 msgstr ""
 
-#: includes/text.strings.php:85
+#: includes/text.strings.php:84
 msgid "Please complete all the fields."
 msgstr ""
 
-#: includes/text.strings.php:86
-msgid "Please select at least one checkbox."
-msgstr ""
-
-#: includes/text.strings.php:89 includes/text.strings.php:90
+#: includes/text.strings.php:87 includes/text.strings.php:88
 #, php-format
 msgid "Length should be between %d and %d characters long"
 msgstr ""
 
-#: includes/text.strings.php:93
+#: includes/text.strings.php:91
 msgid "1 uppercase character"
 msgstr ""
 
-#: includes/text.strings.php:94
+#: includes/text.strings.php:92
 msgid "1 lowercase character"
 msgstr ""
 
-#: includes/text.strings.php:95
+#: includes/text.strings.php:93
 msgid "1 number"
 msgstr ""
 
-#: includes/text.strings.php:96
+#: includes/text.strings.php:94
 msgid "1 special character"
 msgstr ""
 
-#: includes/text.strings.php:99 install/index.php:77
+#: includes/text.strings.php:97 install/index.php:77
 msgid "Sitename is required."
 msgstr ""
 
-#: includes/text.strings.php:100 install/index.php:78
+#: includes/text.strings.php:98 install/index.php:78
 msgid "ProjectSend URI is required."
+msgstr ""
+
+#: includes/text.strings.php:107 includes/text.strings.php:108
+msgid "OK"
 msgstr ""
 
 #: includes/updates.functions.php:97
@@ -3222,6 +3219,10 @@ msgid ""
 "size (in mb.) is "
 msgstr ""
 
+#: upload-from-computer.php:48
+msgid "You must select at least one file to upload."
+msgstr ""
+
 #: upload-import-orphans.php:25
 msgid ""
 "This list only shows the files that are allowed according to your security "
@@ -3251,15 +3252,19 @@ msgid ""
 "characters."
 msgstr ""
 
-#: upload-import-orphans.php:241
+#: upload-import-orphans.php:240
+msgid "Please select at least one checkbox."
+msgstr ""
+
+#: upload-import-orphans.php:244
 msgid "Continue"
 msgstr ""
 
-#: upload-import-orphans.php:256
+#: upload-import-orphans.php:259
 msgid "There are no files available to add right now."
 msgstr ""
 
-#: upload-import-orphans.php:257
+#: upload-import-orphans.php:260
 msgid "To use this feature you need to upload your files via FTP to the folder"
 msgstr ""
 
