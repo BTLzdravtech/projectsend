@@ -497,7 +497,7 @@ while( $row = $statement->fetch() ) {
 															<div class="checkbox form-group">
 																<label for="exp_checkbox_<?php echo $i; ?>">
                                                                     <div class="input-group">
-																	    <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+																	    <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?><span class="mandatory"> *</span>
                                                                     </div>
 																</label>
 															</div>
@@ -514,7 +514,7 @@ while( $row = $statement->fetch() ) {
 																<div class="checkbox form-group">
 																	<label for="pub_checkbox_<?php echo $i; ?>">
                                                                         <div class="input-group">
-																		    <input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
+																		    <input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?><span class="mandatory"> *</span>
                                                                         </div>
 																	</label>
 																</div>
