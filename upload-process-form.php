@@ -540,42 +540,51 @@ while( $row = $statement->fetch() ) {
 																	*/
 																?>
 																<h3><?php _e('Assignations', 'cftp_admin');?></h3>
-																<label><?php _e('Assign this file to', 'cftp_admin');?>:</label>
-																<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
-																	<optgroup label="<?php _e('Clients', 'cftp_admin');?>">
-																		<?php
-																			/**
-																			 * The clients list is generated early on the file so the
-																			 * array doesn't need to be made once on every file.
-																			 */
-																			foreach($clients as $client => $client_name) {
-																			?>
-																				<option value="<?php echo html_output('c'.$client); ?>"><?php echo html_output($client_name); ?></option>
-																			<?php
-																			}
-																		?>
-																	</optgroup>
-																	<optgroup label="<?php _e('Groups', 'cftp_admin');?>">
-																		<?php
-																			/**
-																			 * The groups list is generated early on the file so the
-																			 * array doesn't need to be made once on every file.
-																			 */
-																			foreach($groups as $group => $group_name) {
-																			?>
-																				<option value="<?php echo html_output('g'.$group); ?>"><?php echo html_output($group_name); ?></option>
-																			<?php
-																			}
-																		?>
-																	</optgroup>
-																</select>
-																<div class="list_mass_members">
-																	<a href="#" class="btn btn-xs btn-primary add-all" data-type="assigns"><?php _e('Add all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-xs btn-primary remove-all" data-type="assigns"><?php _e('Remove all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-xs btn-danger copy-all" data-type="assigns"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
-																</div>
+                                                                <label><?php _e('Clients', 'cftp_admin');?>:</label>
+                                                                <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][clients][]" id="select_clients_<?php echo $i; ?>" class="form-control chosen-select select-clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                                    <?php
+                                                                    /**
+                                                                     * The clients list is generated early on the file so the
+                                                                     * array doesn't need to be made once on every file.
+                                                                     */
+                                                                    foreach($clients as $client => $client_name) {
+                                                                        ?>
+                                                                        <option value="<?php echo $client; ?>"<?php if (in_array($client,$file_on_clients)) { echo ' selected="selected"'; } ?>>
+                                                                            <?php echo $client_name; ?>
+                                                                        </option>
+                                                                        <?php
+                                                                    }
+                                                                    ?>
+                                                                </select>
+                                                                <div class="list_mass_members">
+                                                                    <a href="#" class="btn btn-xs btn-primary add-all" data-type="clients"><?php _e('Add all','cftp_admin'); ?></a>
+                                                                    <a href="#" class="btn btn-xs btn-primary remove-all" data-type="clients"><?php _e('Remove all','cftp_admin'); ?></a>
+                                                                    <a href="#" class="btn btn-xs btn-danger copy-all" data-type="clients"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+                                                                </div>
 
-																<div class="divider"></div>
+                                                                <label><?php _e('Groups', 'cftp_admin');?>:</label>
+                                                                <select multiple="multiple" name="file[<?php echo $i; ?>][assignments][groups][]" id="select_groups_<?php echo $i; ?>" class="form-control chosen-select select-groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                                                                    <?php
+                                                                    /**
+                                                                     * The groups list is generated early on the file so the
+                                                                     * array doesn't need to be made once on every file.
+                                                                     */
+                                                                    foreach($groups as $group => $group_name) {
+                                                                        ?>
+                                                                        <option value="<?php echo $group; ?>"<?php if (in_array($group,$file_on_groups)) { echo ' selected="selected"'; } ?>>
+                                                                            <?php echo $group_name; ?>
+                                                                        </option>
+                                                                        <?php
+                                                                    }
+                                                                    ?>
+                                                                </select>
+                                                                <div class="list_mass_members">
+                                                                    <a href="#" class="btn btn-xs btn-primary add-all" data-type="groups"><?php _e('Add all','cftp_admin'); ?></a>
+                                                                    <a href="#" class="btn btn-xs btn-primary remove-all" data-type="groups"><?php _e('Remove all','cftp_admin'); ?></a>
+                                                                    <a href="#" class="btn btn-xs btn-danger copy-all" data-type="groups"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+                                                                </div>
+
+                                                                <div class="divider"></div>
 
 																<div class="checkbox">
 																	<label for="hid_checkbox_<?php echo $i; ?>">
@@ -589,7 +598,7 @@ while( $row = $statement->fetch() ) {
 															<div class="file_data">
 																<h3><?php _e('Categories', 'cftp_admin');?></h3>
 																<label><?php _e('Add to', 'cftp_admin');?>:</label>
-																<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+																<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" class="form-control chosen-select select-categories" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 																	<?php
 																		/**
 																		 * The categories list is generated early on the file so the

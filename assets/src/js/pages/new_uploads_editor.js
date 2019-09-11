@@ -62,14 +62,14 @@
                     callback: function(result) {
                         if (result) {
                             var type = $(event.target).data('type');
-                            var selector = $(event.target).closest('.' + type).find('select');
+                            var selector = $(event.target).closest('.file_data').find('.select-'+ type);
 
                             var selected = new Array();
                             $(selector).find('option:selected').each(function() {
                                 selected.push($(this).val());
                             });
 
-                            $('.' + type + ' .chosen-select').each(function() {
+                            $('.select-'+ type).each(function() {
                                 $(this).find('option').each(function() {
                                     if ($.inArray($(this).val(), selected) === -1) {
                                         $(this).prop('selected', false);
