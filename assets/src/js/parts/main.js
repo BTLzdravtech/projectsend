@@ -138,10 +138,14 @@
 
             /** File editor */
             if ( $.isFunction($.fn.datepicker) ) {
+                var todayDate = new Date().getDate();
+
                 $('.date-container .date-field').datepicker({
                     format			: 'dd-mm-yyyy',
                     autoclose		: true,
-                    todayHighlight	: true
+                    todayHighlight	: true,
+                    startDate: new Date(),
+                    endDate: new Date(new Date().setDate(todayDate + expiration_days))
                 });
             }
 

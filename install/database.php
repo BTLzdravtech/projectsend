@@ -345,6 +345,7 @@ if (defined('TRY_INSTALL')) {
 								('ldap_port', ''),
 								('ldap_basedn', ''),
 								('ldap_domain', '')
+								('expiration_days', '30')
 								",
 					'params' => array(
 										':base_uri'	=> $base_uri,

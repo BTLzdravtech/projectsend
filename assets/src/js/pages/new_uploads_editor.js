@@ -39,6 +39,7 @@
                 });
             });
 
+            /*
             file.filter('input[name$="[public]"]').each(function() {
                 $(this).rules("add", {
                     required: true,
@@ -47,6 +48,7 @@
                     }
                 });
             });
+            */
 
             $('.copy-all').click(function(event) {
                 bootbox.confirm({

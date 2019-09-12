@@ -329,6 +329,7 @@ function get_client_by_id($client)
                                 'max_file_size' 	=> html_output($row['max_file_size']),
                                 'contact'			=> html_output($row['contact']),
                                 'created_date'		=> html_output($row['timestamp']),
+                                'owner_id'		    => html_output($row['owner_id']),
                                 'created_by'		=> html_output($row['created_by'])
                             );
             if ( !empty( $information ) ) {

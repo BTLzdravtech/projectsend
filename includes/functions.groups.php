@@ -62,6 +62,7 @@ function get_groups($arguments)
     $group_ids	= !empty( $arguments['group_ids'] ) ? $arguments['group_ids'] : array();
     $group_ids	= is_array( $group_ids ) ? $group_ids : array( $group_ids );
     $is_public	= !empty( $arguments['public'] ) ? $arguments['public'] : '';
+    $owner_id	= !empty( $arguments['owner_id'] ) ? $arguments['owner_id'] : '';
     $created_by	= !empty( $arguments['created_by'] ) ? $arguments['created_by'] : '';
     $search		= !empty( $arguments['search'] ) ? $arguments['search'] : '';
 
@@ -77,6 +78,9 @@ function get_groups($arguments)
     }
     if ( !empty( $created_by ) ) {
         $parameters[] = "created_by=:created_by";
+    }
+    if ( !empty( $owner_id ) ) {
+        $parameters[] = "owner_id=:owner_id";
     }
     if ( !empty( $search ) ) {
         $parameters[] = "(name LIKE :name OR description LIKE :description)";
@@ -117,6 +121,9 @@ function get_groups($arguments)
     if ( !empty( $created_by ) ) {
         $statement->bindParam(':created_by', $created_by);
     }
+    if ( !empty( $owner_id ) ) {
+        $statement->bindParam(':owner_id', $owner_id);
+    }
     if ( !empty( $search ) ) {
         $search_value = '%' . $search . '%';
         $statement->bindValue(':name', $search_value);
@@ -131,6 +138,7 @@ function get_groups($arguments)
                                     'name'          => $data_group['name'],
                                     'description'   => $data_group['description'],
                                     'created_by'    => $data_group['created_by'],
+                                    'owner_id'    => $data_group['owner_id'],
                                     'public'        => $data_group['public'],
                                     'public_token'  => $data_group['public_token'],
                                 );

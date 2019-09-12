@@ -150,14 +150,18 @@ switch ($clients_form_type) {
 			$arguments = array();
 
 			/** Groups to search on based on the current user level */
-			if ( CURRENT_USER_LEVEL == 9 || CURRENT_USER_LEVEL == 8 ) {
+			if ( CURRENT_USER_LEVEL == 9 ) {
 				/** An admin or client manager is creating a client account */
 			}
+            elseif ( CURRENT_USER_LEVEL == 8 ) {
+                $arguments['owner_id'] = CURRENT_USER_ID;
+            }
 			else {
 				/** Someone is registering an account for himself */
 				if ( CLIENTS_CAN_SELECT_GROUP == 'public' ) {
 					$arguments['public'] = true;
 				}
+                $arguments['owner_id'] = CURRENT_USER_OWNER_ID;
 			}
 
 			$sql_groups = get_groups($arguments);

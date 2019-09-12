@@ -94,6 +94,13 @@
 </div>
 
 <div class="form-group">
+    <label for="expiration_days" class="col-sm-4 control-label"><?php _e('Expiration days number','cftp_admin'); ?></label>
+    <div class="col-sm-8">
+        <input type="text" class="form-control required" name="expiration_days" id="expiration_days" value="<?php echo EXPIRATION_DAYS; ?>" required />
+    </div>
+</div>
+
+<div class="form-group">
     <label for="expired_files_hide" class="col-sm-4 control-label"><?php _e('When a file expires:','cftp_admin'); ?></label>
     <div class="col-sm-8">
         <select class="form-control" name="expired_files_hide" id="expired_files_hide" required>

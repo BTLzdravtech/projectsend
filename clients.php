@@ -80,7 +80,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 	$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
 
-	/** Add the search terms */	
+    /** Add the search terms */
 	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
 		$cq .= " AND (name LIKE :name OR user LIKE :user OR address LIKE :address OR phone LIKE :phone OR email LIKE :email OR contact LIKE :contact)";
 		$no_results_error = 'search';
@@ -93,6 +93,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		$params[':email']	= $search_terms;
 		$params[':contact']	= $search_terms;
 	}
+
+    if (CURRENT_USER_LEVEL == '8') {
+        $cq .= " AND owner_id = :owner_id";
+        $params[':owner_id'] = CURRENT_USER_ID;
+    }
 
 	/** Add the active filter */	
 	if(isset($_GET['active']) && $_GET['active'] != '2') {

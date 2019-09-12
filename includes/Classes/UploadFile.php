@@ -191,11 +191,12 @@ class UploadFile
 		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
 		$this->public_token		= generateRandomString(32);
 		
-        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, uploader, expires, expiry_date, public_allow, public_token)"
-                                        ."VALUES (:url, :original_url, :name, :description, :uploader, :expires, :expiry_date, :public, :token)");
+        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, owner_id, uploader, expires, expiry_date, public_allow, public_token)"
+                                        ."VALUES (:url, :original_url, :name, :description, :owner_id, :uploader, :expires, :expiry_date, :public, :token)");
         $this->statement->bindParam(':url', $this->file_on_disk);
         $this->statement->bindParam(':original_url', $this->post_file);
         $this->statement->bindParam(':name', $this->name);
+        $this->statement->bindParam(':owner_id', $this->uploader_id);
         $this->statement->bindParam(':description', $this->description);
         $this->statement->bindParam(':uploader', $this->uploader);
         $this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);

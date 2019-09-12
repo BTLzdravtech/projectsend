@@ -65,6 +65,19 @@ if (isset($_GET['category'])) {
 	}
 }
 
+$clients = array();
+
+if ( CURRENT_USER_LEVEL == 8 || CURRENT_USER_LEVEL == 7 ) {
+
+    /** Fill the users array that will be used on the notifications process */
+    $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE level=0 AND owner_id=" . CURRENT_USER_ID);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+    while( $row = $statement->fetch() ) {
+        $clients[] = $row["id"];
+    }
+}
+
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
@@ -239,16 +252,40 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				$params[':uploader'] = $_GET['uploader'];
 			}
 
+            /**
+             * If the user is an account manager is editing his files
+             * only show files uploaded by that account.
+             */
+            if (CURRENT_USER_LEVEL == '8') {
+                $clients_condition = '';
+                foreach ($clients as $key => $client) {
+                    if (strlen($clients_condition) > 0) $clients_condition .= ",";
+                    $clients_condition .= ":client" . $key;
+                    $params[":client" . $key] = $client;
+                }
+                $conditions[] = "(owner_id = :owner_id OR owner_id IN (" . $clients_condition . "))";
+                $no_results_error = 'account_level';
+
+                $params[':owner_id'] = CURRENT_USER_ID;
+            }
 
 			/**
 			 * If the user is an uploader, or a client is editing his files
 			 * only show files uploaded by that account.
 			*/
 			if (CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') {
-				$conditions[] = "uploader = :uploader";
+			    $clients_condition = '';
+			    foreach ($clients as $key => $client) {
+			        if (strlen($clients_condition) > 0) $clients_condition .= ",";
+                    $clients_condition .= ":client" . $key;
+                    $params[":client" . $key] = $client;
+                }
+                $conditions[] = "(owner_id = :owner_id" . (strlen($clients_condition) > 0 ? " OR owner_id IN (" . $clients_condition . ")" : "") . ")";
+                //$conditions[] = "uploader = :uploader";
 				$no_results_error = 'account_level';
-	
-				$params[':uploader'] = $global_user;
+
+                $params[':owner_id'] = CURRENT_USER_ID;
+                //$params[':uploader'] = $global_user;
 			}
 			
 			/**
@@ -332,7 +369,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 									$status_options = array(
 															'0'		=> __('Uploader','cftp_admin'),
 														);
-									$sql_uploaders = $dbh->prepare("SELECT uploader FROM " . TABLE_FILES . " GROUP BY uploader");
+
+                                $owner_condition = '';
+                                if ( CURRENT_USER_LEVEL == 8 || CURRENT_USER_LEVEL == 7 ) {
+                                    $owner_condition = " WHERE owner_id=" . CURRENT_USER_ID . (count($clients) > 0 ? " OR owner_id IN(" . implode(',', $clients) . ")" : "");
+                                }
+
+                                $sql_uploaders = $dbh->prepare("SELECT uploader FROM " . TABLE_FILES . $owner_condition . " GROUP BY uploader");
 									$sql_uploaders->execute();
 									$sql_uploaders->setFetchMode(PDO::FETCH_ASSOC);
 

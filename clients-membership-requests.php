@@ -107,7 +107,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 	$params = array();
 
-	$cq = "(SELECT client_id, COUNT(group_id) as amount, GROUP_CONCAT(group_id SEPARATOR ',') AS groups FROM " . TABLE_MEMBERS_REQUESTS;
+	$cq = "(SELECT client_id, COUNT(group_id) as amount, GROUP_CONCAT(group_id SEPARATOR ',') AS groups FROM " . TABLE_MEMBERS_REQUESTS . " TMR INNER JOIN " . TABLE_GROUPS . " TG ON TMR.group_id = TG.id";
 	
 	if ( isset( $_GET['denied'] ) && !empty( $_GET['denied'] ) ) {
 		$cq .= " WHERE denied='1'";
@@ -119,7 +119,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		$current_filter = 'new';
 		$found_count = COUNT_MEMBERSHIP_REQUESTS;
 	}
-	
+
+	if ( CURRENT_USER_LEVEL == 8 ) {
+        $cq .= " AND TG.owner_id=" . CURRENT_USER_ID;
+    }
+
 	$cq .= " GROUP BY client_id)";
 
 	/**

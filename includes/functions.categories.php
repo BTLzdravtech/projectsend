@@ -99,7 +99,12 @@ function get_categories( $params = array() ) {
 		$sql_params[':name']			= $search_terms;
 		$sql_params[':description']		= $search_terms;
 	}
-	
+
+    if (CURRENT_USER_LEVEL == '8' || CURRENT_USER_LEVEL == '7') {
+        $conditions[] = "owner_id = :owner_id";
+        $sql_params[':owner_id'] = CURRENT_USER_ID;
+    }
+
 	/**
 		Clients can only manage their own categories
 		TODO: Implement this

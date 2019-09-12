@@ -31,6 +31,7 @@ class Users
     private $active;
     private $notify_account;
     private $max_file_size;
+    private $owner_id;
     private $created_by;
     private $created_date;
 
@@ -171,6 +172,7 @@ class Users
             $this->active = html_output($this->row['active']);
             $this->max_file_size = html_output($this->row['max_file_size']);
             $this->created_date = html_output($this->row['timestamp']);
+            $this->owner_id = html_output($this->row['owner_id']);
             $this->created_by = html_output($this->row['created_by']);
 
             // Specific for clients
@@ -348,15 +350,16 @@ class Users
 		if (strlen($this->password_hashed) >= 20) {
 
 			/** Who is creating the client? */
-			$this->created_by = CURRENT_USER_USERNAME;
+			$this->owner_id = CURRENT_USER_ID;
+            $this->created_by = CURRENT_USER_USERNAME;
 
 			/** Insert the client information into the database */
 			$this->timestamp = time();
 			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
-                    name, user, password, level, address, phone, email, notify, contact, created_by, active, account_requested, max_file_size
+                    name, user, password, level, address, phone, email, notify, contact, owner_id, created_by, active, account_requested, max_file_size
                 )
 			    VALUES (
-                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :created_by, :active, :request, :max_file_size 
+                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :owner_id, :created_by, :active, :request, :max_file_size 
                 )"
             );
 			$this->statement->bindParam(':name', $this->name);
@@ -368,6 +371,7 @@ class Users
 			$this->statement->bindParam(':email', $this->email);
 			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
 			$this->statement->bindParam(':contact', $this->contact);
+            $this->statement->bindParam(':owner_id', $this->owner_id);
 			$this->statement->bindParam(':created_by', $this->created_by);
 			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);

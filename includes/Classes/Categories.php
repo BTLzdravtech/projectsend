@@ -19,7 +19,8 @@ class Categories
     private $name;
     private $parent;
     private $description;
-    private $created_date;
+    private $owner_id;
+    private $created_by;
 
     private $validation_passed;
     private $validation_errors;
@@ -160,11 +161,12 @@ class Categories
 		$this->state = array();
 
         /** Who is creating the category? */
+        $this->owner_id = CURRENT_USER_ID;
         $this->created_by = CURRENT_USER_USERNAME;
 
         /** Insert the category information into the database */
-        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,created_by)"
-                                            ."VALUES (:name, :parent, :description, :created_by)");
+        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,owner_id,created_by)"
+                                            ."VALUES (:name, :parent, :description, :owner_id, :created_by)");
         $this->statement->bindParam(':name', $this->name);
         
         if (empty($this->parent)) {
@@ -176,6 +178,7 @@ class Categories
         }
         
         $this->statement->bindParam(':description', $this->description);
+        $this->statement->bindParam(':owner_id', $this->owner_id);
         $this->statement->bindParam(':created_by', $this->created_by);
 
         $this->statement->execute();

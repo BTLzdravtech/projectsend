@@ -24,6 +24,7 @@ class Groups
     private $public_token;
     private $members;
     private $files;
+    private $owner_id;
     private $created_by;
     private $created_date;
 
@@ -99,6 +100,7 @@ class Groups
             $this->description = html_output($this->row['description']);
             $this->public = html_output($this->row['public']);
             $this->public_token = html_output($this->row['public_token']);
+            $this->owner_id = html_output($this->row['owner_id']);
             $this->created_by = html_output($this->row['created_by']);
             $this->created_date = html_output($this->row['timestamp']);
         }
@@ -143,6 +145,7 @@ class Groups
             'files' => $this->files,
             'public' => $this->public,
             'public_token' => $this->public_token,
+            'owner_id' => $this->owner_id,
             'created_by' => $this->created_by,
             'created_date' => $this->created_date,
         ];
@@ -214,16 +217,18 @@ class Groups
         if (!empty($this->name)) {
 
    			/** Who is creating the client? */
+            $this->owner_id = CURRENT_USER_ID;
 			$this->created_by = CURRENT_USER_USERNAME;
 
             /** Define the group information */
             $this->public_token = generateRandomString(32);
 
-            $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, created_by)"
-                                                    ." VALUES (:name, :description, :public, :token, :admin)");
+            $this->sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, owner_id, created_by)"
+                                                    ." VALUES (:name, :description, :public, :token, :owner_id, :admin)");
             $this->sql_query->bindParam(':name', $this->name);
             $this->sql_query->bindParam(':description', $this->description);
             $this->sql_query->bindParam(':public', $this->public, PDO::PARAM_INT);
+            $this->sql_query->bindParam(':owner_id', $this->owner_id);
             $this->sql_query->bindParam(':admin', $this->created_by);
             $this->sql_query->bindParam(':token', $this->public_token);
             $this->sql_query->execute();

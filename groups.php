@@ -95,8 +95,15 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 	else {
 		$next_clause = ' WHERE';
 	}
-	
-	/** Add the member */
+
+    if (CURRENT_USER_LEVEL == '8') {
+        $cq .= $next_clause. " owner_id = :owner_id";
+        $next_clause = ' AND';
+
+        $params[':owner_id'] = CURRENT_USER_ID;
+    }
+
+    /** Add the member */
 	if (isset($found_groups)) {
 		if ($found_groups != '') {
 			$cq .= $next_clause. " FIND_IN_SET(id, :groups)";

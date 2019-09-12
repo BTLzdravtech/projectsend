@@ -72,9 +72,15 @@ $move_failed = array();
  */
 $empty_fields = 0;
 
+if ( CURRENT_USER_LEVEL == 8 ) {
+    $owner_id_condition = " WHERE owner_id=" . CURRENT_USER_ID;
+} elseif ( CURRENT_USER_LEVEL == 0 ) {
+    $owner_id_condition = " WHERE owner_id=" . CURRENT_USER_OWNER_ID;
+}
+
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . $owner_id_condition . " ORDER BY name ASC");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
@@ -86,7 +92,7 @@ while( $row = $statement->fetch() ) {
 
 /** Fill the groups array that will be used on the form */
 $groups = array();
-$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . $owner_id_condition . " ORDER BY name ASC");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
@@ -193,7 +199,12 @@ while( $row = $statement->fetch() ) {
 							$add_arguments['assign_to'] = array('c'.$client_my_id);
 							$add_arguments['hidden'] = '0';
 							$add_arguments['uploader_type'] = 'client';
-							$add_arguments['expires'] = '0';
+                            if (CLIENTS_CAN_SET_EXPIRATION_DATE && !empty($file['expires'])) {
+                                $add_arguments['expires'] = '1';
+                                $add_arguments['expiry_date'] = $file['expiry_date'];
+                            } else {
+                                $add_arguments['expires'] = '0';
+                            }
 							$add_arguments['public'] = '0';
 						}
 						else {
@@ -487,7 +498,7 @@ while( $row = $statement->fetch() ) {
 															<div class="form-group">
 																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 																	<div class="input-group date-container">
-																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
+																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y', strtotime("+7 day")); ?>" />
 																		<div class="input-group-addon">
 																			<i class="glyphicon glyphicon-time"></i>
 																		</div>
@@ -497,7 +508,7 @@ while( $row = $statement->fetch() ) {
 															<div class="checkbox form-group">
 																<label for="exp_checkbox_<?php echo $i; ?>">
                                                                     <div class="input-group">
-																	    <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if ($row['expiry_set']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
+																	    <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if (CURRENT_USER_LEVEL == '9' || CURRENT_USER_LEVEL == '8' || CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?>
                                                                     </div>
 																</label>
 															</div>

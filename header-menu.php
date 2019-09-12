@@ -20,13 +20,15 @@ if ( current_role_in( array( 9,8,7 ) ) )
 	define('COUNT_CLIENTS_INACTIVE', $sql_inactive->rowCount());
 	*/
 
-	/** Count new groups MEMBERSHIP requests */
-	$sql_requests = $dbh->prepare( "SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='0'" );
+    $tg_owner_id = CURRENT_USER_LEVEL == 8 ? " AND TG.owner_id=" . CURRENT_USER_ID : "";
+
+    /** Count new groups MEMBERSHIP requests */
+	$sql_requests = $dbh->prepare( "SELECT DISTINCT TMR.id FROM " . TABLE_MEMBERS_REQUESTS . " TMR INNER JOIN " . TABLE_GROUPS . " TG ON TMR.group_id = TG.id WHERE denied='0'" . $tg_owner_id );
 	$sql_requests->execute();
 	define('COUNT_MEMBERSHIP_REQUESTS', $sql_requests->rowCount());
 
 	/** Count ALREADY DENIED groups MEMBERSHIP requests */
-	$sql_requests = $dbh->prepare( "SELECT DISTINCT id FROM " . TABLE_MEMBERS_REQUESTS . " WHERE denied='1'" );
+	$sql_requests = $dbh->prepare( "SELECT DISTINCT TMR.id FROM " . TABLE_MEMBERS_REQUESTS . " TMR INNER JOIN " . TABLE_GROUPS . " TG ON TMR.group_id = TG.id WHERE denied='1'" . $tg_owner_id );
 	$sql_requests->execute();
 	define('COUNT_MEMBERSHIP_DENIED', $sql_requests->rowCount());
 
@@ -116,13 +118,16 @@ if ( current_role_in( array( 9,8,7 ) ) )
 												array(
 													'divider'	=> true,
 												),
-												array(
-													'label'	=> __('Account requests', 'cftp_admin'),
-													'link'	=> 'clients-requests.php',
-													'badge'	=> COUNT_CLIENTS_REQUESTS,
-												),
 											),
 							);
+
+	if (CLIENTS_CAN_REGISTER) {
+        $items['clients']['sub'][] = array(
+            'label' => __('Account requests', 'cftp_admin'),
+            'link' => 'clients-requests.php',
+            'badge' => COUNT_CLIENTS_REQUESTS,
+        );
+    }
 
 	$items['groups']	= array(
 								'nav'	=> 'groups',

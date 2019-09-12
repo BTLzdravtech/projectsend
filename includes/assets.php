@@ -127,5 +127,9 @@ function load_js_header_files() {
         <script src="<?php echo ASSETS_LIB_URL; ?>/html5shiv.min.js"></script>
         <script src="<?php echo ASSETS_LIB_URL; ?>/respond.min.js"></script>
     <![endif]-->
+
+    <script type="text/javascript">
+        var expiration_days = <?php echo defined('EXPIRATION_DAYS') ? EXPIRATION_DAYS : 30; ?>;
+    </script>
 <?php
 }
