@@ -1642,6 +1642,10 @@ li .required.password_toggle {
 	}
 }
 
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+	background-color: #eee !important;
+}
+
 // Misc Mobile only styles
 
 @include bk(xs) {

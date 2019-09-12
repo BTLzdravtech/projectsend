@@ -29,6 +29,8 @@ switch ($user_form_type) {
 		$extra_fields = false;
 		break;
 }
+
+$is_ldap_user = isset($user_arguments['objectguid']);
 ?>
 <form action="<?php echo html_output($form_action); ?>" name="user_form" id="user_form" method="post" class="form-horizontal" data-form-type="<?php echo $user_form_type; ?>">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
@@ -36,7 +38,7 @@ switch ($user_form_type) {
 	<div class="form-group">
 		<label for="name" class="col-sm-4 control-label"><?php _e('Name','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($user_arguments['name'])) ? format_form_value($user_arguments['name']) : ''; ?>" required />
+			<input type="text" name="name" id="name" class="form-control required" value="<?php echo (isset($user_arguments['name'])) ? format_form_value($user_arguments['name']) : ''; ?>" required<?php echo $is_ldap_user ? ' readonly' : ''; ?> />
 		</div>
 	</div>
 
@@ -47,30 +49,35 @@ switch ($user_form_type) {
 		</div>
 	</div>
 
+    <?php if ( !$is_ldap_user) { ?>
 	<div class="form-group">
 		<label for="password" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 		<div class="col-sm-8">
 			<div class="input-group">
-				<input type="password" name="password" id="password" class="form-control <?php if ($require_pass) { echo 'required'; } ?> password_toggle" maxlength="<?php echo MAX_PASS_CHARS; ?>" />
-				<div class="input-group-btn password_toggler">
-					<button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
+				<input type="password" name="password" id="password" class="form-control <?php if ($require_pass) { echo 'required'; } ?> password_toggle" maxlength="<?php echo MAX_PASS_CHARS; ?>" <?php echo $is_ldap_user ? ' readonly' : ''; ?> />
+                <div class="input-group-btn password_toggler">
+                    <button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 				</div>
 			</div>
-			<button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="password" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
-			<?php echo password_notes(); ?>
+            <?php if (!$is_ldap_user) { ?>
+			    <button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="password" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
+            <?php } ?>
+            <?php echo password_notes(); ?>
 		</div>
 	</div>
+    <?php } ?>
 
 	<div class="form-group">
 		<label for="email" class="col-sm-4 control-label"><?php _e('E-mail','cftp_admin'); ?></label>
 		<div class="col-sm-8">
-			<input type="text" name="email" id="email" class="form-control required" value="<?php echo (isset($user_arguments['email'])) ? format_form_value($user_arguments['email']) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" required />
+			<input type="text" name="email" id="email" class="form-control required" value="<?php echo (isset($user_arguments['email'])) ? format_form_value($user_arguments['email']) : ''; ?>" placeholder="<?php _e("Must be valid and unique",'cftp_admin'); ?>" required <?php echo $is_ldap_user ? ' readonly' : ''; ?> />
 		</div>
 	</div>
 
 		<?php
 			if ($extra_fields == true) {
 		?>
+            <?php if ( !$is_ldap_user) { ?>
 			<div class="form-group">
 				<label for="level" class="col-sm-4 control-label"><?php _e('Role','cftp_admin'); ?></label>
 				<div class="col-sm-8">
@@ -90,6 +97,7 @@ switch ($user_form_type) {
 					</select>
 				</div>
 			</div>
+            <?php } ?>
 
 			<div class="form-group">
 				<label for="max_file_size" class="col-sm-4 control-label"><?php _e('Max. upload filesize','cftp_admin'); ?></label>

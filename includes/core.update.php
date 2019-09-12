@@ -1339,15 +1339,26 @@ if (current_role_in($allowed_update)) {
 
         /**
          * r1108 updates
-         * Added an option to set expiration days nuber
+         * Added objectguid to users.
          */
         if ($last_update < 1108) {
+            $q = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD COLUMN objectguid text");
+            if ($q) {
+                $updates_made++;
+            }
+        }
+
+        /**
+         * r1109 updates
+         * Added an option to set expiration days nuber
+         */
+        if ($last_update < 1109) {
             $new_database_values = array(
-                'expiration_days'	=> '30',
+                'expiration_days' => '30',
             );
 
-            foreach($new_database_values as $row => $value) {
-                if ( add_option_if_not_exists($row, $value) ) {
+            foreach ($new_database_values as $row => $value) {
+                if (add_option_if_not_exists($row, $value)) {
                     $updates_made++;
                 }
             }

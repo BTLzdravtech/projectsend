@@ -34,6 +34,7 @@ class Users
     private $owner_id;
     private $created_by;
     private $created_date;
+    private $objectguid;
 
     // Uploaded files
     private $files;
@@ -47,7 +48,7 @@ class Users
     // @todo Move this to meta
     private $address;
     private $phone;
-    private $contact_name;
+    private $contact;
     private $notify_upload;
     private $account_request;
     private $recaptcha;
@@ -134,6 +135,7 @@ class Users
         $this->active = (!empty($arguments['active'])) ? (int)$arguments['active'] : 0;
 		$this->notify_account = (!empty($arguments['notify_account'])) ? $arguments['notify_account'] : 0;
         $this->max_file_size = (!empty($arguments['max_file_size'])) ? $arguments['max_file_size'] : 0;
+        $this->objectguid = (!empty($arguments['objectguid'])) ? encode_html($arguments['objectguid']) : null;
 
         // Specific for clients
 		$this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
@@ -174,6 +176,7 @@ class Users
             $this->created_date = html_output($this->row['timestamp']);
             $this->owner_id = html_output($this->row['owner_id']);
             $this->created_by = html_output($this->row['created_by']);
+            $this->objectguid = html_output($this->row['objectguid']);
 
             // Specific for clients
             $this->address = html_output($this->row['address']);
@@ -229,6 +232,7 @@ class Users
             'files' => $this->files,
             'groups' => $this->groups,
             'meta' => $this->meta,
+            'objectguid' => $this->objectguid,
         ];
 
         return $return;
@@ -356,10 +360,10 @@ class Users
 			/** Insert the client information into the database */
 			$this->timestamp = time();
 			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
-                    name, user, password, level, address, phone, email, notify, contact, owner_id, created_by, active, account_requested, max_file_size
+                    name, user, password, level, address, phone, email, notify, contact, owner_id, created_by, active, account_requested, max_file_size, objectguid
                 )
 			    VALUES (
-                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :owner_id, :created_by, :active, :request, :max_file_size 
+                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :owner_id, :created_by, :active, :request, :max_file_size , :objectguid
                 )"
             );
 			$this->statement->bindParam(':name', $this->name);
@@ -376,6 +380,7 @@ class Users
 			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
+            $this->statement->bindParam(':objectguid', $this->objectguid);
 
 			$this->statement->execute();
 
