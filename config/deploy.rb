@@ -27,4 +27,6 @@ message = { cards: [header: header, sections: sections] }
 
 set :message, message
 
+after 'deploy:finished', 'php_fpm:restart'
+
 after 'deploy:finished', 'hangouts_chat:send_message'

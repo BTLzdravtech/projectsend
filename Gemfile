@@ -5,5 +5,6 @@ group :development do
   gem 'capistrano-npm'
   gem 'capistrano-composer'
   gem 'capistrano-gulp', "~> 0.0.2"
+  gem 'capistrano-php-fpm'
   gem 'capistrano-hangouts-chat', github: 'BTLzdravtech/capistrano-hangouts-chat', require: false
 end
