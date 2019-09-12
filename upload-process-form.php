@@ -72,7 +72,7 @@ $move_failed = array();
  */
 $empty_fields = 0;
 
-if ( CURRENT_USER_LEVEL == 8 ) {
+if ( CURRENT_USER_LEVEL == 8 || CURRENT_USER_LEVEL == 7 ) {
     $owner_id_condition = " WHERE owner_id=" . CURRENT_USER_ID;
 } elseif ( CURRENT_USER_LEVEL == 0 ) {
     $owner_id_condition = " WHERE owner_id=" . CURRENT_USER_OWNER_ID;

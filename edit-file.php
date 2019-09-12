@@ -31,9 +31,15 @@ if (!empty($_GET['file_id'])) {
 	$this_file_id = $_GET['file_id'];
 }
 
+if ( CURRENT_USER_LEVEL == 8 || CURRENT_USER_LEVEL == 7 ) {
+    $owner_id_condition = " WHERE owner_id=" . CURRENT_USER_ID;
+} elseif ( CURRENT_USER_LEVEL == 0 ) {
+    $owner_id_condition = " WHERE owner_id=" . CURRENT_USER_OWNER_ID;
+}
+
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . $owner_id_condition . " ORDER BY name ASC");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
@@ -45,7 +51,7 @@ while( $row = $statement->fetch() ) {
 
 /** Fill the groups array that will be used on the form */
 $groups = array();
-$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . $owner_id_condition . " ORDER BY name ASC");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
