@@ -8,5 +8,6 @@ require 'capistrano/npm'
 require 'capistrano/composer'
 require 'capistrano/gulp'
 require 'capistrano/hangouts_chat'
+require 'capistrano/php_fpm/systemd'
 
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
