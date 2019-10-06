@@ -22,7 +22,7 @@
                     callback: function(result) {
                         if (result) {
                             $.ajax({
-                                url: "emails/"+'xxx',
+                                url: "emails/"+file,
                                 cache: false,
                                 success: function (data){
                                     $('#'+textarea).val(data);
