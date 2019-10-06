@@ -659,7 +659,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						/**
 						 * Get file size only if the file exists
 						 */
-						$this_file_absolute = UPLOADED_FILES_DIR . $row['url'];
+						$this_file_absolute = UPLOADED_FILES_DIR . DS . $row['url'];
 						if ( file_exists( $this_file_absolute ) ) {
 							$this_file_size = get_real_size($this_file_absolute);
 							$formatted_size = html_output(format_file_size($this_file_size));
@@ -790,7 +790,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'attributes'	=> array(
 																			'class'		=> array( 'file_name' ),
 																		),
-													'content'		=> '<a href="' . $download_link . '" target="_blank">' . html_output($row['filename']) . '</a>',
+													'content'		=> $conditions['is_not_client'] ? '<a href="' . $download_link . '" target="_blank">' . html_output($row['filename']) . '</a>' : html_output($row['filename']),
 												),
 												array(
 													'content'		=> $formatted_size,
