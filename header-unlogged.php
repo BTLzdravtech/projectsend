@@ -77,6 +77,21 @@ if ( !isset( $body_class ) ) { $body_class = ''; }
         load_js_header_files();
 		load_css_files();
 	?>
+    <script type="text/javascript" src='https://cdn.jsdelivr.net/npm/airbrake-js@1.6.8/dist/client.min.js'></script>
+    <script type="text/javascript">
+        if (location.hostname !== 'localhost') {
+            var airbrake = new airbrakeJs.Client({
+                projectId: 1,
+                projectKey: 'c5219993229b4611584ff66a14a80fa4',
+                reporter: 'xhr',
+                host: 'https://errbit.medictech.com'
+            });
+            airbrake.addFilter(function(notice) {
+                notice.context.environment = 'production';
+                return notice;
+            });
+        }
+    </script>
 </head>
 
 <body <?php echo add_body_class( $body_class ); ?> <?php if (!empty($page_id)) { echo add_page_id($page_id); } ?>>

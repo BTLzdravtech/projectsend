@@ -69,3 +69,21 @@ require_once ROOT_DIR.'/includes/functions.groups.php';
 
 /** Security */
 require_once ROOT_DIR . '/includes/security/csrf.php';
+
+if ($_SERVER['HTTP_HOST'] != 'localhost') {
+    /** Airbrake - Errbit */
+    $notifier = new Airbrake\Notifier([
+        'projectId' => 1,
+        'projectKey' => 'c5219993229b4611584ff66a14a80fa4',
+        'host' => 'https://errbit.medictech.com',
+        'environment' => 'production',
+        'keysBlacklist' => ['/password/i', '/user_pass/i', '/item[current_password]/i', '/item[password1]/i', '/item[password2]/i']
+    ]);
+
+    // Set global notifier instance.
+    Airbrake\Instance::set($notifier);
+
+    // Register error and exception handlers.
+    $handler = new Airbrake\ErrorHandler($notifier);
+    $handler->register();
+}

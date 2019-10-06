@@ -30,6 +30,7 @@
         "moxiecode/plupload": "3.1.*",
         "paragonie/random_compat": "^2.0",
         "phpmailer/phpmailer": "~6.0",
-		"tamtamchik/simple-flash": "^1.2"
+		"tamtamchik/simple-flash": "^1.2",
+		"airbrake/phpbrake": "v0.6.2"
 	}
 }
