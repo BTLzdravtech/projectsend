@@ -27,7 +27,7 @@ class FilesActions
         $this->logger = new \ProjectSend\Classes\ActionsLog;
 	}
 
-	function deleteFiles($rel_id)
+	function deleteFiles($rel_id, $service_run = false)
 	{
 		$this->can_delete		= false;
 		$this->result			= '';
@@ -35,9 +35,9 @@ class FilesActions
 
 		if (isset($rel_id)) {
 			/** Do a permissions check */
-			if (isset($this->check_level) && current_role_in($this->check_level)) {
+			if ($service_run || (isset($this->check_level) && current_role_in($this->check_level))) {
 				$this->file_id = $rel_id;
-				$this->sql = $this->dbh->prepare("SELECT url, original_url, uploader FROM " . TABLE_FILES . " WHERE id = :file_id");
+				$this->sql = $this->dbh->prepare("SELECT url, original_url, uploader, filename FROM " . TABLE_FILES . " WHERE id = :file_id");
 				$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
 				$this->sql->execute();
 				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
@@ -89,7 +89,8 @@ class FilesActions
                     /** Record the action log */
                     $record = $this->logger->addEntry([
                         'action' => 12,
-                        'owner_id' => CURRENT_USER_ID,
+                        'owner_id' => $service_run? '-1' : CURRENT_USER_ID,
+                        'owner_user' => $service_run? 'service' : CURRENT_USER_NAME,
                         'affected_file' => $this->file_id,
                         'affected_file_name' => $this->title
                     ]);

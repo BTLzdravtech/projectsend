@@ -656,6 +656,24 @@ function get_file_assignations($file_id)
     return false;    
 }
 
+function get_expired_file_ids()
+{
+    global $dbh;
+    $statement = $dbh->prepare("SELECT id FROM " . TABLE_FILES . " WHERE DATE(expiry_date) < DATE(NOW()) AND expires = 1");
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    $file_ids = [];
+    $count = $statement->rowCount();
+
+    if ($count > 0) {
+        while ($row = $statement->fetch()) {
+            $file_ids[] =  $row['id'];
+        }
+    }
+    return $file_ids;
+}
+
 /**
  * Standard footer mark up and information generated on this function to
  * prevent code repetition.

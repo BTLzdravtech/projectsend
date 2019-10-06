@@ -66,7 +66,9 @@ define('CURRENT_USER_NAME',$global_account['name']);
 define('CURRENT_USER_EMAIL',$global_account['email']);
 define('CURRENT_USER_LEVEL',$global_account['level']);
 define('CURRENT_USER_TYPE',return_account_type());
-define('CURRENT_USER_OWNER_ID',$global_account['owner_id']);
+if ($global_level == 0) {
+    define('CURRENT_USER_OWNER_ID',$global_account['owner_id']);
+}
 
 /**
  * Check if account has a custom value for upload max file size
