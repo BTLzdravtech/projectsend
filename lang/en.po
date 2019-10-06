@@ -1714,7 +1714,7 @@ msgid "Clients can delete their own uploaded files"
 msgstr ""
 
 #: includes/forms/options/clients.php:91
-msgid "Clients can set expiration Date"
+msgid "Clients can set expiration date"
 msgstr ""
 
 #: includes/forms/options/clients.php:97
