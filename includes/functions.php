@@ -494,6 +494,7 @@ function get_user_by_id($id)
                             'active'		=> html_output($row['active']),
                             'max_file_size'	=> html_output($row['max_file_size']),
                             'created_date'	=> html_output($row['timestamp']),
+                            'objectguid'	=> html_output($row['objectguid']),
                         );
         if ( !empty( $information ) ) {
             return $information;

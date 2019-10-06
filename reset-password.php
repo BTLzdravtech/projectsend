@@ -69,7 +69,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
             case 'new_request':
                 $get_user = get_user_by('user', 'email', $_POST['email']);
 		
-				if ( $get_user ) {
+				if ( $get_user && $get_user['objectguid'] == null ) {
 					/** Email exists on the database */
 					$token = generateRandomString(32);
 					
@@ -114,7 +114,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 				else {
                     //$errorstate = 'email_not_found';
                     // Simulate that the request has been set, do not show that email exists or not on the database
-                    $state['email'] = 1;
+                    $state['email'] = 0;
                     $show_form = 'none';
 				}
 			break;
