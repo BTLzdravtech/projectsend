@@ -349,9 +349,13 @@ class Users
 	{
 		$this->state = array();
 
-        $this->password_hashed = self::hashPassword($this->password);
+		if ($this->objectguid == null) {
+            $this->password_hashed = self::hashPassword($this->password);
+        } else {
+            $this->password_hashed = null;
+        }
 
-		if (strlen($this->password_hashed) >= 20) {
+		if (strlen($this->password_hashed) >= 20 || !$this->objectguid == null) {
 
 			/** Who is creating the client? */
 			$this->owner_id = CURRENT_USER_ID;
