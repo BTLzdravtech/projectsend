@@ -498,7 +498,7 @@ while( $row = $statement->fetch() ) {
 															<div class="form-group">
 																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Date', 'cftp_admin');?></label>
 																	<div class="input-group">
-																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y', strtotime("+7 day")); ?>" />
+																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y', strtotime('+' . (defined('EXPIRATION_DAYS') ? EXPIRATION_DAYS : 30) . 'day')); ?>" />
 																		<div class="input-group-addon">
 																			<i class="glyphicon glyphicon-time"></i>
 																		</div>
