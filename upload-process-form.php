@@ -496,22 +496,22 @@ while( $row = $statement->fetch() ) {
 															<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
 
 															<div class="form-group">
-																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Date', 'cftp_admin');?></label>
-																	<div class="input-group">
-																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y', strtotime('+' . (defined('EXPIRATION_DAYS') ? EXPIRATION_DAYS : 30) . 'day')); ?>" />
+																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
+																	<div class="input-group date-container">
+																		<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y', strtotime('+7 day')); ?>" />
 																		<div class="input-group-addon">
 																			<i class="glyphicon glyphicon-time"></i>
 																		</div>
 																	</div>
 															</div>
 
-															<div class="checkbox form-group">
+															<!--<div class="checkbox form-group">
 																<label for="exp_checkbox_<?php echo $i; ?>">
                                                                     <div class="input-group">
-																	    <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" onclick="return false" value="1" <?php if (CURRENT_USER_LEVEL == '9' || CURRENT_USER_LEVEL == '8' || CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?><span class="mandatory"> *</span>
+																	    <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if (CURRENT_USER_LEVEL == '9' || CURRENT_USER_LEVEL == '8' || CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?><span class="mandatory"> *</span>
                                                                     </div>
 																</label>
-															</div>
+															</div>-->
 
 															<?php
 																/** The following options are available to users only */

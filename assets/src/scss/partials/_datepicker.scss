@@ -1,0 +1,8 @@
+.datepicker {
+  table {
+    tr td.disabled, tr td.disabled:hover {
+      background-color: #eee;
+      border-radius: 0;
+    }
+  }
+}
