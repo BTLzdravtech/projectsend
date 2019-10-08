@@ -3008,7 +3008,7 @@ msgid "Selected files actions"
 msgstr ""
 
 #: manage-files.php:453
-msgid "Download zipped"
+msgid "Download zip"
 msgstr ""
 
 #: manage-files.php:458
@@ -3305,7 +3305,7 @@ msgstr ""
 
 #: upload-process-form.php:573 upload-process-form.php:595
 #: upload-process-form.php:624
-msgid "Copy selections to other files"
+msgid "Copy selections"
 msgstr ""
 
 #: upload-process-form.php:602

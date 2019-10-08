@@ -37,7 +37,7 @@ msgid "Select action"
 msgstr ""
 
 #: template.php:83
-msgid "Download zipped"
+msgid "Download zip"
 msgstr ""
 
 #: template.php:93
