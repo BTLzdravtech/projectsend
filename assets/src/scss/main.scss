@@ -469,15 +469,15 @@ body.login {
 
 	// Home statistics tooltip
 
-	.widget_statistics {
-		#stats_tooltip {
-			position:absolute;
-			display:none;
-			background:black;
-			color:#FFFFFF;
-			padding:5px;
-		}
+	#stats_tooltip {
+		position:absolute;
+		display:none;
+		background:black;
+		color:#FFFFFF;
+		padding:5px;
+	}
 
+	.widget_statistics {
 		.statistics_graph {
 			display:block;
 			height:360px;
@@ -960,6 +960,7 @@ body.login {
 		color:#e6e7ec;
 		line-height:normal;
 		min-height:30px;
+		height:40px;
 		-moz-border-radius:0;
 		-webkit-border-radius:0;
 		border-radius:0;
