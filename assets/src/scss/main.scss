@@ -700,7 +700,7 @@ body.login {
 
 		a {
 			margin-right:5px;
-
+			margin-bottom:5px;
 			&:last-child {
 				margin-right:0;
 			}
@@ -1701,5 +1701,13 @@ li .required.password_toggle {
 	.group_float {
 		float:left;
 		margin-right:5px;
+	}
+
+	.backend {
+		.list_mass_members {
+			a {
+				margin-bottom:5px;
+			}
+		}
 	}
 }

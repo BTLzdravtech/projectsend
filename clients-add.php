@@ -17,7 +17,9 @@ $page_id = 'client_form';
 
 $new_client = new \ProjectSend\Classes\Users($dbh);
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+if (!defined($_POST['ajax'])) {
+    include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+}
 
 /**
  * Set checkboxes as 1 to default them to checked when first entering
@@ -70,8 +72,20 @@ if ($_POST) {
         }
 
         if (!empty($new_response['id'])) {
-            $rediret_to = BASE_URI . 'clients-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
-            header('Location:' . $rediret_to);
+            if ($_POST['ajax']) {
+                header('Content-Type: application/json');
+                echo json_encode(array('status' => 'true', 'client_id' => $new_response['id'], 'client_name' => $new_response['name']));
+                exit;
+            } else {
+                $rediret_to = BASE_URI . 'clients-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
+                header('Location:' . $rediret_to);
+                exit;
+            }
+        }
+    } else {
+	    if ($_POST['ajax']) {
+            header('Content-Type: application/json');
+            echo json_encode(array('status' => 'false', 'message' => $new_client->getValidationErrors()));
             exit;
         }
     }

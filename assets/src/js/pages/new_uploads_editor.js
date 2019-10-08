@@ -99,8 +99,49 @@
                         closeButton: true,
                         size: 'large'
                     });
-                    dialog.on('shown.bs.modal', function(e){
-
+                    dialog.on('hidden.bs.modal', function() {
+                        $(this).remove();
+                    });
+                    dialog.on('shown.bs.modal', function(event) {
+                        admin.pages.clientForm();
+                        admin.parts.passwordVisibilityToggle();
+                        if ( $.isFunction($.fn.chosen) ) {
+                            $(this).find('.chosen-select').chosen({
+                                no_results_text	: json_strings.translations.no_results,
+                                width			: "100%",
+                                search_contains	: true
+                            });
+                        }
+                        $(this).find('form').submit(function(event) {
+                            event.preventDefault();
+                            var form = $(this);
+                            form.closest('.white-box-interior').find('.alert').remove();
+                            var formData = new FormData(form[0]);
+                            formData.append('ajax', 'true');
+                            for (var pair of formData.entries()) {
+                                console.log(pair[0]+ ', ' + pair[1]);
+                            }
+                            $.ajax({
+                                url: "clients-add.php",
+                                type: "post",
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (response) {
+                                    console.log(response);
+                                    if (response.status === 'true') {
+                                        $('.select-clients').append('<option value="' + response.client_id + '" selected>' + response.client_name +'</option>');
+                                        $('.select-clients').trigger("chosen:updated");
+                                        form.closest('.bootbox').modal('hide');
+                                    } else if (response.status === 'false') {
+                                        form.closest('.white-box-interior').prepend(response.message);
+                                    }
+                                },
+                                error: function(jqXHR, textStatus, errorThrown) {
+                                    console.log(textStatus, errorThrown);
+                                }
+                            });
+                        });
                     });
                 });
             });

@@ -149,7 +149,7 @@
                 });
             }
 
-            $('.add-all').click(function(){
+            $('body').on('click', '.add-all', function(){
                 var selector = $(this).parent().prev().prev('select');
                 $(selector).find('option').each(function(){
                     $(this).prop('selected', true);
@@ -158,7 +158,7 @@
                 return false;
             });
 
-            $('.remove-all').click(function(){
+            $('body').on('click', '.remove-all', function(){
                 var selector = $(this).parent().prev().prev('select');
                 $(selector).find('option').each(function(){
                     $(this).prop('selected', false);
