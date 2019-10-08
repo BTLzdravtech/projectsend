@@ -505,13 +505,13 @@ while( $row = $statement->fetch() ) {
 																	</div>
 															</div>
 
-															<!--<div class="checkbox form-group">
+															<div class="checkbox form-group">
 																<label for="exp_checkbox_<?php echo $i; ?>">
                                                                     <div class="input-group">
-																	    <input type="checkbox" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if (CURRENT_USER_LEVEL == '9' || CURRENT_USER_LEVEL == '8' || CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?><span class="mandatory"> *</span>
+																	    <input type="hidden" name="file[<?php echo $i; ?>][expires]" id="exp_checkbox_<?php echo $i; ?>" value="1" <?php if (CURRENT_USER_LEVEL == '9' || CURRENT_USER_LEVEL == '8' || CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '0') { ?>checked="checked"<?php } ?> />
                                                                     </div>
 																</label>
-															</div>-->
+															</div>
 
 															<?php
 																/** The following options are available to users only */
@@ -570,7 +570,8 @@ while( $row = $statement->fetch() ) {
                                                                 <div class="list_mass_members">
                                                                     <a href="#" class="btn btn-xs btn-primary add-all" data-type="clients"><?php _e('Add all','cftp_admin'); ?></a>
                                                                     <a href="#" class="btn btn-xs btn-primary remove-all" data-type="clients"><?php _e('Remove all','cftp_admin'); ?></a>
-                                                                    <a href="#" class="btn btn-xs btn-danger copy-all" data-type="clients"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+                                                                    <a href="#" class="btn btn-xs btn-danger copy-all" data-type="clients"><?php _e('Copy selections','cftp_admin'); ?></a>
+                                                                    <a href="#" class="btn btn-xs btn-primary create-client" data-type="clients"><?php _e('Create client','cftp_admin'); ?></a>
                                                                 </div>
 
                                                                 <label><?php _e('Groups', 'cftp_admin');?>:</label>
@@ -592,7 +593,7 @@ while( $row = $statement->fetch() ) {
                                                                 <div class="list_mass_members">
                                                                     <a href="#" class="btn btn-xs btn-primary add-all" data-type="groups"><?php _e('Add all','cftp_admin'); ?></a>
                                                                     <a href="#" class="btn btn-xs btn-primary remove-all" data-type="groups"><?php _e('Remove all','cftp_admin'); ?></a>
-                                                                    <a href="#" class="btn btn-xs btn-danger copy-all" data-type="groups"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+                                                                    <a href="#" class="btn btn-xs btn-danger copy-all" data-type="groups"><?php _e('Copy selections','cftp_admin'); ?></a>
                                                                 </div>
 
                                                                 <div class="divider"></div>
@@ -621,7 +622,7 @@ while( $row = $statement->fetch() ) {
 																<div class="list_mass_members">
 																	<a href="#" class="btn btn-xs btn-primary add-all" data-type="categories"><?php _e('Add all','cftp_admin'); ?></a>
 																	<a href="#" class="btn btn-xs btn-primary remove-all" data-type="categories"><?php _e('Remove all','cftp_admin'); ?></a>
-																	<a href="#" class="btn btn-xs btn-danger copy-all" data-type="categories"><?php _e('Copy selections to other files','cftp_admin'); ?></a>
+																	<a href="#" class="btn btn-xs btn-danger copy-all" data-type="categories"><?php _e('Copy selections','cftp_admin'); ?></a>
 																</div>
 															</div>
 														</div>

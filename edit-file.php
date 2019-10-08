@@ -416,7 +416,7 @@ $get_categories = get_categories();
 															<div class="checkbox form-group">
 																<label for="exp_checkbox">
                                                                     <div class="input-group">
-                                                                        <input type="checkbox" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> /> <?php _e('File expires', 'cftp_admin');?><span class="mandatory"> *</span>
+                                                                        <input type="hidden" id="exp_checkbox" name="file[<?php echo $i; ?>][expires]" value="1" <?php if ($row['expires']) { ?>checked="checked"<?php } ?> />
                                                                     </div>
                                                                 </label>
 															</div>
@@ -431,7 +431,7 @@ $get_categories = get_categories();
 															<div class="checkbox form-group">
 																<label for="pub_checkbox">
                                                                     <div class="input-group">
-																	    <input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?><span class="mandatory"> *</span>
+																	    <input type="checkbox" id="pub_checkbox" name="file[<?php echo $i; ?>][public]" value="1" <?php if ($row['public_allow']) { ?>checked="checked"<?php } ?> /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
                                                                     </div>
                                                                 </label>
 															</div>
