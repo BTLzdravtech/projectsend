@@ -91,17 +91,34 @@
 		
 		$actions_to_graph = array();
 
-		$params = array(
-						':max_days'	=> $max_stats_days,
-					);
 		/**
 		 * Get downloads from the specific downloads table
 		 */
-		$statement = $dbh->prepare("SELECT DATE(timestamp) as statsDate, COUNT(*) as total
-										FROM " . TABLE_DOWNLOADS . " 
-										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
-										GROUP BY statsDate
-									");
+        if (CURRENT_USER_LEVEL == '9') {
+            $params = array(
+                ':max_days'	=> $max_stats_days,
+            );
+            $statement = $dbh->prepare("SELECT DATE(timestamp) as statsDate, COUNT(*) as total
+                                            FROM " . TABLE_DOWNLOADS . " 
+                                            WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
+                                            GROUP BY statsDate
+                                        ");
+        } elseif (CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '8') {
+            $params = array(
+                ':max_days'	=> $max_stats_days,
+                ':current_user_id1'	=> CURRENT_USER_ID,
+                ':current_user_id2'	=> CURRENT_USER_ID,
+            );
+            $statement = $dbh->prepare("SELECT DATE(D.timestamp) as statsDate, COUNT(*) as total
+                                            FROM " . TABLE_DOWNLOADS . " D 
+                                            INNER JOIN btl_files F
+                                            ON D.file_id = F.id
+                                            INNER JOIN btl_users U
+                                            ON F.owner_id = U.id AND (U.id = :current_user_id1 OR U.owner_id = :current_user_id2)
+                                            WHERE D.timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
+                                            GROUP BY statsDate
+                                        ");
+        }
 		$statement->execute( $params );
 		if ( $statement->rowCount() > 0 ) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -114,12 +131,32 @@
 		/**
 		 * Get other details from the actions log
 		 */
-		$statement = $dbh->prepare("SELECT action, DATE(timestamp) as statsDate, COUNT(*) as total
+        if (CURRENT_USER_LEVEL == '9') {
+            $params = array(
+                ':max_days'	=> $max_stats_days,
+            );
+            $statement = $dbh->prepare("SELECT action, DATE(timestamp) as statsDate, COUNT(*) as total
 										FROM " . TABLE_LOG . " 
 										WHERE timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
 										AND action IN (".$actions.")
 										GROUP BY statsDate, action
 									");
+        } elseif (CURRENT_USER_LEVEL == '7' || CURRENT_USER_LEVEL == '8') {
+            $params = array(
+                ':max_days'	=> $max_stats_days,
+                ':current_user_id1'	=> CURRENT_USER_ID,
+                ':current_user_id2'	=> CURRENT_USER_ID,
+            );
+            $statement = $dbh->prepare("SELECT action, DATE(L.timestamp) as statsDate, COUNT(*) as total
+										FROM " . TABLE_LOG . " L
+										INNER JOIN btl_users U
+                                        ON L.owner_id = U.id AND (U.id = :current_user_id1 OR U.owner_id = :current_user_id2) 
+										WHERE L.timestamp >= DATE_SUB( CURDATE(),INTERVAL :max_days DAY)
+										AND L.action IN (".$actions.")
+										GROUP BY statsDate, action
+									");
+        }
+
 		$statement->execute( $params );
 		if ( $statement->rowCount() > 0 ) {
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -239,7 +276,7 @@
 					minTickSize: [1, "day"],
 					timeformat: "%d/%m",
 					labelWidth: "30"
-				},
+                },
 				yaxis: {
 					min: 0,
 					tickDecimals:0

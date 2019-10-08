@@ -30,7 +30,7 @@ switch ($user_form_type) {
 		break;
 }
 
-$is_ldap_user = isset($user_arguments['objectguid']);
+$is_ldap_user = isset($user_arguments['objectguid']) && $user_arguments['objectguid'] != "";
 ?>
 <form action="<?php echo html_output($form_action); ?>" name="user_form" id="user_form" method="post" class="form-horizontal" data-form-type="<?php echo $user_form_type; ?>">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
@@ -133,10 +133,11 @@ $is_ldap_user = isset($user_arguments['objectguid']);
 				}
 			}
 		?>
-
-	<div class="inside_form_buttons">
-		<button type="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
-	</div>
+    <?php if (!$is_ldap_user) { ?>
+        <div class="inside_form_buttons">
+            <button type="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
+        </div>
+    <?php } ?>
 
 	<?php
 		if ($user_form_type == 'new_user') {

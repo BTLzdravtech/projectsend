@@ -69,7 +69,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 									<?php
 										$actions_options = array(
 																'none'	=> __('Select action','cftp_admin'),
-																'zip'	=> __('Download zipped','cftp_admin'),
+																'zip'	=> __('Download zip','cftp_admin'),
 															);
 										foreach ( $actions_options as $val => $text ) {
 									?>

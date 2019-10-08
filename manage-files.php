@@ -263,7 +263,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     $clients_condition .= ":client" . $key;
                     $params[":client" . $key] = $client;
                 }
-                $conditions[] = "(owner_id = :owner_id OR owner_id IN (" . $clients_condition . "))";
+                $conditions[] = "(owner_id = :owner_id" . (strlen($clients_condition) > 0 ? " OR owner_id IN (" . $clients_condition . ")" : "") . ")";
                 $no_results_error = 'account_level';
 
                 $params[':owner_id'] = CURRENT_USER_ID;
@@ -448,10 +448,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 									?>
 									<select name="action" id="action" class="txtfield form-control">
 										<?php
-											$actions_options = array(
-                                                'none' => __('Select action','cftp_admin'),
-                                                'zip' => __('Download zipped','cftp_admin'),
-                                            );
+                                            if (CURRENT_USER_LEVEL != '0') {
+                                                $actions_options = array(
+                                                    'none' => __('Select action','cftp_admin'),
+                                                    'zip' => __('Download zip','cftp_admin'),
+                                                );
+                                            } else {
+                                                $actions_options = array(
+                                                    'none' => __('Select action','cftp_admin'),
+                                                );
+                                            }
 
                                             /** Options only available when viewing a client/group files list */
 											if (isset($search_on)) {
