@@ -91,6 +91,20 @@
             // Autoclick the continue button
             //$('#upload-continue').click();
 
+            $('.create-client').click(function(event) {
+                $.get("ajax/clients-add.php", function (data) {
+                    var dialog = bootbox.dialog({
+                        message: data,
+                        title: "Create client",
+                        closeButton: true,
+                        size: 'large'
+                    });
+                    dialog.on('shown.bs.modal', function(e){
+
+                    });
+                });
+            });
+
         });
     };
 })();

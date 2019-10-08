@@ -128,7 +128,7 @@
             var hdl = new Jen(true);
             hdl.hardening(true);
 
-            $('.btn_generate_password').click(function(e) {
+            $('body').on('click', '.btn_generate_password', function(e) {
                 var target = $(this).parents('.form-group').find('.password_toggle');
                 var min_chars = $(this).data('min');
                 var max_chars = $(this).data('max');
