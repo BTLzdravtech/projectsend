@@ -17,7 +17,7 @@ session_start();
  *
  */
  define('SYSTEM_NAME','ProjectSend');
- define('SYSTEM_URI','https://www.projectsend.org/');
+ define('SYSTEM_URI','https://send.medictech.com/');
  define('SYSTEM_URI_LABEL','ProjectSend on github');
  define('DONATIONS_URL','https://www.projectsend.org/donations/');
  
