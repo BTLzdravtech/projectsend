@@ -34,20 +34,18 @@ if (current_role_in($log_allowed)) {
 				<?php include_once WIDGETS_FOLDER.'statistics.php'; ?>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<?php include_once WIDGETS_FOLDER.'news.php'; ?>
-			</div>
-			<?php
-				if ( $sys_info == true ) {
-			?>
-					<div class="col-sm-6">
-						<?php include_once WIDGETS_FOLDER.'system-information.php'; ?>
-					</div>
-			<?php
-				}
-			?>
-		</div>
+        <?php
+            if ( $sys_info == true ) {
+        ?>
+            <div class="row">
+                <div class="col-sm-6">
+                    <?php include_once WIDGETS_FOLDER.'news.php'; ?>
+                </div>
+                <div class="col-sm-6">
+                    <?php include_once WIDGETS_FOLDER.'system-information.php'; ?>
+                </div>
+            </div>
+        <?php } ?>
 	</div>
 		
 	<?php
