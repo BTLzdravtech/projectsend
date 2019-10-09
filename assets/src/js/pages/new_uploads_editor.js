@@ -92,6 +92,9 @@
             //$('#upload-continue').click();
 
             $('.create-client').click(function(event) {
+                event.preventDefault();
+                var trigger = event.target;
+                var type = $(event.target).data('type');
                 $.get("ajax/clients-add.php", function (data) {
                     var dialog = bootbox.dialog({
                         message: data,
@@ -130,8 +133,15 @@
                                 success: function (response) {
                                     console.log(response);
                                     if (response.status === 'true') {
-                                        $('.select-clients').append('<option value="' + response.client_id + '" selected>' + response.client_name +'</option>');
-                                        $('.select-clients').trigger("chosen:updated");
+                                        var closest_select_id = $(trigger).closest('.file_data').find('.select-'+ type).attr('id');
+                                        $('.select-'+ type).each(function() {
+                                            if ($(this).attr('id') === closest_select_id) {
+                                                $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name +'</option>');
+                                            } else {
+                                                $(this).append('<option value="' + response.client_id + '">' + response.client_name +'</option>');
+                                            }
+                                        });
+                                        $('.select-'+ type).trigger("chosen:updated");
                                         form.closest('.bootbox').modal('hide');
                                     } else if (response.status === 'false') {
                                         form.closest('.white-box-interior').prepend(response.message);
