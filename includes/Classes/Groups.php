@@ -235,6 +235,7 @@ class Groups
 
             $this->id = $this->dbh->lastInsertId();
             $this->state['id'] = $this->id;
+            $this->state['name'] = $this->name;
             $this->state['public_token'] = $this->public_token;
 
             /** Create the members records */

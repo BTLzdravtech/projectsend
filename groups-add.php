@@ -17,7 +17,9 @@ $page_id = 'group_form';
 
 $new_group = new \ProjectSend\Classes\Groups($dbh);
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+if (!defined($_POST['ajax'])) {
+    include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+}
 
 if ($_POST) {
 	/**
@@ -37,11 +39,23 @@ if ($_POST) {
         $new_response = $new_group->create();
 
         if (!empty($new_response['id'])) {
-            $rediret_to = BASE_URI . 'groups-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1';
-            header('Location:' . $rediret_to);
+            if ($_POST['ajax']) {
+                header('Content-Type: application/json');
+                echo json_encode(array('status' => 'true', 'group_id' => $new_response['id'], 'group_name' => $new_response['name']));
+                exit;
+            } else {
+                $rediret_to = BASE_URI . 'groups-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1';
+                header('Location:' . $rediret_to);
+                exit;
+            }
+        }
+	} else {
+        if ($_POST['ajax']) {
+            header('Content-Type: application/json');
+            echo json_encode(array('status' => 'false', 'message' => $new_group->getValidationErrors()));
             exit;
         }
-	}
+    }
 }
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-6">

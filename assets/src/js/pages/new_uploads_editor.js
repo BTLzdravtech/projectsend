@@ -118,39 +118,107 @@
                         $(this).find('form').submit(function(event) {
                             event.preventDefault();
                             var form = $(this);
-                            form.closest('.white-box-interior').find('.alert').remove();
-                            var formData = new FormData(form[0]);
-                            formData.append('ajax', 'true');
-                            for (var pair of formData.entries()) {
-                                console.log(pair[0]+ ', ' + pair[1]);
-                            }
-                            $.ajax({
-                                url: "clients-add.php",
-                                type: "post",
-                                data: formData,
-                                processData: false,
-                                contentType: false,
-                                success: function (response) {
-                                    console.log(response);
-                                    if (response.status === 'true') {
-                                        var closest_select_id = $(trigger).closest('.file_data').find('.select-'+ type).attr('id');
-                                        $('.select-'+ type).each(function() {
-                                            if ($(this).attr('id') === closest_select_id) {
-                                                $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name +'</option>');
-                                            } else {
-                                                $(this).append('<option value="' + response.client_id + '">' + response.client_name +'</option>');
-                                            }
-                                        });
-                                        $('.select-'+ type).trigger("chosen:updated");
-                                        form.closest('.bootbox').modal('hide');
-                                    } else if (response.status === 'false') {
-                                        form.closest('.white-box-interior').prepend(response.message);
+                            if (form.valid()) {
+                                form.closest('.white-box-interior').find('.alert').remove();
+                                var formData = new FormData(form[0]);
+                                formData.append('ajax', 'true');
+                                $.ajax({
+                                    url: "clients-add.php",
+                                    type: "post",
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    success: function (response) {
+                                        console.log(response);
+                                        if (response.status === 'true') {
+                                            var closest_select_id = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
+                                            $('.select-' + type).each(function () {
+                                                if ($(this).attr('id') === closest_select_id) {
+                                                    $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name + '</option>');
+                                                } else {
+                                                    $(this).append('<option value="' + response.client_id + '">' + response.client_name + '</option>');
+                                                }
+                                            });
+                                            $('.select-' + type).trigger("chosen:updated");
+                                            form.closest('.bootbox').modal('hide');
+                                        } else if (response.status === 'false') {
+                                            form.closest('.white-box-interior').prepend(response.message);
+                                        }
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        console.log(textStatus, errorThrown);
                                     }
-                                },
-                                error: function(jqXHR, textStatus, errorThrown) {
-                                    console.log(textStatus, errorThrown);
-                                }
+                                });
+                            }
+                        });
+                    });
+                });
+            });
+
+            $('.create-group').click(function(event) {
+                event.preventDefault();
+                var trigger = event.target;
+                var type = $(event.target).data('type');
+                $.get("ajax/groups-add.php", function (data) {
+                    var dialog = bootbox.dialog({
+                        message: data,
+                        title: "Create group",
+                        closeButton: true,
+                        size: 'large'
+                    });
+                    dialog.on('hidden.bs.modal', function() {
+                        $(this).remove();
+                    });
+                    dialog.on('shown.bs.modal', function(event) {
+                        admin.pages.groupForm();
+                        if ( $.isFunction($.fn.chosen) ) {
+                            $(this).find('.chosen-select').chosen({
+                                no_results_text	: json_strings.translations.no_results,
+                                width			: "100%",
+                                search_contains	: true
                             });
+                        }
+                        if ( typeof CKEDITOR !== "undefined" ) {
+                            CKEDITOR.replace('description');
+                            for (var i in CKEDITOR.instances) {
+                                CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
+                            }
+                        }
+                        $(this).find('form').submit(function(event) {
+                            event.preventDefault();
+                            var form = $(this);
+                            if (form.valid()) {
+                                form.closest('.white-box-interior').find('.alert').remove();
+                                var formData = new FormData(form[0]);
+                                formData.append('ajax', 'true');
+                                $.ajax({
+                                    url: "groups-add.php",
+                                    type: "post",
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    success: function (response) {
+                                        console.log(response);
+                                        if (response.status === 'true') {
+                                            var closest_select_id = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
+                                            $('.select-' + type).each(function () {
+                                                if ($(this).attr('id') === closest_select_id) {
+                                                    $(this).append('<option value="' + response.group_id + '" selected>' + response.group_name + '</option>');
+                                                } else {
+                                                    $(this).append('<option value="' + response.group_id + '">' + response.group_name + '</option>');
+                                                }
+                                            });
+                                            $('.select-' + type).trigger("chosen:updated");
+                                            form.closest('.bootbox').modal('hide');
+                                        } else if (response.status === 'false') {
+                                            form.closest('.white-box-interior').prepend(response.message);
+                                        }
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        console.log(textStatus, errorThrown);
+                                    }
+                                });
+                            }
                         });
                     });
                 });

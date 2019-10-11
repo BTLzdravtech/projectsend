@@ -594,6 +594,7 @@ while( $row = $statement->fetch() ) {
                                                                     <a href="#" class="btn btn-xs btn-primary add-all" data-type="groups"><?php _e('Add all','cftp_admin'); ?></a>
                                                                     <a href="#" class="btn btn-xs btn-primary remove-all" data-type="groups"><?php _e('Remove all','cftp_admin'); ?></a>
                                                                     <a href="#" class="btn btn-xs btn-danger copy-all" data-type="groups"><?php _e('Copy selections','cftp_admin'); ?></a>
+                                                                    <a href="#" class="btn btn-xs btn-primary create-group" data-type="groups"><?php _e('Create group','cftp_admin'); ?></a>
                                                                 </div>
 
                                                                 <div class="divider"></div>
