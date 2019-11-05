@@ -14,6 +14,7 @@ global $dbh;
 $get_file_info = array();
 $get_client_info = array();
 $notifications_sent = array();
+$notifications_failed = array();
 $notifications_inactive = array();
 
 /**
@@ -78,8 +79,7 @@ if (!empty($found_notifications)) {
 		$file_data[$row['id']] = array(
 									'id'			=> $row['id'],
 									'filename'		=> $row['filename'],
-									'description'	=> htmlentities_allowed($row['description']),
-                                    'expiry_date'   => $row['expiry_date']
+									'description'	=> htmlentities_allowed($row['description'])
 								);
 	}
 
@@ -147,8 +147,7 @@ if (!empty($found_notifications)) {
 						$notes_to_admin[$client['created_by']][$client['name']][] = array(
 																		'notif_id' => $notification['id'],
 																		'file_name' => $file_data[$use_id]['filename'],
-																		'description' => make_excerpt($file_data[$use_id]['description'],200),
-                                                                        'expiry_date'   => $file_data[$use_id]['expiry_date']
+																		'description' => make_excerpt($file_data[$use_id]['description'],200)
 																	);
 					}
 					elseif ($notification['upload_type'] == '1') {
@@ -159,8 +158,7 @@ if (!empty($found_notifications)) {
 								$notes_to_clients[$client['user']][] = array(
 																			'notif_id' => $notification['id'],
 																			'file_name' => $file_data[$use_id]['filename'],
-																			'description' => make_excerpt($file_data[$use_id]['description'],200),
-                                                                            'expiry_date'   => $file_data[$use_id]['expiry_date']
+																			'description' => make_excerpt($file_data[$use_id]['description'],200)
 																		);
 							}
 							else {
@@ -179,7 +177,6 @@ if (!empty($found_notifications)) {
 
 			/** Reset the files list UL contents */
 			$files_list = '';
-            $expiry_date = strtotime($row['expiry_date']) - time();
 			foreach ($mail_files as $mail_file) {
 				/** Make the list of files */
 				$files_list.= '<li style="margin-bottom:11px;">';
@@ -197,24 +194,11 @@ if (!empty($found_notifications)) {
 			$address = $mail_by_user[$mail_username];
 			/** Create the object and send the email */
 			$notify_client = new \ProjectSend\Classes\Emails;
-			if ($expiry_date < 172800) {
-                $email_arguments_date = array(
-                    'type' => 'limit_retention',
-                    'address' => $address,
-                    'files_list' => $files_list,
-                    'expire_date' => $expiry_date
-                );
-            } else {
-                $email_arguments_date = false;
-			}
             $email_arguments = array(
                 'type' => 'new_files_by_user',
                 'address' => $address,
-                'files_list' => $files_list,
-                'expire_date' => $expiry_date
+                'files_list' => $files_list
             );
-
-			$try_sending = $notify_client->send($email_arguments_date);
             $try_sending = $notify_client->send($email_arguments);
 			if ($try_sending == 1) {
 				$notifications_sent = array_merge($notifications_sent, $this_client_notifications);

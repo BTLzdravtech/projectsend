@@ -46,7 +46,8 @@ function generateUsername($string, $i = 1) {
 }
 
 function isUniqueUsername($string) {
-    $statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+    global $dbh;
+    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
     $statement->execute(array(':user'	=> $string));
     if($statement->rowCount() > 0) {
         return false;

@@ -725,12 +725,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 								$expires_label	= __('Expired on','cftp_admin') . ' ' . $expires_date;
 							}
 							elseif (strtotime($row['expiry_date']) - time() < 172800) {
-                                $this_file = new ProjectSend\Classes\Emails;
-                                $expiry_date = $this_file->email_limit_retention($file_id);
-                                $try_sending = $this_file->send($row['email']);
-                                    $expires_button = 'warning';
-                                    $expires_label = __('Expired on', 'cftp_admin') . ' ' . $expires_date;
-
+                                $expires_button = 'warning';
+                                $expires_label = __('Expired on', 'cftp_admin') . ' ' . $expires_date;
                             }
 							else {
 								$expires_button	= 'success';

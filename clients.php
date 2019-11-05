@@ -67,10 +67,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             while( $row = $statement->fetch() ) {
                                 $file_ids[] = $row["id"];
                             }
-                            $count = $statement->rowCount();
-                            if ($count > 0) {
+                            if ($statement->rowCount() > 0) {
                                 foreach ($file_ids as $file_id) {
-                                    $delete_files	= $this_file->deleteFiles($file_id, true);
+                                    $delete_files = $this_file->deleteFiles($file_id, true);
                                 }
                             }
                             $delete_user = $this_client->delete();
