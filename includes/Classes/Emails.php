@@ -697,14 +697,6 @@ class Emails
 						$this->send_mail->Username = MAIL_SMTP_USER;
 						$this->send_mail->Password = MAIL_SMTP_PASS;
 
-                        $this->send_mail->SMTPOptions = array(
-                            'ssl' => array(
-                                'verify_peer' => false,
-                                'verify_peer_name' => false,
-                                'allow_self_signed' => true,
-                            ),
-                        );
-
 						if ( defined('MAIL_SMTP_AUTH') && MAIL_SMTP_AUTH != 'none' ) {
 							$this->send_mail->SMTPAuth = true;
 							$this->send_mail->SMTPSecure = MAIL_SMTP_AUTH;
