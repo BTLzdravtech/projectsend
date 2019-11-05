@@ -6,7 +6,7 @@
  * @package ProjectSend
  */
 $items = array();
-
+global $dbh;
 /**
  * Items for system users
  */
@@ -285,7 +285,11 @@ if ( current_role_in( array( 9,8,7 ) ) )
 													'label'	=> __('Password reset', 'cftp_admin'),
 													'link'	=> 'email-templates.php?section=password_reset',
 												),
-											),
+                                                array(
+                                                    'label'	=> __('Your data upload time is running out', 'cftp_admin'),
+                                                    'link'	=> 'email-templates.php?section=limit_retention',
+                                                ),
+                                )
 							);
 
 	$items[]			= 'separator';

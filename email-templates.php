@@ -8,7 +8,7 @@
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
-
+global $dbh;
 $section = ( !empty( $_GET['section'] ) ) ? $_GET['section'] : $_POST['section'];
 
 switch ( $section ) {
@@ -81,6 +81,14 @@ switch ( $section ) {
 								'email_client_edited_customize',
 							);
 		break;
+    case 'limit_retention':
+        $section_title	= __('Your data upload time is running out','cftp_admin');
+        $checkboxes		= array(
+                                'email_limit_retention_subject_customize',
+                                'email_limit_retention_customize',
+                            );
+        break;
+
 	default:
 		$location = BASE_URI . 'email-templates.php?section=header_footer';
 		header("Location: $location");
@@ -310,9 +318,24 @@ if ($_POST) {
 																									),
 																		'default_text'		=> EMAIL_TEMPLATE_CLIENT_EDITED,
 																	),
-									);
+                                        'limit_retention'		=> array(
+                                                                        'subject_checkbox'	=> 'email_limit_retention_subject_customize',
+                                                                        'subject'			=> 'email_limit_retention_subject',
+                                                                        'body_checkbox'		=> 'email_limit_retention_customize',
+                                                                        'body_textarea'		=> 'email_limit_retention_text',
+                                                                        'description'		=> __('This email will be sent to the system administrator whenever finishing limit time period of uploads a file.','cftp_admin'),
+                                                                        'subject_check'		=> EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE,
+                                                                        'subject_text'		=> EMAIL_LIMIT_RETENTION_SUBJECT,
+                                                                        'body_check'		=> EMAIL_LIMIT_RETENTION_CUSTOMIZE,
+                                                                        'body_text'			=> EMAIL_LIMIT_RETENTION_TEXT,
+                                                                        'tags'				=> array(
+                                                                                                        '%FILES%'		=> __('Shows the list of files','cftp_admin'),
+                                                                                                        '%URI%'			=> __('The login link','cftp_admin') . $href_string,
+                                                                                                    ),
+                                                                       'default_text'		=> EMAIL_TEMPLATE_LIMIT_RETENTION,
+                                                                   ),
+							     		);
 			?>
-
 
 			<form action="email-templates.php" name="templatesform" method="post" enctype="multipart/form-data" class="form-horizontal">
                 <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />

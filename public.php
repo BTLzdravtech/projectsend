@@ -155,7 +155,7 @@ function list_file($data, $origin) {
                                         'public' => encode_html($row['public_allow']),
                                         'token' => encode_html($row['public_token']),
                                         'expired' => $expired,
-                                        'expire_date' => encode_html($row['expiry_date']),
+                                        'expiry_date' => encode_html($row['expiry_date']),
                                     );
 									if ( $row['public_allow'] == 1 ) {
 										$public_files[] = $row['id'];

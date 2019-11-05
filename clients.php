@@ -8,7 +8,7 @@
  */
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
-
+global $dbh;
 $active_nav = 'clients';
 
 $page_title = __('Clients Administration','cftp_admin');
@@ -59,7 +59,23 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				case 'delete':
 					foreach ($selected_clients as $work_client) {
                         $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_file	= new ProjectSend\Classes\FilesActions;
+
                         if ($this_client->get($work_client)) {
+                            $statement = $dbh->prepare("SELECT id FROM btl_files WHERE (owner_id = {$work_client})");
+                            $statement->execute();
+                           // '{$user['id']}'
+                            $statement->setFetchMode(PDO::FETCH_ASSOC);
+                            while( $row = $statement->fetch() ) {
+                                $file_ids[] = $row["id"];
+                            }
+                            $count = $statement->rowCount();
+                            if ($count > 0) {
+                                foreach ($file_ids as $file_id) {
+                                    $delete_files	= $this_file->deleteFiles($file_id, true);
+                                }
+                            }
+
                             $delete_user = $this_client->delete();
                         }
 					}

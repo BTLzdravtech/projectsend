@@ -566,6 +566,8 @@ if (current_role_in($allowed_update)) {
 											'email_new_client_by_user_customize'	=> '0',
 											'email_new_client_by_self_customize'	=> '0',
 											'email_new_user_customize'				=> '0',
+                                            'email_limit_retention_customize'       => '0',
+                                            'email_limit_retention_customize'       => '0',
 										/**
 										 * Text fields
 										 * Each one corresponding to a type of email
@@ -574,7 +576,8 @@ if (current_role_in($allowed_update)) {
 											'email_new_file_by_client_text'			=> '',
 											'email_new_client_by_user_text'			=> '',
 											'email_new_client_by_self_text'			=> '',
-											'email_new_user_text'					=> ''
+											'email_new_user_text'					=> '',
+                                            'email_limit_retention_text'			=> '',
 										);
 			
 			foreach($new_database_values as $row => $value) {
@@ -1089,6 +1092,7 @@ if (current_role_in($allowed_update)) {
 											'email_new_client_by_self_subject_customize'	=> '0',
 											'email_new_user_subject_customize'				=> '0',
 											'email_pass_reset_subject_customize'			=> '0',
+                                            'email_limit_retention_subject_customize'		=> '0',
 										/**
 										 * Text fields
 										 * Each one corresponding to a type of email
@@ -1099,6 +1103,7 @@ if (current_role_in($allowed_update)) {
 											'email_new_client_by_self_subject'			=> '',
 											'email_new_user_subject'					=> '',
 											'email_pass_reset_subject'					=> '',
+                                            'email_limit_retention_subject'				=> '',
 										);
 			
 			foreach($new_database_values as $row => $value) {

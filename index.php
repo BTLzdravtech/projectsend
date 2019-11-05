@@ -46,7 +46,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 	}
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
-
+    <p>
+        <?php
+        $msg = __('After the set time period, uploaded files will be deleted.','cftp_admin') ;
+        echo system_message('danger', $msg);
+        ?>
+    </p>
 	<?php echo get_branding_layout(true); ?>
 
 	<div class="white-box">

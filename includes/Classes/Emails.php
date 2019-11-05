@@ -9,6 +9,7 @@
  * - A new client has self-registered.
  * - A new system user has been created.
  * - A user or client requested a password reset.
+ * - Two days left before the expiration of file storage.
  *
  * @package		ProjectSend
  * @subpackage	Classes
@@ -35,6 +36,7 @@ class Emails
     private $strings_new_user;
     private $strings_pass_reset;
     private $strings_client_edited;
+    private $strings_limit_retention;
 
     function __construct()
     {
@@ -144,6 +146,13 @@ class Emails
 			'label_request' 	=> __('The client requests access to the following group(s)','cftp_admin'),
 			'body2'				=> __('Please log in to process the request.','cftp_admin')
 		);
+        /** Strings for the "data retention period ends" e-mail */
+        $this->strings_limit_retention = array(
+            'subject'		=> ( defined('EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE' ) && EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_LIMIT_RETENTION_SUBJECT' ) ) ? EMAIL_LIMIT_RETENTION_SUBJECT : __('Limit retention period ends','cftp_admin'),
+            'body'			=> __('Two days left before the expiration of your data','cftp_admin'),
+            'body2'			=> __('To see the time limit uploaded files, please visit the following link','cftp_admin'),
+            'body3'			=> __('After the time limit has passed, your uploaded files will be deleted.','cftp_admin')
+        );
     }
 
 	/**
@@ -198,6 +207,11 @@ class Emails
 					$body_check	= (!defined('EMAIL_CLIENT_EDITED_CUSTOMIZE') || EMAIL_CLIENT_EDITED_CUSTOMIZE == '0') ? '0' : EMAIL_CLIENT_EDITED_CUSTOMIZE;
 					$body_text	= EMAIL_CLIENT_EDITED_TEXT;
 				break;
+            case 'limit_retention':
+                $filename	= EMAIL_TEMPLATE_LIMIT_RETENTION;
+                $body_check	= (!defined('EMAIL_LIMIT_RETENTION_CUSTOMIZE') || EMAIL_LIMIT_RETENTION_CUSTOMIZE == '0') ? '0' : EMAIL_LIMIT_RETENTION_CUSTOMIZE;
+                $body_text	= EMAIL_LIMIT_RETENTION_TEXT;
+                break;
 		}
 
 		if ($body_check == '0') {
@@ -550,7 +564,29 @@ class Emails
 					'body' => $this->email_body
 				);
 	}
-
+    /**
+     *  Prepare the body for email sent when the data upload expires
+     */
+     function email_limit_retention($files_list)
+    {
+        $this->email_body = $this->email_prepare_body('limit_retention');
+        $this->email_body = str_replace(
+                                    array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%URI%'),
+                                    array(
+                                        $this->strings_limit_retention['subject'],
+                                        $this->strings_limit_retention['body'],
+                                        $files_list,
+                                        $this->strings_limit_retention['body2'],
+                                        $this->strings_limit_retention['body3'],
+                                        BASE_URI
+                                    ),
+                                    $this->email_body
+                                );
+        return array(
+            'subject' => $this->strings_limit_retention['subject'],
+            'body' => $this->email_body
+             );
+    }
 
 	/**
 	 * Finally, try to send the e-mail and return a status, where
@@ -571,6 +607,7 @@ class Emails
 		$this->client_id	= (!empty($arguments['client_id'])) ? $arguments['client_id'] : '';
 		$this->name			= (!empty($arguments['name'])) ? $arguments['name'] : '';
 		$this->files_list	= (!empty($arguments['files_list'])) ? $arguments['files_list'] : '';
+        $this->file_id	    = (!empty($arguments['file_id'])) ? $arguments['file_id'] : '';
 		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
 		$this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
 
@@ -588,6 +625,13 @@ class Emails
 					$this->try_bcc = true;
 				}
 			break;
+            case 'limit_retention':
+                $this->body_variables = [ $this->files_list, ];
+                if (MAIL_COPY_CLIENT_UPLOAD == '1') {
+                    $this->try_bcc = true;
+                }
+            break;
+
             case 'new_client':
                 $this->body_variables = [ $this->username, $this->password, ];
 			break;
@@ -652,6 +696,14 @@ class Emails
 						$this->send_mail->Port = MAIL_SMTP_PORT;
 						$this->send_mail->Username = MAIL_SMTP_USER;
 						$this->send_mail->Password = MAIL_SMTP_PASS;
+
+                        $this->send_mail->SMTPOptions = array(
+                            'ssl' => array(
+                                'verify_peer' => false,
+                                'verify_peer_name' => false,
+                                'allow_self_signed' => true,
+                            ),
+                        );
 
 						if ( defined('MAIL_SMTP_AUTH') && MAIL_SMTP_AUTH != 'none' ) {
 							$this->send_mail->SMTPAuth = true;

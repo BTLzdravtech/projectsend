@@ -669,6 +669,7 @@ while( $row = $statement->fetch() ) {
 	 */
 	else {
         require_once INCLUDES_DIR . DS . 'upload-send-notifications.php';
+        require_once INCLUDES_DIR . DS . 'limit-time-file.php';
 	}
 
 	/**
