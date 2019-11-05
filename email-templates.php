@@ -82,7 +82,7 @@ switch ( $section ) {
 							);
 		break;
     case 'limit_retention':
-        $section_title	= __('Your data upload time is running out','cftp_admin');
+        $section_title	= __('Expiration reminder','cftp_admin');
         $checkboxes		= array(
                                 'email_limit_retention_subject_customize',
                                 'email_limit_retention_customize',
@@ -323,7 +323,7 @@ if ($_POST) {
                                                                         'subject'			=> 'email_limit_retention_subject',
                                                                         'body_checkbox'		=> 'email_limit_retention_customize',
                                                                         'body_textarea'		=> 'email_limit_retention_text',
-                                                                        'description'		=> __('This email will be sent to the system administrator whenever finishing limit time period of uploads a file.','cftp_admin'),
+                                                                        'description'		=> __('This email will be sent to all users whenever their files are reaching the expiration limit.','cftp_admin'),
                                                                         'subject_check'		=> EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE,
                                                                         'subject_text'		=> EMAIL_LIMIT_RETENTION_SUBJECT,
                                                                         'body_check'		=> EMAIL_LIMIT_RETENTION_CUSTOMIZE,

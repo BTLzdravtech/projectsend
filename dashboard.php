@@ -29,12 +29,10 @@ if (current_role_in($log_allowed)) {
 }
 ?>
 	<div class="col-sm-8">
-        <p>
         <?php
             $msg = __('Please be informed that all your files will be deleted after their expiration.','cftp_admin') ;
             echo system_message('danger', $msg);
         ?>
-        </p>
 		<div class="row">
 			<div class="col-sm-12 container_widget_statistics">
 				<?php include_once WIDGETS_FOLDER.'statistics.php'; ?>

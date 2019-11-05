@@ -148,10 +148,10 @@ class Emails
 		);
         /** Strings for the "data retention period ends" e-mail */
         $this->strings_limit_retention = array(
-            'subject'		=> ( defined('EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE' ) && EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_LIMIT_RETENTION_SUBJECT' ) ) ? EMAIL_LIMIT_RETENTION_SUBJECT : __('Limit retention period ends','cftp_admin'),
-            'body'			=> __('Two days left before the expiration of your data','cftp_admin'),
-            'body2'			=> __('To see the time limit uploaded files, please visit the following link','cftp_admin'),
-            'body3'			=> __('After the time limit has passed, your uploaded files will be deleted.','cftp_admin')
+            'subject'		=> ( defined('EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE' ) && EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_LIMIT_RETENTION_SUBJECT' ) ) ? EMAIL_LIMIT_RETENTION_SUBJECT : __('Expiration reminder','cftp_admin'),
+            'body'			=> __('Two days left before the expiration of your files','cftp_admin'),
+            'body2'			=> __('To see the expiration time of your files, please visit the following link','cftp_admin'),
+            'body3'			=> __('After the expiration, your uploaded files will be deleted.','cftp_admin')
         );
     }
 
