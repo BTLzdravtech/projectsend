@@ -31,7 +31,7 @@ if (current_role_in($log_allowed)) {
 	<div class="col-sm-8">
         <p>
         <?php
-            $msg = __('After the set time period, uploaded files will be deleted.','cftp_admin') ;
+            $msg = __('Please be informed that all your files will be deleted after their expiration.','cftp_admin') ;
             echo system_message('danger', $msg);
         ?>
         </p>

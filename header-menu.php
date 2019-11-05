@@ -286,7 +286,7 @@ if ( current_role_in( array( 9,8,7 ) ) )
 													'link'	=> 'email-templates.php?section=password_reset',
 												),
                                                 array(
-                                                    'label'	=> __('Your data upload time is running out', 'cftp_admin'),
+                                                    'label'	=> __('Expiration reminder', 'cftp_admin'),
                                                     'link'	=> 'email-templates.php?section=limit_retention',
                                                 ),
                                 )

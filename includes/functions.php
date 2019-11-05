@@ -742,7 +742,7 @@ function message_no_clients()
 /**
  * Generate a system text message using Bootstrap's alert box.
  */
-function system_message( $type, $message, $div_id = '' )
+function system_message( $type, $message, $div_id = '', $text_center = false )
 {
     if ( empty( $type ) ) {
         $type = 'success';
@@ -759,7 +759,7 @@ function system_message( $type, $message, $div_id = '' )
             break;
 	}
 
-	$return = '<div class="alert alert-'.$type.'"';
+	$return = '<div class="alert alert-'.$type.($text_center ? ' text-center' : '').'"';
 	if ( isset( $div_id ) && $div_id != '' ) {
 		$return .= ' id="' . $div_id . '"';
 	}
