@@ -567,7 +567,6 @@ if (current_role_in($allowed_update)) {
 											'email_new_client_by_self_customize'	=> '0',
 											'email_new_user_customize'				=> '0',
                                             'email_limit_retention_customize'       => '0',
-                                            'email_limit_retention_customize'       => '0',
 										/**
 										 * Text fields
 										 * Each one corresponding to a type of email

@@ -30,10 +30,10 @@ if (current_role_in($log_allowed)) {
 ?>
 	<div class="col-sm-8">
         <p>
-            <?php
+        <?php
             $msg = __('After the set time period, uploaded files will be deleted.','cftp_admin') ;
             echo system_message('danger', $msg);
-            ?>
+        ?>
         </p>
 		<div class="row">
 			<div class="col-sm-12 container_widget_statistics">

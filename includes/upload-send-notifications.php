@@ -149,7 +149,6 @@ if (!empty($found_notifications)) {
 																		'file_name' => $file_data[$use_id]['filename'],
 																		'description' => make_excerpt($file_data[$use_id]['description'],200),
                                                                         'expiry_date'   => $file_data[$use_id]['expiry_date']
-
 																	);
 					}
 					elseif ($notification['upload_type'] == '1') {
@@ -208,12 +207,12 @@ if (!empty($found_notifications)) {
             } else {
                 $email_arguments_date = false;
 			}
-                $email_arguments = array(
-                    'type' => 'new_files_by_user',
-                    'address' => $address,
-                    'files_list' => $files_list,
-                    'expire_date' => $expiry_date
-                );
+            $email_arguments = array(
+                'type' => 'new_files_by_user',
+                'address' => $address,
+                'files_list' => $files_list,
+                'expire_date' => $expiry_date
+            );
 
 			$try_sending = $notify_client->send($email_arguments_date);
             $try_sending = $notify_client->send($email_arguments);

@@ -208,9 +208,9 @@ class Emails
 					$body_text	= EMAIL_CLIENT_EDITED_TEXT;
 				break;
             case 'limit_retention':
-                $filename	= EMAIL_TEMPLATE_LIMIT_RETENTION;
-                $body_check	= (!defined('EMAIL_LIMIT_RETENTION_CUSTOMIZE') || EMAIL_LIMIT_RETENTION_CUSTOMIZE == '0') ? '0' : EMAIL_LIMIT_RETENTION_CUSTOMIZE;
-                $body_text	= EMAIL_LIMIT_RETENTION_TEXT;
+                    $filename	= EMAIL_TEMPLATE_LIMIT_RETENTION;
+                    $body_check	= (!defined('EMAIL_LIMIT_RETENTION_CUSTOMIZE') || EMAIL_LIMIT_RETENTION_CUSTOMIZE == '0') ? '0' : EMAIL_LIMIT_RETENTION_CUSTOMIZE;
+                    $body_text	= EMAIL_LIMIT_RETENTION_TEXT;
                 break;
 		}
 
@@ -585,7 +585,7 @@ class Emails
         return array(
             'subject' => $this->strings_limit_retention['subject'],
             'body' => $this->email_body
-             );
+         );
     }
 
 	/**
@@ -696,6 +696,14 @@ class Emails
 						$this->send_mail->Port = MAIL_SMTP_PORT;
 						$this->send_mail->Username = MAIL_SMTP_USER;
 						$this->send_mail->Password = MAIL_SMTP_PASS;
+
+                        $this->send_mail->SMTPOptions = array(
+                            'ssl' => array(
+                                'verify_peer' => false,
+                                'verify_peer_name' => false,
+                                'allow_self_signed' => true,
+                            ),
+                        );
 
 						if ( defined('MAIL_SMTP_AUTH') && MAIL_SMTP_AUTH != 'none' ) {
 							$this->send_mail->SMTPAuth = true;

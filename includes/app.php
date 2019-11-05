@@ -274,7 +274,6 @@ define('EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT', 'new-file-by-client.html');
 define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');
 define('EMAIL_TEMPLATE_LIMIT_RETENTION', 'limit-retention.html');
 
-
 /** Passwords */
 define('HASH_COST_LOG2', 8);
 define('HASH_PORTABLE', false);

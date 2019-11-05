@@ -1,5 +1,5 @@
 <?php
-global $dbh;
+    global $dbh;
 	$render_container = true;
 	if ( isset( $_GET['ajax_call'] ) ) {
 		require_once '../../bootstrap.php';
