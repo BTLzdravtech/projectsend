@@ -27,6 +27,7 @@ message = { cards: [header: header, sections: sections] }
 
 set :message, message
 
+set :php_fpm_roles, :app
 set :php_fpm_service_name, 'php7.3-fpm'
 after 'deploy:finished', 'php_fpm:restart'
 
