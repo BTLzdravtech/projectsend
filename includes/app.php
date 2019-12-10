@@ -25,7 +25,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1109');
+define('CURRENT_VERSION', 'r1110');
 
 /**
  * Required software versions
@@ -201,6 +201,14 @@ define('MAX_PASS_CHARS', 60);
 
 define('MIN_GENERATE_PASS_CHARS', 10);
 define('MAX_GENERATE_PASS_CHARS', 20);
+
+/**
+ * Account lockout options
+ */
+define('MIN_INVALID_AUTH_ATTEMPTS', 0);
+define('MAX_INVALID_AUTH_ATTEMPTS', 999);
+define('MIN_OBSERVED_WINDOW', 2);
+define('MAX_OBSERVED_WINDOW', 999);
 /*
  * Cookie expiration time (in seconds).
  * Set by default to 30 days (60*60*24*30).
@@ -293,3 +301,9 @@ define('RESULTS_PER_PAGE_LOG', '15');
  */
 define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
 define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
+
+/**
+ * Account status
+ */
+define('ACCOUNT_ACTIVE', 1);
+define('ACCOUNT_INACTIVE', 0);

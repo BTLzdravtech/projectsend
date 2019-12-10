@@ -115,6 +115,10 @@ if ($_POST) {
 
     if ($can_edit_level_and_active === true) {
         $user_arguments['role'] = (isset($_POST['level'])) ? $_POST['level'] : $user_arguments['role'];
+        if ($user_arguments['active'] == ACCOUNT_INACTIVE && (isset($_POST["active"]) ? 1 : 0) == ACCOUNT_ACTIVE) {
+            $user_arguments['invalid_auth_attempts'] = 0;
+            $user_arguments['start_observation_window'] = 0;
+        }
         $user_arguments['active'] = (isset($_POST["active"])) ? 1 : 0;
     }
 

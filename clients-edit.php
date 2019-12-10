@@ -103,6 +103,10 @@ if ($_POST) {
 	}
 
 	if (CURRENT_USER_LEVEL != 0) {
+        if ($client_arguments['active'] == ACCOUNT_INACTIVE && (isset($_POST["active"]) ? 1 : 0) == ACCOUNT_ACTIVE) {
+            $client_arguments['invalid_auth_attempts'] = 0;
+            $client_arguments['start_observation_window'] = 0;
+        }
 		$client_arguments['active']	= (isset($_POST["active"])) ? 1 : 0;
 	}
 

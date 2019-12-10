@@ -56,6 +56,7 @@ switch ( $section ) {
 								'pass_require_number',
 								'pass_require_special',
 								'recaptcha_enabled',
+                                'log_failed_auth',
 							);
 		break;
 	case 'branding':
@@ -153,6 +154,36 @@ if ($_POST) {
 		}
 	}
 
+    if ($query_state == '0') {
+        /** Account lockout options */
+        /** user */
+        if (!empty($_POST['user_max_invalid_auth_attempts'])) {
+            if($_POST['user_max_invalid_auth_attempts'] < MIN_INVALID_AUTH_ATTEMPTS ||
+                $_POST['user_max_invalid_auth_attempts'] > MAX_INVALID_AUTH_ATTEMPTS) {
+                $query_state = 4;
+            }
+        }
+        if (!empty($_POST['user_observation_window'])) {
+            if($_POST['user_observation_window'] < MIN_OBSERVED_WINDOW ||
+                $_POST['user_observation_window'] > MAX_OBSERVED_WINDOW) {
+                $query_state = 4;
+            }
+        }
+        /** client */
+        if (!empty($_POST['client_max_invalid_auth_attempts'])) {
+            if($_POST['client_max_invalid_auth_attempts'] < MIN_INVALID_AUTH_ATTEMPTS ||
+                $_POST['client_max_invalid_auth_attempts'] > MAX_INVALID_AUTH_ATTEMPTS) {
+                $query_state = 4;
+            }
+        }
+        if (!empty($_POST['client_observation_window'])) {
+            if($_POST['client_observation_window'] < MIN_OBSERVED_WINDOW ||
+                $_POST['client_observation_window'] > MAX_OBSERVED_WINDOW) {
+                $query_state = 4;
+            }
+        }
+    }
+
 	/** If every option is completed, continue */
 	if ($query_state == '0') {
         // Convert file types, they are posted as a json string via tagify
@@ -237,6 +268,10 @@ $allowed_file_types = implode(',',$allowed_file_types);
 					echo system_message('danger',$msg);
 					$show_options_form = 1;
 					break;
+                case '4':
+                    $msg = __('Invalid option value specified. Please try again.','cftp_admin');
+                    echo system_message('error',$msg);
+                    break;
 			}
 		}
 

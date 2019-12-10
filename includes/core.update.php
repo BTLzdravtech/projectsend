@@ -1367,5 +1367,33 @@ if (current_role_in($allowed_update)) {
                 }
             }
         }
+
+        /**
+         * r1110 updates
+         * 1- New columns invalid_auth_attempts and start_observation_window for account lockout functionality
+         * 2- New option for logging failed authentication attempts
+         */
+        if ($last_update < 1110) {
+            $new_database_values = array(
+                'user_max_invalid_auth_attempts'    => '5',
+                'user_observation_window'           => '20',
+                'client_max_invalid_auth_attempts'  => '5',
+                'client_observation_window'         => '20',
+                'log_failed_auth'                   => '0',
+            );
+
+            foreach($new_database_values as $row => $value) {
+                if ( add_option_if_not_exists($row, $value) ) {
+                    $updates_made++;
+                }
+            }
+
+            $q = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD invalid_auth_attempts INT(3) NOT NULL default '0'");
+            $q2 = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD start_observation_window INT(10) NOT NULL default '0'");
+            if ($q && $q2) {
+                $updates_made++;
+            }
+        }
+
     }
 }
