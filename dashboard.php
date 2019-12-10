@@ -27,6 +27,15 @@ if (current_role_in($log_allowed)) {
 	$show_log = true;
 	$sys_info = true;
 }
+
+/** Get the size of all files */
+$dir = new DirectoryIterator(UPLOADED_FILES_FOLDER);
+$total_file_size = 0;
+foreach($dir as $fileinfo){
+    if ($fileinfo->isFile()) {
+        $total_file_size += get_real_size($fileinfo->getPathname());
+    }
+}
 ?>
 	<div class="col-sm-8">
         <?php
@@ -43,6 +52,7 @@ if (current_role_in($log_allowed)) {
         ?>
             <div class="row">
                 <div class="col-sm-6">
+                    <?php include_once WIDGETS_FOLDER.'disk.php'; ?>
                     <?php include_once WIDGETS_FOLDER.'news.php'; ?>
                 </div>
                 <div class="col-sm-6">
