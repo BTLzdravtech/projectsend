@@ -12,7 +12,7 @@
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
     <fieldset>
         <div class="form-group">
-            <label for="username"><?php _e('Username','cftp_admin'); ?> / <?php _e('E-mail','cftp_admin'); ?></label>
+            <label for="username"><?php _e('Username','cftp_admin'); ?></label>
             <input type="text" name="username" id="username" value="<?php if (isset($sysuser_username)) { echo htmlspecialchars($sysuser_username); } ?>" class="form-control" autofocus required />
         </div>
 
