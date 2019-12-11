@@ -22,20 +22,23 @@ $log_allowed = array(9);
 
 $show_log = false;
 $sys_info = false;
+$disk_info = false;
 
 if (current_role_in($log_allowed)) {
 	$show_log = true;
 	$sys_info = true;
-}
+    $disk_info = true;
 
-/** Get the size of all files */
-$dir = new DirectoryIterator(UPLOADED_FILES_FOLDER);
-$total_file_size = 0;
-foreach($dir as $fileinfo){
-    if ($fileinfo->isFile()) {
-        $total_file_size += get_real_size($fileinfo->getPathname());
+    /** Get the size of all files */
+    $dir = new DirectoryIterator(UPLOADED_FILES_DIR);
+    $total_file_size = 0;
+    foreach($dir as $fileinfo){
+        if ($fileinfo->isFile()) {
+            $total_file_size += get_real_size($fileinfo->getPathname());
+        }
     }
 }
+
 ?>
 	<div class="col-sm-8">
         <?php
