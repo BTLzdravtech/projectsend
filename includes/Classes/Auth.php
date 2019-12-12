@@ -100,6 +100,7 @@ class Auth
                             'role' => '8',
                             'max_file_size' => '',
                             'notify_account' => '0',
+                            'notify_upload' => '1',
                             'active' => '1',
                             'type' => 'new_user',
                             'objectguid' => bin2hex($attributes['objectGUID'][0])
@@ -125,13 +126,12 @@ class Auth
                 //$errorstate = 'wrong_username';
                 $this->errorstate = 'invalid_credentials';
                 if (LOG_FAILED_AUTH) {
-                    $this->new_log_action = new LogActions();
-                    $this->log_action_args = array(
+                    /** Record the action log */
+                    $this->logger->addEntry([
                         'action' => 44,
                         'owner_id' => -1,
-                        'owner_user' => $_GET['username']
-                    );
-                    $this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
+                        'owner_user' =>  $_GET['username']
+                    ]);
                 }
             }
         }
@@ -253,7 +253,7 @@ class Auth
 					break;
 				case 'inactive_client':
 					$this->error = __("This account is not active.",'cftp_admin');
-					if (CLIENTS_AUTO_APPROVE == 0) {
+					if (CLIENTS_CAN_REGISTER == 1 && CLIENTS_AUTO_APPROVE == 0) {
 						$this->error .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
 					}
 					break;
@@ -275,14 +275,12 @@ class Auth
     private function checkLockout() {
         if (LOG_FAILED_AUTH) {
             $action = ($this->user_level != '0' ? 41 : 40);
-            $this->new_log_action = new LogActions();
-            $this->log_action_args = array(
+            $this->logger->addEntry([
                 'action' => $action,
                 'owner_id' => $this->logged_id,
-                'owner_user' => $this->global_name,
-                'affected_account_name' => $this->global_name
-            );
-            $this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
+                'owner_user' => $this->name,
+                'affected_account_name' => $this->name
+            ]);
         }
         /**
          * account lockout logic
@@ -316,14 +314,13 @@ class Auth
                         $this->refresh_account_status($this->logged_id);
                         /** Record the lockout action */
                         $action = ($this->user_level != '0' ? 43 : 42);
-                        $this->new_log_action = new LogActions();
-                        $this->log_action_args = array(
+                        /** Record the action log */
+                        $this->logger->addEntry([
                             'action' => $action,
                             'owner_id' => $this->logged_id,
-                            'owner_user' => $this->global_name,
-                            'affected_account_name' => $this->global_name
-                        );
-                        $this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
+                            'owner_user' => $this->name,
+                            'affected_account_name' => $this->name
+                        ]);
                     }
                 } else {
                     // this invalid login is in a new observation_window
@@ -343,14 +340,13 @@ class Auth
                 $this->refresh_account_status($this->logged_id);
                 /** Record the lockout action */
                 $action = ($this->user_level != '0' ? 43 : 42);
-                $this->new_log_action = new LogActions();
-                $this->log_action_args = array(
+                /** Record the action log */
+                $this->logger->addEntry([
                     'action' => $action,
                     'owner_id' => $this->logged_id,
-                    'owner_user' => $this->global_name,
-                    'affected_account_name' => $this->global_name
-                );
-                $this->new_record_action = $this->new_log_action->log_action_save($this->log_action_args);
+                    'owner_user' => $this->name,
+                    'affected_account_name' => $this->name
+                ]);
             }
             // user hasn't authenticated correctly so don't bleed any state information about the account
             $this->errorstate = 'invalid_credentials';

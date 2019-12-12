@@ -1813,3 +1813,15 @@ function render_log_action($params)
 
 	return $log;
 }
+
+function getGoogleLoginClient()
+{
+    $client = new Google_Client();
+    $client->setClientId(GOOGLE_CLIENT_ID);
+    $client->setClientSecret(GOOGLE_CLIENT_SECRET);
+    $client->setRedirectUri(BASE_URI . 'google/callback.php');
+    $client->addScope(array('profile','email'));
+    $client->setHostedDomain('btlnet.com');
+
+    return $client;
+}

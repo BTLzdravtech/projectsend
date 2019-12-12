@@ -1075,7 +1075,7 @@ msgid "Branding"
 msgstr ""
 
 #: header-menu.php:230 options.php:67
-msgid "Social Login"
+msgid "Google Login"
 msgstr ""
 
 #: header-menu.php:234 options.php:72

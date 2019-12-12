@@ -117,6 +117,13 @@ $is_ldap_user = isset($user_arguments['objectguid']) && $user_arguments['objectg
 					</label>
 				</div>
 			</div>
+            <div class="form-group">
+                <div class="col-sm-8 col-sm-offset-4">
+                    <label for="notify">
+                        <input type="checkbox" name="notify_upload" id="notify_upload" <?php echo (isset($user_arguments['notify_upload']) && $user_arguments['notify_upload'] == 1) ? 'checked="checked"' : ''; ?>> <?php _e('Notify new uploads by e-mail','cftp_admin'); ?>
+                    </label>
+                </div>
+            </div>
 
 			<?php
 				if ( $user_form_type == 'new_user' ) {
@@ -133,11 +140,9 @@ $is_ldap_user = isset($user_arguments['objectguid']) && $user_arguments['objectg
 				}
 			}
 		?>
-    <?php if (!$is_ldap_user) { ?>
-        <div class="inside_form_buttons">
-            <button type="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
-        </div>
-    <?php } ?>
+    <div class="inside_form_buttons">
+        <button type="submit" class="btn btn-wide btn-primary"><?php echo $submit_value; ?></button>
+    </div>
 
 	<?php
 		if ($user_form_type == 'new_user') {

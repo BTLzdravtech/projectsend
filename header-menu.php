@@ -227,8 +227,8 @@ if ( current_role_in( array( 9,8,7 ) ) )
 													'link'	=> 'options.php?section=branding',
 												),
 												array(
-													'label'	=> __('Social Login', 'cftp_admin'),
-													'link'	=> 'options.php?section=social_login',
+													'label'	=> __('Google Login', 'cftp_admin'),
+													'link'	=> 'options.php?section=google_login',
 												),
                                                 array(
                                                     'label'	=> __('LDAP', 'cftp_admin'),

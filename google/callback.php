@@ -1,13 +1,8 @@
 <?php
-require_once '../../bootstrap.php';
+require_once '../bootstrap.php';
 
-$googleClient = new Google_Client();
-$oauth2 = new Google_Oauth2Service($googleClient);
-$googleClient->setApplicationName(THIS_INSTALL_TITLE);
-$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
-$googleClient->setClientId(GOOGLE_CLIENT_ID);
-$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
-$googleClient->setScopes(array('profile', 'email'));
+$googleClient = getGoogleLoginClient();
+$oauth2 = new Google_Service_Oauth2($googleClient);
 
 if (isset($_GET['error'])) {
   if ($_GET['error'] == 'access_denied') {
@@ -21,18 +16,18 @@ if (isset($_GET['error'])) {
 }
 
 if (isset($_GET['code'])) {
-  $token = $googleClient->authenticate($_GET['code']);
-  $googleClient->setAccessToken($token);
-  $_SESSION['id_token_token'] = json_decode($token);
+  $token = $googleClient->fetchAccessTokenWithAuthCode($_GET['code']);
+  $googleClient->setAccessToken($token['access_token']);
+  $_SESSION['id_token_token'] = $token;
 }
 
-if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_token)) {
-  $ticket = $googleClient->verifyIdToken($_SESSION['id_token_token']->id_token);
+if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_token'])) {
+  $ticket = $googleClient->verifyIdToken($_SESSION['id_token_token']['id_token']);
   if ($ticket) {
     if (!isset($_SESSION['google_user'])) {
       $userData = $oauth2->userinfo->get();
-      $email = $userData['email'];
-    }else {
+      $email = $userData->email;
+    } else {
       $email = $_SESSION['google_user']['email'];
       unset($_SESSION['google_user']);
     }
@@ -144,7 +139,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']->id_
             return;
             }
             $_SESSION['google_user'] = $userData;
-            header("location:" . BASE_URI . "sociallogin/google/callback.php");
+            header("location:" . BASE_URI . "google/callback.php");
             return;
         }
       }

@@ -23,16 +23,11 @@
         </div>
     </div>
     <div class="form-group">
-        <div class="col-sm-8 col-sm-offset-4">
-            <a href="<?php echo LINK_DOC_GOOGLE_SIGN_IN; ?>" class="external_link" target="_blank"><?php _e('How do I obtain this credentials?','cftp_admin'); ?></a>
-        </div>
-    </div>
-    <div class="form-group">
         <div class="col-sm-4">
             <?php _e('Callback URI','cftp_admin'); ?>
         </div>
         <div class="col-sm-8">
-            <span class="format_url"><?php echo BASE_URI . 'sociallogin/google/callback.php'; ?></span>
+            <span class="format_url"><?php echo BASE_URI . 'google/callback.php'; ?></span>
         </div>
     </div>
 </div>

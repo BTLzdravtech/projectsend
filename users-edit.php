@@ -86,6 +86,9 @@ if ($_POST) {
         'email' => $_POST['email'],
         'role' => $user_arguments['role'],
         'max_file_size' => $user_arguments['max_file_size'],
+        'invalid_auth_attempts' => $user_arguments['invalid_auth_attempts'],
+        'start_observation_window' => $user_arguments['start_observation_window'],
+        'notify_upload' => isset($_POST["notify_upload"]) ? 1 : 0,
         'active' => $user_arguments['active'],
         'type' => 'edit_user',
     );

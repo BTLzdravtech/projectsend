@@ -64,8 +64,8 @@ switch ( $section ) {
 		$checkboxes		= array(
 							);
 		break;
-	case 'social_login':
-		$section_title	= __('Social Login','cftp_admin');
+	case 'google_login':
+		$section_title	= __('Google Login','cftp_admin');
 		$checkboxes		= array(
 							);
 		break;

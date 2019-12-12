@@ -35,6 +35,8 @@ class Users
     private $created_by;
     private $created_date;
     private $objectguid;
+    private $invalid_auth_attempts;
+    private $start_observation_window;
 
     // Uploaded files
     private $files;
@@ -136,6 +138,8 @@ class Users
 		$this->notify_account = (!empty($arguments['notify_account'])) ? $arguments['notify_account'] : 0;
         $this->max_file_size = (!empty($arguments['max_file_size'])) ? $arguments['max_file_size'] : 0;
         $this->objectguid = (!empty($arguments['objectguid'])) ? encode_html($arguments['objectguid']) : null;
+        $this->invalid_auth_attempts = (!empty($arguments['invalid_auth_attempts'])) ? encode_html($arguments['invalid_auth_attempts']) : 0;
+        $this->start_observation_window = (!empty($arguments['start_observation_window'])) ? encode_html($arguments['start_observation_window']) : 0;
 
         // Specific for clients
 		$this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
@@ -176,6 +180,8 @@ class Users
             $this->created_date = html_output($this->row['timestamp']);
             $this->owner_id = html_output($this->row['owner_id']);
             $this->created_by = html_output($this->row['created_by']);
+            $this->invalid_auth_attempts = html_output($this->row['invalid_auth_attempts']);
+            $this->start_observation_window = html_output($this->row['start_observation_window']);
             $this->objectguid = html_output($this->row['objectguid']);
 
             // Specific for clients
@@ -232,6 +238,8 @@ class Users
             'files' => $this->files,
             'groups' => $this->groups,
             'meta' => $this->meta,
+            'invalid_auth_attempts' => $this->invalid_auth_attempts,
+            'start_observation_window' => $this->start_observation_window,
             'objectguid' => $this->objectguid,
         ];
 
@@ -475,7 +483,9 @@ class Users
 										contact = :contact,
 										notify = :notify_upload,
 										active = :active,
-										max_file_size = :max_file_size
+										max_file_size = :max_file_size,
+										invalid_auth_attempts = :invalid_auth_attempts,
+										start_observation_window =:start_observation_window
 										";
 
 			/** Add the password to the query if it's not the dummy value '' */
@@ -495,7 +505,9 @@ class Users
 			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
 			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
-			$this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+            $this->statement->bindParam(':invalid_auth_attempts', $this->invalid_auth_attempts, PDO::PARAM_INT);
+            $this->statement->bindParam(':start_observation_window', $this->start_observation_window, PDO::PARAM_INT);
+            $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
 			if (!empty($this->password)) {
 				$this->statement->bindParam(':password', $this->password_hashed);
 			}
@@ -606,7 +618,15 @@ class Users
 		if (isset($this->id)) {
 			/** Do a permissions check */
 			if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-				$this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
+                if ($change_to == 1) {
+                    $invalid_auth_attempts = 0;
+                    $start_observation_window = 0;
+                    $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state, invalid_auth_attempts=:invalid_auth_attempts, start_observation_window=:start_observation_window WHERE id=:id');
+                    $this->sql->bindParam(':invalid_auth_attempts', $invalid_auth_attempts, PDO::PARAM_INT);
+                    $this->sql->bindParam(':start_observation_window', $start_observation_window, PDO::PARAM_INT);
+                } else {
+                    $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
+                }
 				$this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
 				$this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
                 $this->sql->execute();

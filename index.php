@@ -28,17 +28,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 	 * Google Sign-in
 	 */
 	if ( GOOGLE_SIGNIN_ENABLED == '1' ) {
-		$googleClient = new Google_Client();
-		$googleClient->setApplicationName(THIS_INSTALL_TITLE);
-		$googleClient->setClientSecret(GOOGLE_CLIENT_SECRET);
-		$googleClient->setClientId(GOOGLE_CLIENT_ID);
-		$googleClient->setAccessType('online');
-		$googleClient->setApprovalPrompt('auto');
-		$googleClient->setRedirectUri(BASE_URI . 'sociallogin/google/callback.php');
-		$googleClient->setScopes(array('profile','email'));
+		$googleClient = getGoogleLoginClient();
 		$auth_url = $googleClient->createAuthUrl();
 	}
-	
 
 	if ( isset($_SESSION['errorstate'] ) ) {
 		$errorstate = $_SESSION['errorstate'];
