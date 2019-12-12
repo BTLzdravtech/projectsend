@@ -69,6 +69,7 @@ require_once ROOT_DIR.'/includes/functions.groups.php';
 
 /** Security */
 require_once ROOT_DIR . '/includes/security/csrf.php';
+require_once ROOT_DIR . '/includes/security/brute_force_block.php';
 
 if ($_SERVER['HTTP_HOST'] != 'localhost') {
     /** Airbrake - Errbit */

@@ -36,23 +36,23 @@ function is_projectsend_installed()
 }
 
 function generateUsername($string, $i = 1) {
-    $string = preg_replace('/[^A-Za-z0-9]/', "", $string);
+    $string = str_replace('@btlnet.com', "", $string);
     $username = $string;
-    while(isUniqueUsername($username)) {
+    while(isNotUniqueUsername($username)) {
         $username = $string . $i;
         $i++;
     }
     return $username;
 }
 
-function isUniqueUsername($string) {
+function isNotUniqueUsername($string) {
     global $dbh;
     $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
-    $statement->execute(array(':user'	=> $string));
+    $statement->execute(array(':user' => $string));
     if($statement->rowCount() > 0) {
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 function return_account_type()
@@ -1655,12 +1655,6 @@ function render_log_action($params)
 			$part3 = __('to:','cftp_admin');
 			$part4 = $affected_account_name;
 			break;
-        case 40:
-			$action_ico = 'file-hidden';
-			$part1 = $owner_user;
-			$action_text = __('marked as hidden for everyone the file','cftp_admin');
-			$part2 = $affected_file_name;
-			break;
 		case 22:
 			$action_ico = 'file-visible';
 			$part1 = $owner_user;
@@ -1773,31 +1767,10 @@ function render_log_action($params)
 			$part2 = $affected_account_name;
 			break;
         case 40:
-            $action_ico = 'login';
+            $action_ico = 'file-hidden';
             $part1 = $owner_user;
-            $action_text = __('client failed login to the system.','cftp_admin');
-            break;
-        case 41:
-            $action_ico = 'login';
-            $part1 = $owner_user;
-            $action_text = __('user failed login to the system.','cftp_admin');
-            break;
-        case 42:
-            $action_ico = 'client-deactivate';
-            $part1 = $owner_user;
-            $action_text = __('deactivated the client due to maximum failed logins reached','cftp_admin');
-            $part2 = $affected_account_name;
-            break;
-        case 43:
-            $action_ico = 'user-deactivate';
-            $part1 = $owner_user;
-            $action_text = __('deactivated the user due to maximum failed logins reached','cftp_admin');
-            $part2 = $affected_account_name;
-            break;
-        case 44:
-            $action_ico = 'login';
-            $part1 = $owner_user;
-            $action_text = __('unknown account failed login to the system.','cftp_admin');
+            $action_text = __('marked as hidden for everyone the file','cftp_admin');
+            $part2 = $affected_file_name;
             break;
 	}
 

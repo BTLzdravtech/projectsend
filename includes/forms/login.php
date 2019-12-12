@@ -47,9 +47,9 @@
             <button type="submit" id="submit" class="btn btn-wide btn-primary" data-text="<?php echo $json_strings['login']['button_text']; ?>" data-loading-text="<?php echo $json_strings['login']['logging_in']; ?>"><?php echo $json_strings['login']['button_text']; ?></button>
         </div>
 
-        <div class="social-login">
+        <div class="google-login">
             <?php if(GOOGLE_SIGNIN_ENABLED == '1'): ?>
-                <a href="<?php echo $auth_url; ?>" name="Sign in with Google" class="google-login"><img src="<?php echo BASE_URI; ?>assets/img/google/btn_google_signin_light_normal_web.png" alt="Google Signin" /></a>
+                <a href="<?php echo $auth_url; ?>" class="btn btn-wide btn-secondary"><?php echo __('Login as BTL Employee','cftp_admin') ?></a>
             <?php endif; ?>
         </div>
     </fieldset>

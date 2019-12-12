@@ -86,8 +86,6 @@ if ($_POST) {
         'email' => $_POST['email'],
         'role' => $user_arguments['role'],
         'max_file_size' => $user_arguments['max_file_size'],
-        'invalid_auth_attempts' => $user_arguments['invalid_auth_attempts'],
-        'start_observation_window' => $user_arguments['start_observation_window'],
         'notify_upload' => isset($_POST["notify_upload"]) ? 1 : 0,
         'active' => $user_arguments['active'],
         'type' => 'edit_user',
@@ -118,10 +116,6 @@ if ($_POST) {
 
     if ($can_edit_level_and_active === true) {
         $user_arguments['role'] = (isset($_POST['level'])) ? $_POST['level'] : $user_arguments['role'];
-        if ($user_arguments['active'] == ACCOUNT_INACTIVE && (isset($_POST["active"]) ? 1 : 0) == ACCOUNT_ACTIVE) {
-            $user_arguments['invalid_auth_attempts'] = 0;
-            $user_arguments['start_observation_window'] = 0;
-        }
         $user_arguments['active'] = (isset($_POST["active"])) ? 1 : 0;
     }
 

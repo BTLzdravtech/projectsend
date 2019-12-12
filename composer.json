@@ -22,16 +22,12 @@
 	},
 	"require": {
      	"php": ">=7.3",
-        "bainternet/php-hooks": "^1.0",
         "claviska/simpleimage": "^3.3",
         "enshrined/svg-sanitize": "^0.8.2",
-        "hybridauth/hybridauth": "^2.11",
-        "league/oauth2-google": "^2.2",
         "moxiecode/plupload": "3.1.*",
-        "paragonie/random_compat": "^2.0",
         "phpmailer/phpmailer": "~6.0",
 		"tamtamchik/simple-flash": "^1.2",
 		"airbrake/phpbrake": "v0.6.2",
 		"google/apiclient": "v2.4.0"
-	}
+    }
 }

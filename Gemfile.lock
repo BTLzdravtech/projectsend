@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/BTLzdravtech/capistrano-hangouts-chat.git
+  remote: https://github.com/BTLzdravtech/capistrano-hangouts-chat.git
   revision: 3bef0c42bc72260075ba2ab0e698d75d4652a0c5
   specs:
     capistrano-hangouts-chat (0.1.0)
@@ -47,4 +47,4 @@ DEPENDENCIES
   capistrano-php-fpm
 
 BUNDLED WITH
-   1.16.6
+   2.0.2

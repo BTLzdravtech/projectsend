@@ -1368,29 +1368,20 @@ if (current_role_in($allowed_update)) {
             }
         }
 
-        /**
-         * r1110 updates
-         * 1- New columns invalid_auth_attempts and start_observation_window for account lockout functionality
-         * 2- New option for logging failed authentication attempts
-         */
-        if ($last_update < 1110) {
-            $new_database_values = array(
-                'user_max_invalid_auth_attempts'    => '5',
-                'user_observation_window'           => '20',
-                'client_max_invalid_auth_attempts'  => '5',
-                'client_observation_window'         => '20',
-                'log_failed_auth'                   => '0',
-            );
+        if ($last_update < 1110 ) {
+            if ( !tableExists( TABLE_LOGON ) ) {
+                $query = "
+				CREATE TABLE IF NOT EXISTS `" . TABLE_LOGON . "` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `username` varchar(".MAX_USER_CHARS.") NOT NULL,
+                  `ip_address` varchar(20) DEFAULT NULL,
+                  `attempted_at` datetime NOT NULL,
+                  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+				";
+                $statement = $dbh->prepare($query);
+                $statement->execute();
 
-            foreach($new_database_values as $row => $value) {
-                if ( add_option_if_not_exists($row, $value) ) {
-                    $updates_made++;
-                }
-            }
-
-            $q = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD invalid_auth_attempts INT(3) NOT NULL default '0'");
-            $q2 = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD start_observation_window INT(10) NOT NULL default '0'");
-            if ($q && $q2) {
                 $updates_made++;
             }
         }

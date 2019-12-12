@@ -61,16 +61,13 @@ class ActionsLog
             18	=> __('A group was deleted','cftp_admin'),
             19	=> __('A client account was activated','cftp_admin'),
             20	=> __('A client account was deactivated','cftp_admin'),
-            27	=> __('A user account was activated','cftp_admin'),
-            28	=> __('A user account was deactivated','cftp_admin'),
             21	=> __('A file was marked as hidden','cftp_admin'),
             22	=> __('A file was marked as visible','cftp_admin'),
-            40	=> __('A file was marked as hidden for everyone','cftp_admin'),
             23	=> __('A user creates a new group','cftp_admin'),
             25	=> __('A file is assigned to a client','cftp_admin'),
             26	=> __('A file is assigned to a group','cftp_admin'),
-            27	=> __('A user account was marked as active','cftp_admin'), // TODO: check repetition
-            28	=> __('A user account was marked as inactive','cftp_admin'),
+            27	=> __('A user account was activated','cftp_admin'),
+            28	=> __('A user account was deactivated','cftp_admin'),
             29	=> __('The logo on "Branding" was changed','cftp_admin'),
             30	=> __('ProjectSend was updated','cftp_admin'),
             32	=> __('A system user edited a file.','cftp_admin'),
@@ -81,11 +78,7 @@ class ActionsLog
             37	=> __('An anonymous user downloaded a public file.','cftp_admin'),
             38	=> __('A client account request was processed.','cftp_admin'),
             39	=> __("A client's groups membership requests were processed.",'cftp_admin'),
-            40	=> __("A client account failed login",'cftp_admin'),
-            41	=> __("A user account failed login",'cftp_admin'),
-            42	=> __("A client account deactivated due to maximum failed logins reached",'cftp_admin'),
-            43	=> __("A user account deactivated due to maximum failed logins reached",'cftp_admin'),
-            44	=> __("An unknown account failed login",'cftp_admin'),
+            40	=> __('A file was marked as hidden for everyone','cftp_admin'),
         );
 
         return $this->activities_references;

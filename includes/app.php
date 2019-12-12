@@ -57,6 +57,7 @@ define('IS_DEV', false);
  * This constant holds the current default charset
  */
 define('CHARSET', 'UTF-8');
+define('DB_CHARSET', 'utf8');
 
 /**
  * Turn off reporting of PHP errors, warnings and notices.
@@ -164,6 +165,7 @@ define('TABLE_CATEGORIES', TABLES_PREFIX . 'categories');
 define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
+define('TABLE_LOGON', TABLES_PREFIX . 'logon');
 
 $original_basic_tables = array(
 								TABLE_FILES,
@@ -202,13 +204,6 @@ define('MAX_PASS_CHARS', 60);
 define('MIN_GENERATE_PASS_CHARS', 10);
 define('MAX_GENERATE_PASS_CHARS', 20);
 
-/**
- * Account lockout options
- */
-define('MIN_INVALID_AUTH_ATTEMPTS', 0);
-define('MAX_INVALID_AUTH_ATTEMPTS', 999);
-define('MIN_OBSERVED_WINDOW', 2);
-define('MAX_OBSERVED_WINDOW', 999);
 /*
  * Cookie expiration time (in seconds).
  * Set by default to 30 days (60*60*24*30).
@@ -301,9 +296,3 @@ define('RESULTS_PER_PAGE_LOG', '15');
  */
 define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
 define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
-
-/**
- * Account status
- */
-define('ACCOUNT_ACTIVE', 1);
-define('ACCOUNT_INACTIVE', 0);
