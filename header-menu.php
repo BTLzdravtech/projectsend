@@ -52,74 +52,80 @@ if ( current_role_in( array( 9,8,7 ) ) )
 	define('COUNT_USERS_INACTIVE', $sql_inactive->rowCount());
 	*/
 
-	$items['dashboard'] = array(
-								'nav'	=> 'dashboard',
-								'level'	=> array( 9,8,7 ),
-								'main'	=> array(
-												'label'	=> __('Dashboard', 'cftp_admin'),
-												'icon'	=> 'tachometer',
-												'link'	=> 'dashboard.php',
-											),
-							);
+    $items['dashboard'] = array(
+        'nav'	=> 'dashboard',
+        'level'	=> array( 9,8,7 ),
+        'main'	=> array(
+            'label'	=> __('Dashboard', 'cftp_admin'),
+            'icon'	=> 'tachometer',
+            'link'	=> 'dashboard.php',
+        ),
+    );
 
-	$items[]			= 'separator';
+	$items[] = 'separator';
 
-	$items['files']		= array(
-								'nav'	=> 'files',
-								'level'	=> array( 9,8,7 ),
-								'main'	=> array(
-												'label'	=> __('Files', 'cftp_admin'),
-												'icon'	=> 'file',
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Upload', 'cftp_admin'),
-													'link'	=> 'upload-from-computer.php',
-												),
-												array(
-													'divider'	=> true,
-												),
-												array(
-													'label'	=> __('Manage files', 'cftp_admin'),
-													'link'	=> 'manage-files.php',
-												),
-												array(
-													'label'	=> __('Find orphan files', 'cftp_admin'),
-													'link'	=> 'upload-import-orphans.php',
-												),
-												array(
-													'divider'	=> true,
-												),
-												array(
-													'label'	=> __('Categories', 'cftp_admin'),
-													'link'	=> 'categories.php',
-												),
-											),
-							);
 
-	$items['clients']	= array(
-								'nav'	=> 'clients',
-								'level'	=> array( 9,8 ),
-								'main'	=> array(
-												'label'	=> __('Clients', 'cftp_admin'),
-												'icon'	=> 'address-card',
-												'badge'	=> COUNT_CLIENTS_REQUESTS,
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Add new', 'cftp_admin'),
-													'link'	=> 'clients-add.php',
-												),
-												array(
-													'label'	=> __('Manage clients', 'cftp_admin'),
-													'link'	=> 'clients.php',
-													//'badge'	=> COUNT_CLIENTS_INACTIVE,
-												),
-												array(
-													'divider'	=> true,
-												),
-											),
-							);
+    $items['files'] = array(
+        'nav' => 'files',
+        'level' => array(9, 8, 7),
+        'main' => array(
+            'label' => __('Files', 'cftp_admin'),
+            'icon' => 'file',
+        ),
+        'sub' => array(
+            array(
+                'label' => __('Upload', 'cftp_admin'),
+                'link' => 'upload-from-computer.php',
+            ),
+            array(
+                'divider' => true,
+            ),
+            array(
+                'label' => __('Manage files', 'cftp_admin'),
+                'link' => 'manage-files.php',
+            ),
+        ),
+    );
+
+    if (ORPHAN_FILES_ENABLED) {
+        $inserted = array(
+            'label' => __('Find orphan files', 'cftp_admin'),
+            'link' => 'upload-import-orphans.php',
+        );
+        array_push($items['files']['sub'], $inserted);
+    }
+
+    if (CATEGORIES_ENABLED) {
+        $inserted = array(
+            'label' => __('Categories', 'cftp_admin'),
+            'link' => 'categories.php',
+        );
+        array_push($items['files']['sub'], $inserted);
+    }
+
+    $items['clients'] = array(
+        'nav'	=> 'clients',
+        'level'	=> array( 9,8 ),
+        'main'	=> array(
+            'label'	=> __('Clients', 'cftp_admin'),
+            'icon'	=> 'address-card',
+            'badge'	=> COUNT_CLIENTS_REQUESTS,
+        ),
+        'sub'	=> array(
+            array(
+                'label'	=> __('Add new', 'cftp_admin'),
+                'link'	=> 'clients-add.php',
+            ),
+            array(
+                'label'	=> __('Manage clients', 'cftp_admin'),
+                'link'	=> 'clients.php',
+                //'badge'	=> COUNT_CLIENTS_INACTIVE,
+            ),
+            array(
+                'divider'	=> true,
+            ),
+        ),
+    );
 
 	if (CLIENTS_CAN_REGISTER) {
         $items['clients']['sub'][] = array(
@@ -129,224 +135,227 @@ if ( current_role_in( array( 9,8,7 ) ) )
         );
     }
 
-	$items['groups']	= array(
-								'nav'	=> 'groups',
-								'level'	=> array( 9,8 ),
-								'main'	=> array(
-												'label'	=> __('Clients groups', 'cftp_admin'),
-												'icon'	=> 'th-large',
-												'badge'	=> COUNT_MEMBERSHIP_REQUESTS,
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Add new', 'cftp_admin'),
-													'link'	=> 'groups-add.php',
-												),
-												array(
-													'label'	=> __('Manage groups', 'cftp_admin'),
-													'link'	=> 'groups.php',
-												),
-												array(
-													'divider'	=> true,
-												),
-												array(
-													'label'	=> __('Membership requests', 'cftp_admin'),
-													'link'	=> 'clients-membership-requests.php',
-													'badge'	=> COUNT_MEMBERSHIP_REQUESTS,
-												),
-											),
-							);
+    $items['groups'] = array(
+        'nav'	=> 'groups',
+        'level'	=> array( 9,8 ),
+        'main'	=> array(
+            'label'	=> __('Clients groups', 'cftp_admin'),
+            'icon'	=> 'th-large',
+            'badge'	=> COUNT_MEMBERSHIP_REQUESTS,
+        ),
+        'sub'	=> array(
+            array(
+                'label'	=> __('Add new', 'cftp_admin'),
+                'link'	=> 'groups-add.php',
+            ),
+            array(
+                'label'	=> __('Manage groups', 'cftp_admin'),
+                'link'	=> 'groups.php',
+            ),
+            array(
+                'divider'	=> true,
+            ),
 
-	$items['users']		= array(
-								'nav'	=> 'users',
-								'level'	=> array( 9 ),
-								'main'	=> array(
-												'label'	=> __('System Users', 'cftp_admin'),
-												'icon'	=> 'users',
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Add new', 'cftp_admin'),
-													'link'	=> 'users-add.php',
-												),
-												array(
-													'label'	=> __('Manage system users', 'cftp_admin'),
-													'link'	=> 'users.php',
-													//'badge'	=> COUNT_USERS_INACTIVE,
-												),
-											),
-							);
+        ),
+    );
 
-	$items[]			= 'separator';
+    if (MEMBERSHIP_REQUESTS_ENABLED) {
+        $inserted = array(
+            'label'	=> __('Membership requests', 'cftp_admin'),
+            'link'	=> 'clients-membership-requests.php',
+            'badge'	=> COUNT_MEMBERSHIP_REQUESTS,
+        );
+        array_push($items['groups']['sub'], $inserted);
+    }
 
-	$items['templates']	= array(
-								'nav'	=> 'templates',
-								'level'	=> array( 9 ),
-								'main'	=> array(
-												'label'	=> __('Templates', 'cftp_admin'),
-												'icon'	=> 'desktop',
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Templates', 'cftp_admin'),
-													'link'	=> 'templates.php',
-												),
-											),
-							);
+    $items['users']	= array(
+        'nav'	=> 'users',
+        'level'	=> array( 9 ),
+        'main'	=> array(
+            'label'	=> __('System Users', 'cftp_admin'),
+            'icon'	=> 'users',
+        ),
+        'sub'	=> array(
+            array(
+                'label'	=> __('Add new', 'cftp_admin'),
+                'link'	=> 'users-add.php',
+            ),
+            array(
+                'label'	=> __('Manage system users', 'cftp_admin'),
+                'link'	=> 'users.php',
+                //'badge'	=> COUNT_USERS_INACTIVE,
+            ),
+        ),
+    );
 
-	$items['options']	= array(
-								'nav'	=> 'options',
-								'level'	=> array( 9 ),
-								'main'	=> array(
-												'label'	=> __('Options', 'cftp_admin'),
-												'icon'	=> 'cog',
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('General options', 'cftp_admin'),
-													'link'	=> 'options.php?section=general',
-												),
-												array(
-													'label'	=> __('Clients', 'cftp_admin'),
-													'link'	=> 'options.php?section=clients',
-												),
-												array(
-													'label'	=> __('Privacy', 'cftp_admin'),
-													'link'	=> 'options.php?section=privacy',
-												),
-												array(
-													'label'	=> __('E-mail notifications', 'cftp_admin'),
-													'link'	=> 'options.php?section=email',
-												),
-												array(
-													'label'	=> __('Security', 'cftp_admin'),
-													'link'	=> 'options.php?section=security',
-												),
-												array(
-													'label'	=> __('Branding', 'cftp_admin'),
-													'link'	=> 'options.php?section=branding',
-												),
-												array(
-													'label'	=> __('Google Login', 'cftp_admin'),
-													'link'	=> 'options.php?section=google_login',
-												),
-                                                array(
-                                                    'label'	=> __('LDAP', 'cftp_admin'),
-                                                    'link'	=> 'options.php?section=ldap',
-                                                ),
-											),
-							);
+    $items[] = 'separator';
 
-	$items['emails']	= array(
-								'nav'	=> 'emails',
-								'level'	=> array( 9 ),
-								'main'	=> array(
-												'label'	=> __('E-mail templates', 'cftp_admin'),
-												'icon'	=> 'envelope',
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Header / footer', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=header_footer',
-												),
-												array(
-													'label'	=> __('New file by user', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=new_files_by_user',
-												),
-												array(
-													'label'	=> __('New file by client', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=new_files_by_client',
-												),
-												array(
-													'label'	=> __('New client (welcome)', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=new_client',
-												),
-												array(
-													'label'	=> __('New client (self-registered)', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=new_client_self',
-												),
-												array(
-													'label'	=> __('Approve client account', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=account_approve',
-												),
-												array(
-													'label'	=> __('Deny client account', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=account_deny',
-												),
-												array(
-													'label'	=> __('Client updated memberships', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=client_edited',
-												),
-												array(
-													'label'	=> __('New user (welcome)', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=new_user',
-												),
-												array(
-													'label'	=> __('Password reset', 'cftp_admin'),
-													'link'	=> 'email-templates.php?section=password_reset',
-												),
-                                                array(
-                                                    'label'	=> __('Expiration reminder', 'cftp_admin'),
-                                                    'link'	=> 'email-templates.php?section=limit_retention',
-                                                ),
-                                )
-							);
+    $items['templates']	= array(
+        'nav'	=> 'templates',
+        'level'	=> array( 9 ),
+        'main'	=> array(
+            'label'	=> __('Templates', 'cftp_admin'),
+            'icon'	=> 'desktop',
+        ),
+        'sub'	=> array(
+            array(
+                'label'	=> __('Templates', 'cftp_admin'),
+                'link'	=> 'templates.php',
+            ),
+        ),
+    );
 
-	$items[]			= 'separator';
+    $items['options'] = array(
+        'nav'	=> 'options',
+        'level'	=> array( 9 ),
+        'main'	=> array(
+            'label'	=> __('Options', 'cftp_admin'),
+            'icon'	=> 'cog',
+        ),
+        'sub'	=> array(
+            array(
+                'label'	=> __('General options', 'cftp_admin'),
+                'link'	=> 'options.php?section=general',
+            ),
+            array(
+                'label'	=> __('Clients', 'cftp_admin'),
+                'link'	=> 'options.php?section=clients',
+            ),
+            array(
+                'label'	=> __('Privacy', 'cftp_admin'),
+                'link'	=> 'options.php?section=privacy',
+            ),
+            array(
+                'label'	=> __('E-mail notifications', 'cftp_admin'),
+                'link'	=> 'options.php?section=email',
+            ),
+            array(
+                'label'	=> __('Security', 'cftp_admin'),
+                'link'	=> 'options.php?section=security',
+            ),
+            array(
+                'label'	=> __('Branding', 'cftp_admin'),
+                'link'	=> 'options.php?section=branding',
+            ),
+            array(
+                'label'	=> __('Google Login', 'cftp_admin'),
+                'link'	=> 'options.php?section=google_login',
+            ),
+            array(
+                'label'	=> __('LDAP', 'cftp_admin'),
+                'link'	=> 'options.php?section=ldap',
+            ),
+        ),
+    );
 
-	$items['tools']		= array(
-								'nav'	=> 'tools',
-								'level'	=> array( 9 ),
-								'main'	=> array(
-												'label'	=> __('Tools', 'cftp_admin'),
-												'icon'	=> 'wrench',
-											),
-								'sub'	=> array(
-												array(
-													'label'	=> __('Actions log', 'cftp_admin'),
-													'link'	=> 'actions-log.php',
-												),
-											),
-							);
+    $items['emails'] = array(
+        'nav'	=> 'emails',
+        'level'	=> array( 9 ),
+        'main'	=> array(
+            'label'	=> __('E-mail templates', 'cftp_admin'),
+            'icon'	=> 'envelope',
+        ),
+        'sub'	=> array(
+            array(
+                'label'	=> __('Header / footer', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=header_footer',
+            ),
+            array(
+                'label'	=> __('New file by user', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=new_files_by_user',
+            ),
+            array(
+                'label'	=> __('New file by client', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=new_files_by_client',
+            ),
+            array(
+                'label'	=> __('New client (welcome)', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=new_client',
+            ),
+            array(
+                'label'	=> __('New client (self-registered)', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=new_client_self',
+            ),
+            array(
+                'label'	=> __('Approve client account', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=account_approve',
+            ),
+            array(
+                'label'	=> __('Deny client account', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=account_deny',
+            ),
+            array(
+                'label'	=> __('Client updated memberships', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=client_edited',
+            ),
+            array(
+                'label'	=> __('New user (welcome)', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=new_user',
+            ),
+            array(
+                'label'	=> __('Password reset', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=password_reset',
+            ),
+            array(
+                'label'	=> __('Expiration reminder', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=limit_retention',
+            ),
+        )
+    );
+
+    $items[] = 'separator';
+
+    $items['tools']	= array(
+        'nav'	=> 'tools',
+        'level'	=> array( 9 ),
+        'main'	=> array(
+            'label'	=> __('Tools', 'cftp_admin'),
+            'icon'	=> 'wrench',
+        ),
+        'sub'	=> array(
+            array(
+                'label'	=> __('Actions log', 'cftp_admin'),
+                'link'	=> 'actions-log.php',
+            ),
+        ),
+    );
 
 }
 /**
  * Items for clients
  */
-else
-{
-	if (CLIENTS_CAN_UPLOAD == 1)
-	{
-		$items['upload'] = array(
-									'nav'	=> 'upload',
-									'level'	=> array( 9,8,7,0 ),
-									'main'	=> array(
-													'label'	=> __('Upload', 'cftp_admin'),
-													'link'	=> 'upload-from-computer.php',
-													'icon'	=> 'cloud-upload',
-												),
-								);
-	}
+else {
+	if (CLIENTS_CAN_UPLOAD == 1) {
+        $items['upload'] = array(
+            'nav'	=> 'upload',
+            'level'	=> array( 9,8,7,0 ),
+            'main'	=> array(
+                'label'	=> __('Upload', 'cftp_admin'),
+                'link'	=> 'upload-from-computer.php',
+                'icon'	=> 'cloud-upload',
+            ),
+        );
+    }
 
-	$items['manage_files'] = array(
-								'nav'	=> 'manage',
-								'level'	=> array( 9,8,7,0 ),
-								'main'	=> array(
-												'label'	=> __('Manage files', 'cftp_admin'),
-												'link'	=> 'manage-files.php',
-												'icon'	=> 'file',
-											),
-							);
+    $items['manage_files'] = array(
+        'nav'	=> 'manage',
+        'level'	=> array( 9,8,7,0 ),
+        'main'	=> array(
+            'label'	=> __('Manage files', 'cftp_admin'),
+            'link'	=> 'manage-files.php',
+            'icon'	=> 'file',
+        ),
+    );
 
-	$items['view_files'] = array(
-								'nav'	=> 'template',
-								'level'	=> array( 9,8,7,0 ),
-								'main'	=> array(
-												'label'	=> __('View my files', 'cftp_admin'),
-												'link'	=> CLIENT_VIEW_FILE_LIST_URL_PATH,
-												'icon'	=> 'th-list',
-											),
-							);
+    $items['view_files'] = array(
+        'nav'	=> 'template',
+        'level'	=> array( 9,8,7,0 ),
+        'main'	=> array(
+            'label'	=> __('View my files', 'cftp_admin'),
+            'link'	=> CLIENT_VIEW_FILE_LIST_URL_PATH,
+            'icon'	=> 'th-list',
+        ),
+    );
 }
 
 /**

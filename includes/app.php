@@ -295,4 +295,10 @@ define('RESULTS_PER_PAGE_LOG', '15');
  * External links
  */
 define('LINK_DOC_RECAPTCHA', 'https://developers.google.com/recaptcha/docs/start');
-define('LINK_DOC_GOOGLE_SIGN_IN', 'https://developers.google.com/identity/protocols/OpenIDConnect');
+
+/**
+ * Features
+ */
+define('ORPHAN_FILES_ENABLED', '0');
+define('CATEGORIES_ENABLED', '0');
+define('MEMBERSHIP_REQUESTS_ENABLED', '0');

@@ -390,7 +390,11 @@ $get_categories = get_categories();
 												/** The following options are available to users or client if clients_can_set_expiration_date set. */
 												if ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1' ) {
 											?>
-													<div class="col-sm-6 col-md-3 column_even column">
+                                                <?php if (CATEGORIES_ENABLED) { ?>
+                                                    <div class="col-sm-6 col-md-3 assigns column">
+                                                <?php } else { ?>
+                                                    <div class="col-sm-6 col-md-4 assigns column">
+                                                <?php } ?>
 														<div class="file_data">
 															<?php
 																/**
@@ -456,7 +460,11 @@ $get_categories = get_categories();
 												/** The following options are available to users only */
 												if ($global_level != 0) {
 											?>
-													<div class="col-sm-6 col-md-3 assigns column">
+                                                <?php if (CATEGORIES_ENABLED) { ?>
+                                                    <div class="col-sm-6 col-md-3 assigns column">
+                                                <?php } else { ?>
+                                                    <div class="col-sm-6 col-md-4 assigns column">
+                                                <?php } ?>
 														<div class="file_data">
 															<?php
 																/**
@@ -525,7 +533,7 @@ $get_categories = get_categories();
 															</div>
 														</div>
 													</div>
-
+                                                    <?php if (CATEGORIES_ENABLED) { ?>
 													<div class="col-sm-6 col-md-3 categories column">
 														<div class="file_data">
 															<h3><?php _e('Categories', 'cftp_admin');?></h3>
@@ -545,6 +553,7 @@ $get_categories = get_categories();
 															</div>
 														</div>
 													</div>
+                                                    <?php } ?>
 											<?php
 												} /** Close CURRENT_USER_LEVEL check */
 											?>
