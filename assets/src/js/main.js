@@ -61,6 +61,9 @@
             case 'options':
                 admin.pages.options();
                 break;
+            case 'manage_files':
+                admin.pages.manageFiles();
+                break;
             default:
                 // do nothing
                 break;

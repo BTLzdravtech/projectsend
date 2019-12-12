@@ -12,6 +12,8 @@ $active_nav = 'files';
 
 $page_title = __('Manage files','cftp_admin');
 
+$page_id = 'manage_files';
+
 /**
  * Used to distinguish the current page results.
  * Global means all files.
@@ -837,8 +839,8 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'condition'		=> $conditions['total_downloads'],
 												),
 												array(
-													'content'		=> '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>',
-												),
+													'content'		=> '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm edit-button"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a><a href="manage-files.php?action=delete&batch%5B%5D=' . $row["id"] .'" class="btn btn-primary btn-sm delete-button"><i class="fa fa-trash"></i><span class="button_label">' . __('Delete','cftp_admin') . '</span></a>',
+                                                ),
 									);
 	
 						foreach ( $tbody_cells as $cell ) {
