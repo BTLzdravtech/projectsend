@@ -174,16 +174,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 	/** Add the search terms */	
 	if ( isset( $_GET['search'] ) && !empty( $_GET['search'] ) ) {
-		$cq .= " AND (name LIKE :name OR user LIKE :user OR address LIKE :address OR phone LIKE :phone OR email LIKE :email OR contact LIKE :contact)";
+		$cq .= " AND (name LIKE :name OR user LIKE :user OR email LIKE :email)";
 		$no_results_error = 'search';
 
 		$search_terms		= '%'.$_GET['search'].'%';
 		$params[':name']	= $search_terms;
 		$params[':user']	= $search_terms;
-		$params[':address']	= $search_terms;
-		$params[':phone']	= $search_terms;
 		$params[':email']	= $search_terms;
-		$params[':contact']	= $search_terms;
 	}
 
 	/**

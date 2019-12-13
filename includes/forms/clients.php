@@ -105,30 +105,9 @@ switch ($clients_form_type) {
 		</div>
 	</div>
 
-	<div class="form-group">
-		<label for="address" class="col-sm-4 control-label"><?php _e('Address','cftp_admin'); ?></label>
-		<div class="col-sm-8">
-			<input type="text" name="address" id="address" class="form-control" value="<?php echo (isset($client_arguments['address'])) ? format_form_value($client_arguments['address']) : ''; ?>" />
-		</div>
-	</div>
-
-	<div class="form-group">
-		<label for="phone" class="col-sm-4 control-label"><?php _e('Telephone','cftp_admin'); ?></label>
-		<div class="col-sm-8">
-			<input type="text" name="phone" id="phone" class="form-control" value="<?php echo (isset($client_arguments['phone'])) ? format_form_value($client_arguments['phone']) : ''; ?>" />
-		</div>
-	</div>
-
 	<?php
 		if ($extra_fields == true) {
 	?>
-			<div class="form-group">
-				<label for="contact" class="col-sm-4 control-label"><?php _e('Internal contact name','cftp_admin'); ?></label>
-				<div class="col-sm-8">
-					<input type="text" name="contact" id="contact" class="form-control" value="<?php echo (isset($client_arguments['contact'])) ? format_form_value($client_arguments['contact']) : ''; ?>" />
-				</div>
-			</div>
-
 			<div class="form-group">
 				<label for="max_file_size" class="col-sm-4 control-label"><?php _e('Max. upload filesize','cftp_admin'); ?></label>
 				<div class="col-sm-8">

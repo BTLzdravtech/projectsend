@@ -1609,14 +1609,6 @@ msgstr ""
 msgid "Must be valid and unique"
 msgstr ""
 
-#: includes/forms/clients.php:109
-msgid "Address"
-msgstr ""
-
-#: includes/forms/clients.php:116
-msgid "Telephone"
-msgstr ""
-
 #: includes/forms/clients.php:126
 msgid "Internal contact name"
 msgstr ""

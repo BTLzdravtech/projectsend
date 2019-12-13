@@ -47,9 +47,6 @@ class Users
     private $meta;
 
     // @todo Move this to meta
-    private $address;
-    private $phone;
-    private $contact;
     private $notify_upload;
     private $account_request;
     private $recaptcha;
@@ -140,9 +137,6 @@ class Users
         $this->google_user = (!empty($arguments['google_user'])) ? encode_html($arguments['google_user']) : 0;
 
         // Specific for clients
-		$this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
-		$this->phone = (!empty($arguments['phone'])) ? encode_html($arguments['phone']) : null;
-		$this->contact = (!empty($arguments['contact'])) ? encode_html($arguments['contact']) : null;
         $this->notify_upload = (!empty($arguments['notify_upload'])) ? (int)$arguments['notify_upload'] : 0;
         $this->account_request = (!empty($arguments['account_requested'])) ? (int)$arguments['account_requested'] : 0;
         $this->recaptcha = (!empty($arguments['recaptcha'])) ? $arguments['recaptcha'] : null;
@@ -182,9 +176,6 @@ class Users
             $this->google_user = html_output($this->row['google_user']);
 
             // Specific for clients
-            $this->address = html_output($this->row['address']);
-            $this->phone = html_output($this->row['phone']);
-            $this->contact = html_output($this->row['contact']);
             $this->notify_upload = html_output($this->row['notify']);
 
             // Files
@@ -228,9 +219,6 @@ class Users
             'active' => $this->active,
             'max_file_size' => $this->max_file_size,
             'created_date' => $this->created_date,
-            'address' => $this->address,
-            'phone' => $this->phone,
-            'contact' => $this->contact,
             'notify_upload' => $this->notify_upload,
             'files' => $this->files,
             'groups' => $this->groups,
@@ -369,21 +357,18 @@ class Users
 			/** Insert the client information into the database */
 			$this->timestamp = time();
 			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
-                    name, user, password, level, address, phone, email, notify, contact, owner_id, created_by, active, account_requested, max_file_size, objectguid, google_user
+                    name, user, password, level, email, notify, owner_id, created_by, active, account_requested, max_file_size, objectguid, google_user
                 )
 			    VALUES (
-                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :owner_id, :created_by, :active, :request, :max_file_size , :objectguid, :google_user
+                    :name, :username, :password, :role, :email, :notify_upload, :owner_id, :created_by, :active, :request, :max_file_size , :objectguid, :google_user
                 )"
             );
 			$this->statement->bindParam(':name', $this->name);
 			$this->statement->bindParam(':username', $this->username);
             $this->statement->bindParam(':password', $this->password_hashed);
             $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
-			$this->statement->bindParam(':address', $this->address);
-			$this->statement->bindParam(':phone', $this->phone);
 			$this->statement->bindParam(':email', $this->email);
 			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
-			$this->statement->bindParam(':contact', $this->contact);
             $this->statement->bindParam(':owner_id', $this->owner_id);
 			$this->statement->bindParam(':created_by', $this->created_by);
 			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
@@ -475,10 +460,7 @@ class Users
 			$this->query = "UPDATE " . TABLE_USERS . " SET
                                         name = :name,
                                         level = :role,
-										address = :address,
-										phone = :phone,
 										email = :email,
-										contact = :contact,
 										notify = :notify_upload,
 										active = :active,
 										max_file_size = :max_file_size
@@ -494,10 +476,7 @@ class Users
 			$this->statement = $this->dbh->prepare($this->query);
             $this->statement->bindParam(':name', $this->name);
             $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
-			$this->statement->bindParam(':address', $this->address);
-			$this->statement->bindParam(':phone', $this->phone);
 			$this->statement->bindParam(':email', $this->email);
-			$this->statement->bindParam(':contact', $this->contact);
 			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
 			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);

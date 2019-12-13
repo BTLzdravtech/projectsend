@@ -1400,5 +1400,16 @@ if (current_role_in($allowed_update)) {
                 $updates_made++;
             }
         }
+
+        /**
+         * r1112 updates
+         * Remove unused columns from users.
+         */
+        if ($last_update < 1112) {
+            $q = $dbh->query("ALTER TABLE " . TABLE_USERS . " DROP address, DROP phone, DROP contact ");
+            if ($q) {
+                $updates_made++;
+            }
+        }
     }
 }
