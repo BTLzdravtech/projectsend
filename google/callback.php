@@ -93,6 +93,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_
                 'notify_account' => '0',
                 'notify_upload' => '1',
                 'active' => '1',
+                'google_user' => '1',
             );
 
             $new_user->setType('new_google_user');

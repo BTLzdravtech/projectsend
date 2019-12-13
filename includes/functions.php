@@ -496,6 +496,7 @@ function get_user_by_id($id)
                             'max_file_size'	=> html_output($row['max_file_size']),
                             'created_date'	=> html_output($row['timestamp']),
                             'objectguid'	=> html_output($row['objectguid']),
+                            'google_user'	=> html_output($row['google_user']),
                         );
         if ( !empty( $information ) ) {
             return $information;

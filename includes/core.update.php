@@ -1368,6 +1368,10 @@ if (current_role_in($allowed_update)) {
             }
         }
 
+        /**
+         * r1110 updates
+         * Add table for brute force login prevention
+         */
         if ($last_update < 1110 ) {
             if ( !tableExists( TABLE_LOGON ) ) {
                 $query = "
@@ -1386,5 +1390,15 @@ if (current_role_in($allowed_update)) {
             }
         }
 
+        /**
+         * r1111 updates
+         * Added google_user to users.
+         */
+        if ($last_update < 1111) {
+            $q = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD COLUMN google_user int(11) NOT NULL DEFAULT 0");
+            if ($q) {
+                $updates_made++;
+            }
+        }
     }
 }

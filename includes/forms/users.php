@@ -31,6 +31,7 @@ switch ($user_form_type) {
 }
 
 $is_ldap_user = isset($user_arguments['objectguid']) && $user_arguments['objectguid'] != "";
+$is_google_user = isset($user_arguments['google_user']) && $user_arguments['google_user'] == 1;
 ?>
 <form action="<?php echo html_output($form_action); ?>" name="user_form" id="user_form" method="post" class="form-horizontal" data-form-type="<?php echo $user_form_type; ?>">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
@@ -49,7 +50,7 @@ $is_ldap_user = isset($user_arguments['objectguid']) && $user_arguments['objectg
 		</div>
 	</div>
 
-    <?php if ( !$is_ldap_user) { ?>
+    <?php if ( !$is_ldap_user && !$is_google_user) { ?>
 	<div class="form-group">
 		<label for="password" class="col-sm-4 control-label"><?php _e('Password','cftp_admin'); ?></label>
 		<div class="col-sm-8">
@@ -59,7 +60,7 @@ $is_ldap_user = isset($user_arguments['objectguid']) && $user_arguments['objectg
                     <button type="button" class="btn pass_toggler_show"><i class="glyphicon glyphicon-eye-open"></i></button>
 				</div>
 			</div>
-            <?php if (!$is_ldap_user) { ?>
+            <?php if (!$is_ldap_user && !$is_google_user) { ?>
 			    <button type="button" name="generate_password" id="generate_password" class="btn btn-default btn-sm btn_generate_password" data-ref="password" data-min="<?php echo MAX_GENERATE_PASS_CHARS; ?>" data-max="<?php echo MAX_GENERATE_PASS_CHARS; ?>"><?php _e('Generate','cftp_admin'); ?></button>
             <?php } ?>
             <?php echo password_notes(); ?>
@@ -77,7 +78,7 @@ $is_ldap_user = isset($user_arguments['objectguid']) && $user_arguments['objectg
 		<?php
 			if ($extra_fields == true) {
 		?>
-            <?php if ( !$is_ldap_user) { ?>
+            <?php if ( !$is_ldap_user && !$is_google_user) { ?>
 			<div class="form-group">
 				<label for="level" class="col-sm-4 control-label"><?php _e('Role','cftp_admin'); ?></label>
 				<div class="col-sm-8">

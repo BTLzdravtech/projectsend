@@ -35,6 +35,7 @@ class Users
     private $created_by;
     private $created_date;
     private $objectguid;
+    private $google_user;
 
     // Uploaded files
     private $files;
@@ -136,6 +137,7 @@ class Users
 		$this->notify_account = (!empty($arguments['notify_account'])) ? $arguments['notify_account'] : 0;
         $this->max_file_size = (!empty($arguments['max_file_size'])) ? $arguments['max_file_size'] : 0;
         $this->objectguid = (!empty($arguments['objectguid'])) ? encode_html($arguments['objectguid']) : null;
+        $this->google_user = (!empty($arguments['google_user'])) ? encode_html($arguments['google_user']) : 0;
 
         // Specific for clients
 		$this->address = (!empty($arguments['address'])) ? encode_html($arguments['address']) : null;
@@ -177,6 +179,7 @@ class Users
             $this->owner_id = html_output($this->row['owner_id']);
             $this->created_by = html_output($this->row['created_by']);
             $this->objectguid = html_output($this->row['objectguid']);
+            $this->google_user = html_output($this->row['google_user']);
 
             // Specific for clients
             $this->address = html_output($this->row['address']);
@@ -233,6 +236,7 @@ class Users
             'groups' => $this->groups,
             'meta' => $this->meta,
             'objectguid' => $this->objectguid,
+            'google_user' => $this->google_user,
         ];
 
         return $return;
@@ -365,10 +369,10 @@ class Users
 			/** Insert the client information into the database */
 			$this->timestamp = time();
 			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
-                    name, user, password, level, address, phone, email, notify, contact, owner_id, created_by, active, account_requested, max_file_size, objectguid
+                    name, user, password, level, address, phone, email, notify, contact, owner_id, created_by, active, account_requested, max_file_size, objectguid, google_user
                 )
 			    VALUES (
-                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :owner_id, :created_by, :active, :request, :max_file_size , :objectguid
+                    :name, :username, :password, :role, :address, :phone, :email, :notify_upload, :contact, :owner_id, :created_by, :active, :request, :max_file_size , :objectguid, :google_user
                 )"
             );
 			$this->statement->bindParam(':name', $this->name);
@@ -386,6 +390,7 @@ class Users
 			$this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
 			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
             $this->statement->bindParam(':objectguid', $this->objectguid);
+            $this->statement->bindParam(':google_user', $this->google_user, PDO::PARAM_INT);
 
 			$this->statement->execute();
 

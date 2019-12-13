@@ -67,7 +67,6 @@ if (defined('TRY_INSTALL')) {
 								  `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `max_file_size` int(20) NOT NULL DEFAULT \'0\',
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  `objectguid` text,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
