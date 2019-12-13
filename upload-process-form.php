@@ -132,15 +132,7 @@ while( $row = $statement->fetch() ) {
 			$n++;
 
 			if(!empty($file['name'])) {
-				/**
-				* If the uploader is a client, set the "client" var to the current
-				* uploader username, since the "client" field is not posted.
-				*/
-				if (CURRENT_USER_LEVEL == 0) {
-					$file['assignments'] = 'c'.$global_user;
-				}
-
-				$this_upload = new ProjectSend\Classes\UploadFile;
+			    $this_upload = new ProjectSend\Classes\UploadFile;
 				if (!in_array($file['file'],$urls_db_files)) {
 					$file['file'] = $this_upload->safeRename($file['file']);
 				}
@@ -196,7 +188,7 @@ while( $row = $statement->fetch() ) {
 
 						/** Uploader is a client */
 						if (CURRENT_USER_LEVEL == 0) {
-							$add_arguments['assign_to'] = array('c'.$client_my_id);
+							$add_arguments['assign_to']['clients'] = array($client_my_id);
 							$add_arguments['hidden'] = '0';
 							$add_arguments['uploader_type'] = 'client';
                             if (CLIENTS_CAN_SET_EXPIRATION_DATE && !empty($file['expires'])) {
