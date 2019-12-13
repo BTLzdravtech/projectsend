@@ -2429,7 +2429,7 @@ msgstr ""
 
 #: includes/text.strings.php:43
 #, php-format
-msgid "You are about to delete %d items. Are you sure you want to continue?"
+msgid "You are about to delete %d item(s). Are you sure you want to continue?"
 msgstr ""
 
 #: includes/text.strings.php:44
@@ -2450,7 +2450,7 @@ msgstr ""
 #: includes/text.strings.php:47
 #, php-format
 msgid ""
-"You are about to unassign %d files from this account. Are you sure you want "
+"You are about to unassign %d file(s) from this account. Are you sure you want "
 "to continue?"
 msgstr ""
 
