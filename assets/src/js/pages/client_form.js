@@ -82,6 +82,49 @@
                     }
                 }
             });
+
+            if (!$("#client_form").closest('.white-box').hasClass('ajax')) {
+                $("#client_form").on('submit', function (e) {
+                    if ($("#client_form").valid()) {
+                        $.ajax({
+                            url: 'ajax/check_client.php',
+                            cache: false,
+                            data: {
+                                user_name: $('#name').val(),
+                                user_email: $('#email').val()
+                            },
+                            success: function (response) {
+                                if (response.exists === 'true') {
+                                    var _formatted = sprintf(json_strings.translations.confirm_taken, response.owner);
+                                    bootbox.confirm({
+                                        message: _formatted,
+                                        buttons: {
+                                            confirm: {
+                                                label: json_strings.modal.ok
+                                            },
+                                            cancel: {
+                                                label: json_strings.modal.cancel
+                                            }
+                                        },
+                                        callback: function (result) {
+                                            if (result) {
+                                                $("#client_form").append("<input type='hidden' name='transfer' value='on'>");
+                                                $("#client_form").unbind('submit');
+                                                $("#client_form").find('button[type="submit"]').click();
+                                            }
+                                        }
+                                    });
+                                    e.preventDefault();
+                                } else {
+                                    $("#client_form").unbind('submit');
+                                    $("#client_form").find('button[type="submit"]').click();
+                                }
+                            }
+                        });
+                    }
+                    e.preventDefault();
+                });
+            }
         });
     };
 })();

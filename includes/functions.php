@@ -55,6 +55,28 @@ function isNotUniqueUsername($string) {
     return false;
 }
 
+function isNotUniqueEmail($string) {
+    global $dbh;
+    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE email = :email" );
+    $statement->execute(array(':email' => $string));
+    if($statement->rowCount() > 0) {
+        return true;
+    }
+    return false;
+}
+
+function getClientOwner($string) {
+    global $dbh;
+    $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE email = :email" );
+    $statement->execute(array(':email' => $string));
+    if($statement->rowCount() > 0) {
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        $row = $statement->fetch();
+        return get_user_by_id($row['owner_id']);
+    }
+    return null;
+}
+
 function return_account_type()
 {
     if (!defined('CURRENT_USER_LEVEL')) {

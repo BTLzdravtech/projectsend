@@ -15,6 +15,8 @@ $page_title = __('Add client','cftp_admin');
 
 $page_id = 'client_form';
 
+global $dbh;
+
 $new_client = new \ProjectSend\Classes\Users($dbh);
 
 if (!defined($_POST['ajax'])) {
@@ -48,41 +50,57 @@ if ($_POST) {
         'type' => 'new_client',
     );
 
-    /** Validate the information from the posted form. */
-    /** Create the user if validation is correct. */
-    $new_client->setType('new_client');
-    $new_client->set($client_arguments);
-	if ($new_client->validate()) {
-        $new_response = $new_client->create();
-    
-        $add_to_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : '';
-        if ( !empty( $add_to_groups ) ) {
-            array_map('encode_html', $add_to_groups);
-            $memberships	= new \ProjectSend\Classes\MembersActions;
-            $arguments		= array(
-                                    'client_id'	=> $new_client->getId(),
-                                    'group_ids'	=> $add_to_groups,
-                                    'added_by'	=> CURRENT_USER_USERNAME,
-                                );
-    
-            $memberships->client_add_to_groups($arguments);
-        }
+    if (!isset($_POST['transfer'])) {
+        /** Validate the information from the posted form. */
+        /** Create the user if validation is correct. */
+        $new_client->setType('new_client');
+        $new_client->set($client_arguments);
 
-        if (!empty($new_response['id'])) {
+        if ($new_client->validate()) {
+            $new_response = $new_client->create();
+
+            $add_to_groups = (!empty($_POST['groups_request'])) ? $_POST['groups_request'] : '';
+            if (!empty($add_to_groups)) {
+                array_map('encode_html', $add_to_groups);
+                $memberships = new \ProjectSend\Classes\MembersActions;
+                $arguments = array(
+                    'client_id' => $new_client->getId(),
+                    'group_ids' => $add_to_groups,
+                    'added_by' => CURRENT_USER_USERNAME,
+                );
+
+                $memberships->client_add_to_groups($arguments);
+            }
+
+            if (!empty($new_response['id'])) {
+                if ($_POST['ajax']) {
+                    header('Content-Type: application/json');
+                    echo json_encode(array('status' => 'true', 'client_id' => $new_response['id'], 'client_name' => $new_response['name']));
+                    exit;
+                } else {
+                    $redirect_to = BASE_URI . 'clients-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
+                    header('Location:' . $redirect_to);
+                    exit;
+                }
+            }
+        } else {
             if ($_POST['ajax']) {
                 header('Content-Type: application/json');
-                echo json_encode(array('status' => 'true', 'client_id' => $new_response['id'], 'client_name' => $new_response['name']));
-                exit;
-            } else {
-                $rediret_to = BASE_URI . 'clients-edit.php?id=' . $new_response['id'] . '&status=' . $new_response['query'] . '&is_new=1&notification=' . $new_response['email'];
-                header('Location:' . $rediret_to);
+                echo json_encode(array('status' => 'false', 'message' => $new_client->getValidationErrors()));
                 exit;
             }
         }
     } else {
-	    if ($_POST['ajax']) {
+        $client = get_user_by('client', 'email', $client_arguments['email']);
+        $statement = $dbh->prepare( "UPDATE " . TABLE_USERS . " SET owner_id = :owner_id WHERE id = :id" );
+        $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, 'id' => $client['id']));
+        if (!$_POST['ajax']) {
+            $redirect_to = BASE_URI . 'clients-edit.php?id=' . $client['id'] . '&status=' . ($result ? 1 : 0);
+            header('Location:' . $redirect_to);
+            exit;
+        } else {
             header('Content-Type: application/json');
-            echo json_encode(array('status' => 'false', 'message' => $new_client->getValidationErrors()));
+            echo json_encode(array('status' => 'true', 'client_id' => $client['id'], 'client_name' => $client['name']));
             exit;
         }
     }

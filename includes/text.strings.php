@@ -41,6 +41,7 @@ $json_strings = [
         'public_url' => __('Public URL','cftp_admin'),
         'select_one_or_more' => __('Please select at least one item to proceed.','cftp_admin'),
         'confirm_delete' => __('You are about to delete %d item(s). Are you sure you want to continue?','cftp_admin'),
+        'confirm_taken' => __('Client with this email already exists and belongs to %s. Do you want to transfer him to you?','cftp_admin'),
         'confirm_delete_log' => __('You are about to delete all activities from the log. Only those used for statistics will remain. Are you sure you want to continue?','cftp_admin'),
         'download_wait' => __('Please wait while your download is prepared.','cftp_admin'),
         'download_long_wait' => __('This operation could take a few minutes, depending on the size of the files.','cftp_admin'),

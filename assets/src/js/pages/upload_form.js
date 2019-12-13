@@ -66,8 +66,6 @@
             window.onbeforeunload = function (e) {
                 var e = e || window.event;
 
-                console.log('state? ' + uploader.state);
-
                 // if uploading
                 if(uploader.state === 2) {
                     //IE & Firefox

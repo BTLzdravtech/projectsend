@@ -115,38 +115,91 @@
                                 search_contains	: true
                             });
                         }
-                        $(this).find('form').submit(function(event) {
+                        $(this).find('form').on('submit', function(event) {
                             event.preventDefault();
                             var form = $(this);
                             if (form.valid()) {
-                                form.closest('.white-box-interior').find('.alert').remove();
-                                var formData = new FormData(form[0]);
-                                formData.append('ajax', 'true');
                                 $.ajax({
-                                    url: "clients-add.php",
-                                    type: "post",
-                                    data: formData,
-                                    processData: false,
-                                    contentType: false,
+                                    url: 'ajax/check_client.php',
+                                    cache: false,
+                                    data: {
+                                        user_name: $('#name').val(),
+                                        user_email: $('#email').val()
+                                    },
                                     success: function (response) {
-                                        console.log(response);
-                                        if (response.status === 'true') {
-                                            var closest_select_id = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
-                                            $('.select-' + type).each(function () {
-                                                if ($(this).attr('id') === closest_select_id) {
-                                                    $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name + '</option>');
-                                                } else {
-                                                    $(this).append('<option value="' + response.client_id + '">' + response.client_name + '</option>');
+                                        if (response.exists === 'true') {
+                                            var _formatted = sprintf(json_strings.translations.confirm_taken, response.owner);
+                                            bootbox.confirm({
+                                                message: _formatted,
+                                                buttons: {
+                                                    confirm: {
+                                                        label: json_strings.modal.ok
+                                                    },
+                                                    cancel: {
+                                                        label: json_strings.modal.cancel
+                                                    }
+                                                },
+                                                callback: function (result) {
+                                                    if (result) {
+                                                        form.closest('.white-box-interior').find('.alert').remove();
+                                                        var formData = new FormData(form[0]);
+                                                        formData.append('ajax', 'true');
+                                                        formData.append('transfer', 'on');
+                                                        $.ajax({
+                                                            url: "clients-add.php",
+                                                            type: "post",
+                                                            data: formData,
+                                                            processData: false,
+                                                            contentType: false,
+                                                            success: function (response) {
+                                                                if (response.status === 'true') {
+                                                                    var closest_select_id = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
+                                                                    $('.select-' + type).each(function () {
+                                                                        if ($(this).attr('id') === closest_select_id) {
+                                                                            $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name + '</option>');
+                                                                        } else {
+                                                                            $(this).append('<option value="' + response.client_id + '">' + response.client_name + '</option>');
+                                                                        }
+                                                                    });
+                                                                    $('.select-' + type).trigger("chosen:updated");
+                                                                    form.closest('.bootbox').modal('hide');
+                                                                } else if (response.status === 'false') {
+                                                                    form.closest('.white-box-interior').prepend(response.message);
+                                                                }
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             });
-                                            $('.select-' + type).trigger("chosen:updated");
-                                            form.closest('.bootbox').modal('hide');
-                                        } else if (response.status === 'false') {
-                                            form.closest('.white-box-interior').prepend(response.message);
+                                            e.preventDefault();
+                                        } else {
+                                            form.closest('.white-box-interior').find('.alert').remove();
+                                            var formData = new FormData(form[0]);
+                                            formData.append('ajax', 'true');
+                                            $.ajax({
+                                                url: "clients-add.php",
+                                                type: "post",
+                                                data: formData,
+                                                processData: false,
+                                                contentType: false,
+                                                success: function (response) {
+                                                    if (response.status === 'true') {
+                                                        var closest_select_id = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
+                                                        $('.select-' + type).each(function () {
+                                                            if ($(this).attr('id') === closest_select_id) {
+                                                                $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name + '</option>');
+                                                            } else {
+                                                                $(this).append('<option value="' + response.client_id + '">' + response.client_name + '</option>');
+                                                            }
+                                                        });
+                                                        $('.select-' + type).trigger("chosen:updated");
+                                                        form.closest('.bootbox').modal('hide');
+                                                    } else if (response.status === 'false') {
+                                                        form.closest('.white-box-interior').prepend(response.message);
+                                                    }
+                                                }
+                                            });
                                         }
-                                    },
-                                    error: function (jqXHR, textStatus, errorThrown) {
-                                        console.log(textStatus, errorThrown);
                                     }
                                 });
                             }
@@ -198,7 +251,6 @@
                                     processData: false,
                                     contentType: false,
                                     success: function (response) {
-                                        console.log(response);
                                         if (response.status === 'true') {
                                             var closest_select_id = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
                                             $('.select-' + type).each(function () {
@@ -213,9 +265,6 @@
                                         } else if (response.status === 'false') {
                                             form.closest('.white-box-interior').prepend(response.message);
                                         }
-                                    },
-                                    error: function (jqXHR, textStatus, errorThrown) {
-                                        console.log(textStatus, errorThrown);
                                     }
                                 });
                             }

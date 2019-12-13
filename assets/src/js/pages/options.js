@@ -6,9 +6,7 @@
         $(document).ready(function(){
             $('#allowed_file_types')
             .tagify()
-            .on('add', function(e, tagName){
-                console.log('added', tagName)
-            });
+            .on('add', function(e, tagName){ });
 
             $('#ldap_signin_enabled, #google_signin_enabled').on('change', function() {
                 if (this.value === '1') {

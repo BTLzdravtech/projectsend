@@ -13,6 +13,8 @@ $active_nav = 'clients';
 
 $page_id = 'client_form';
 
+global $dbh;
+
 $new_client = new \ProjectSend\Classes\Users($dbh);
 
 /**
@@ -27,7 +29,7 @@ $client_arguments = array(
 
 ?>
 
-<div class="white-box">
+<div class="white-box ajax">
     <div class="white-box-interior">
         <?php
             // If the form was submited with errors, show them here.
