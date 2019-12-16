@@ -92,8 +92,22 @@ if ($_POST) {
         }
     } else {
         $client = get_user_by('client', 'email', $client_arguments['email']);
+        $transferred_from_id = $client['owner_id'];
+
+        // remove client from all groups
+        $statement = $dbh->prepare( "DELETE FROM " . TABLE_MEMBERS . " WHERE client_id = :client_id" );
+        $statement->execute(array(':client_id' => $client['id']));
+
+        // change client owner_id
         $statement = $dbh->prepare( "UPDATE " . TABLE_USERS . " SET owner_id = :owner_id WHERE id = :id" );
         $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, 'id' => $client['id']));
+        $logger = new \ProjectSend\Classes\ActionsLog;
+        $logger->addEntry([
+            'action' => 41,
+            'owner_id' => $transferred_from_id,
+            'affected_account' => $client['id'],
+            'affected_account_name' => $client['name'],
+        ]);
         if (!$_POST['ajax']) {
             $redirect_to = BASE_URI . 'clients-edit.php?id=' . $client['id'] . '&status=' . ($result ? 1 : 0);
             header('Location:' . $redirect_to);

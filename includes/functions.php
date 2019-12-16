@@ -1792,6 +1792,12 @@ function render_log_action($params)
             $action_text = __('marked as hidden for everyone the file','cftp_admin');
             $part2 = $affected_file_name;
             break;
+        case 41:
+            $action_ico = 'client-edit';
+            $part1 = $owner_user;
+            $action_text = __('transferred the client','cftp_admin');
+            $part2 = $affected_account_name . ' (from: ' . get_client_by_id($owner_id)['name'] . ')';
+            break;
 	}
 
     $date = format_date($timestamp);

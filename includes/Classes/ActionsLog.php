@@ -40,8 +40,6 @@ class ActionsLog
         $this->activities_references = array(
             0	=> __('ProjecSend has been installed','cftp_admin'),
             1	=> __('Account logs in through the form','cftp_admin'),
-            24	=> __('Account logs in through cookies','cftp_admin'),
-            31	=> __('Account (user or client) logs out','cftp_admin'),
             2	=> __('A user creates a new user account','cftp_admin'),
             3	=> __('A user creates a new client account','cftp_admin'),
             4	=> __('A client registers an account for himself','cftp_admin'),
@@ -63,13 +61,15 @@ class ActionsLog
             20	=> __('A client account was deactivated','cftp_admin'),
             21	=> __('A file was marked as hidden','cftp_admin'),
             22	=> __('A file was marked as visible','cftp_admin'),
-            23	=> __('A user creates a new group','cftp_admin'),
+            23	=> __('A user created a new group','cftp_admin'),
+            24	=> __('Account logs in through cookies','cftp_admin'),
             25	=> __('A file is assigned to a client','cftp_admin'),
             26	=> __('A file is assigned to a group','cftp_admin'),
             27	=> __('A user account was activated','cftp_admin'),
             28	=> __('A user account was deactivated','cftp_admin'),
             29	=> __('The logo on "Branding" was changed','cftp_admin'),
             30	=> __('ProjectSend was updated','cftp_admin'),
+            31	=> __('Account (user or client) logs out','cftp_admin'),
             32	=> __('A system user edited a file.','cftp_admin'),
             33	=> __('A client edited a file.','cftp_admin'),
             34	=> __('A client created a category.','cftp_admin'),
@@ -78,14 +78,15 @@ class ActionsLog
             37	=> __('An anonymous user downloaded a public file.','cftp_admin'),
             38	=> __('A client account request was processed.','cftp_admin'),
             39	=> __("A client's groups membership requests were processed.",'cftp_admin'),
-            40	=> __('A file was marked as hidden for everyone','cftp_admin'),
+            40  => __('A file was marked as hidden for everyone','cftp_admin'),
+            41  => __("A client was transferred",'cftp_admin'),
         );
 
         return $this->activities_references;
     }
 
 	/**
-	 * Create a new client.
+	 * Create a new log entry.
 	 */
 	function addEntry($arguments)
 	{
