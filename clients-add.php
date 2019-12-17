@@ -19,7 +19,7 @@ global $dbh;
 
 $new_client = new \ProjectSend\Classes\Users($dbh);
 
-if (!defined($_POST['ajax'])) {
+if (!isset($_POST['ajax'])) {
     include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 }
 
@@ -98,6 +98,11 @@ if ($_POST) {
         $statement = $dbh->prepare( "DELETE FROM " . TABLE_MEMBERS . " WHERE client_id = :client_id" );
         $statement->execute(array(':client_id' => $client['id']));
 
+        // change owner of client files to old owner before transfer
+
+        $statement = $dbh->prepare( "UPDATE " . TABLE_FILES . " SET owner_id = :owner_id WHERE owner_id = :client_id" );
+        $statement->execute(array(':owner_id' => $transferred_from_id, 'client_id' => $client['id']));
+
         // change client owner_id
         $statement = $dbh->prepare( "UPDATE " . TABLE_USERS . " SET owner_id = :owner_id WHERE id = :id" );
         $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, 'id' => $client['id']));
@@ -108,7 +113,7 @@ if ($_POST) {
             'affected_account' => $client['id'],
             'affected_account_name' => $client['name'],
         ]);
-        if (!$_POST['ajax']) {
+        if (!isset($_POST['ajax'])) {
             $redirect_to = BASE_URI . 'clients-edit.php?id=' . $client['id'] . '&status=' . ($result ? 1 : 0);
             header('Location:' . $redirect_to);
             exit;
