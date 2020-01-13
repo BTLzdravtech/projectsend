@@ -299,6 +299,7 @@ while( $row = $statement->fetch() ) {
 			</thead>
 			<tbody>
 			<?php
+                $all_public = true;
 				foreach($upload_finish as $uploaded) {
 			?>
 					<tr>
@@ -339,7 +340,12 @@ while( $row = $statement->fetch() ) {
 										}
 												$status_public	= __('Public','cftp_admin');
 												$status_private	= __('Private','cftp_admin');
-												echo ($uploaded['public'] == 1) ? $status_public : $status_private;
+												if ($uploaded['public'] == 1) {
+                                                    echo $status_public;
+                                                } else {
+												    echo $status_private;
+                                                    $all_public = false;
+                                                }
 									?>
 											</a>
 								</td>
@@ -367,6 +373,40 @@ while( $row = $statement->fetch() ) {
 			?>
 			</tbody>
 		</table>
+
+        <a href="javascript:void(0);" class="btn btn-default btn-sm public_links" rel="" title=""><?php echo __('View public links','cftp_admin'); ?></a>
+    <?php
+        if ($all_public) { ?>
+            <script>
+                $(document).ready(function() {
+                    $(document).psendmodal();
+                    var link_base = json_strings.uri.public_download + '?';
+                    var note_text = json_strings.translations.public_file_note;
+
+                    var modalText = '';
+                    $('#uploaded_files_tbl').find('.public_link').each(function(i, element){
+                        modalText += link_base + 'id=' + $(element).data('id') + '&token=' + $(element).data('token') + '\n';
+                    });
+
+                    var content =  '<div class="public_link_modal">'+
+                        '<strong>'+json_strings.translations.copy_click_select+'</strong>'+
+                        '<div class="copied">'+json_strings.translations.copy_ok+'</div>'+
+                        '<div class="copied_not">'+json_strings.translations.copy_error+'</div>'+
+                        '<div class="form-group">'+
+                        '<textarea class="input-large public_link_copy form-control" rows="4" readonly>'+
+                        modalText+
+                        '</textarea>'+
+                        '</div>'+
+                        '<span class="note">' + note_text + '</span>'+
+                        '</div>';
+                    var title 	= json_strings.translations.public_url;
+                    $('.modal_title span').html(title);
+                    $('.modal_content').html(content);
+                });
+            </script>
+    <?php
+        }
+    ?>
 <?php
 	}
 
@@ -521,7 +561,7 @@ while( $row = $statement->fetch() ) {
 																<div class="checkbox form-group">
 																	<label for="pub_checkbox_<?php echo $i; ?>">
                                                                         <div class="input-group">
-																		    <input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
+																		    <input type="checkbox" id="pub_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][public]" value="1" checked="checked" /> <?php _e('Allow public downloading of this file.', 'cftp_admin');?>
                                                                         </div>
 																	</label>
 																</div>

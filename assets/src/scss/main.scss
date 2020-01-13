@@ -1461,9 +1461,9 @@ li .required.password_toggle {
 	float: left;
 	z-index:5000;
 
-	width:400px;
+	width:600px;
 	height:340px;
-	margin:-170px 0 0 -200px;
+	margin:-170px 0 0 -300px;
 	background:white;
 	color:black;
 
@@ -1473,6 +1473,9 @@ li .required.password_toggle {
 
 .modal_content {
 	margin:15px;
+	textarea {
+		min-height: 150px;
+	}
 }
 
 .loading-img {

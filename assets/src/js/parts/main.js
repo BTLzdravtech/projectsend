@@ -192,14 +192,43 @@
                 }
 
                 var content =  '<div class="public_link_modal">'+
-                                    '<strong>'+json_strings.translations.copy_click_select+'</strong>'+
-                                    '<div class="copied">'+json_strings.translations.copy_ok+'</div>'+
-                                    '<div class="copied_not">'+json_strings.translations.copy_error+'</div>'+
-                                    '<div class="form-group">'+
-                                        '<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + link_base + 'id=' + id + '&token=' + token + '</textarea>'+
-                                    '</div>'+
-                                    '<span class="note">' + note_text + '</span>'+
-                                '</div>';
+                    '<strong>'+json_strings.translations.copy_click_select+'</strong>'+
+                    '<div class="copied">'+json_strings.translations.copy_ok+'</div>'+
+                    '<div class="copied_not">'+json_strings.translations.copy_error+'</div>'+
+                    '<div class="form-group">'+
+                    '<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + link_base + 'id=' + id + '&token=' + token + '</textarea>'+
+                    '</div>'+
+                    '<span class="note">' + note_text + '</span>'+
+                    '</div>';
+                var title 	= json_strings.translations.public_url;
+                $('.modal_title span').html(title);
+                $('.modal_content').html(content);
+            });
+
+            /**
+             * Modal: show a multiple public file's URL
+             */
+            $('body').on('click', '.public_links', function(e) {
+                $(document).psendmodal();
+                var link_base = json_strings.uri.public_download + '?';
+                var note_text = json_strings.translations.public_file_note;
+
+                var modalText = '';
+                $('#uploaded_files_tbl').find('.public_link').each(function(i, element){
+                    modalText += link_base + 'id=' + $(element).data('id') + '&token=' + $(element).data('token') + '\n';
+                });
+
+                var content =  '<div class="public_link_modal">'+
+                    '<strong>'+json_strings.translations.copy_click_select+'</strong>'+
+                    '<div class="copied">'+json_strings.translations.copy_ok+'</div>'+
+                    '<div class="copied_not">'+json_strings.translations.copy_error+'</div>'+
+                    '<div class="form-group">'+
+                    '<textarea class="input-large public_link_copy form-control" rows="4" readonly>'+
+                    modalText+
+                    '</textarea>'+
+                    '</div>'+
+                    '<span class="note">' + note_text + '</span>'+
+                    '</div>';
                 var title 	= json_strings.translations.public_url;
                 $('.modal_title span').html(title);
                 $('.modal_content').html(content);
