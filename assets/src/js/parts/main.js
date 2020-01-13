@@ -218,20 +218,74 @@
                     modalText += link_base + 'id=' + $(element).data('id') + '&token=' + $(element).data('token') + '\n';
                 });
 
-                var content =  '<div class="public_link_modal">'+
-                    '<strong>'+json_strings.translations.copy_click_select+'</strong>'+
-                    '<div class="copied">'+json_strings.translations.copy_ok+'</div>'+
-                    '<div class="copied_not">'+json_strings.translations.copy_error+'</div>'+
-                    '<div class="form-group">'+
-                    '<textarea class="input-large public_link_copy form-control" rows="4" readonly>'+
-                    modalText+
-                    '</textarea>'+
-                    '</div>'+
-                    '<span class="note">' + note_text + '</span>'+
-                    '</div>';
-                var title 	= json_strings.translations.public_url;
+                var content = '<div class="public_link_modal">' +
+                                '<strong>'+json_strings.translations.copy_click_select+'</strong>' +
+                                '<div class="copied">'+json_strings.translations.copy_ok+'</div>' +
+                                '<div class="copied_not">'+json_strings.translations.copy_error+'</div>' +
+                                '<div class="form-group">' +
+                                    '<textarea class="input-large public_link_copy form-control" rows="4" readonly>' +
+                                        modalText +
+                                    '</textarea>' +
+                                '</div>' +
+                                '<h3 class="note">' + note_text + '</h3>'+
+                                '<form name="email_links" id="email_links" class="form-horizontal">' +
+                                    '<div class="form-group">' +
+                                        '<label for="name" class="col-sm-4 control-label">'+json_strings.translations.send_links.email+
+                                            '<i class="fa fa-question-circle-o fa-fw" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="' + json_strings.translations.send_links.email_multiple + '"></i>' +
+                                        '</label>' +
+                                        '<div class="col-sm-8">' +
+                                            '<input type="text" name="email" id="email" class="form-control required" required />' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="form-group">' +
+                                        '<label for="name" class="col-sm-4 control-label">'+json_strings.translations.send_links.note+'</label>' +
+                                        '<div class="col-sm-8">' +
+                                            '<textarea class="input-large public_link_note form-control" rows="4" name="note" id="note"></textarea>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="inside_form_buttons">' +
+                                        '<button type="submit" class="btn btn-wide btn-primary">'+json_strings.translations.send_links.submit+'</button>' +
+                                    '</div>' +
+                                '</form>' +
+                              '</div>';
+                var title = json_strings.translations.public_url;
                 $('.modal_title span').html(title);
                 $('.modal_content').html(content);
+                var validator = $("#email_links").validate({
+                    rules: {
+                        email: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        email: {
+                            required: json_strings.validation.no_email
+                        }
+                    },
+                    errorPlacement: function(error, element) {
+                        error.appendTo(element.closest('div'));
+                    }
+                });
+                $("#email_links").on('submit', function(event) {
+                    event.preventDefault();
+                    var form = $(this);
+                    if (form.valid()) {
+                        $.ajax({
+                            url: 'ajax/check_client.php',
+                            cache: false,
+                            data: {
+                                user_name: $('#email').val(),
+                                user_email: $('#note').val()
+                            },
+                            success: function (response) {
+                                console.log('test');
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                alert("Status: " + textStatus); alert("Error: " + errorThrown);
+                            }
+                        });
+                    }
+                });
             });
             
             // Edit file + upload form

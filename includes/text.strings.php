@@ -54,6 +54,12 @@ $json_strings = [
         'upload_form' => [
             'leave_confirm' => __("Are you sure? Files currently being uploaded will be discarded if you leave this page.",'cftp_admin'),
             'copy_selection' => __("Copy selection to all files?",'cftp_admin'),
+        ],
+        'send_links' => [
+            'email' => __("Email",'cftp_admin'),
+            'note' => __("Note",'cftp_admin'),
+            'submit' => __("Submit",'cftp_admin'),
+            'email_multiple' => __("comma separated list",'cftp_admin'),
         ]
     ],
     'validation' => [
