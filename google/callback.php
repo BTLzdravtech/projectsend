@@ -70,9 +70,9 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_
                 $new_record_action = $logger->addEntry($log_action_args);
 
                 if ($user_level == '0') {
-                    header("location:" . CLIENT_VIEW_FILE_LIST_URL);
+                    header("location:" . BASE_URI . "upload-from-computer.php");
                 } else {
-                    header("location:" . BASE_URI . "dashboard.php");
+                    header("location:" . BASE_URI . "upload-from-computer.php");
                 }
                 exit;
             } else {

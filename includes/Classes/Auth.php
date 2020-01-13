@@ -170,9 +170,9 @@ class Auth
                             'message' => system_message('success', 'Login success. Redirecting...', 'login_response'),
                         );
                         if ($this->user_level == '0') {
-                            $results['location'] = CLIENT_VIEW_FILE_LIST_URL;
+                            $results['location'] = BASE_URI . "upload-from-computer.php";
                         } else {
-                            $results['location'] = BASE_URI . "dashboard.php";
+                            $results['location'] = BASE_URI . "upload-from-computer.php";
                         }
 
                         /** Using an external form */
