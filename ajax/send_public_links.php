@@ -16,7 +16,7 @@ $link_html = '';
 foreach ($links as $link) {
     if (!empty($link)) {
         $link_html .= '<li style="margin-bottom:11px;">';
-        $link_html .= '<a style="font-weight:bold; margin:0 0 5px 0; font-size:14px;" href="' . $link . '">' . $link . '</a>';
+        $link_html .= '<a class="btn btn-primary" href="' . $link . '">' . $link . '</a>';
         $link_html .= '</li>';
     }
 }
