@@ -88,6 +88,13 @@ switch ( $section ) {
                                 'email_limit_retention_customize',
                             );
         break;
+    case 'public_links':
+        $section_title	= __('Public links','cftp_admin');
+        $checkboxes		= array(
+            'email_public_links_subject_customize',
+            'email_public_links_customize',
+        );
+        break;
 
 	default:
 		$location = BASE_URI . 'email-templates.php?section=header_footer';
@@ -334,6 +341,23 @@ if ($_POST) {
                                                                                                     ),
                                                                        'default_text'		=> EMAIL_TEMPLATE_LIMIT_RETENTION,
                                                                    ),
+                                        'public_links'		=> array(
+                                                                        'subject_checkbox'	=> 'email_public_links_subject_customize',
+                                                                        'subject'			=> 'email_public_links_subject',
+                                                                        'body_checkbox'		=> 'email_public_linksn_customize',
+                                                                        'body_textarea'		=> 'email_public_links_text',
+                                                                        'description'		=> __('This email will contain public URLs for uploaded files and will be sent to chosen address.','cftp_admin'),
+                                                                        'subject_check'		=> EMAIL_PUBLIC_LINKS_SUBJECT_CUSTOMIZE,
+                                                                        'subject_text'		=> EMAIL_PUBLIC_LINKS_SUBJECT,
+                                                                        'body_check'		=> EMAIL_PUBLIC_LINKS_CUSTOMIZE,
+                                                                        'body_text'			=> EMAIL_PUBLIC_LINKS_TEXT,
+                                                                        'tags'				=> array(
+                                                                            '%LINKS%'		=> __('Shows the list of public URLs','cftp_admin'),
+                                                                            '%NOTE%'		=> __('The note','cftp_admin'),
+                                                                            '%UPLOADER%'	=> __('Uploader name','cftp_admin'),
+                                                                        ),
+                                                                        'default_text'		=> EMAIL_TEMPLATE_PUBLIC_LINKS,
+                                                                    ),
 							     		);
 			?>
 

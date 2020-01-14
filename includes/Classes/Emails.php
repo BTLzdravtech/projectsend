@@ -37,6 +37,7 @@ class Emails
     private $strings_pass_reset;
     private $strings_client_edited;
     private $strings_limit_retention;
+    private $strings_public_links;
 
     function __construct()
     {
@@ -124,7 +125,6 @@ class Emails
 			'label_pass'	=> __('Your password','cftp_admin')
 		);
 
-
 		/** Strings for the "Reset password" e-mail */
 		$this->strings_pass_reset = array(
 			'subject'		=> ( defined('EMAIL_PASS_RESET_SUBJECT_CUSTOMIZE' ) && EMAIL_PASS_RESET_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_PASS_RESET_SUBJECT' ) ) ? EMAIL_PASS_RESET_SUBJECT : __('Password reset instructions','cftp_admin'),
@@ -146,12 +146,19 @@ class Emails
 			'label_request' 	=> __('The client requests access to the following group(s)','cftp_admin'),
 			'body2'				=> __('Please log in to process the request.','cftp_admin')
 		);
+
         /** Strings for the "data retention period ends" e-mail */
         $this->strings_limit_retention = array(
             'subject'		=> ( defined('EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE' ) && EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_LIMIT_RETENTION_SUBJECT' ) ) ? EMAIL_LIMIT_RETENTION_SUBJECT : __('Expiration reminder','cftp_admin'),
             'body'			=> __('Two days left before the expiration of your files','cftp_admin'),
             'body2'			=> __('To see the expiration time of your files, please visit the following link','cftp_admin'),
             'body3'			=> __('After the expiration, your uploaded files will be deleted.','cftp_admin')
+        );
+
+        /** Strings for the "send public links" e-mail */
+        $this->strings_public_links = array(
+            'subject'		=> ( defined('EMAIL_PUBLIC_LINKS_SUBJECT_CUSTOMIZE' ) && EMAIL_PUBLIC_LINKS_SUBJECT_CUSTOMIZE == 1 && defined( 'EMAIL_PUBLIC_LINKS_SUBJECT' ) ) ? EMAIL_PUBLIC_LINKS_SUBJECT : __('Links to download files','cftp_admin'),
+            'body'			=> __('These files was uploaded for you by','cftp_admin')
         );
     }
 
@@ -211,6 +218,11 @@ class Emails
                     $filename	= EMAIL_TEMPLATE_LIMIT_RETENTION;
                     $body_check	= (!defined('EMAIL_LIMIT_RETENTION_CUSTOMIZE') || EMAIL_LIMIT_RETENTION_CUSTOMIZE == '0') ? '0' : EMAIL_LIMIT_RETENTION_CUSTOMIZE;
                     $body_text	= EMAIL_LIMIT_RETENTION_TEXT;
+                break;
+            case 'public_links':
+                    $filename	= EMAIL_TEMPLATE_PUBLIC_LINKS;
+                    $body_check	= (!defined('EMAIL_PUBLIC_LINKS_CUSTOMIZE') || EMAIL_PUBLIC_LINKS_CUSTOMIZE == '0') ? '0' : EMAIL_PUBLIC_LINKS_CUSTOMIZE;
+                    $body_text	= EMAIL_PUBLIC_LINKS_TEXT;
                 break;
 		}
 
@@ -564,6 +576,7 @@ class Emails
 					'body' => $this->email_body
 				);
 	}
+
     /**
      *  Prepare the body for email sent when the data upload expires
      */
@@ -588,6 +601,29 @@ class Emails
          );
     }
 
+    /**
+     *  Prepare the body for email sent when the data upload expires
+     */
+    function email_public_links($links, $note, $uploader)
+    {
+        $this->email_body = $this->email_prepare_body('public_links');
+        $this->email_body = str_replace(
+            array('%SUBJECT%','%BODY1%','%UPLOADER%','%LINKS%','%NOTE%'),
+            array(
+                $this->strings_public_links['subject'],
+                $this->strings_public_links['body'],
+                $uploader,
+                $links,
+                $note
+            ),
+            $this->email_body
+        );
+        return array(
+            'subject' => $this->strings_public_links['subject'],
+            'body' => $this->email_body
+        );
+    }
+
 	/**
 	 * Finally, try to send the e-mail and return a status, where
 	 * 1 = Message sent OK
@@ -610,6 +646,9 @@ class Emails
         $this->file_id	    = (!empty($arguments['file_id'])) ? $arguments['file_id'] : '';
 		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
 		$this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
+        $this->note	        = (!empty($arguments['note'])) ? $arguments['note'] : '';
+        $this->links        = (!empty($arguments['links'])) ? $arguments['links'] : '';
+        $this->uploader     = (!empty($arguments['uploader'])) ? $arguments['uploader'] : '';
 
 		$this->try_bcc = false;
 		switch($this->type) {
@@ -627,11 +666,7 @@ class Emails
 			break;
             case 'limit_retention':
                 $this->body_variables = [ $this->files_list, ];
-                if (MAIL_COPY_CLIENT_UPLOAD == '1') {
-                    $this->try_bcc = true;
-                }
             break;
-
             case 'new_client':
                 $this->body_variables = [ $this->username, $this->password, ];
 			break;
@@ -653,6 +688,9 @@ class Emails
 			case 'client_edited':
                 $this->body_variables = [ $this->username, $this->name, $this->memberships, ];
 			break;
+            case 'public_links':
+                $this->body_variables = [ $this->links, $this->note, $this->uploader ];
+            break;
         }
 
         /** Generates the subject and body contents */
@@ -738,7 +776,13 @@ class Emails
                 $this->send_mail->AddAddress($this->addresses, $this->name);
             }
             else {
-                $this->send_mail->AddAddress($this->addresses);
+                if (is_array($this->addresses)) {
+                    foreach ($this->addresses as $address) {
+                        $this->send_mail->AddAddress($address);
+                    }
+                } else {
+                    $this->send_mail->AddAddress($this->addresses);
+                }
             }
 
 			/**

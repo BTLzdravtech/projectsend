@@ -300,6 +300,10 @@ if ( current_role_in( array( 9,8,7 ) ) )
                 'label'	=> __('Expiration reminder', 'cftp_admin'),
                 'link'	=> 'email-templates.php?section=limit_retention',
             ),
+            array(
+                'label'	=> __('Public links', 'cftp_admin'),
+                'link'	=> 'email-templates.php?section=public_links',
+            ),
         )
     );
 
