@@ -1411,5 +1411,32 @@ if (current_role_in($allowed_update)) {
                 $updates_made++;
             }
         }
+
+        /**
+         * r1113 updates
+         * Add new options for public links email.
+         */
+        if ($last_update < 1113) {
+            $new_database_values = array(
+                /**
+                 * On or Off fields
+                 * Each one corresponding to a type of email
+                 */
+                'email_public_links_subject_customize'		=> '0',
+                'email_public_links_customize'				=> '0',
+                /**
+                 * Text fields
+                 * Each one corresponding to a type of email
+                 */
+                'email_public_links_subject'					=> '',
+                'email_public_links_text'					=> '',
+            );
+
+            foreach($new_database_values as $row => $value) {
+                if ( add_option_if_not_exists($row, $value) ) {
+                    $updates_made++;
+                }
+            }
+        }
     }
 }
