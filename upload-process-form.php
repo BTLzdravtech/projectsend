@@ -374,7 +374,7 @@ while( $row = $statement->fetch() ) {
 			</tbody>
 		</table>
 
-        <a href="javascript:void(0);" class="btn btn-default btn-sm public_links" rel="" title=""><?php echo __('View public links','cftp_admin'); ?></a>
+        <a href="javascript:void(0);" class="btn btn-default btn-sm public_links" data-name="<?php echo CURRENT_USER_NAME ?>" rel="" title=""><?php echo __('View public links','cftp_admin'); ?></a>
     <?php
         if ($all_public) { ?>
             <script>

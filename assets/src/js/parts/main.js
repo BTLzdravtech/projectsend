@@ -212,7 +212,7 @@
                 $(document).psendmodal();
                 var link_base = json_strings.uri.public_download + '?';
                 var note_text = json_strings.translations.public_file_note;
-
+                var uploader = $(this).data('name');
                 var modalText = '';
                 $('#uploaded_files_tbl').find('.public_link').each(function(i, element){
                     modalText += link_base + 'id=' + $(element).data('id') + '&token=' + $(element).data('token') + '\n';
@@ -223,12 +223,12 @@
                                 '<div class="copied">'+json_strings.translations.copy_ok+'</div>' +
                                 '<div class="copied_not">'+json_strings.translations.copy_error+'</div>' +
                                 '<div class="form-group">' +
-                                    '<textarea class="input-large public_link_copy form-control" rows="4" readonly>' +
+                                    '<textarea class="input-large public_link_copy form-control" rows="4" id="links" readonly>' +
                                         modalText +
                                     '</textarea>' +
                                 '</div>' +
                                 '<h3 class="note">' + note_text + '</h3>'+
-                                '<form name="email_links" id="email_links" class="form-horizontal">' +
+                                '<form name="email_links" id="email_links" class="form-horizontal" data-name="' + uploader + '">' +
                                     '<div class="form-group">' +
                                         '<label for="name" class="col-sm-4 control-label">'+json_strings.translations.send_links.email+
                                             '<i class="fa fa-question-circle-o fa-fw" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="' + json_strings.translations.send_links.email_multiple + '"></i>' +
@@ -271,18 +271,19 @@
                     var form = $(this);
                     if (form.valid()) {
                         $.ajax({
-                            url: 'ajax/check_client.php',
+                            url: 'ajax/send_public_links.php',
                             cache: false,
                             data: {
-                                user_name: $('#email').val(),
-                                user_email: $('#note').val()
+                                email: $('#email').val(),
+                                note: $('#note').val(),
+                                links: $('#links').val(),
+                                uploader: form.data('name')
                             },
                             success: function (response) {
-                                console.log('test');
+                                if (response.emails_send) {
+                                    remove_modal();
+                                }
                             },
-                            error: function(XMLHttpRequest, textStatus, errorThrown) {
-                                alert("Status: " + textStatus); alert("Error: " + errorThrown);
-                            }
                         });
                     }
                 });
