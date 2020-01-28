@@ -351,10 +351,10 @@ class Users
 		if (strlen($this->password_hashed) >= 20 || isset($_SESSION['google_user']) || (LDAP_SIGNIN_ENABLED && $this->objectguid != null)) {
 
             /** Who is creating the client? */
-		    if (defined(CURRENT_USER_ID)) {
+		    if (defined('CURRENT_USER_ID')) {
                 $this->owner_id = CURRENT_USER_ID;
             }
-            if (defined(CURRENT_USER_USERNAME)) {
+            if (defined('CURRENT_USER_USERNAME')) {
                 $this->created_by = CURRENT_USER_USERNAME;
             }
 
@@ -390,7 +390,7 @@ class Users
 
                 $this->state['query'] = 1;
 
-                if (!defined(CURRENT_USER_ID) && !defined(CURRENT_USER_USERNAME)) {
+                if (!defined('CURRENT_USER_ID') && !defined('CURRENT_USER_USERNAME')) {
                     $statement = $this->dbh->prepare( "UPDATE " . TABLE_USERS . " SET owner_id = :owner_id, created_by = :created_by WHERE id = :id" );
                     $statement->execute(array('owner_id' => $this->id, 'created_by' => $this->username, 'id' => $this->id));
                 }
