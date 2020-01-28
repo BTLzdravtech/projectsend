@@ -25,7 +25,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1112');
+define('CURRENT_VERSION', 'r1113');
 
 /**
  * Required software versions
@@ -276,6 +276,7 @@ define('EMAIL_TEMPLATE_NEW_FILE_BY_USER', 'new-file-by-user.html');
 define('EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT', 'new-file-by-client.html');
 define('EMAIL_TEMPLATE_PASSWORD_RESET', 'password-reset.html');
 define('EMAIL_TEMPLATE_LIMIT_RETENTION', 'limit-retention.html');
+define('EMAIL_TEMPLATE_PUBLIC_LINKS', 'public-links.html');
 
 /** Passwords */
 define('HASH_COST_LOG2', 8);

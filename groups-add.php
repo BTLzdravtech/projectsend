@@ -17,7 +17,7 @@ $page_id = 'group_form';
 
 $new_group = new \ProjectSend\Classes\Groups($dbh);
 
-if (!defined($_POST['ajax'])) {
+if (!isset($_POST['ajax'])) {
     include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 }
 
