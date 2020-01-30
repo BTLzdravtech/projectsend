@@ -4,6 +4,9 @@
  *
  * @package ProjectSend
  */
+
+use ProjectSend\Classes\TableGenerate;
+
 $allowed_levels = array(9,8,7);
 require_once 'bootstrap.php';
 
@@ -121,7 +124,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 													'id'		=> 'download_info_tbl',
 													'class'		=> 'footable table',
 												);
-						$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+						$table = new TableGenerate( $table_attributes );
 
 						$thead_columns		= array(
 													array(

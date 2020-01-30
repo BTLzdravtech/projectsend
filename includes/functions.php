@@ -6,7 +6,9 @@
  * @subpackage	Functions
  */
 
+use claviska\SimpleImage;
 use enshrined\svgSanitize\Sanitizer;
+use ProjectSend\Classes\ActionsLog;
 
 /**
  * Check if ProjectSend is installed by trying to find the main users table.
@@ -82,9 +84,8 @@ function return_account_type()
     if (!defined('CURRENT_USER_LEVEL')) {
         return 'client';
     }
-    
-    $type = (CURRENT_USER_LEVEL == 0) ? 'client' : 'user';
-    return $type;
+
+    return (CURRENT_USER_LEVEL == 0) ? 'client' : 'user';
 }
 
 
@@ -383,8 +384,7 @@ function get_client_by_username($client)
     while ( $row = $statement->fetch() ) {
         $found_id = html_output($row['id']);
         if ( !empty( $found_id ) ) {
-            $information = get_client_by_id($found_id);
-            return $information;
+            return get_client_by_id($found_id);
         }
         else {
             return false;
@@ -548,8 +548,7 @@ function get_user_by_username($user)
         while ( $row = $statement->fetch() ) {
             $found_id = html_output($row['id']);
             if ( !empty( $found_id ) ) {
-                $information = get_user_by_id($found_id);
-                return $information;
+                return get_user_by_id($found_id);
             }
             else {
                 return false;
@@ -620,8 +619,7 @@ function get_file_by_filename($filename)
         while ( $row = $statement->fetch() ) {
             $found_id = $row['id'];
             if ( !empty( $found_id ) ) {
-                $information = get_file_by_id($found_id);
-                return $information;
+                return get_file_by_id($found_id);
             }
             else {
                 return false;
@@ -1171,7 +1169,7 @@ function make_thumbnail( $file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, 
 
     if ( !file_exists( $thumbnail['thumbnail']['location'] ) ) {
         try {
-            $image = new \claviska\SimpleImage();
+            $image = new SimpleImage();
             $image
                 ->fromFile($file)
                 ->autoOrient();
@@ -1390,8 +1388,7 @@ function add_body_class( $custom = '' )
 
 	$classes = array_filter( array_unique( $classes ) );
 
-	$render = 'class="' . implode(' ', $classes) . '"';
-	return $render;
+    return 'class="' . implode(' ', $classes) . '"';
 }
 
 function add_page_id($id)
@@ -1411,9 +1408,7 @@ function add_page_id($id)
  */
 function make_download_link($file_info)
 {
-	$download_link = BASE_URI.'process.php?do=download&amp;id='.$file_info['id'];
-
-    return $download_link;
+    return BASE_URI.'process.php?do=download&amp;id='.$file_info['id'];
 }
 
 /**
@@ -1482,7 +1477,7 @@ function option_file_upload( $file, $validate_ext = '', $option = '', $action = 
 
 				/** Record the action log */
 				if ( !empty( $action ) ) {
-					$logger = new \ProjectSend\Classes\ActionsLog();
+					$logger = new ActionsLog();
 					$log_action_args = array(
 											'action' => $action,
 											'owner_id' => CURRENT_USER_ID
@@ -1511,9 +1506,7 @@ function format_date($date)
         return false;
     }
 
-    $formatted = date(TIMEFORMAT, strtotime($date));
-
-    return $formatted;
+    return date(TIMEFORMAT, strtotime($date));
 }
 
 function format_time($date)
@@ -1522,9 +1515,7 @@ function format_time($date)
         return false;
     }
 
-    $formatted = date('h:i:s', strtotime($date));
-
-    return $formatted;
+    return date('h:i:s', strtotime($date));
 }
 
 /**

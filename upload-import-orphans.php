@@ -10,6 +10,9 @@
  * @package ProjectSend
  * @subpackage Upload
  */
+
+use ProjectSend\Classes\TableGenerate;
+
 $allowed_levels = array(9,8,7);
 require_once 'bootstrap.php';
 
@@ -153,7 +156,7 @@ if (!empty($_GET['search'])) {
 											'class'				=> 'footable table',
 											'data-page-size'	=> FOOTABLE_PAGING_NUMBER,
 										);
-				$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+				$table = new TableGenerate( $table_attributes );
 	
 				$thead_columns		= array(
 											array(

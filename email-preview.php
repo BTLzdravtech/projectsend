@@ -5,6 +5,9 @@
  * @package ProjectSend
  * @subpackage Options
  */
+
+use ProjectSend\Classes\Emails;
+
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
@@ -22,7 +25,7 @@ can_see_content($allowed_levels);
 $type = $_GET['t'];
 
 /** Generate the preview using the email sending class */
-$preview = new \ProjectSend\Classes\Emails;
+$preview = new Emails;
 $preview_arguments = array(
 								'preview'	=> true,
 								'type'		=> $type,

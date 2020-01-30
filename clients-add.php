@@ -6,6 +6,11 @@
  * @subpackage	Clients
  *
  */
+
+use ProjectSend\Classes\ActionsLog;
+use ProjectSend\Classes\MembersActions;
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
@@ -17,7 +22,7 @@ $page_id = 'client_form';
 
 global $dbh;
 
-$new_client = new \ProjectSend\Classes\Users($dbh);
+$new_client = new Users($dbh);
 
 if (!isset($_POST['ajax'])) {
     include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -62,7 +67,7 @@ if ($_POST) {
             $add_to_groups = (!empty($_POST['groups_request'])) ? $_POST['groups_request'] : '';
             if (!empty($add_to_groups)) {
                 array_map('encode_html', $add_to_groups);
-                $memberships = new \ProjectSend\Classes\MembersActions;
+                $memberships = new MembersActions;
                 $arguments = array(
                     'client_id' => $new_client->getId(),
                     'group_ids' => $add_to_groups,
@@ -106,7 +111,7 @@ if ($_POST) {
         // change client owner_id
         $statement = $dbh->prepare( "UPDATE " . TABLE_USERS . " SET owner_id = :owner_id WHERE id = :id" );
         $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, 'id' => $client['id']));
-        $logger = new \ProjectSend\Classes\ActionsLog;
+        $logger = new ActionsLog;
         $logger->addEntry([
             'action' => 41,
             'owner_id' => $transferred_from_id,

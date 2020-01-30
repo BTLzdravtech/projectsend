@@ -6,6 +6,10 @@
  * @subpackage	Clients
  *
  */
+
+use ProjectSend\Classes\MembersActions;
+use ProjectSend\Classes\TableGenerate;
+
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
@@ -52,7 +56,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 			switch ($_POST['action']) {
 				case 'apply':
 					foreach ( $selected_clients as $client ) {
-						$process_memberships	= new \ProjectSend\Classes\MembersActions;
+						$process_memberships	= new MembersActions;
 
 						/** Process memberships requests */
 						if ( empty( $client['groups'] ) ) {
@@ -69,7 +73,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
-						$process_memberships = new \ProjectSend\Classes\MembersActions;
+						$process_memberships = new MembersActions;
 
 						$memberships_arguments = array(
                             'client_id'	=> $client['id'],
@@ -245,7 +249,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					/**
 					 * Pre-populate a membership requests array
 					 */
-					$get_requests	= new \ProjectSend\Classes\MembersActions;
+					$get_requests	= new MembersActions;
 					$arguments		= array();
 					if ( $current_filter == 'denied' ) {
 						$arguments['denied'] = 1;
@@ -259,7 +263,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+					$table = new TableGenerate( $table_attributes );
 	
 					$thead_columns		= array(
 												array(

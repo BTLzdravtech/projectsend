@@ -6,6 +6,7 @@
  * @subpackage	Classes
  */
 namespace ProjectSend\Classes;
+use BruteForceBlock;
 use \PDO;
 
 class Auth
@@ -23,7 +24,7 @@ class Auth
         }
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        $this->logger = new ActionsLog;
     }
 
     /**
@@ -40,7 +41,7 @@ class Auth
         if ( !$username || !$password )
             return false;
 
-        $BFBresponse = \BruteForceBlock::getLoginStatus();
+        $BFBresponse = BruteForceBlock::getLoginStatus();
 
         switch ($BFBresponse['status']){
             case 'safe':
@@ -80,7 +81,7 @@ class Auth
                     }
                     if (!$authenticated) {
                         //$errorstate = 'wrong_password';
-                        \BruteForceBlock::addFailedLoginAttempt($username, $_SERVER['REMOTE_ADDR']);
+                        BruteForceBlock::addFailedLoginAttempt($username, $_SERVER['REMOTE_ADDR']);
                         $this->errorstate = 'invalid_credentials';
                     }
                 } else {
@@ -119,13 +120,13 @@ class Auth
                             $this->name	        	= $attributes['displayName'][0];
                         } else {
                             //$errorstate = 'wrong_username';
-                            \BruteForceBlock::addFailedLoginAttempt($username, $_SERVER['REMOTE_ADDR']);
+                            BruteForceBlock::addFailedLoginAttempt($username, $_SERVER['REMOTE_ADDR']);
                             $this->errorstate = 'invalid_credentials';
                         }
                     } else {
                         $authenticated = false;
                         //$errorstate = 'wrong_username';
-                        \BruteForceBlock::addFailedLoginAttempt($username, $_SERVER['REMOTE_ADDR']);
+                        BruteForceBlock::addFailedLoginAttempt($username, $_SERVER['REMOTE_ADDR']);
                         $this->errorstate = 'invalid_credentials';
                     }
                 }
@@ -229,7 +230,7 @@ class Auth
      */
     public function getLoginError($errorstate, $delay = null)
     {
-        $this->error = __("Error during log in.",'cftp_admin');;
+        $this->error = __("Error during log in.",'cftp_admin');
 
 		if (isset($errorstate)) {
 			switch ($errorstate) {

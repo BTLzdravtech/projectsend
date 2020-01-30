@@ -5,6 +5,9 @@
  * @package		ProjectSend
  *
  */
+
+use ProjectSend\Classes\ActionsLog;
+
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
@@ -76,7 +79,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 				$statement->execute();
 
 				/** Record the action log */
-				$logger = new \ProjectSend\Classes\ActionsLog();
+				$logger = new ActionsLog();
 				$log_action_args = array(
 										'action'				=> 37,
 										'owner_id'				=> 0,

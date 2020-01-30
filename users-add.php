@@ -6,6 +6,9 @@
  * @subpackage	Users
  *
  */
+
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
@@ -19,7 +22,7 @@ $page_title = __('Add system user','cftp_admin');
 
 $page_id = 'user_form';
 
-$new_user = new \ProjectSend\Classes\Users($dbh);
+$new_user = new Users($dbh);
 
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 

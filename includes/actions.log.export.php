@@ -26,8 +26,7 @@ $log_sql	= $dbh->query( $log_query );
 $log_count	= $log_sql->rowCount();
 
 function filter_pipe($input) {
-	$output = str_replace('|', '\|', $input);
-	return $output;
+    return str_replace('|', '\|', $input);
 }
 
 if ($log_count > 0) {
@@ -49,12 +48,12 @@ if ($log_count > 0) {
 							)
 		);
 
-        if (!empty($render['timestamp'])) { $rendered['timestamp'] = $render['timestamp']; };
-		if (!empty($render['1'])) { $rendered['1'] = $render['1']; };
-		if (!empty($render['text'])) { $rendered['text'] = $render['text']; };
-		if (!empty($render['2'])) { $rendered['2'] = $render['2']; };
-		if (!empty($render['3'])) { $rendered['3'] = $render['3']; };
-		if (!empty($render['4'])) { $rendered['4'] = $render['4']; };
+        if (!empty($render['timestamp'])) { $rendered['timestamp'] = $render['timestamp']; }
+		if (!empty($render['1'])) { $rendered['1'] = $render['1']; }
+		if (!empty($render['text'])) { $rendered['text'] = $render['text']; }
+		if (!empty($render['2'])) { $rendered['2'] = $render['2']; }
+		if (!empty($render['3'])) { $rendered['3'] = $render['3']; }
+		if (!empty($render['4'])) { $rendered['4'] = $render['4']; }
 
 		fputcsv($output, $rendered);
 	}

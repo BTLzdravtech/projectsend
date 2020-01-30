@@ -5,6 +5,10 @@
  * @package		ProjectSend
  * @subpackage	Install
  */
+
+use ProjectSend\Classes\ActionsLog;
+use ProjectSend\Classes\Validation;
+
 define( 'IS_INSTALL', true );
 
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
@@ -60,8 +64,8 @@ function try_query($queries)
 			$statement = $dbh->prepare( $queries[$i]['query'] );
 			$params = $queries[$i]['params'];
 			if ( !empty( $params ) ) {
-				foreach ( $params as $name => $value ) {
-					$statement->bindValue( $name, $value );
+				foreach ( $params as $param_name => $param_value ) {
+					$statement->bindValue( $param_name, $param_value );
 				}
 			}
 			$statement->execute( $params );
@@ -120,7 +124,7 @@ include_once '../header-unlogged.php';
 							 */
 							if ($base_uri{(strlen($base_uri) - 1)} != '/') { $base_uri .= '/'; }
 							/** Begin form validation */
-                            $validation = new \ProjectSend\Classes\Validation;
+                            $validation = new Validation;
 
                             global $json_strings;
                     
@@ -194,7 +198,7 @@ include_once '../header-unlogged.php';
 									chmod_main_files();
 
 									/** Record the action log */
-									$logger = new \ProjectSend\Classes\ActionsLog();
+									$logger = new ActionsLog();
 									$log_action_args = array(
 															'action' => 0,
 															'owner_id' => 1,

@@ -6,6 +6,9 @@
  * @subpackage	Groups
  *
  */
+
+use ProjectSend\Classes\Groups;
+
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
@@ -15,7 +18,7 @@ $page_title = __('Add clients group','cftp_admin');
 
 $page_id = 'group_form';
 
-$new_group = new \ProjectSend\Classes\Groups($dbh);
+$new_group = new Groups($dbh);
 
 if (!isset($_POST['ajax'])) {
     include_once ADMIN_VIEWS_DIR . DS . 'header.php';

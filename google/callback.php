@@ -1,4 +1,8 @@
 <?php
+
+use ProjectSend\Classes\ActionsLog;
+use ProjectSend\Classes\Users;
+
 require_once '../bootstrap.php';
 
 $googleClient = getGoogleLoginClient();
@@ -61,7 +65,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_
                 }
 
                 /** Record the action log */
-                $logger = new \ProjectSend\Classes\ActionsLog();
+                $logger = new ActionsLog();
                 $log_action_args = array(
                     'action' => 1,
                     'owner_id' => $logged_id,
@@ -80,7 +84,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_
             }
         } else {
             $_SESSION['errorstate'] = 'no_account';
-            $new_user = new \ProjectSend\Classes\Users($dbh);
+            $new_user = new Users($dbh);
             $username = generateUsername($userData['email']);
 
             $clientData = array(

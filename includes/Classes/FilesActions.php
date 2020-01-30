@@ -8,6 +8,7 @@
  */
 namespace ProjectSend\Classes;
 
+use Exception;
 use \PDO;
 
 class FilesActions
@@ -24,7 +25,7 @@ class FilesActions
         }
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        $this->logger = new ActionsLog;
 	}
 
 	function deleteFiles($rel_id, $service_run = false)
@@ -119,7 +120,7 @@ class FilesActions
                 $log_action_number = 22;
                 break;
             default:
-                throw new \Exception('Invalid status code');
+                throw new Exception('Invalid status code');
                 return false;
         }
 
@@ -133,7 +134,7 @@ class FilesActions
                 $log_account_name = $group['name'];
                 break;
             default:
-                throw new \Exception('Invalid modify type');
+                throw new Exception('Invalid modify type');
                 return false;
         }
 
@@ -213,7 +214,7 @@ class FilesActions
                 $log_account_name = $group['name'];
                 break;
             default:
-                throw new \Exception('Invalid modify type');
+                throw new Exception('Invalid modify type');
                 return false;
         }
 

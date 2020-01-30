@@ -5,6 +5,8 @@
 
 namespace ProjectSend\Classes;
 
+use PDO;
+
 class Options
 {
     public $options;
@@ -56,7 +58,7 @@ class Options
 		$this->options = array();
 		try {
 			$this->query = $this->dbh->query("SELECT * FROM " . TABLE_OPTIONS);
-			$this->query->setFetchMode(\PDO::FETCH_ASSOC);
+			$this->query->setFetchMode(PDO::FETCH_ASSOC);
 
 			if ( $this->query->rowCount() > 0) {
 				while ( $this->row = $this->query->fetch() ) {

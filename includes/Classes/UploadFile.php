@@ -31,7 +31,7 @@ class UploadFile
 		global $dbh;
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        $this->logger = new ActionsLog;
     }
 
         /**

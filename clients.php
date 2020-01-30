@@ -6,6 +6,10 @@
  * @subpackage	Clients
  *
  */
+
+use ProjectSend\Classes\TableGenerate;
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 global $dbh;
@@ -32,7 +36,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * Inactive clients are not allowed to log in.
 					 */
 					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client = new Users($dbh);
                         if ($this_client->get($work_client)) {
                             $hide_user = $this_client->setActiveStatus(1);
                         }
@@ -47,7 +51,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * that the client is inactive.
 					 */
 					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client = new Users($dbh);
                         if ($this_client->get($work_client)) {
                             $hide_user = $this_client->setActiveStatus(0);
                         }
@@ -58,7 +62,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					break;
 				case 'delete':
 					foreach ($selected_clients as $work_client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client = new Users($dbh);
                         $this_file	= new ProjectSend\Classes\FilesActions;
                         if ($this_client->get($work_client)) {
                             $statement = $dbh->prepare("SELECT id FROM btl_files WHERE (owner_id = {$work_client})");
@@ -231,7 +235,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+					$table = new TableGenerate( $table_attributes );
 	
 					$thead_columns		= array(
 												array(
@@ -310,7 +314,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					while ( $row = $sql->fetch() ) {
                         $table->addRow();
                         
-                        $client_object = new \ProjectSend\Classes\Users($dbh);
+                        $client_object = new Users($dbh);
                         $client_object->get($row["id"]);
                         $client_data = $client_object->getProperties();
 

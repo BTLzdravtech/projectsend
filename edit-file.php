@@ -5,6 +5,9 @@
  *
  * @package ProjectSend
  */
+
+use ProjectSend\Classes\ActionsLog;
+
 define('IS_FILE_EDITOR', true);
 
 $allowed_levels = array(9,8,7,0);
@@ -295,7 +298,7 @@ $get_categories = get_categories();
 								}
 							}
 
-							$logger = new \ProjectSend\Classes\ActionsLog();
+							$logger = new ActionsLog();
 							$log_action_args = array(
 													'action' => $action_log_number,
 													'owner_id' => CURRENT_USER_ID,

@@ -6,6 +6,10 @@
  * @package		ProjectSend
  * @subpackage	Files
  */
+
+use ProjectSend\Classes\Categories;
+use ProjectSend\Classes\TableGenerate;
+
 $allowed_levels = array(9,8,7);
 require_once 'bootstrap.php';
 
@@ -57,7 +61,7 @@ if ( isset( $_GET['action'] ) ) {
 			switch($_GET['action']) {
 				case 'delete':
 					foreach ($selected_categories as $category_id) {
-                        $category = new \ProjectSend\Classes\Categories();
+                        $category = new Categories();
                         $category->get($category_id);
 						$delete_category = $category->delete();
                     }
@@ -137,7 +141,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 	$category_parent		= $_POST['category_parent'];
     $category_description	= $_POST['category_description'];
     
-	$category_object = new \ProjectSend\Classes\Categories($dbh);
+	$category_object = new Categories($dbh);
 
 	$arguments = array(
 						'name'			=> $category_name,
@@ -240,7 +244,7 @@ if ( isset( $_POST['btn_process'] ) ) {
 										'id'		=> 'categories_tbl',
 										'class'		=> 'footable table',
 									);
-			$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+			$table = new TableGenerate( $table_attributes );
 
 			$thead_columns		= array(
 										array(

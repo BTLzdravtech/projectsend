@@ -6,6 +6,12 @@
  * @subpackage	Clients
  *
  */
+
+use ProjectSend\Classes\Emails;
+use ProjectSend\Classes\MembersActions;
+use ProjectSend\Classes\TableGenerate;
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
@@ -64,12 +70,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				case 'apply':
 					$selected_clients = $_POST['accounts'];
 					foreach ( $selected_clients as $client ) {
-						$process_memberships	= new \ProjectSend\Classes\MembersActions;
+						$process_memberships	= new MembersActions;
 
 						/**
 						 * 1- Approve or deny account
 						 */
-                        $process_account = new \ProjectSend\Classes\Users($dbh);
+                        $process_account = new Users($dbh);
                         $process_account->setId($client['id']);
 
 						/** $client['account'] == 1 means approve that account */
@@ -119,7 +125,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						$processed_requests = $process_requests['memberships'];
 						$client_information = get_client_by_id( $client['id'] );
 
-						$notify_client = new \ProjectSend\Classes\Emails;
+						$notify_client = new Emails;
 						$email_arguments = array(
 														'type'			=> $email_type,
 														'username'		=> $client_information['username'],
@@ -133,7 +139,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					break;
 				case 'delete':
 					foreach ($selected_clients as $client) {
-                        $this_client = new \ProjectSend\Classes\Users($dbh);
+                        $this_client = new Users($dbh);
                         $this_client->setId($client['id']);
 						$delete_client = $this_client->delete();
 					}
@@ -296,7 +302,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					/**
 					 * Pre-populate a membership requests array
 					 */
-					$get_requests	= new \ProjectSend\Classes\MembersActions;
+					$get_requests	= new MembersActions;
 					$arguments		= array();
 					if ( $current_filter == 'denied' ) {
 						$arguments['denied'] = 1;
@@ -310,7 +316,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'id'		=> 'clients_tbl',
 												'class'		=> 'footable table',
 											);
-					$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+					$table = new TableGenerate( $table_attributes );
 	
 					$thead_columns		= array(
 												array(

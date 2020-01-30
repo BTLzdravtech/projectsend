@@ -41,7 +41,7 @@ class Groups
         }
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        $this->logger = new ActionsLog;
 
         $this->allowed_actions_roles = [9, 8];
     }
@@ -137,7 +137,7 @@ class Groups
      */
     public function getProperties()
     {
-        $return = [
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
@@ -149,8 +149,6 @@ class Groups
             'created_by' => $this->created_by,
             'created_date' => $this->created_date,
         ];
-
-        return $return;
     }
 
     /**

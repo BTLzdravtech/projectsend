@@ -6,6 +6,9 @@
  * @subpackage	Groups
  *
  */
+
+use ProjectSend\Classes\Groups;
+
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
@@ -18,7 +21,7 @@ $page_id = 'group_form';
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /** Create the object */
-$edit_group = new \ProjectSend\Classes\Groups($dbh);
+$edit_group = new Groups($dbh);
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {

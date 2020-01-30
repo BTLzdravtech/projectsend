@@ -2,6 +2,9 @@
 /**
  *  Call the required system files
  */
+
+use ProjectSend\Classes\UploadFile;
+
 $allowed_levels = array(9,8,7,0);
 require_once '../bootstrap.php';
 
@@ -44,7 +47,7 @@ $chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
 $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
-$this_file = new \ProjectSend\Classes\UploadFile;
+$this_file = new UploadFile;
 // Rename the file
 $fileName = $this_file->safeRename($fileName);
 
@@ -54,7 +57,7 @@ $allowedExt = explode(',', ALLOWED_FILE_TYPES );
 if ( false === CAN_UPLOAD_ANY_FILE_TYPE ) {
     if (!in_array($fileExt, $allowedExt)) {
         die('{"jsonrpc" : "2.0", "error" : {"code": 104, "message": "Invalid Extension."}, "id" : "id"}');
-    };
+    }
 }
 
 // Make sure the fileName is unique but only if chunking is disabled

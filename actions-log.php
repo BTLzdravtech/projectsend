@@ -6,6 +6,10 @@
  * @subpackage	Log
  *
  */
+
+use ProjectSend\Classes\ActionsLog;
+use ProjectSend\Classes\TableGenerate;
+
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
@@ -129,7 +133,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					<select name="activity" id="activity" class="form-control">
 						<option value="all"><?php _e('All activities','cftp_admin'); ?></option>
                             <?php
-                                $logger = new \ProjectSend\Classes\ActionsLog;
+                                $logger = new ActionsLog;
 								$activities_references = $logger->getActivitiesReferences();
 								foreach ( $activities_references as $val => $text ) {
 							?>
@@ -203,7 +207,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 										'id'		=> 'activities_tbl',
 										'class'		=> 'footable table',
 									);
-			$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+			$table = new TableGenerate( $table_attributes );
 
 			$thead_columns		= array(
 										array(

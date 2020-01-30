@@ -6,6 +6,9 @@
  * @subpackage	Clients
  *
  */
+
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9,8);
 require_once '../bootstrap.php';
 
@@ -15,7 +18,7 @@ $page_id = 'client_form';
 
 global $dbh;
 
-$new_client = new \ProjectSend\Classes\Users($dbh);
+$new_client = new Users($dbh);
 
 /**
  * Set checkboxes as 1 to default them to checked when first entering

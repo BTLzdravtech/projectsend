@@ -6,13 +6,17 @@
  * @subpackage	Clients
  *
  */
+
+use ProjectSend\Classes\MembersActions;
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9,8,0);
 require_once 'bootstrap.php';
 
 $active_nav = 'clients';
 
 /** Create the object */
-$edit_client = new \ProjectSend\Classes\Users($dbh);
+$edit_client = new Users($dbh);
 
 /** Check if the id parameter is on the URI. */
 if (isset($_GET['id'])) {
@@ -32,7 +36,7 @@ if ($page_status === 1) {
     $client_arguments = $edit_client->getProperties();
 
 	/** Get groups where this client is member */
-	$get_groups		= new \ProjectSend\Classes\MembersActions;
+	$get_groups		= new MembersActions;
 	$get_arguments	= array(
 							'client_id'	=> $client_id,
 						);
@@ -116,7 +120,7 @@ if ($_POST) {
 		$edit_response = $edit_client->edit();
 
         $edit_groups = (!empty( $_POST['groups_request'] ) ) ? $_POST['groups_request'] : array();
-        $memberships	= new \ProjectSend\Classes\MembersActions;
+        $memberships	= new MembersActions;
         $arguments		= array(
                                 'client_id'		=> $client_id,
                                 'group_ids'		=> $edit_groups,

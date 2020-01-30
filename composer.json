@@ -28,6 +28,13 @@
         "phpmailer/phpmailer": "~6.0",
 		"tamtamchik/simple-flash": "^1.2",
 		"airbrake/phpbrake": "v0.6.2",
-		"google/apiclient": "v2.4.0"
-    }
+		"google/apiclient": "v2.4.0",
+        "ext-pdo": "*",
+        "ext-json": "*",
+		"ext-zip": "*",
+		"ext-ctype": "*",
+		"ext-fileinfo": "*",
+		"ext-ldap": "*",
+		"ext-posix": "*"
+	}
 }

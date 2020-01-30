@@ -171,9 +171,8 @@ function count_files_on_group($group_id)
             $statement->bindValue(':group_id', $group_id, PDO::PARAM_INT);
             $statement->execute();
             $result = $statement->fetch();
-            $count = $result['count'];
-        
-            return $count;
+
+            return $result['count'];
         }
         else {
             return 0;
@@ -203,9 +202,8 @@ function count_members_on_group($group_id)
             $statement->bindValue(':group_id', $group_id, PDO::PARAM_INT);
             $statement->execute();
             $result = $statement->fetch();
-            $count = $result['count'];
-        
-            return $count;
+
+            return $result['count'];
         }
         else {
             return 0;
@@ -234,7 +232,7 @@ function delete_group($group_id)
 
             if ( !empty( $group_data ) ) {
                 $statement = $dbh->prepare('DELETE FROM ' . TABLE_GROUPS . ' WHERE id=:id');
-                $statement->bindParam(':id', $group, PDO::PARAM_INT);
+                $statement->bindParam(':id', $group_id, PDO::PARAM_INT);
                 $statement->execute();
 
                 // Record the action log

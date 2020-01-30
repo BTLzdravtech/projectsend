@@ -6,6 +6,10 @@
  * @subpackage	Users
  *
  */
+
+use ProjectSend\Classes\TableGenerate;
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
@@ -37,7 +41,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 					 * Inactive users are not allowed to log in.
 					 */
 					foreach ($selected_users as $work_user) {
-                        $this_user = new \ProjectSend\Classes\Users($dbh);
+                        $this_user = new Users($dbh);
                         if ($this_user->get($work_user)) {
                             $hide_user = $this_user->setActiveStatus(1);
                         }
@@ -56,7 +60,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						 * A user should not be able to deactivate himself
 						 */
 						if ($work_user != CURRENT_USER_ID) {
-                            $this_user = new \ProjectSend\Classes\Users($dbh);
+                            $this_user = new Users($dbh);
                             if ($this_user->get($work_user)) {
                                 $hide_user = $this_user->setActiveStatus(0);
                             }
@@ -79,7 +83,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						 * A user should not be able to delete himself
 						 */
 						if ($work_user != CURRENT_USER_ID) {
-                            $this_user = new \ProjectSend\Classes\Users($dbh);
+                            $this_user = new Users($dbh);
                             if ($this_user->get($work_user)) {
                                 $delete_user = $this_user->delete();
                                 $affected_users++;
@@ -264,7 +268,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 											'id'		=> 'users_tbl',
 											'class'		=> 'footable table',
 										);
-				$table = new \ProjectSend\Classes\TableGenerate( $table_attributes );
+				$table = new TableGenerate( $table_attributes );
 
 				$thead_columns		= array(
 											array(
@@ -302,6 +306,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'sort_url'		=> 'active',
 												'content'		=> __('Status','cftp_admin'),
 											),
+                                            array(
+                                                'content'		=> __('Workspaces on','cftp_admin'),
+                                                'hide'			=> 'phone',
+                                            ),
 											array(
 												'sortable'		=> true,
 												'sort_url'		=> 'max_file_size',
@@ -315,6 +323,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 												'content'		=> __('Added on','cftp_admin'),
 												'hide'			=> 'phone,tablet',
 											),
+                                            array(
+                                                'content'		=> __('View','cftp_admin'),
+                                                'hide'			=> 'phone',
+                                            ),
 											array(
 												'content'		=> __('Actions','cftp_admin'),
 												'hide'			=> 'phone',
@@ -326,9 +338,11 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				while ( $row = $sql->fetch() ) {
 					$table->addRow();
 
-                    $user_object = new \ProjectSend\Classes\Users($dbh);
+                    $user_object = new Users($dbh);
                     $user_object->get($row["id"]);
                     $user_data = $user_object->getProperties();
+
+                    $count_workspaces = count($user_data['workspaces']);
 
                     /* Get account creation date */
                     $created_at = format_date($user_data['created_date']);
@@ -343,7 +357,16 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     /* Get active status */
                     $label = ($user_data['active'] == 0) ? __('Inactive','cftp_admin') : __('Active','cftp_admin');
                     $class = ($user_data['active'] == 0) ? 'danger' : 'success';
-					
+
+                    if ($count_workspaces > 0) {
+                        $workspaces_link	= 'workspaces.php?user='.$user_data["id"];
+                        $workspaces_button	= 'btn-primary';
+                    }
+                    else {
+                        $workspaces_link	= 'javascript:void(0);';
+                        $workspaces_button	= 'btn-default disabled';
+                    }
+
 					/**
 					 * Add the cells to the row
 					 */
@@ -373,12 +396,19 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 											array(
 													'content'		=> '<span class="label label-' . $class . '">' . $label . '</span>',
 												),
+                                            array(
+                                                    'content'		=> $count_workspaces,
+                                                ),
 											array(
 													'content'		=> ( $user_data["max_file_size"] == '0' ) ? __('Default','cftp_admin') : $user_data["max_file_size"] . 'mb',
 												),
 											array(
 													'content'		=> $created_at,
 												),
+                                            array(
+                                                'actions'		=> true,
+                                                'content'		=>  '<a href="' . $workspaces_link . '" class="btn btn-sm ' . $workspaces_button . '">' . __("Workspaces","cftp_admin") . '</a>' . "\n"
+                                            ),
 											array(
 													'actions'		=> true,
 													'content'		=>  '<a href="users-edit.php?id=' . $user_data["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit','cftp_admin') . '</span></a>' . "\n"

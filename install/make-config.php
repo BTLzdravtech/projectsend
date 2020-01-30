@@ -97,7 +97,7 @@ if ($pdo_driver_available) {
 // check if tables exists
 $table_exists = true;
 if ($pdo_connected) {
-	$availableTables = $pdo->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
+	$availableTables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
 	foreach ($all_system_tables as $name) {
 		$prefixed = $post_vars['dbprefix'].$name;
 		if (!in_array($prefixed, $availableTables)) {

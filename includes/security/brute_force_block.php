@@ -24,14 +24,14 @@ class BruteForceBlock {
 	//setup and return database connection
 	private static function _databaseConnect(){
 		//connect to database
-		$db = new \PDO(self::$_db['driver'].
+		$db = new PDO(self::$_db['driver'].
 			':host='.self::$_db['host'].
 			';dbname='.self::$_db['database'].
 			';charset='.self::$_db['charset'], 
 			DB_USER, DB_PASSWORD);
 		
-		$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-		$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 		
 		//return the db connection object
 		return $db;
@@ -49,7 +49,7 @@ class BruteForceBlock {
 			$stmt = $db->query('INSERT INTO ' . TABLE_LOGON . ' SET username = "'.$username.'", ip_address = "'.$ip_address.'", attempted_at = NOW()');
 			//$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			return true;
-		} catch(\PDOException $ex){
+		} catch(PDOException $ex){
 			//return errors
 			return $ex;
 		}
@@ -76,7 +76,7 @@ class BruteForceBlock {
 			$row = $stmt-> fetch();
 			//get latest attempt's timestamp
 			$latest_failed_attempt_datetime = (int) date('U', strtotime($row['attempted_at']));
-		} catch(\PDOException $ex){
+		} catch(PDOException $ex){
 			//return error
 			$response_array['status'] = 'error';
 			$response_array['message'] = $ex;
@@ -136,13 +136,13 @@ class BruteForceBlock {
 					$stmt = $db->query('DELETE from ' . TABLE_LOGON . ' WHERE ip_address = "' . $_SERVER['REMOTE_ADDR'] . '" AND attempted_at < DATE_SUB(NOW(), INTERVAL '.(self::$time_frame_minutes * 2).' MINUTE)');
 					$stmt->execute();
 					
-				} catch(\PDOException $ex){
+				} catch(PDOException $ex){
 					$response_array['status'] = 'error';
 					$response_array['message'] = $ex;
 				}
 			}
 			
-		} catch(\PDOException $ex){
+		} catch(PDOException $ex){
 			//return error
 			$response_array['status'] = 'error';
 			$response_array['message'] = $ex;
@@ -161,7 +161,7 @@ class BruteForceBlock {
 		try{
 			$stmt = $db->query('DELETE from ' . TABLE_LOGON);
 			return true;
-		} catch(\PDOException $ex){
+		} catch(PDOException $ex){
 			//return errors
 			return $ex;
 		}

@@ -28,10 +28,10 @@ class DoProcess
         }
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        $this->logger = new ActionsLog;
 
         if (empty($auth)) {
-            $this->auth = new \ProjectSend\Classes\Auth($this->dbh);
+            $this->auth = new Auth($this->dbh);
         }
     }
 
@@ -52,7 +52,7 @@ class DoProcess
      * @todo From here on, move everything into a Download class
      */
 
-    
+
     public function download($file_id)
     {
         if ( !$file_id )
@@ -146,7 +146,7 @@ class DoProcess
 
     /**
      * Make a list of files ids to download on a compressed zip file
-     * 
+     *
      * @return string
      */
     public function returnFilesIds($file_ids)
@@ -254,7 +254,7 @@ class DoProcess
         /** Start adding the files to the zip */
         if ( count( $this->allowed_to_zip ) > 0 ) {
             $this->zip_file = tempnam("tmp", "zip");
-            $this->zip = new \ZipArchive();
+            $this->zip = new ZipArchive();
             $this->zip->open($this->zip_file, ZipArchive::OVERWRITE);
 
             //echo $this->zip_file;print_array($this->allowed_to_zip); die();

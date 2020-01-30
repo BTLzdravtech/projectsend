@@ -1,5 +1,8 @@
 <?php
 /** Process an action */
+
+use ProjectSend\Classes\DoProcess;
+
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
@@ -10,7 +13,7 @@ if ( !empty( $_GET['do'] ) && $_GET['do'] != 'login' ) {
     can_see_content($allowed_levels);
 }
 
-$process = new \ProjectSend\Classes\DoProcess($dbh);
+$process = new DoProcess($dbh);
 
 switch ($_GET['do']) {
     case 'login':

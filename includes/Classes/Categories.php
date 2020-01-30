@@ -35,7 +35,7 @@ class Categories
         }
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        $this->logger = new ActionsLog;
 
         $this->allowed_actions_roles = [9, 8, 7];
     }
@@ -103,14 +103,12 @@ class Categories
      */
     public function getProperties()
     {
-        $return = [
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'parent' => $this->parent,
             'description' => $this->description,
         ];
-
-        return $return;
     }
  
 	/**
@@ -118,7 +116,7 @@ class Categories
 	 */
 	function validate()
 	{
-        $validation = new \ProjectSend\Classes\Validation;
+        $validation = new Validation;
 
 		global $json_strings;
 		$this->state = array();

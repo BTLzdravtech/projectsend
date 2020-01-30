@@ -6,6 +6,11 @@
  * @subpackage	Clients
  *
  */
+
+use ProjectSend\Classes\Emails;
+use ProjectSend\Classes\MembersActions;
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
@@ -13,7 +18,7 @@ $page_title = __('Register new account','cftp_admin');
 
 $page_id = 'client_form';
 
-$new_client = new \ProjectSend\Classes\Users($dbh);
+$new_client = new Users($dbh);
 
 include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
@@ -58,7 +63,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 				$group_id = CLIENTS_AUTO_GROUP;
 				define('AUTOGROUP', true);
 
-				$autogroup	= new \ProjectSend\Classes\MembersActions;
+				$autogroup	= new MembersActions;
 				$arguments	= array(
 									'client_id'	=> $new_client->getId(),
 									'group_ids'	=> $group_id,
@@ -72,7 +77,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 			 * Check if the client requested memberships to groups
 			 */
 			define('REGISTERING', true);
-			$request	= new \ProjectSend\Classes\MembersActions;
+			$request	= new MembersActions;
 			$arguments	= array(
 								'client_id'		=> $new_client->getId(),
 								'group_ids'		=> $client_arguments['group'],
@@ -84,7 +89,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 			/**
 			 * Prepare and send an email to administrator(s)
 			 */
-			$notify_admin = new \ProjectSend\Classes\Emails;
+			$notify_admin = new Emails;
 			$email_arguments = array(
 											'type'			=> 'new_client_self',
 											'address'		=> ADMIN_EMAIL_ADDRESS,

@@ -24,7 +24,7 @@ class MembersActions
         }
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        $this->logger = new ActionsLog;
     }
 
 	function group_add_members($arguments)
@@ -200,7 +200,7 @@ class MembersActions
 			 */
 			$this->new_groups = array_diff($this->group_ids, $this->found_groups);
 			if ( !empty( $this->new_groups) ) {
-				$this->new_groups_add	= new \ProjectSend\Classes\MembersActions;
+				$this->new_groups_add	= new MembersActions;
 				$this->add_arguments	= array(
 												'client_id'	=> $this->client_id,
 												'group_ids'	=> $this->new_groups,
@@ -430,7 +430,7 @@ class MembersActions
         ]);
 
         /** Send email */
-        $notify_client = new \ProjectSend\Classes\Emails;
+        $notify_client = new Emails;
         $notify_send = $notify_client->send([
             'type'			=> 'client_memberships_process',
             'username'		=> $client['username'],
@@ -534,7 +534,7 @@ class MembersActions
 			 */
 			if ( !empty( $this->group_ids ) ) {
 				$this->client_info = get_client_by_id($this->client_id);
-				$notify_admin = new \ProjectSend\Classes\Emails;
+				$notify_admin = new Emails;
 
 				$email_arguments = array(
 												'type'			=> 'client_edited',

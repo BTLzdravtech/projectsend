@@ -7,6 +7,8 @@
  *
  */
 
+use ProjectSend\Classes\Emails;
+
 /** This file MUST be included by another one */
 require_once 'bootstrap.php';
 prevent_direct_access();
@@ -193,7 +195,7 @@ if (!empty($found_notifications)) {
 
 			$address = $mail_by_user[$mail_username];
 			/** Create the object and send the email */
-			$notify_client = new \ProjectSend\Classes\Emails;
+			$notify_client = new Emails;
             $email_arguments = array(
                 'type' => 'new_files_by_user',
                 'address' => $address,
@@ -237,7 +239,7 @@ if (!empty($found_notifications)) {
 	
 					$address = $mail_by_user[$mail_username];
 					/** Create the object and send the email */
-					$notify_admin = new \ProjectSend\Classes\Emails;
+					$notify_admin = new Emails;
 					$email_arguments = array(
 												'type' => 'new_files_by_client',
 												'address' => $address,

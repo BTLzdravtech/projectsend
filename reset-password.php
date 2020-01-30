@@ -5,6 +5,10 @@
  * @package		ProjectSend
  *
  */
+
+use ProjectSend\Classes\Emails;
+use ProjectSend\Classes\Validation;
+
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
@@ -92,7 +96,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 						$sql_pass->execute();
 			
 						/** Send email */
-						$notify_user = new \ProjectSend\Classes\Emails;
+						$notify_user = new Emails;
 						$email_arguments = array(
                             'type' => 'password_reset',
                             'address' => $get_user['email'],
@@ -126,7 +130,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 					$reset_password_new = $_POST['password'];
 	
                     /** Password checks */
-                    $validation = new \ProjectSend\Classes\Validation;
+                    $validation = new Validation;
                     $validation->validate('completed',$reset_password_new,$json_strings['validation']['no_pass']);
 					$validation->validate('password',$reset_password_new,$json_strings['validation']['valid_pass'].' '.$json_strings['validation']['valid_chars']);
 					$validation->validate('pass_rules',$reset_password_new,$json_strings['validation']['rules_pass']);
