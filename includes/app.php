@@ -25,7 +25,7 @@ session_start();
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1113');
+define('CURRENT_VERSION', 'r1115');
 
 /**
  * Required software versions
@@ -166,6 +166,8 @@ define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 define('TABLE_LOGON', TABLES_PREFIX . 'logon');
+define('TABLE_WORKSPACES', TABLES_PREFIX . 'workspaces');
+define('TABLE_WORKSPACES_USERS', TABLES_PREFIX . 'workspaces_users');
 
 $original_basic_tables = array(
 								TABLE_FILES,

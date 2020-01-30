@@ -67,6 +67,9 @@ require_once ROOT_DIR.'/includes/functions.forms.php';
 /** Search, filters and actions forms */
 require_once ROOT_DIR.'/includes/functions.groups.php';
 
+/** Search, filters and actions forms */
+require_once ROOT_DIR.'/includes/functions.workspaces.php';
+
 /** Security */
 require_once ROOT_DIR . '/includes/security/csrf.php';
 require_once ROOT_DIR . '/includes/security/brute_force_block.php';

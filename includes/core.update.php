@@ -11,6 +11,8 @@
  * @subpackage	Updates
  */
 
+use ProjectSend\Classes\ActionsLog;
+
 $allowed_update = array(9,8,7);
 if (current_role_in($allowed_update)) {
     $update_data = get_latest_version_data();
@@ -496,7 +498,7 @@ if (current_role_in($allowed_update)) {
 		$statement->execute();
 
 		/** Record the action log */
-		$logger = new \ProjectSend\Classes\ActionsLog();
+		$logger = new ActionsLog();
 		$log_action_args = array(
 								'action' => 30,
 								'owner_id' => CURRENT_USER_ID,
@@ -1437,6 +1439,67 @@ if (current_role_in($allowed_update)) {
                     $updates_made++;
                 }
             }
+        }
+
+        /**
+         * r1114 updates
+         * Add users workspaces.
+         */
+        if ($last_update < 1114) {
+            if ( !tableExists( TABLE_WORKSPACES ) ) {
+                $query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_WORKSPACES."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `name` varchar(32) NOT NULL,
+				  `description` text NOT NULL,
+				  `owner_id` int(11) NOT NULL,
+				  `created_by` varchar(32) NOT NULL,
+				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+				  PRIMARY KEY (`id`),
+				  FOREIGN KEY (`owner_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+				";
+                $statement = $dbh->prepare($query);
+                $statement->execute();
+
+                $updates_made++;
+            }
+
+            if ( !tableExists( TABLE_WORKSPACES_USERS ) ) {
+                $query = "
+				CREATE TABLE IF NOT EXISTS `".TABLE_WORKSPACES_USERS."` (
+				  `id` int(11) NOT NULL AUTO_INCREMENT,
+				  `added_by` varchar(32) NOT NULL,
+				  `user_id` int(11) NOT NULL,
+				  `workspace_id` int(11) NOT NULL,
+				  `admin` tinyint(1) NOT NULL default '0',
+				  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+				  PRIMARY KEY (`id`),
+				  FOREIGN KEY (`user_id`) REFERENCES ".TABLE_USERS."(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  FOREIGN KEY (`workspace_id`) REFERENCES ".TABLE_WORKSPACES."(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+				";
+                $statement = $dbh->prepare($query);
+                $statement->execute();
+
+                $updates_made++;
+            }
+        }
+
+        /**
+         * r1115 updates
+         * Add foreign keys to tables where should be.
+         */
+        if ($last_update < 1115) {
+            $statement = $dbh->query("ALTER TABLE " . TABLE_LOG . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+            $statement = $dbh->query("ALTER TABLE " . TABLE_LOG . " ADD FOREIGN KEY (`affected_file`) REFERENCES " . TABLE_FILES . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+            $statement = $dbh->query("ALTER TABLE " . TABLE_LOG . " ADD FOREIGN KEY (`affected_account`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+            $statement = $dbh->query("ALTER TABLE " . TABLE_CATEGORIES . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+            $statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+            $statement = $dbh->query("ALTER TABLE " . TABLE_GROUPS . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+            $statement = $dbh->query("ALTER TABLE " . TABLE_USERS . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+
+            $updates_made++;
         }
     }
 }

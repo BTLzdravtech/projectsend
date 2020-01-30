@@ -42,6 +42,9 @@ class Users
 
     // Groups where the client is member
     private $groups;
+
+    // Workspaces where the user is member
+    private $workspaces;
     
     // @todo implement meta data
     private $meta;
@@ -61,7 +64,7 @@ class Users
         }
 
         $this->dbh = $dbh;
-        $this->logger = new \ProjectSend\Classes\ActionsLog;
+        $this->logger = new ActionsLog;
 
         $this->role = 0; // by default, create "client" role
 
@@ -194,7 +197,13 @@ class Users
             $groups_object = new \ProjectSend\Classes\MembersActions($this->dbh);
             $this->groups = $groups_object->client_get_groups([
                 'client_id'	=> $this->id
-            ]); 
+            ]);
+
+            // Workspaces
+            $workspaces_object = new WorkspacesUsers($this->dbh);
+            $this->workspaces = $workspaces_object->user_get_workspaces([
+                'user_id'	=> $this->id
+            ]);
 
             $this->validation_type = "existing_user";
         }
@@ -209,7 +218,7 @@ class Users
      */
     public function getProperties()
     {
-        $return = [
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
@@ -222,12 +231,11 @@ class Users
             'notify_upload' => $this->notify_upload,
             'files' => $this->files,
             'groups' => $this->groups,
+            'workspaces' => $this->workspaces,
             'meta' => $this->meta,
             'objectguid' => $this->objectguid,
             'google_user' => $this->google_user,
         ];
-
-        return $return;
     }
 
     /**
@@ -331,8 +339,7 @@ class Users
 
     private function hashPassword($password)
     {
-        $hashed = password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
-        return $hashed;
+        return password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
     }
 
 	/**
@@ -416,7 +423,7 @@ class Users
                 }
                 
 				/** Send account data by email */
-				$this->notify_user = new \ProjectSend\Classes\Emails;
+				$this->notify_user = new Emails;
 				$this->email_arguments = array(
 												'type'		=> $email_type,
 												'address'	=> $this->email,

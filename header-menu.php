@@ -159,6 +159,29 @@ if ( current_role_in( array( 9,8,7 ) ) )
         ),
     );
 
+    $items['workspaces'] = array(
+        'nav'	=> 'workspaces',
+        'level'	=> array( 9,8 ),
+        'main'	=> array(
+            'label'	=> __('Users workspaces', 'cftp_admin'),
+            'icon'	=> 'th-large'
+        ),
+        'sub'	=> array(
+            array(
+                'label'	=> __('Add new', 'cftp_admin'),
+                'link'	=> 'workspaces-add.php',
+            ),
+            array(
+                'label'	=> __('Manage workspaces', 'cftp_admin'),
+                'link'	=> 'workspaces.php',
+            ),
+            array(
+                'divider'	=> true,
+            ),
+
+        ),
+    );
+
     if (MEMBERSHIP_REQUESTS_ENABLED) {
         $inserted = array(
             'label'	=> __('Membership requests', 'cftp_admin'),
