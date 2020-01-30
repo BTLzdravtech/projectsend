@@ -10,10 +10,10 @@
             $(".batch_actions").on('submit', function(e) {
                 var checks = $("td>input:checkbox").serializeArray();
                 var action = $('#action').val();
-                if (action != 'none') {
+                if (action !== 'none') {
                         // Generic actions
-                        if (action == 'delete') {
-                            if (checks.length == 0) {
+                        if (action === 'delete') {
+                            if (checks.length === 0) {
                                 bootbox.alert({
                                     title: json_strings.validation.errors_found_title + ':',
                                     message: json_strings.translations.select_one_or_more,
@@ -49,7 +49,7 @@
                         }
 
                         // Activities log actions
-                        if (action == 'log_clear') {
+                        if (action === 'log_clear') {
                             bootbox.confirm({
                                 message: json_strings.translations.confirm_delete_log,
                                 buttons: {
@@ -70,7 +70,7 @@
                             e.preventDefault();
                         }
 
-                        if (action == 'log_download') {
+                        if (action === 'log_download') {
                             e.preventDefault();
                             $(document).psendmodal();
                             Cookies.set('log_download_started', 0, { expires: 100 });
@@ -86,7 +86,7 @@
                         }
 
                         // Manage files actions
-                        if (action == 'unassign') {
+                        if (action === 'unassign') {
                             var _formatted = sprintf(json_strings.translations.confirm_unassign, checks.length);
                             bootbox.confirm({
                                 message: _formatted,
@@ -109,7 +109,7 @@
                         }
 
                         // Templates
-                        if (action == 'zip') {
+                        if (action === 'zip') {
                             e.preventDefault();
                             var checkboxes = $("td>input:checkbox").serializeArray();
 

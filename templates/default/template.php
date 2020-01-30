@@ -66,7 +66,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 					<div class="form_actions">
 						<div class="form_actions_submit">
 							<div class="form-group group_float">
-								<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
+								<label for="action" class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
 								<select name="action" id="action" class="txtfield form-control">
 									<?php
 										$actions_options = array(
@@ -311,7 +311,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 						$pagination_args = array(
 												'link'		=> basename($_SERVER['SCRIPT_FILENAME']),
 												'current'	=> $pagination_page,
-												'pages'		=> ceil( $count_for_pagination / TEMPLATE_RESULTS_PER_PAGE ),
+												'pages'		=> ceil( isset($count_for_pagination) ? $count_for_pagination : 0 / TEMPLATE_RESULTS_PER_PAGE ),
 											);
 						
 						echo $table->pagination( $pagination_args );

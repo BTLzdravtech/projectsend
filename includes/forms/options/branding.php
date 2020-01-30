@@ -17,7 +17,7 @@
                 $img_src = ASSETS_IMG_URL . '/projectsend-logo.png';
             }
         ?>
-        <img src="<?php echo $img_src; ?>">
+        <img src="<?php echo $img_src; ?>" alt="Logo">
     </div>
     <p class="preview_logo_note">
         <?php _e('This preview uses a maximum width of 300px.','cftp_admin'); ?>

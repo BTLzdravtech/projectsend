@@ -10,6 +10,9 @@ namespace ProjectSend\Classes;
 
 class TableGenerate
 {
+    private $contents;
+    private $current_row;
+
 	function __construct( $attributes ) {
 		$this->contents = self::open( $attributes );
 
@@ -20,12 +23,12 @@ class TableGenerate
 	 * Create the form
 	 */
 	public function open( $attributes ) {
-		$this->output = "<table";
+		$output = "<table";
 		foreach ( $attributes as $tag => $value ) {
-			$this->output .= ' ' . $tag . '="' . $value . '"';
+			$output .= ' ' . $tag . '="' . $value . '"';
 		}
-		$this->output .= ">\n";
-		return $this->output;
+		$output .= ">\n";
+		return $output;
 	}
 	
 	/**
@@ -52,6 +55,7 @@ class TableGenerate
 		}
 		$new_url_parameters['order'] = $order;
 
+        $params = array();
 		foreach ( $new_url_parameters as $param => $value ) {
 			/**
 			 * Page is not added, so when you click a table header
@@ -73,7 +77,7 @@ class TableGenerate
 	}
 
 	public function thead( $columns ) {
-		$this->output = "<thead>\n<tr>";
+		$output = "<thead>\n<tr>";
 		if ( !empty( $columns ) ) {
 			foreach ( $columns as $column ) {
 				$continue	= ( !isset( $column['condition'] ) || !empty( $column['condition'] ) ) ? true : false;
@@ -118,55 +122,55 @@ class TableGenerate
                     }
 	
 					/**  Generate the column */
-					$this->output .= '<th';
+					$output .= '<th';
 					foreach ( $attributes as $tag => $value ) {
 						if ( is_array( $value ) ) {
 							$value = implode(' ', $value);
 						}
-						$this->output .= ' ' . $tag . '="' . $value . '"';
+						$output .= ' ' . $tag . '="' . $value . '"';
 					}
 					foreach ( $data_attr as $tag => $value ) {
-						$this->output .= ' data-' . $tag . '="' . $value . '"';
+						$output .= ' data-' . $tag . '="' . $value . '"';
 					}
-					$this->output .= '>' . $content;
+					$output .= '>' . $content;
 					
 					if ( $sortable == true ) {
-						$this->output .= '<span class="footable-sort-indicator"></span>';
+						$output .= '<span class="footable-sort-indicator"></span>';
 					}
 	
-					$this->output .= '</th>';
+					$output .= '</th>';
 				}
 			}
 		}
-		$this->output .= "</tr>\n</thead>\n";
-		$this->contents .= $this->output;
+		$output .= "</tr>\n</thead>\n";
+		$this->contents .= $output;
 	}
 	
 	public function tfoot( $columns ) {
-		$this->output = "<tfoot>\n<tr>";
+		$output = "<tfoot>\n<tr>";
 		if ( !empty( $columns ) ) {
 			foreach ( $columns as $column ) {
 				$attributes	= ( !empty( $column['attributes'] ) ) ? $column['attributes'] : array();
 				$data_attr	= ( !empty( $column['data_attr'] ) ) ? $column['data_attr'] : array();
 				$content	= ( !empty( $column['content'] ) ) ? $column['content'] : '';
 				/**  Generate the column */
-				$this->output .= '<td';
+				$output .= '<td';
 				foreach ( $attributes as $tag => $value ) {
 					if ( is_array( $value ) ) {
 						$value = implode(' ', $value);
 					}
-					$this->output .= ' ' . $tag . '="' . $value . '"';
+					$output .= ' ' . $tag . '="' . $value . '"';
 				}
 				foreach ( $data_attr as $tag => $value ) {
-					$this->output .= ' data-' . $tag . '="' . $value . '"';
+					$output .= ' data-' . $tag . '="' . $value . '"';
 				}
-				$this->output .= '>' . $content;
+				$output .= '>' . $content;
 				
-				$this->output .= '</td>';
+				$output .= '</td>';
 			}
 		}
-		$this->output .= "</tr>\n</tfoot>\n";
-		$this->contents .= $this->output;
+		$output .= "</tr>\n</tfoot>\n";
+		$this->contents .= $output;
 	}
 	
 	public function addRow() {
@@ -174,8 +178,8 @@ class TableGenerate
 			$this->contents .= "<tbody>\n";
 		}
 
-		$this->row_class = ( $this->current_row % 2 ) ? 'table_row' : 'table_row_alt';
-		$this->contents .= '<tr class="' . $this->row_class . '">' . "\n";
+		$row_class = ( $this->current_row % 2 ) ? 'table_row' : 'table_row_alt';
+		$this->contents .= '<tr class="' . $row_class . '">' . "\n";
 		$this->current_row++;
 	}
 
@@ -183,25 +187,25 @@ class TableGenerate
 		$continue	= ( !isset( $attributes['condition'] ) || !empty( $attributes['condition'] ) ) ? true : false;
 		
 		if ( $continue == true ) {
-			$this->attributes	= ( !empty( $attributes['attributes'] ) ) ? $attributes['attributes'] : array();
-			$this->content 		= ( !empty( $attributes['content'] ) ) ? $attributes['content'] : '';
-			$this->is_checkbox 	= ( !empty( $attributes['checkbox'] ) ) ? true : false;
-			$this->value 		= ( !empty( $attributes['value'] ) ) ? html_output( $attributes['value'] ) : null;
+			$attributes_local	= ( !empty( $attributes['attributes'] ) ) ? $attributes['attributes'] : array();
+			$content 		= ( !empty( $attributes['content'] ) ) ? $attributes['content'] : '';
+			$is_checkbox 	= ( !empty( $attributes['checkbox'] ) ) ? true : false;
+			$value 		= ( !empty( $attributes['value'] ) ) ? html_output( $attributes['value'] ) : null;
 			
-			if ( $this->is_checkbox == true ) {
-				$this->content = '<input type="checkbox" class="batch_checkbox" name="batch[]" value="' . $this->value . '" />' . "\n";
+			if ( $is_checkbox == true ) {
+				$content = '<input type="checkbox" class="batch_checkbox" name="batch[]" value="' . $value . '" />' . "\n";
 			}
 	
 			$this->contents .= "<td";
-			if ( !empty( $this->attributes ) ) {
-				foreach ( $this->attributes as $tag => $value ) {
+			if ( !empty( $attributes_local ) ) {
+				foreach ( $attributes_local as $tag => $value ) {
 					if ( is_array( $value ) ) {
 						$value = implode(' ', $value);
 					}
 					$this->contents .= ' ' . $tag . '="' . $value . '"';
 				}
 			}
-			$this->contents .= ">\n" . $this->content . "</td>\n";
+			$this->contents .= ">\n" . $content . "</td>\n";
 		}
 	}
 
@@ -243,9 +247,9 @@ class TableGenerate
 				}
 			}
 		}
-		$this->query = http_build_query($params);
+		$query = http_build_query($params);
 		
-		return BASE_URI . $link . '?' . $this->query;
+		return BASE_URI . $link . '?' . $query;
 	}
 
 	public function pagination( $params ) {
@@ -256,10 +260,10 @@ class TableGenerate
             $params['current'] = (int)$params['current'];
         }
         
-		$this->output = '';
+		$output = '';
 
 		if ( $params['pages'] > 1 ) {
-			$this->output = '<div class="container-fluid">
+			$output = '<div class="container-fluid">
 								<div class="row">
 									<div class="col-xs-12 text-center">
 										<nav aria-label="'. __('Results navigation','cftp_admin') . '">
@@ -268,7 +272,7 @@ class TableGenerate
 
 			/** First and previous */
 			if ( $params['current'] > 1 ) {
-				$this->output .= '<li>
+				$output .= '<li>
 										<a href="' . self::constructPaginationLink( $params['link'] ) .'" data-page="first"><span aria-hidden="true">&laquo;</span></a>
 									</li>
 									<li>
@@ -285,16 +289,16 @@ class TableGenerate
 					)
 				{
 					if ( $already_spaced == false ) {
-						$this->output .= '<li class="disabled"><a href="#">...</a></li>';
+						$output .= '<li class="disabled"><a href="#">...</a></li>';
 						$already_spaced = true;
 					}
 					continue;
 				}
 				if ( $params['current'] == $i ) {
-					$this->output .= '<li class="active"><a href="#">' . $i .'</a></li>';
+					$output .= '<li class="active"><a href="#">' . $i .'</a></li>';
 				}
 				else {
-					$this->output .= '<li><a href="' . self::constructPaginationLink( $params['link'], $i) .'">' . $i .'</a></li>';
+					$output .= '<li><a href="' . self::constructPaginationLink( $params['link'], $i) .'">' . $i .'</a></li>';
 				}
 				
 				if ( $i > $params['current'] ) {
@@ -304,7 +308,7 @@ class TableGenerate
 			
 			/** Next and last */
 			if ( $params['current'] != $params['pages'] ) {
-				$this->output .= '<li>
+				$output .= '<li>
 										<a href="' . self::constructPaginationLink( $params['link'], $params['current'] + 1 ) .'" data-page="next">&rsaquo;</a>
 									</li>
 									<li>
@@ -313,11 +317,11 @@ class TableGenerate
 			}
 
 
-			$this->output .= '				</ul>
+			$output .= '				</ul>
 									</div>
 								</nav>';
 			
-            $this->output .= '<div class="go_to_page">
+            $output .= '<div class="go_to_page">
                                 <div class="form-group">
 									<label class="control-label hidden-xs hidden-sm">' . __('Go to:','cftp_admin') . '</label>
 									<input type="text" class="form-control" name="page" id="page_number" data-link="' . self::constructPaginationLink( $params['link'], '_pgn_' ) .'" value="' . $params['current'] .'" />
@@ -327,12 +331,12 @@ class TableGenerate
                                 </div>
                             </div>';
 			
-			$this->output .= '		</div>
+			$output .= '		</div>
 							</div>
 						</div>';
 
 		}
 		
-		return $this->output;
+		return $output;
 	}
 }

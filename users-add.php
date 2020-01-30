@@ -12,6 +12,8 @@ use ProjectSend\Classes\Users;
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
+global $dbh;
+
 if(!check_for_admin()) {
     return;
 }

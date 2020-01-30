@@ -39,6 +39,7 @@ include_once ROOT_DIR.'/templates/session_check.php';
  */
 $this_template_css = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/main.css';
 
+/** @var PDO $dbh */
 global $dbh;
 
 /**

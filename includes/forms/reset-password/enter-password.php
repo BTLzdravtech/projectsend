@@ -1,10 +1,15 @@
+<?php
+    global $got_token;
+    global $got_user;
+?>
+
 <form action="reset-password.php?token=<?php echo html_output($got_token); ?>&user=<?php echo html_output($got_user); ?>" name="reset_password_enter_new" id="reset_password_enter_new" method="post" role="form">
     <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
     <fieldset>
         <input type="hidden" name="form_type" id="form_type" value="new_password" />
 
         <div class="form-group">
-            <label for="reset_password_new"><?php _e('New password','cftp_admin'); ?></label>
+            <label for="password"><?php _e('New password','cftp_admin'); ?></label>
             <div class="input-group">
                 <input type="password" name="password" id="password" class="form-control password_toggle required" required />
                 <div class="input-group-btn password_toggler">

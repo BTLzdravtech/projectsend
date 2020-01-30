@@ -16,6 +16,8 @@ use ProjectSend\Classes\TableGenerate;
 $allowed_levels = array(9,8,7);
 require_once 'bootstrap.php';
 
+global $dbh;
+
 $active_nav = 'files';
 
 $page_title = __('Find orphan files', 'cftp_admin');

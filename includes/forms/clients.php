@@ -6,6 +6,11 @@
  * @subpackage	Clients
  *
  */
+
+global $clients_form_type;
+global $client_id;
+global $found_requests;
+
 $name_placeholder = __("Will be visible on the client's file list",'cftp_admin');
 
 switch ($clients_form_type) {

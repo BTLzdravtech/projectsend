@@ -8,6 +8,8 @@
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
+global $dbh;
+
 $page_title	= __("Templates",'cftp_admin');
 
 $active_nav = 'templates';

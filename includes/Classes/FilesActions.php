@@ -30,61 +30,61 @@ class FilesActions
 
 	function deleteFiles($rel_id, $service_run = false)
 	{
-		$this->can_delete		= false;
-		$this->result			= '';
-		$this->check_level		= array(9,8,7,0);
+		$can_delete		= false;
+		$result			= '';
+		$check_level		= array(9,8,7,0);
 
 		if (isset($rel_id)) {
 			/** Do a permissions check */
-			if ($service_run || (isset($this->check_level) && current_role_in($this->check_level))) {
-				$this->file_id = $rel_id;
-				$this->sql = $this->dbh->prepare("SELECT url, original_url, uploader, filename FROM " . TABLE_FILES . " WHERE id = :file_id");
-				$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-				$this->sql->execute();
-				$this->sql->setFetchMode(PDO::FETCH_ASSOC);
-				while( $this->row = $this->sql->fetch() ) {
+			if ($service_run || (isset($check_level) && current_role_in($check_level))) {
+				$file_id = $rel_id;
+				$sql = $this->dbh->prepare("SELECT url, original_url, uploader, filename FROM " . TABLE_FILES . " WHERE id = :file_id");
+				$sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+				$sql->execute();
+				$sql->setFetchMode(PDO::FETCH_ASSOC);
+				while( $row = $sql->fetch() ) {
 					if ( CURRENT_USER_LEVEL == '0' ) {
-						if ( CLIENTS_CAN_DELETE_OWN_FILES == '1' && $this->row['uploader'] == CURRENT_USER_USERNAME ) {
-							$this->can_delete	= true;
+						if ( CLIENTS_CAN_DELETE_OWN_FILES == '1' && $row['uploader'] == CURRENT_USER_USERNAME ) {
+							$can_delete	= true;
 						}
 					}
 					elseif ( CURRENT_USER_LEVEL == '7' ) {
-						if ( $this->row['uploader'] == CURRENT_USER_USERNAME ) {
-							$this->can_delete	= true;
+						if ( $row['uploader'] == CURRENT_USER_USERNAME ) {
+							$can_delete	= true;
 						}
 					}
 					else {
-						$this->can_delete	= true;
+						$can_delete	= true;
 					}
 
-                    $this->file_url = $this->row['url'];
-                    $this->title = $this->row['filename'];
+                    $file_url = $row['url'];
+                    $title = $row['filename'];
                     
                     /**
  					 * Thumbnails should be deleted too.
  					 * Start by making a pattern with the file name, a shorter version of what's
  					 * used on make_thumbnail.
  					 */
- 					$this->thumbnails_pattern = 'thumb_' . md5($this->row['url']);
- 					$this->find_thumbnails = glob( THUMBNAILS_FILES_DIR . DS . $this->thumbnails_pattern . '*.*' );
- 					//print_array($this->find_thumbnails);
+ 					$thumbnails_pattern = 'thumb_' . md5($row['url']);
+ 					$find_thumbnails = glob( THUMBNAILS_FILES_DIR . DS . $thumbnails_pattern . '*.*' );
+ 					//print_array($find_thumbnails);
 				}
 
 				/** Delete the reference to the file on the database */
-				if ( true === $this->can_delete ) {
-					$this->sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
-					$this->sql->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-					$this->sql->execute();
+				if ( true === $can_delete ) {
+					$sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
+					$sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+					$sql->execute();
 					/**
 					 * Use the id and uri information to delete the file.
 					 *
 					 * @see delete_file_from_disk
 					 */
-                    delete_file_from_disk(UPLOADED_FILES_DIR . DS . $this->file_url);
+                    delete_file_from_disk(UPLOADED_FILES_DIR . DS . $file_url);
                     
                     /** Delete the thumbnails */
- 					foreach ( $this->find_thumbnails as $this->thumbnail ) {
-                        delete_file_from_disk($this->thumbnail);
+ 					foreach ( $find_thumbnails as $thumbnail ) {
+                        delete_file_from_disk($thumbnail);
                     }
 
                     /** Record the action log */
@@ -92,8 +92,8 @@ class FilesActions
                         'action' => 12,
                         'owner_id' => $service_run? '-1' : CURRENT_USER_ID,
                         'owner_user' => $service_run? 'service' : CURRENT_USER_NAME,
-                        'affected_file' => $this->file_id,
-                        'affected_file_name' => $this->title
+                        'affected_file' => $file_id,
+                        'affected_file_name' => $title
                     ]);
 
 					return true;
@@ -106,7 +106,7 @@ class FilesActions
 
 	function changeHiddenStatus($change_to, $file_id, $modify_type, $modify_id)
 	{
-        $this->check_level = array(9,8,7);
+        $check_level = array(9,8,7);
         
         if (empty($file_id)) {
             return false;
@@ -139,13 +139,13 @@ class FilesActions
         }
 
         /** Do a permissions check */
-        if (isset($this->check_level) && current_role_in($this->check_level)) {
-            $this->sql = "UPDATE " . TABLE_FILES_RELATIONS . " SET hidden=:hidden WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";
-            $this->statement = $this->dbh->prepare($this->sql);
-            $this->statement->bindParam(':hidden', $change_to, PDO::PARAM_INT);
-            $this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-            $this->statement->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
-            $this->statement->execute();
+        if (isset($check_level) && current_role_in($check_level)) {
+            $sql = "UPDATE " . TABLE_FILES_RELATIONS . " SET hidden=:hidden WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";
+            $statement = $this->dbh->prepare($sql);
+            $statement->bindParam(':hidden', $change_to, PDO::PARAM_INT);
+            $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+            $statement->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
+            $statement->execute();
 
             $file = get_file_by_id($file_id);
 
@@ -166,17 +166,17 @@ class FilesActions
 
 	function hideForEveryone($file_id)
 	{
-        $this->check_level = array(9,8,7);
+        $check_level = array(9,8,7);
         
         if (empty($file_id)) {
             return false;
         }
 
         /** Do a permissions check */
-        if (isset($this->check_level) && current_role_in($this->check_level)) {
-            $this->sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hidden='1' WHERE file_id = :file_id");
-            $this->sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-            $this->sql->execute();
+        if (isset($check_level) && current_role_in($check_level)) {
+            $sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hidden='1' WHERE file_id = :file_id");
+            $sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+            $sql->execute();
 
             $file = get_file_by_id( $file_id );
 
@@ -196,7 +196,7 @@ class FilesActions
 
 	function unassignFile($file_id,$modify_type,$modify_id)
 	{
-        $this->check_level = array(9,8,7);
+        $check_level = array(9,8,7);
         
         if (empty($file_id)) {
             return false;
@@ -219,12 +219,12 @@ class FilesActions
         }
 
         /** Do a permissions check */
-        if (isset($this->check_level) && current_role_in($this->check_level)) {
-            $this->sql = "DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";
-            $this->statement = $this->dbh->prepare($this->sql);
-            $this->statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
-            $this->statement->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
-            $this->statement->execute();
+        if (isset($check_level) && current_role_in($check_level)) {
+            $sql = "DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";
+            $statement = $this->dbh->prepare($sql);
+            $statement->bindParam(':file_id', $file_id, PDO::PARAM_INT);
+            $statement->bindParam(':modify_id', $modify_id, PDO::PARAM_INT);
+            $statement->execute();
 
             $file = get_file_by_id( $file_id );
 

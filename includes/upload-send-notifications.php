@@ -11,8 +11,11 @@ use ProjectSend\Classes\Emails;
 
 /** This file MUST be included by another one */
 require_once 'bootstrap.php';
-prevent_direct_access();
+
 global $dbh;
+
+prevent_direct_access();
+
 $get_file_info = array();
 $get_client_info = array();
 $notifications_sent = array();
@@ -117,6 +120,8 @@ if (!empty($found_notifications)) {
 		$statement->bindParam(':users', $creators);
 		$statement->execute();
 		$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+        $creators_data = array();
 		while ( $row = $statement->fetch() ) {
 			$creators_data[$row['user']] = array(
 										'id' => $row['id'],
@@ -179,6 +184,9 @@ if (!empty($found_notifications)) {
 
 			/** Reset the files list UL contents */
 			$files_list = '';
+
+            $this_client_notifications = array();
+
 			foreach ($mail_files as $mail_file) {
 				/** Make the list of files */
 				$files_list.= '<li style="margin-bottom:11px;">';
@@ -223,6 +231,8 @@ if (!empty($found_notifications)) {
 				foreach ($admin_files as $client_uploader => $mail_files) {
 	
 					$files_list.= '<li style="font-size:15px; font-weight:bold; margin-bottom:5px;">'.$client_uploader.'</li>';
+
+                    $this_admin_notifications = array();
 					foreach ($mail_files as $mail_file) {
 						/** Make the list of files */
 						$files_list.= '<li style="margin-bottom:11px;">';

@@ -31,6 +31,10 @@
 			foreach($zonen AS $zone) {
 				extract($zone);
 
+				global $continent;
+				global $city;
+				global $subcity;
+
 				if ($continent == 'Africa'
 					|| $continent == 'America'
 					|| $continent == 'Antarctica'

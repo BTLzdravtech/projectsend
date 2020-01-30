@@ -13,6 +13,9 @@ use ProjectSend\Classes\TableGenerate;
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 $active_nav = 'groups';
 $this_page = 'clients-membership-requests.php';
 
@@ -175,7 +178,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 				<div class="form_actions">
 					<div class="form_actions_submit">
 						<div class="form-group group_float">
-							<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected requests actions','cftp_admin'); ?>:</label>
+							<label for="action" class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected requests actions','cftp_admin'); ?>:</label>
 							<select name="action" id="action" class="txtfield form-control">
 								<?php
 									$actions_options = array(

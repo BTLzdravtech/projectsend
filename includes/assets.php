@@ -103,7 +103,7 @@ function load_js_files() {
 	if ( !empty( $load_compat_js_files ) ) {
 		foreach ( $load_compat_js_files as $index => $info ) {
 ?>
-			<!--[if <?php echo $info['cond']; ?>]><script language="javascript" type="text/javascript" src="<?php echo $info['file']; ?>"></script><![endif]-->
+			<!--[if <?php echo $info['cond']; ?>]><script type="text/javascript" src="<?php echo $info['file']; ?>"></script><![endif]-->
 <?php
 		}
 	}

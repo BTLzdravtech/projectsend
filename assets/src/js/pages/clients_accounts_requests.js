@@ -4,7 +4,7 @@
     admin.pages.clientsAccountsRequests = function () {
 
         $(document).ready(function(){
-            $('.change_all').click(function(e) {
+            $('.change_all').on('click', function(e) {
                 e.preventDefault();
                 var target = $(this).data('target');
                 var check = $(this).data('check');
@@ -13,7 +13,7 @@
             });
             
             $('.account_action').on("change", function() {
-                if ( $(this).prop('checked') == false )  {
+                if ( $(this).prop('checked') === false )  {
                     var target = $(this).data('client');
                     $(".membership_action[data-client='"+target+"']").prop("checked",false).change();
                 }

@@ -13,6 +13,9 @@ define('IS_FILE_EDITOR', true);
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 //Add a session check here
 if(!check_for_session()) {
     header("location:" . BASE_URI . "index.php");
@@ -42,7 +45,7 @@ if ( CURRENT_USER_LEVEL == 8 || CURRENT_USER_LEVEL == 7 ) {
 
 /** Fill the users array that will be used on the notifications process */
 $users = array();
-$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . $owner_id_condition . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . $owner_id_condition . " ORDER BY name");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
@@ -54,7 +57,7 @@ while( $row = $statement->fetch() ) {
 
 /** Fill the groups array that will be used on the form */
 $groups = array();
-$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . $owner_id_condition . " ORDER BY name ASC");
+$statement = $dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . $owner_id_condition . " ORDER BY name");
 $statement->execute();
 $statement->setFetchMode(PDO::FETCH_ASSOC);
 while( $row = $statement->fetch() ) {
@@ -92,6 +95,7 @@ $get_categories = get_categories();
 			 * Continue if client exists and has files under his account.
 			 */
 			$sql->setFetchMode(PDO::FETCH_ASSOC);
+            $edit_file_info = array();
 			while( $row = $sql->fetch() ) {
 				$edit_file_info['url'] = $row['url'];
 				$edit_file_info['id'] = $row['id'];
@@ -376,13 +380,13 @@ $get_categories = get_categories();
 															<h3><?php _e('File information', 'cftp_admin');?></h3>
 
 															<div class="form-group">
-																<label><?php _e('Title', 'cftp_admin');?></label>
-																<input type="text" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" required />
+																<label for="file[<?php echo $i; ?>][name]"><?php _e('Title', 'cftp_admin');?></label>
+																<input type="text" id="file[<?php echo $i; ?>][name]" name="file[<?php echo $i; ?>][name]" value="<?php echo html_output($row['filename']); ?>" class="form-control file_title" placeholder="<?php _e('Enter here the required file title.', 'cftp_admin');?>" required />
 															</div>
 
 															<div class="form-group">
-																<label><?php _e('Description', 'cftp_admin');?></label>
-																<textarea name="file[<?php echo $i; ?>][description]" class="<?php if ( FILES_DESCRIPTIONS_USE_CKEDITOR == 1 ) { echo 'ckeditor'; } ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
+																<label for="file[<?php echo $i; ?>][description]"><?php _e('Description', 'cftp_admin');?></label>
+																<textarea id="file[<?php echo $i; ?>][description]" name="file[<?php echo $i; ?>][description]" class="<?php if ( FILES_DESCRIPTIONS_USE_CKEDITOR == 1 ) { echo 'ckeditor'; } ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin');?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
 															</div>
 														</div>
 													</div>
@@ -411,7 +415,7 @@ $get_categories = get_categories();
 															<h3><?php _e('Expiration date', 'cftp_admin');?></h3>
 
 															<div class="form-group">
-																<label for="file[<?php echo $i; ?>][expires_date]"><?php _e('Select a date', 'cftp_admin');?></label>
+																<label for="file[<?php echo $i; ?>][expiry_date]"><?php _e('Select a date', 'cftp_admin');?></label>
 																<div class="input-group date-container">
 																	<input type="text" class="date-field form-control datapick-field" readonly id="file[<?php echo $i; ?>][expiry_date]" name="file[<?php echo $i; ?>][expiry_date]" value="<?php echo (!empty($expiry_date)) ? $expiry_date : date('d-m-Y'); ?>" />
 																	<div class="input-group-addon">
@@ -444,10 +448,10 @@ $get_categories = get_categories();
 															</div>
 
 															<div class="divider"></div>
-															<h3><?php _e('Public URL', 'cftp_admin');?></h3>
+                                                            <h3><label for="pub_url"><?php _e('Public URL', 'cftp_admin');?></label></h3>
 															<div class="public_url">
 																<div class="form-group">
-																	<textarea class="form-control" readonly><?php echo BASE_URI; ?>download.php?id=<?php echo $row['id']; ?>&token=<?php echo html_output($row['public_token']); ?></textarea>
+																	<textarea id="pub_url" class="form-control" readonly><?php echo BASE_URI; ?>download.php?id=<?php echo $row['id']; ?>&token=<?php echo html_output($row['public_token']); ?></textarea>
 																</div>
 															</div>
 														<?php
@@ -476,7 +480,7 @@ $get_categories = get_categories();
 																*/
 															?>
 															<h3><?php _e('Assignations', 'cftp_admin');?></h3>
-															<label><?php _e('Clients', 'cftp_admin');?>:</label>
+															<label for="select_clients_<?php echo $i; ?>"><?php _e('Clients', 'cftp_admin');?>:</label>
 															<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][clients][]" id="select_clients_<?php echo $i; ?>" class="form-control chosen-select select_clients" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                                 <?php
                                                                     /**
@@ -497,7 +501,7 @@ $get_categories = get_categories();
                                                                 <span class="btn btn-xs btn-primary remove-all" data-type="clients" data-fileid="<?php echo $i; ?>"><?php _e('Remove all','cftp_admin'); ?></span>
 															</div>
 
-															<label><?php _e('Groups', 'cftp_admin');?>:</label>
+															<label for="select_groups_<?php echo $i; ?>"><?php _e('Groups', 'cftp_admin');?>:</label>
 															<select multiple="multiple" name="file[<?php echo $i; ?>][assignments][groups][]" id="select_groups_<?php echo $i; ?>" class="form-control chosen-select select_groups" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                                                                 <?php
                                                                     /**
@@ -540,7 +544,7 @@ $get_categories = get_categories();
 													<div class="col-sm-6 col-md-3 categories column">
 														<div class="file_data">
 															<h3><?php _e('Categories', 'cftp_admin');?></h3>
-															<label><?php _e('Add to', 'cftp_admin');?>:</label>
+															<label for="select_categories_<?php echo $i; ?>"><?php _e('Add to', 'cftp_admin');?>:</label>
 															<select multiple="multiple" name="file[<?php echo $i; ?>][categories][]" id="select_categories_<?php echo $i; ?>" class="form-control chosen-select select_categories" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 																<?php
 																	/**
@@ -569,7 +573,7 @@ $get_categories = get_categories();
 					?>
 					<div class="after_form_buttons">
                         <button type="submit" name="submit" class="btn btn-wide btn-primary"><?php _e('Save','cftp_admin'); ?></button>
-                        <a href="<?php echo BASE_URI; ?>manage-files.php" name="cancel" class="btn btn-default btn-wide"><?php _e('Cancel','cftp_admin'); ?></a>
+                        <a href="<?php echo BASE_URI; ?>manage-files.php" class="btn btn-default btn-wide"><?php _e('Cancel','cftp_admin'); ?></a>
 					</div>
 				</div>
 			</form>

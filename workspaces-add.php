@@ -12,6 +12,8 @@ use ProjectSend\Classes\Workspaces;
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
+global $dbh;
+
 $active_nav = 'workspaces';
 
 $page_title = __('Add users workspace','cftp_admin');

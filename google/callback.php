@@ -5,6 +5,9 @@ use ProjectSend\Classes\Users;
 
 require_once '../bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 $googleClient = getGoogleLoginClient();
 $oauth2 = new Google_Service_Oauth2($googleClient);
 
@@ -36,7 +39,6 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_
             unset($_SESSION['google_user']);
         }
 
-        global $dbh;
         $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE email= :email");
         $statement->execute(array(':email' => $email));
 
@@ -44,6 +46,13 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_
         if ($count_user > 0) {
             /** If the username was found on the users table */
             $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+            $sysuser_username = null;
+            $user_level = null;
+            $active_status = null;
+            $logged_id = null;
+            $global_name = null;
+
             while ($row = $statement->fetch()) {
                 $sysuser_username = $row['user'];
                 $user_level = $row["level"];

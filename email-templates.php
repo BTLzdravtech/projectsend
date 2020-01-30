@@ -8,7 +8,10 @@
  */
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
+
+/** @var PDO $dbh */
 global $dbh;
+
 $section = ( !empty( $_GET['section'] ) ) ? $_GET['section'] : $_POST['section'];
 
 switch ( $section ) {

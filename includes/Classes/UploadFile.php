@@ -11,14 +11,21 @@ use \PDO;
 
 class UploadFile
 {
+    /** @var PDO $dbh */
     private $dbh;
     private $logger;
 
+    private $groups;
+    private $users;
+
     var $file_id;
+    private $file_name;
 	var $folder;
 	var $assign_to;
-	var $uploader;
-	var $file;
+    var $uploader;
+    private $uploader_id;
+    private $uploader_type;
+    var $file;
 	var $name;
 	var $description;
 	var $upload_state;
@@ -102,10 +109,10 @@ class UploadFile
 			return true;
 		}
 		else {
-			$this->safe_filename = $filename;
+			$safe_filename = $filename;
 			$allowed_file_types = str_replace(',','|', ALLOWED_FILE_TYPES);
 			$file_types = "/^\.(".$allowed_file_types."){1}$/i";
-			if (preg_match($file_types, strrchr($this->safe_filename, '.'))) {
+			if (preg_match($file_types, strrchr($safe_filename, '.'))) {
 				return true;
 			}
 		}
@@ -119,8 +126,8 @@ class UploadFile
 	function safeRename($name)
 	{
 		$this->name = $name;
-		$this->safe_filename = $this->generateSafeFilename( $this->name );
-		return basename($this->safe_filename);
+		$safe_filename = $this->generateSafeFilename( $this->name );
+		return basename($safe_filename);
 	}
 	
 	/**
@@ -135,9 +142,9 @@ class UploadFile
 	{
 		$this->name = $name;
 		$this->folder = $folder;
-		$this->safe_filename = $this->generateSafeFilename( $this->name );
-		if(rename($this->folder.'/'.$this->name, $this->folder.'/'.$this->safe_filename)) {
-			return $this->safe_filename;
+		$safe_filename = $this->generateSafeFilename( $this->name );
+		if(rename($this->folder.'/'.$this->name, $this->folder.'/'.$safe_filename)) {
+			return $safe_filename;
 		}
 		else {
 			return false;
@@ -151,22 +158,22 @@ class UploadFile
 	 */
 	function moveFile($arguments)
 	{
-		$this->uploaded_name	= $arguments['uploaded_name'];
-		$this->filename			= $arguments['filename'];
-		$this->uid 				= CURRENT_USER_ID;
-		$this->username 		= CURRENT_USER_USERNAME;
-		$this->makehash 		= sha1($this->username);
+		$uploaded_name	= $arguments['uploaded_name'];
+		$filename			= $arguments['filename'];
+		$uid 				= CURRENT_USER_ID;
+		$username 		= CURRENT_USER_USERNAME;
+		$makehash 		= sha1($username);
 
-		$this->filename_on_disk = time().'-'.$this->makehash.'-'.$this->filename;
-		//$this->file_final_name = $this->filename;
-		$this->path = UPLOADED_FILES_DIR.DS.$this->filename_on_disk;
-		if (rename($this->uploaded_name, $this->path)) {
-			chmod($this->path, 0644);
-			$this->return = array(
-									'filename_original'	=> $this->filename,
-									'filename_disk'		=> $this->filename_on_disk,
+		$filename_on_disk = time().'-'.$makehash.'-'.$filename;
+		//$this->file_final_name = $filename;
+		$path = UPLOADED_FILES_DIR.DS.$filename_on_disk;
+		if (rename($uploaded_name, $path)) {
+			chmod($path, 0644);
+			$path = array(
+									'filename_original'	=> $filename,
+									'filename_disk'		=> $filename_on_disk,
 								);
-			return $this->return;
+			return $path;
 		}
 		else {
 			return false;
@@ -178,62 +185,62 @@ class UploadFile
 	 */
 	function addNew($arguments)
 	{
-		$this->file_on_disk		= (!empty($arguments['file_disk'])) ? $arguments['file_disk'] : '';
-		$this->post_file		= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
+		$file_on_disk		= (!empty($arguments['file_disk'])) ? $arguments['file_disk'] : '';
+		$post_file		= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
 		$this->name				= encode_html($arguments['name']);
 		$this->description		= encode_html($arguments['description']);
 		$this->uploader			= $arguments['uploader'];
 		$this->uploader_id		= $arguments['uploader_id'];
 		$this->uploader_type	= $arguments['uploader_type'];
-		$this->hidden			= (!empty($arguments['hidden'])) ? 1 : 0;
-		$this->expires			= (!empty($arguments['expires'])) ? 1 : 0;
-		$this->expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
-		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
-		$this->public_token		= generateRandomString(32);
+		$hidden			= (!empty($arguments['hidden'])) ? 1 : 0;
+		$expires			= (!empty($arguments['expires'])) ? 1 : 0;
+		$expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
+		$is_public		= (!empty($arguments['public'])) ? 1 : 0;
+		$public_token		= generateRandomString(32);
 		
-        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, owner_id, uploader, expires, expiry_date, public_allow, public_token)"
+        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, owner_id, uploader, expires, expiry_date, public_allow, public_token)"
                                         ."VALUES (:url, :original_url, :name, :description, :owner_id, :uploader, :expires, :expiry_date, :public, :token)");
-        $this->statement->bindParam(':url', $this->file_on_disk);
-        $this->statement->bindParam(':original_url', $this->post_file);
-        $this->statement->bindParam(':name', $this->name);
-        $this->statement->bindParam(':owner_id', $this->uploader_id);
-        $this->statement->bindParam(':description', $this->description);
-        $this->statement->bindParam(':uploader', $this->uploader);
-        $this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
-        $this->statement->bindParam(':expiry_date', $this->expiry_date);
-        $this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
-        $this->statement->bindParam(':token', $this->public_token);
-        $this->statement->execute();
+        $statement->bindParam(':url', $file_on_disk);
+        $statement->bindParam(':original_url', $post_file);
+        $statement->bindParam(':name', $this->name);
+        $statement->bindParam(':owner_id', $this->uploader_id);
+        $statement->bindParam(':description', $this->description);
+        $statement->bindParam(':uploader', $this->uploader);
+        $statement->bindParam(':expires', $expires, PDO::PARAM_INT);
+        $statement->bindParam(':expiry_date', $expiry_date);
+        $statement->bindParam(':public', $is_public, PDO::PARAM_INT);
+        $statement->bindParam(':token', $public_token);
+        $statement->execute();
 
         $this->file_id = $this->dbh->lastInsertId();
-        $this->state['new_file_id'] = $this->file_id;
+        $state['new_file_id'] = $this->file_id;
 
-        $this->state['public_token'] = $this->public_token;
+        $state['public_token'] = $public_token;
 
-		if (!empty($this->statement)) {
+		if (!empty($statement)) {
             /** Record the action log */
             if ($this->uploader_type == 'user') {
-                $this->action_type = 5;
+                $action_type = 5;
             }
             elseif ($this->uploader_type == 'client') {
-                $this->action_type = 6;
+                $action_type = 6;
             }
 
             $new_record_action = $this->logger->addEntry([
-                'action' => $this->action_type,
+                'action' => $action_type,
                 'owner_id' => $this->uploader_id,
                 'affected_file' => $this->file_id,
                 'affected_file_name' => $this->name,
                 'affected_account_name' => $this->uploader
             ]);
 
-            $this->state['database'] = true;
+            $state['database'] = true;
 		}
 		else {
-			$this->state['database'] = false;
+			$state['database'] = false;
 		}
 		
-		return $this->state;
+		return $state;
 	}
 
     	/**
@@ -241,39 +248,39 @@ class UploadFile
 	 */
 	function saveExisting($arguments)
 	{
-		$this->file_on_disk		= (!empty($arguments['file_disk'])) ? $arguments['file_disk'] : '';
-		$this->post_file		= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
+		$file_on_disk		= (!empty($arguments['file_disk'])) ? $arguments['file_disk'] : '';
+		$post_file		= (!empty($arguments['file_original'])) ? $arguments['file_original'] : '';
 		$this->name				= encode_html($arguments['name']);
 		$this->description		= encode_html($arguments['description']);
 		$this->uploader			= $arguments['uploader'];
 		$this->uploader_id		= $arguments['uploader_id'];
 		$this->uploader_type	= $arguments['uploader_type'];
-		$this->hidden			= (!empty($arguments['hidden'])) ? 1 : 0;
-		$this->expires			= (!empty($arguments['expires'])) ? 1 : 0;
-		$this->expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
-		$this->is_public		= (!empty($arguments['public'])) ? 1 : 0;
-		$this->public_token		= generateRandomString(32);
+		$hidden			= (!empty($arguments['hidden'])) ? 1 : 0;
+		$expires			= (!empty($arguments['expires'])) ? 1 : 0;
+		$expiry_date		= (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
+		$is_public		= (!empty($arguments['public'])) ? 1 : 0;
+		$public_token		= generateRandomString(32);
 		
-        $this->statement = $this->dbh->prepare("SELECT id, public_allow, public_token FROM " . TABLE_FILES . " WHERE url = :url");
-        $this->statement->bindParam(':url', $this->post_file);
-        $this->statement->execute();
-        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
-        while( $row = $this->statement->fetch() ) {
+        $statement = $this->dbh->prepare("SELECT id, public_allow, public_token FROM " . TABLE_FILES . " WHERE url = :url");
+        $statement->bindParam(':url', $post_file);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        while( $row = $statement->fetch() ) {
             $this->file_id = $row["id"];
-            $this->state['new_file_id'] = $this->file_id;
+            $state['new_file_id'] = $this->file_id;
             if (!empty($row["public_token"])) {
-                $this->public_token				= $row["public_token"];
-                $this->state['public_token']	= $row["public_token"];
+                $public_token				= $row["public_token"];
+                $state['public_token']	= $row["public_token"];
             }
             /**
              * If a client is editing a file, the public settings should
              * not be reset.
              */
             if ( CURRENT_USER_LEVEL == 0 ) {
-                $this->is_public = $row["public_allow"];
+                $is_public = $row["public_allow"];
             }
         }
-        $this->statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET
+        $statement = $this->dbh->prepare("UPDATE " . TABLE_FILES . " SET
                                             filename = :title,
                                             description = :description,
                                             expires = :expires,
@@ -282,39 +289,39 @@ class UploadFile
                                             public_token = :token
                                             WHERE id = :id
                                         ");
-        $this->statement->bindParam(':title', $this->name);
-        $this->statement->bindParam(':description', $this->description);
-        $this->statement->bindParam(':expires', $this->expires, PDO::PARAM_INT);
-        $this->statement->bindParam(':expiry_date', $this->expiry_date);
-        $this->statement->bindParam(':public', $this->is_public, PDO::PARAM_INT);
-        $this->statement->bindParam(':token', $this->public_token);
-        $this->statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
-        $this->statement->execute();
+        $statement->bindParam(':title', $this->name);
+        $statement->bindParam(':description', $this->description);
+        $statement->bindParam(':expires', $expires, PDO::PARAM_INT);
+        $statement->bindParam(':expiry_date', $expiry_date);
+        $statement->bindParam(':public', $is_public, PDO::PARAM_INT);
+        $statement->bindParam(':token', $public_token);
+        $statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
+        $statement->execute();
 
-		if (!empty($this->statement)) {
+		if (!empty($statement)) {
             /** Record the action log */
             if ($this->uploader_type == 'user') {
-                $this->action_type = 32;
+                $action_type = 32;
             }
             elseif ($this->uploader_type == 'client') {
-                $this->action_type = 33;
+                $action_type = 33;
             }
 
             $new_record_action = $this->logger->addEntry([
-                'action' => $this->action_type,
+                'action' => $action_type,
                 'owner_id' => $this->uploader_id,
                 'affected_file' => $this->file_id,
                 'affected_file_name' => $this->name,
                 'affected_account_name' => $this->uploader
             ]);
 
-			$this->state['database'] = true;
+			$state['database'] = true;
 		}
 		else {
-			$this->state['database'] = false;
+			$state['database'] = false;
 		}
 		
-		return $this->state;
+		return $state;
     }
 
 	/**
@@ -352,35 +359,35 @@ class UploadFile
 
         switch ($type) {
             case 'client':
-                $this->add_to = 'client_id';
-                $this->account_name = $this->users[$id];
-                $this->action_number = 25;
+                $add_to = 'client_id';
+                $account_name = $this->users[$id];
+                $action_number = 25;
                 break;
             case 'group':
-                $this->add_to = 'group_id';
-                $this->account_name = $this->groups[$id];
-                $this->action_number = 26;
+                $add_to = 'group_id';
+                $account_name = $this->groups[$id];
+                $action_number = 26;
                 break;
             default:
                 return false;
                 break;
         }
 
-        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, $this->add_to, hidden) VALUES (:file_id, :assignment, :hidden)");
-        $this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-        $this->statement->bindParam(':assignment', $id);
-        $this->statement->bindParam(':hidden', $this->hidden, PDO::PARAM_INT);
-        $this->statement->execute();
+        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, " . $add_to . ", hidden) VALUES (:file_id, :assignment, :hidden)");
+        $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+        $statement->bindParam(':assignment', $id);
+        $statement->bindParam(':hidden', $hidden, PDO::PARAM_INT);
+        $statement->execute();
 
         if ($this->uploader_type == 'user') {
             /** Record the action log */
             $new_record_action = $this->logger->addEntry([
-                'action' => $this->action_number,
+                'action' => $action_number,
                 'owner_id' => $this->uploader_id,
                 'affected_file' => $this->file_id,
                 'affected_file_name' => $this->name,
                 'affected_account' => $id,
-                'affected_account_name' => $this->account_name
+                'affected_account_name' => $account_name
             ]);
         }
 
@@ -397,58 +404,58 @@ class UploadFile
 
 		/** Define type of uploader for the notifications queries. */
 		if ($this->uploader_type == 'user') {
-			$this->notif_uploader_type = 1;
+			$notif_uploader_type = 1;
 		}
 		elseif ($this->uploader_type == 'client') {
-			$this->notif_uploader_type = 0;
+			$notif_uploader_type = 0;
 		}
 
 		if (!empty($arguments['assign_to'])) {
 			$this->assign_to = $arguments['assign_to'];
-			$this->distinct_notifications = array();
+			$distinct_notifications = array();
 
-			foreach ($this->assign_to as $key => $this->assignments) {
-			    foreach ($this->assignments as $this->assignment) {
-                    $this->id_only = $this->assignment;
+			foreach ($this->assign_to as $key => $assignments) {
+			    foreach ($assignments as $assignment) {
+                    $id_only = $assignment;
                     switch ($key) {
                         case 'clients':
-                            $this->add_to = 'client_id';
+                            $add_to = 'client_id';
                             break;
                         case 'groups':
-                            $this->add_to = 'group_id';
+                            $add_to = 'group_id';
                             break;
                     }
                     /**
                      * Add the notification to the table
                      */
-                    $this->members_to_notify = array();
+                    $members_to_notify = array();
 
-                    if ($this->add_to == 'group_id') {
+                    if ($add_to == 'group_id') {
 
-                        $this->statement = $this->dbh->prepare("SELECT DISTINCT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
-                        $this->statement->bindParam(':id', $this->id_only, PDO::PARAM_INT);
-                        $this->statement->execute();
-                        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
-                        while ($this->row = $this->statement->fetch()) {
-                            $this->members_to_notify[] = $this->row['client_id'];
+                        $statement = $this->dbh->prepare("SELECT DISTINCT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
+                        $statement->bindParam(':id', $id_only, PDO::PARAM_INT);
+                        $statement->execute();
+                        $statement->setFetchMode(PDO::FETCH_ASSOC);
+                        while ($row = $statement->fetch()) {
+                            $members_to_notify[] = $row['client_id'];
                         }
                     } else {
-                        $this->members_to_notify[] = $this->id_only;
+                        $members_to_notify[] = $id_only;
                     }
 
-                    if (!empty($this->members_to_notify)) {
-                        foreach ($this->members_to_notify as $this->add_notify) {
-                            $this->current_assignment = $this->file_id . '-' . $this->add_notify;
-                            if (!in_array($this->current_assignment, $this->distinct_notifications)) {
+                    if (!empty($members_to_notify)) {
+                        foreach ($members_to_notify as $add_notify) {
+                            $current_assignment = $this->file_id . '-' . $add_notify;
+                            if (!in_array($current_assignment, $distinct_notifications)) {
 
-                                $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, client_id, upload_type, sent_status, times_failed)
+                                $statement = $this->dbh->prepare("INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, client_id, upload_type, sent_status, times_failed)
                                                                         VALUES (:file_id, :client_id, :type, '0', '0')");
-                                $this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-                                $this->statement->bindParam(':client_id', $this->add_notify, PDO::PARAM_INT);
-                                $this->statement->bindParam(':type', $this->notif_uploader_type);
-                                $this->statement->execute();
+                                $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+                                $statement->bindParam(':client_id', $add_notify, PDO::PARAM_INT);
+                                $statement->bindParam(':type', $notif_uploader_type);
+                                $statement->execute();
 
-                                $this->distinct_notifications[] = $this->current_assignment;
+                                $distinct_notifications[] = $current_assignment;
                             }
                         }
                     }
@@ -466,45 +473,45 @@ class UploadFile
 		$this->assign_to = $arguments['assign_to'];
 		$this->file_id = $arguments['file_id'];
 		$this->file_name = $arguments['file_name'];
-		$this->current_clients = $arguments['current_clients'];
-		$this->current_groups = $arguments['current_groups'];
-		$this->owner_id = $arguments['owner_id'];
+		$current_clients = $arguments['current_clients'];
+		$current_groups = $arguments['current_groups'];
+		$owner_id = $arguments['owner_id'];
 		
-		$this->assign_to_clients = array();
-		$this->assign_to_groups = array();
-		$this->delete_from_db_clients = array();
-		$this->delete_from_db_groups = array();
+		$assign_to_clients = array();
+		$assign_to_groups = array();
+		$delete_from_db_clients = array();
+		$delete_from_db_groups = array();
 
 		foreach ($this->assign_to as $type => $ids) {
-			$this->id_only = $ids;
+			$id_only = $ids;
 			switch ($type) {
 				case 'clients':
-					$this->assign_to_clients = $this->id_only;
+					$assign_to_clients = $id_only;
 					break;
 				case 'groups':
-					$this->assign_to_groups = $this->id_only;
+					$assign_to_groups = $id_only;
 					break;
 			}
 		}
 		
-		foreach ($this->current_clients as $this->client) {
-			if (!in_array($this->client, $this->assign_to_clients)) {
-				$this->delete_from_db_clients[] = $this->client;
+		foreach ($current_clients as $client) {
+			if (!in_array($client, $assign_to_clients)) {
+				$delete_from_db_clients[] = $client;
 			}
 		}
-		foreach ($this->current_groups as $this->group) {
-			if (!in_array($this->group, $this->assign_to_groups)) {
-				$this->delete_from_db_groups[] = $this->group;
+		foreach ($current_groups as $group) {
+			if (!in_array($group, $assign_to_groups)) {
+				$delete_from_db_groups[] = $group;
 			}
 		}
 		
-		$this->delete_arguments = array(
-										'clients' => $this->delete_from_db_clients,
-										'groups' => $this->delete_from_db_groups,
-										'owner_id' => $this->owner_id
+		$delete_arguments = array(
+										'clients' => $delete_from_db_clients,
+										'groups' => $delete_from_db_groups,
+										'owner_id' => $owner_id
 									);
 
-		$this->deleteAssignments($this->delete_arguments);
+		$this->deleteAssignments($delete_arguments);
 	}
 
 	/**
@@ -514,31 +521,31 @@ class UploadFile
 	{
 		$this->file_id = $arguments['file_id'];
 		$this->file_name = $arguments['file_name'];
-		$this->owner_id = $arguments['owner_id'];
+		$owner_id = $arguments['owner_id'];
 		
-		$this->delete_from_db_clients = array();
-		$this->delete_from_db_groups = array();
+		$delete_from_db_clients = array();
+		$delete_from_db_groups = array();
 
-		$this->statement = $this->dbh->prepare("SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
-		$this->statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
-		$this->statement->execute();
-		$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-		while( $this->row = $this->statement->fetch() ) {
-			if (!empty($this->row['client_id'])) {
-				$this->delete_from_db_clients[] = $this->row['client_id'];
+		$statement = $this->dbh->prepare("SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :id");
+		$statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
+		$statement->execute();
+		$statement->setFetchMode(PDO::FETCH_ASSOC);
+		while( $row = $statement->fetch() ) {
+			if (!empty($row['client_id'])) {
+				$delete_from_db_clients[] = $row['client_id'];
 			}
-			elseif (!empty($this->row['group_id'])) {
-				$this->delete_from_db_groups[] = $this->row['group_id'];
+			elseif (!empty($row['group_id'])) {
+				$delete_from_db_groups[] = $row['group_id'];
 			}
 		}
 		
-		$this->delete_arguments = array(
-										'clients' => $this->delete_from_db_clients,
-										'groups' => $this->delete_from_db_groups,
-										'owner_id' => $this->owner_id
+		$delete_arguments = array(
+										'clients' => $delete_from_db_clients,
+										'groups' => $delete_from_db_groups,
+										'owner_id' => $owner_id
 									);
 
-		$this->deleteAssignments($this->delete_arguments);
+		$this->deleteAssignments($delete_arguments);
 	}
 
 
@@ -547,76 +554,76 @@ class UploadFile
 	 */	
 	private function deleteAssignments($arguments)
 	{
-		$this->clients = $arguments['clients'];
-		$this->groups = $arguments['groups'];
-		$this->owner_id = $arguments['owner_id'];
+		$clients = $arguments['clients'];
+		$groups = $arguments['groups'];
+		$owner_id = $arguments['owner_id'];
 
 		/**
 		 * Get a list of clients names for the log
 		 */
-		if (!empty($this->clients)) {
-			$this->delete_clients = implode(',',array_unique($this->clients));
+		if (!empty($clients)) {
+			$delete_clients = implode(',',array_unique($clients));
 
-			$this->statement = $this->dbh->prepare("SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)");
-			$this->statement->bindParam(':clients', $this->delete_clients);
-			$this->statement->execute();
-			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-			while( $this->row = $this->statement->fetch() ) {
-				$this->clients_names[$this->row['id']] = $this->row['name'];
+			$statement = $this->dbh->prepare("SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :clients)");
+			$statement->bindParam(':clients', $delete_clients);
+			$statement->execute();
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while( $row = $statement->fetch() ) {
+				$clients_names[$row['id']] = $row['name'];
 			}
 
 
 			/** Remove existing assignments of this file/clients */
-			$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(client_id, :clients)");
-			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-			$this->statement->bindParam(':clients', $this->delete_clients);
-			$this->statement->execute();
+			$statement = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(client_id, :clients)");
+			$statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+			$statement->bindParam(':clients', $delete_clients);
+			$statement->execute();
 
 
 			/** Record the action log */
-			foreach ($this->clients as $this->deleted_client) {
+			foreach ($clients as $deleted_client) {
 				$new_record_action = $this->logger->addEntry([
                     'action' => 10,
-                    'owner_id' => $this->owner_id,
+                    'owner_id' => $owner_id,
                     'affected_file' => $this->file_id,
                     'affected_file_name' => $this->file_name,
-                    'affected_account' => $this->deleted_client,
-                    'affected_account_name' => $this->clients_names[$this->deleted_client]
+                    'affected_account' => $deleted_client,
+                    'affected_account_name' => $clients_names[$deleted_client]
                 ]);
 			}
 		}
 		/**
 		 * Get a list of groups names for the log
 		 */
-		if (!empty($this->groups)) {
-			$this->delete_groups = implode(',',array_unique($this->groups));
+		if (!empty($groups)) {
+			$delete_groups = implode(',',array_unique($groups));
 
 
-			$this->statement = $this->dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " WHERE FIND_IN_SET(id, :groups)");
-			$this->statement->bindParam(':groups', $this->delete_groups);
-			$this->statement->execute();
-			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-			while( $this->row = $this->statement->fetch() ) {
-				$this->groups_names[$this->row['id']] = $this->row['name'];
+			$statement = $this->dbh->prepare("SELECT id, name FROM " . TABLE_GROUPS . " WHERE FIND_IN_SET(id, :groups)");
+			$statement->bindParam(':groups', $delete_groups);
+			$statement->execute();
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while( $row = $statement->fetch() ) {
+				$groups_names[$row['id']] = $row['name'];
 			}
 
 
 			/** Remove existing assignments of this file/groups */
-			$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(group_id, :groups)");
-			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-			$this->statement->bindParam(':groups', $this->delete_groups);
-			$this->statement->execute();
+			$statement = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(group_id, :groups)");
+			$statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+			$statement->bindParam(':groups', $delete_groups);
+			$statement->execute();
 
 
 			/** Record the action log */
-			foreach ($this->groups as $this->deleted_group) {
+			foreach ($groups as $deleted_group) {
 				$new_record_action = $this->logger->addEntry([
                     'action' => 11,
-                    'owner_id' => $this->owner_id,
+                    'owner_id' => $owner_id,
                     'affected_file' => $this->file_id,
                     'affected_file_name' => $this->file_name,
-                    'affected_account' => $this->deleted_group,
-                    'affected_account_name' => $this->groups_names[$this->deleted_group]
+                    'affected_account' => $deleted_group,
+                    'affected_account_name' => $groups_names[$deleted_group]
                 ]);
 			}
 		}
@@ -628,37 +635,37 @@ class UploadFile
 	function setCategories($arguments)
 	{
 		$this->file_id		= $arguments['file_id'];
-		$this->categories	= $arguments['categories'];
+		$categories	= $arguments['categories'];
 		
-		if ( !empty( $this->categories ) ) {
-			$this->categories_current	= array();
-			$this->categories_to_delete	= array();
+		if ( !empty( $categories ) ) {
+			$categories_current	= array();
+			$categories_to_delete	= array();
 			
-			$this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
-			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-			$this->statement->execute();
-			$this->statement->setFetchMode(PDO::FETCH_ASSOC);
-			while( $this->row = $this->statement->fetch() ) {
-				$this->categories_current[$this->row['cat_id']] = $this->row['cat_id'];
+			$statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
+			$statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+			$statement->execute();
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			while( $row = $statement->fetch() ) {
+				$categories_current[$row['cat_id']] = $row['cat_id'];
 			}
 	
 			/**
 			 * Add existing -on DB- but not selected on the form to
 			 * the delete array. This uses the ID of the record.
 			 */
-			if ( !empty( $this->categories_current ) ) {
-				foreach ( $this->categories_current as $cat ) {
-					if ( !in_array( $cat, $this->categories ) ) {
-						$this->categories_to_delete[$cat] = $cat;
+			if ( !empty( $categories_current ) ) {
+				foreach ( $categories_current as $cat ) {
+					if ( !in_array( $cat, $categories ) ) {
+						$categories_to_delete[$cat] = $cat;
 					}
 				}
 
-				$this->categories_to_delete = implode( ',', array_unique($this->categories_to_delete ) );
+				$categories_to_delete = implode( ',', array_unique($categories_to_delete ) );
 
-				$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(cat_id, :categories)");
-				$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-				$this->statement->bindParam(':categories', $this->categories_to_delete);
-				$this->statement->execute();
+				$statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(cat_id, :categories)");
+				$statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+				$statement->bindParam(':categories', $categories_to_delete);
+				$statement->execute();
 			}
 	
 			/**
@@ -666,21 +673,21 @@ class UploadFile
 			 * ones that are already on the database.
 			 * If it's not in the current array, add the row.
 			 */
-			foreach ( $this->categories as $cat ) {
-				if ( !in_array( $cat, $this->categories_current ) ) {
-					$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES_RELATIONS . " (file_id, cat_id)"
+			foreach ( $categories as $cat ) {
+				if ( !in_array( $cat, $categories_current ) ) {
+					$statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES_RELATIONS . " (file_id, cat_id)"
 															."VALUES (:file_id, :cat_id)");
-					$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-					$this->statement->bindParam(':cat_id', $cat, PDO::PARAM_INT);
-					$this->statement->execute();
+					$statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+					$statement->bindParam(':cat_id', $cat, PDO::PARAM_INT);
+					$statement->execute();
 				}
 			}
 		}
 		else {
 			/** No value came from the form, so delete all existing */
-			$this->statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
-			$this->statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-			$this->statement->execute();
+			$statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
+			$statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+			$statement->execute();
 		}
 
 	}

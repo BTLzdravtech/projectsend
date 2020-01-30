@@ -159,7 +159,7 @@ class BruteForceBlock {
 		
 		//attempt to delete all records
 		try{
-			$stmt = $db->query('DELETE from ' . TABLE_LOGON);
+			$stmt = $db->query('TRUNCATE TABLE ' . TABLE_LOGON);
 			return true;
 		} catch(PDOException $ex){
 			//return errors

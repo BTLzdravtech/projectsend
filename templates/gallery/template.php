@@ -119,37 +119,41 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 			?>
 					<ul class="photo_list">
 						<?php
-							foreach ($img_files as $this_file) {
-								$download_link = make_download_link($this_file);
-						?>
-								<li>
-									<h5><?php echo htmlentities($this_file['name']); ?></h5>
-									<?php
-										if ($this_file['expired'] == true) {
-									?>
-											<?php _e('File expired','cftp_template_gallery'); ?>
-									<?php
-										}
-										else {
-									?>
-										<div class="img_prev">
-                                            <a href="<?php echo $download_link; ?>" target="_blank">
-                                                <?php $thumbnail = make_thumbnail( UPLOADED_FILES_DIR.DS.$this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT ); ?>
-												<img src="<?php echo $thumbnail['thumbnail']['url']; ?>" class="thumbnail" alt="<?php echo htmlentities($this_file['name']); ?>" />
-											</a>
-										</div>
-										<div class="img_data">
-											<div class="download_link">
-												<a href="<?php echo $download_link; ?>" target="_blank">
-													<i class="fa fa-cloud-download" aria-hidden="true"></i> <?php _e('Download original','cftp_template_gallery'); ?>
-												</a>
-											</div>
-										</div>
-									<?php
-										}
-									?>
-								</li>
-						<?php
+                            if (isset($img_files)) {
+                                foreach ($img_files as $this_file) {
+                                    $download_link = make_download_link($this_file);
+                        ?>
+                                    <li>
+                                        <h5><?php echo htmlentities($this_file['name']); ?></h5>
+                                        <?php
+                                        if ($this_file['expired'] == true) {
+                                            ?>
+                                            <?php _e('File expired', 'cftp_template_gallery'); ?>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <div class="img_prev">
+                                                <a href="<?php echo $download_link; ?>" target="_blank">
+                                                    <?php $thumbnail = make_thumbnail(UPLOADED_FILES_DIR . DS . $this_file['url'], null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT); ?>
+                                                    <img src="<?php echo $thumbnail['thumbnail']['url']; ?>"
+                                                         class="thumbnail"
+                                                         alt="<?php echo htmlentities($this_file['name']); ?>"/>
+                                                </a>
+                                            </div>
+                                            <div class="img_data">
+                                                <div class="download_link">
+                                                    <a href="<?php echo $download_link; ?>" target="_blank">
+                                                        <i class="fa fa-cloud-download"
+                                                           aria-hidden="true"></i> <?php _e('Download original', 'cftp_template_gallery'); ?>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </li>
+                        <?php
+                                }
 							}
 						?>
 					</ul>
@@ -163,7 +167,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '215');
 
 <script type="text/javascript">
 	$(document).ready(function(e) {
-		$('.btn_nav').click(function(e) {
+		$('.btn_nav').on('click', function(e) {
 			e.preventDefault();
 			$('#wrapper').toggleClass('show-nav');
 			$('#wrapper').toggleClass('open-nav');

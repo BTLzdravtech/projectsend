@@ -4,7 +4,7 @@ var dataExtraction = function(node) {
 	} else {
 		return node.innerHTML;
 	}
-}
+};
 
 /**
  * CLOSE THE ZIP DOWNLOAD MODAL
@@ -13,7 +13,7 @@ var dataExtraction = function(node) {
  */
 var downloadTimeout;
 var check_download_cookie = function() {
-    if (Cookies.get("download_started") == 1) {
+    if (Cookies.get("download_started") === 1) {
         Cookies.set("download_started", "false", { expires: 100 });
         remove_modal();
     } else {
@@ -24,7 +24,7 @@ var check_download_cookie = function() {
 // Close the log CSV download modal
 var logdownloadTimeout;
 var check_log_download_cookie = function() {
-    if (Cookies.get("log_download_started") == 1) {
+    if (Cookies.get("log_download_started") === 1) {
         Cookies.set("log_download_started", "false", { expires: 100 });
         remove_modal();
     } else {

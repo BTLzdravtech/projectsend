@@ -32,6 +32,7 @@ if ( DEBUG === true ) {
 
 /** Initiate the database connection */
 if ( defined('DB_NAME') ) {
+    /** @var PDO $dbh */
 	global $dbh;
 	try {
 		switch ( DB_DRIVER ) {

@@ -11,6 +11,9 @@
  */
 require_once '../bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 if (!check_for_admin()) {
     return;
 }

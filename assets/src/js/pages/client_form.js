@@ -25,7 +25,7 @@
                         required: {
                             param: true,
                             depends: function(element) {
-                                return form_type != 'new_client_self';
+                                return form_type !== 'new_client_self';
                             }
                         },
                         digits: true
@@ -34,10 +34,10 @@
                         required: {
                             param: true,
                             depends: function(element) {
-                                if (form_type == 'new_client' || form_type == 'new_client_self') {
+                                if (form_type === 'new_client' || form_type === 'new_client_self') {
                                     return true;
                                 }
-                                if (form_type == 'edit_client' || form_type == 'edit_client_self') {
+                                if (form_type === 'edit_client' || form_type === 'edit_client_self') {
                                     if ($.trim($("#password").val()).length > 0) {
                                         return true;
                                     }

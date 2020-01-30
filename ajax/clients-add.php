@@ -12,11 +12,11 @@ use ProjectSend\Classes\Users;
 $allowed_levels = array(9,8);
 require_once '../bootstrap.php';
 
+global $dbh;
+
 $active_nav = 'clients';
 
 $page_id = 'client_form';
-
-global $dbh;
 
 $new_client = new Users($dbh);
 

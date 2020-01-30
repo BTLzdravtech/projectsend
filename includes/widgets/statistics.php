@@ -33,6 +33,8 @@
 								'action'	=> 37,
 							),
 				);
+
+	$all_actions = array();
 	foreach ( $legends as $index => $info ) {
 		$colors[] = '"' . $info['color'] . '"';
 		// Downloads are queried separately
@@ -84,6 +86,7 @@
 		$month = date("m");
 		$day = date("d");
 		$year = date("Y");
+        $gen_30_days = array();
 		for($i=0; $i<=$max_stats_days-1; $i++){
 			//$gen_30_days[] = date(TIMEFORMAT,mktime(0,0,0,$month,($day-$i),$year));
 			$gen_30_days[] = date('d/m/Y',mktime(0,0,0,$month,($day-$i),$year));
@@ -120,18 +123,21 @@
                                             GROUP BY statsDate
                                         ");
         }
-		$statement->execute( $params );
-		if ( $statement->rowCount() > 0 ) {
-			$statement->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $res = $statement->fetch() ) {
-				$res['statsDate'] = strtotime($res['statsDate']);
-				$actions_to_graph['d8'][$res['statsDate']] = $res['total'];
-			}
-		}
+        if (isset($statement)) {
+            $statement->execute($params);
+            if ($statement->rowCount() > 0) {
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                while ($res = $statement->fetch()) {
+                    $res['statsDate'] = strtotime($res['statsDate']);
+                    $actions_to_graph['d8'][$res['statsDate']] = $res['total'];
+                }
+            }
+        }
 
 		/**
 		 * Get other details from the actions log
 		 */
+
         if (CURRENT_USER_LEVEL == '9') {
             $params = array(
                 ':max_days'	=> $max_stats_days,
@@ -158,19 +164,22 @@
 									");
         }
 
-		$statement->execute( $params );
-		if ( $statement->rowCount() > 0 ) {
-			$statement->setFetchMode(PDO::FETCH_ASSOC);
-			while ( $res = $statement->fetch() ) {
-				$dkey = 'd'.$res['action'];
-				$res['statsDate'] = strtotime($res['statsDate']);
-				$actions_to_graph[$dkey][$res['statsDate']] = $res['total'];
-			}
-			$continue = true;
-		}
-		else {
-			$continue = false;
-		}
+        if (isset($statement)) {
+            $statement->execute($params);
+            if ($statement->rowCount() > 0) {
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                while ($res = $statement->fetch()) {
+                    $dkey = 'd' . $res['action'];
+                    $res['statsDate'] = strtotime($res['statsDate']);
+                    $actions_to_graph[$dkey][$res['statsDate']] = $res['total'];
+                }
+                $continue = true;
+            } else {
+                $continue = false;
+            }
+        } else {
+            $continue = false;
+        }
 	?>
 	<script type="text/javascript">
 		$(document).ready(function(e) {
@@ -234,7 +243,7 @@
 				$("#y").text(pos.y.toFixed(2));
 			
 					if (item) {
-						if (previousPoint != item.dataIndex) {
+						if (previousPoint !== item.dataIndex) {
 							previousPoint = item.dataIndex;
 							
 							$("#stats_tooltip").remove();

@@ -21,6 +21,9 @@
 </html>
 <?php
 	if ( DEBUG === true ) {
+        /** @var PDO $dbh */
+        global $dbh;
+
 		echo "\n" . '<!-- DEBUG INFORMATION' . "\n";
 		// Print the total count of queries made by PDO
 		_e('Executed queries','cftp_admin'); echo ': ' . $dbh->GetCount();

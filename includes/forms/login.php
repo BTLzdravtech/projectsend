@@ -6,6 +6,9 @@
  * @subpackage	Files
  *
  */
+
+global $auth_url;
+
 ?>
 <form action="process.php?do=login" name="login_admin" role="form" id="login_form" method="post">
     <input type="hidden" name="do" value="login">

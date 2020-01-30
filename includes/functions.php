@@ -48,6 +48,7 @@ function generateUsername($string, $i = 1) {
 }
 
 function isNotUniqueUsername($string) {
+    /** @var PDO $dbh */
     global $dbh;
     $statement = $dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
     $statement->execute(array(':user' => $string));
@@ -173,6 +174,8 @@ function get_available_languages()
     /** Load the language and locales names list */
     require_once ROOT_DIR . '/includes/language.locales.names.php';
 
+    global $locales_names;
+
 	$langs = array();
 
 	$mo_files = glob(ROOT_DIR.'/lang/*.mo');
@@ -249,10 +252,12 @@ function tableExists($table)
 {
 	global $dbh;
 
+    $result = false;
+
 	if ( !empty ( $dbh ) ) {
-	   try {
-	      $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
-			$result->execute();
+        try {
+            $result = $dbh->prepare("SELECT 1 FROM $table LIMIT 1");
+            $result->execute();
 	   } catch (Exception $e) {
 	      return false;
 	   }
@@ -471,6 +476,8 @@ function get_user_by($user_type, $field, $value)
         
         $result = $statement->fetchColumn();
         if ( $result ) {
+            $user_data = null;
+
             switch ( $user_type ) {
                 case 'user':
                     $user_data = get_user_by_id($result);
@@ -1186,8 +1193,7 @@ function make_thumbnail( $file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, 
 
             $image->$method($width, $height);
 
-            $image
-                ->toFile($thumbnail['thumbnail']['location'], $mime_type, $quality);
+            $image->toFile($thumbnail['thumbnail']['location'], $mime_type ?? null, $quality);
 
         } catch(Exception $err) {
             $thumbnail['error'] = $err->getMessage();
@@ -1256,7 +1262,8 @@ function get_branding_layout($return_thumbnail = false)
 	else {
 		$branding_image = ASSETS_IMG_URL . DEFAULT_LOGO_FILENAME;
     }
-    
+
+    $replace = "";
     if ($branding['type'] == 'raster') {
         $replace = '<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />';
     }
@@ -1531,6 +1538,9 @@ function render_log_action($params)
 	$affected_file_name = $params['affected_file_name'];
 	$affected_account = $params['affected_account'];
 	$affected_account_name = html_output($params['affected_account_name']);
+
+    $action_ico = "";
+    $action_text = "";
 
 	switch ($action) {
 		case 0:

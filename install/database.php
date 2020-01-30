@@ -6,6 +6,16 @@
  * @package		ProjectSend
  * @subpackage	Install
  */
+
+global $base_uri;
+global $install_title;
+global $admin_email;
+global $this_install_title;
+
+global $admin_username;
+global $admin_pass;
+global $admin_name;
+
 if (defined('TRY_INSTALL')) {
 	$timestamp = time();
 	$current_version = substr(CURRENT_VERSION, 1);

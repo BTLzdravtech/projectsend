@@ -13,6 +13,8 @@ use ProjectSend\Classes\Users;
 $allowed_levels = array(9,8,0);
 require_once 'bootstrap.php';
 
+global $dbh;
+
 $active_nav = 'clients';
 
 /** Create the object */

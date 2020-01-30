@@ -13,8 +13,14 @@ namespace ProjectSend\Classes;
 
 class Validation
 {
+    /** @var PDO $dbh */
     private $dbh;
     private $errors = [];
+
+    private $allowed_upper;
+    private $allowed_lower;
+    private $allowed_numbers;
+    private $allowed_symbols;
 
 	public function __construct() {
 		global $dbh;
@@ -160,14 +166,14 @@ class Validation
 	 */
 	private function is_user_exists($field, $err)
 	{
-		$this->statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
-		$this->statement->execute(
+		$statement = $this->dbh->prepare( "SELECT * FROM " . TABLE_USERS . " WHERE user = :user" );
+		$statement->execute(
 							array(
 								':user'	=> $field,
 							)
 						);
 
-		if ( $this->statement->rowCount() > 0 ) {
+		if ( $statement->rowCount() > 0 ) {
 			$this->addError($err);
 		}
 	}
@@ -178,8 +184,8 @@ class Validation
 	 */
 	private function is_email_exists($field, $err, $current_id)
 	{
-		$this->sql_users = "SELECT id, email FROM " . TABLE_USERS . " WHERE email = :email";
-		$this->params = array(
+		$sql_users = "SELECT id, email FROM " . TABLE_USERS . " WHERE email = :email";
+		$params = array(
 							':email'	=> $field
 						);
 		/**
@@ -188,14 +194,14 @@ class Validation
 		 * the owner of that e-mail address.
 		 */
 		if (!empty($current_id)) {
-			$this->sql_not_this	= " AND id != :id";
-			$this->sql_users	.= $this->sql_not_this;
-			$this->params[':id'] = $current_id;
+			$sql_not_this	= " AND id != :id";
+			$sql_users	.= $sql_not_this;
+			$params[':id'] = $current_id;
 		}
 
-		$this->statement = $this->dbh->prepare( $this->sql_users );
-		$this->statement->execute( $this->params );
-		if ( $this->statement->rowCount() > 0 ) {
+		$statement = $this->dbh->prepare( $sql_users );
+		$statement->execute( $params );
+		if ( $statement->rowCount() > 0 ) {
 			$this->addError($err);
 		}
 	}
@@ -267,24 +273,24 @@ class Validation
 	 */
 	function list_errors()
 	{
-        $this->validation_errors_title = __('The following errors were found','cftp_admin');
-        $this->before_error = '<div class="alert alert-danger alert-block">
+        $validation_errors_title = __('The following errors were found','cftp_admin');
+        $before_error = '<div class="alert alert-danger alert-block">
                             <a href="#" class="close" data-dismiss="alert">&times;</a>
-                            <p class="alert-title">'.$this->validation_errors_title.':</p>
+                            <p class="alert-title">'.$validation_errors_title.':</p>
                             <ol>';
-        $this->after_error = '</ol>
+        $after_error = '</ol>
                         </div>';
 
 		if (!empty($this->errors)) {
-            $this->return = $this->before_error;
+            $return = $before_error;
             foreach ($this->errors as $error) {
-                $this->return .= "<li>".$error."</li>";
+                $return .= "<li>".$error."</li>";
             }
-            $this->return .= $this->after_error;
+            $return .= $after_error;
 
             $this->errors = [];
             
-            return $this->return;
+            return $return;
 		}
 	}
 }

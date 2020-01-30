@@ -10,6 +10,8 @@
 /**
  * If options exists, call the method to set the constants.
  */
+
+/** @var PDO $dbh */
 global $dbh;
 
 try {

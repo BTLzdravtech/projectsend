@@ -175,6 +175,8 @@ function import_files_relations()
 	$statement->bindParam(':users', $users);
 	$statement->execute();
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    $found_users = array();
 	while( $row = $statement->fetch() ) {
 		$found_users[$row['user']] = $row['id'];
 	}

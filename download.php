@@ -11,6 +11,9 @@ use ProjectSend\Classes\ActionsLog;
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 $page_title = __('File information','cftp_admin');
 
 $dont_redirect_if_logged = 1;
@@ -35,6 +38,10 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 		$statement->bindParam(':token', $got_token);
 		$statement->bindParam(':file_id', $got_file_id, PDO::PARAM_INT);
 		$statement->execute();
+
+        $is_public = null;
+        $real_file_url = null;
+        $file_on_disk = null;
 
 		if ( $statement->rowCount() > 0 ){
 			$statement->setFetchMode(PDO::FETCH_ASSOC);

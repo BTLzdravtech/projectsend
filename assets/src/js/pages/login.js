@@ -40,7 +40,7 @@
                         success: function(response)
                         {
                             var json = jQuery.parseJSON(response);
-                            if ( json.status == 'success' ) {
+                            if ( json.status === 'success' ) {
                                 $('#submit').html('<i class="fa fa-check"></i><span class="sr-only"></span> '+button_redirecting_text+'...');
                                 $('#submit').removeClass('btn-primary').addClass('btn-success');
                                 setTimeout('window.location.href = "'+json.location+'"', 1000);

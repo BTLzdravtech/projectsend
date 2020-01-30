@@ -11,6 +11,8 @@
  */
 require_once 'bootstrap.php';
 
+global $dbh;
+
 $active_nav = 'files';
 
 $page_title = __('Upload files', 'cftp_admin');

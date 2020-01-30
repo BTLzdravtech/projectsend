@@ -5,12 +5,15 @@
 
 namespace ProjectSend\Classes;
 
+use Exception;
 use PDO;
 
 class Options
 {
-    public $options;
+    /** @var PDO $dbh */
     private $dbh;
+
+    public $options;
 
     function __construct()
     {
@@ -31,12 +34,12 @@ class Options
         }
 
 		try {
-			$this->statement = $this->dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = :option");
-            $this->statement->bindParam(':option', $option);
-            $this->statement->execute();
-            $this->results = $this->statement->fetch();
+			$statement = $this->dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = :option");
+            $statement->bindParam(':option', $option);
+            $statement->execute();
+            $results = $statement->fetch();
 
-            $value = $this->results['value'];
+            $value = $results['value'];
 
 			if ((!empty($value)) ) {
 				return $value;
@@ -57,12 +60,12 @@ class Options
 	{
 		$this->options = array();
 		try {
-			$this->query = $this->dbh->query("SELECT * FROM " . TABLE_OPTIONS);
-			$this->query->setFetchMode(PDO::FETCH_ASSOC);
+			$query = $this->dbh->query("SELECT * FROM " . TABLE_OPTIONS);
+			$query->setFetchMode(PDO::FETCH_ASSOC);
 
-			if ( $this->query->rowCount() > 0) {
-				while ( $this->row = $this->query->fetch() ) {
-					$this->options[$this->row['name']] = $this->row['value'];
+			if ( $query->rowCount() > 0) {
+				while ( $row = $query->fetch() ) {
+					$this->options[$row['name']] = $row['value'];
 				}
 			}
 
@@ -81,20 +84,20 @@ class Options
 		$this->options = $this->getOptions();
 
 		/** In case an option should not be set as a const */
-		$this->exceptions = [
+		$exceptions = [
 		];
 
 		if ( !empty( $this->options ) ) {
 			/**
 			 * Set a const for each value on the options table
 			 */
-			foreach ( $this->options as $this->name => $this->value ) {
-				if ( in_array( $this->name, $this->exceptions ) ) {
+			foreach ( $this->options as $name => $value ) {
+				if ( in_array( $name, $exceptions ) ) {
 					continue;
                 }
                 
-				$const = strtoupper( $this->name );
-				define( $const, $this->value );
+				$const = strtoupper( $name );
+				define( $const, $value );
 			}
 
 			/**

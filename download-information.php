@@ -10,6 +10,9 @@ use ProjectSend\Classes\TableGenerate;
 $allowed_levels = array(9,8,7);
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 $active_nav = 'files';
 
 $page_title = __('Download information','cftp_admin');
@@ -41,8 +44,7 @@ if ($page_status === 1) {
 	/**
 	 * Make a list of users names
 	 */
- 	global $dbh;
-	$names = $dbh->prepare("SELECT id, name FROM " . TABLE_USERS);
+ 	$names = $dbh->prepare("SELECT id, name FROM " . TABLE_USERS);
 	$names->execute();
 	if ( $names->rowCount() > 0 ) {
 		$users_names = array();

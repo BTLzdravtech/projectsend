@@ -6,6 +6,9 @@
  * @package		ProjectSend
  * @subpackage	Updates
  */
+
+/** @var PDO $dbh */
+global $dbh;
 global $updates_made;
 
 /** Remove "r" from version */
@@ -13,6 +16,9 @@ $current_version = substr(CURRENT_VERSION, 1);
 
 $statement = $dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = 'last_update'");
 $statement->execute();
+
+$last_update = -1;
+
 if ( $statement->rowCount() > 0 ) {
 	$statement->setFetchMode(PDO::FETCH_ASSOC);
 	while( $row = $statement->fetch() ) {
@@ -20,7 +26,7 @@ if ( $statement->rowCount() > 0 ) {
 	}
 }
 
-if ($last_update < $current_version || !isset($last_update)) {
+if ($last_update < $current_version) {
 	/**
 	 * r431 updates
 	 * A new database table was added.

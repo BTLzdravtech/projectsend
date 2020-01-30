@@ -50,7 +50,7 @@
             });
             */
 
-            $('.copy-all').click(function(event) {
+            $('.copy-all').on('click', function(event) {
                 bootbox.confirm({
                     message: json_strings.translations.upload_form.copy_selection,
                     buttons: {
@@ -66,7 +66,7 @@
                             var type = $(event.target).data('type');
                             var selector = $(event.target).closest('.file_data').find('.select-'+ type);
 
-                            var selected = new Array();
+                            var selected = [];
                             $(selector).find('option:selected').each(function() {
                                 selected.push($(this).val());
                             });
@@ -91,7 +91,7 @@
             // Autoclick the continue button
             //$('#upload-continue').click();
 
-            $('.create-client').click(function(event) {
+            $('.create-client').on('click', function(event) {
                 event.preventDefault();
                 var trigger = event.target;
                 var type = $(event.target).data('type');
@@ -208,7 +208,7 @@
                 });
             });
 
-            $('.create-group').click(function(event) {
+            $('.create-group').on('click', function(event) {
                 event.preventDefault();
                 var trigger = event.target;
                 var type = $(event.target).data('type');
@@ -234,7 +234,9 @@
                         if ( typeof CKEDITOR !== "undefined" ) {
                             CKEDITOR.replace('description');
                             for (var i in CKEDITOR.instances) {
-                                CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
+                                (function(i) {
+                                    CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
+                                })(i);
                             }
                         }
                         $(this).find('form').submit(function(event) {

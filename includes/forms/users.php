@@ -6,6 +6,10 @@
  * @subpackage	Users
  *
  */
+
+global $user_form_type;
+global $user_id;
+
 switch ($user_form_type) {
 	case 'new_user':
 		$submit_value = __('Add user','cftp_admin');

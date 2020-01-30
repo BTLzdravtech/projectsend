@@ -39,7 +39,7 @@
             }
 
             // Statistics
-            $('.stats_days').click(function(e) {
+            $('.stats_days').on('click', function(e) {
                 e.preventDefault();
 
                 if ($(this).hasClass('btn-inverse')) {
@@ -54,7 +54,7 @@
             });
 
             // Action log
-            $('.log_action').click(function(e) {
+            $('.log_action').on('click', function(e) {
                 e.preventDefault();
 
                 if ($(this).hasClass('btn-inverse')) {

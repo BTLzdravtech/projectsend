@@ -4,7 +4,7 @@
     admin.pages.emailTemplates = function () {
 
         $(document).ready(function(){
-            $('.load_default').click(function(e) {
+            $('.load_default').on('click', function(e) {
                 e.preventDefault();
 
                 var file = jQuery(this).data('file');
@@ -46,7 +46,7 @@
                 });
             });
     
-            $('.preview').click(function(e) {
+            $('.preview').on('click', function(e) {
                 e.preventDefault();
                 var type	= jQuery(this).data('preview');
                 var url		= json_strings.uri.base+ 'email-preview.php?t=' + type;

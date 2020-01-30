@@ -14,6 +14,9 @@ define( 'IS_INSTALL', true );
 define( 'ABS_PARENT', dirname( dirname(__FILE__) ) );
 require_once ABS_PARENT . '/bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 /** Version requirements check */
 $version_php	= phpversion();
 $version_mysql	= $dbh->query('SELECT version()')->fetchColumn();
@@ -73,7 +76,6 @@ function try_query($queries)
 			$error_str .= $e . '<br>';
 		}
 	}
-	return $statement;
 }
 
 /** Define the installation text strings */
@@ -151,6 +153,7 @@ include_once '../header-unlogged.php';
 								/**
 								 * Try to execute each query individually
 								 */
+								global $install_queries;
 								try_query($install_queries);
 								/**
 								 * Continue based on the value returned from the above function
@@ -211,11 +214,13 @@ include_once '../header-unlogged.php';
 									die();
 								break;
 								case 'err':
-									$msg = __('There seems to be an error. Please try again.','cftp_admin');
-									$msg .= '<p>';
-									$msg .= $error_str;
-									$msg .= '</p>';
-									echo system_message('danger',$msg);
+								    if (isset($error_str)) {
+                                        $msg = __('There seems to be an error. Please try again.', 'cftp_admin');
+                                        $msg .= '<p>';
+                                        $msg .= $error_str;
+                                        $msg .= '</p>';
+                                        echo system_message('danger', $msg);
+                                    }
 								break;
 							}
 						}

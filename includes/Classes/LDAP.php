@@ -41,36 +41,36 @@ class LDAP
         }
         $attributes['objectGUID'][0] = bin2hex($attributes['objectGUID'][0]);
 
-        $this->query = "UPDATE " . TABLE_USERS . " SET
+        $query = "UPDATE " . TABLE_USERS . " SET
                                         user = :user,
                                         name = :name,
 										email = :email
 										";
 
-        $this->query .= " WHERE objectguid = :objectguid";
+        $query .= " WHERE objectguid = :objectguid";
 
-        $this->statement = $this->dbh->prepare($this->query);
-        $this->statement->bindParam(':user', $attributes['sAMAccountName'][0]);
-        $this->statement->bindParam(':name', $attributes['displayName'][0]);
-        $this->statement->bindParam(':email', $attributes['mail'][0]);
-        $this->statement->bindParam(':objectguid', $attributes['objectGUID'][0]);
+        $statement = $this->dbh->prepare($query);
+        $statement->bindParam(':user', $attributes['sAMAccountName'][0]);
+        $statement->bindParam(':name', $attributes['displayName'][0]);
+        $statement->bindParam(':email', $attributes['mail'][0]);
+        $statement->bindParam(':objectguid', $attributes['objectGUID'][0]);
 
-        $this->statement->execute();
+        $statement->execute();
 
-        $this->statement = $this->dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE objectguid = :objectguid");
-        $this->statement->bindParam(':objectguid', $attributes['objectGUID'][0]);
-        $this->statement->execute();
-        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
-        return $this->statement->fetch()['id'];
+        $statement = $this->dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE objectguid = :objectguid");
+        $statement->bindParam(':objectguid', $attributes['objectGUID'][0]);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        return $statement->fetch()['id'];
     }
 
     public function check_by_guid($objectguid) {
-        $this->query = "SELECT 1 FROM " . TABLE_USERS . " WHERE objectguid = :objectguid LIMIT 1";
-        $this->statement = $this->dbh->prepare($this->query);
-        $this->statement->bindParam(':objectguid', $objectguid);
+        $query = "SELECT 1 FROM " . TABLE_USERS . " WHERE objectguid = :objectguid LIMIT 1";
+        $statement = $this->dbh->prepare($query);
+        $statement->bindParam(':objectguid', $objectguid);
 
-        $this->statement->execute();
+        $statement->execute();
 
-        return $this->statement->rowCount() > 0;
+        return $statement->rowCount() > 0;
     }
 }

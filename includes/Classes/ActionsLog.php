@@ -37,7 +37,7 @@ class ActionsLog
    
     public function getActivitiesReferences()
     {
-        $this->activities_references = array(
+        $activities_references = array(
             0	=> __('ProjecSend has been installed','cftp_admin'),
             1	=> __('Account logs in through the form','cftp_admin'),
             2	=> __('A user creates a new user account','cftp_admin'),
@@ -82,7 +82,7 @@ class ActionsLog
             41  => __("A client was transferred",'cftp_admin'),
         );
 
-        return $this->activities_references;
+        return $activities_references;
     }
 
 	/**
@@ -90,10 +90,7 @@ class ActionsLog
 	 */
 	function addEntry($arguments)
 	{
-		global $dbh;
-		$this->state = array();
-
-		/** Define the account information */
+        /** Define the account information */
 		$this->action = $arguments['action'];
 		$this->owner_id = $arguments['owner_id'];
 		$this->owner_user = (!empty($arguments['owner_user'])) ? $arguments['owner_user'] : CURRENT_USER_NAME;
@@ -137,7 +134,7 @@ class ActionsLog
 
 		$lq .= ")";
 
-		$this->sql_query = $dbh->prepare( $lq );
-		$this->sql_query->execute( $params );
+		$sql_query = $this->dbh->prepare( $lq );
+		$sql_query->execute( $params );
 	}
 }

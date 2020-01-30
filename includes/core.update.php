@@ -14,6 +14,10 @@
 use ProjectSend\Classes\ActionsLog;
 
 $allowed_update = array(9,8,7);
+
+/** @var PDO $dbh */
+global $dbh;
+
 if (current_role_in($allowed_update)) {
     $update_data = get_latest_version_data();
     $update_data = json_decode($update_data);
@@ -30,6 +34,9 @@ if (current_role_in($allowed_update)) {
 	 */
 	$statement = $dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = 'last_update'");
 	$statement->execute();
+
+    $last_update = -1;
+
 	if ( $statement->rowCount() == 0 ) {
 		$dbh->query( "INSERT INTO " . TABLE_OPTIONS . " (name, value) VALUES ('last_update', '264')" );
 		$updates_made++;
@@ -41,7 +48,7 @@ if (current_role_in($allowed_update)) {
 		}
 	}
 	
-	if ($last_update < $update_data->local_version || !isset($last_update)) {
+	if ($last_update < $update_data->local_version) {
 
 		/**
 		 * r92 updates
@@ -109,16 +116,18 @@ if (current_role_in($allowed_update)) {
 			while ( $row = $statement->fetch() ) {
 				$set_admin_email = $row['email'];
 			}
-		
-			$new_database_values = array(
-											'admin_email_address' => $set_admin_email
-										);
-			
-			foreach($new_database_values as $row => $value) {
-				if ( add_option_if_not_exists($row, $value) ) {
-					$updates_made++;
-				}
-			}
+
+			if (isset($set_admin_email)) {
+                $new_database_values = array(
+                    'admin_email_address' => $set_admin_email
+                );
+
+                foreach ($new_database_values as $row => $value) {
+                    if (add_option_if_not_exists($row, $value)) {
+                        $updates_made++;
+                    }
+                }
+            }
 		}
 
 		/**

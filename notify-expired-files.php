@@ -3,7 +3,9 @@ use ProjectSend\Classes\Emails;
 
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
 global $dbh;
+
 $file_data = array();
 $mail_by_user = array();
 

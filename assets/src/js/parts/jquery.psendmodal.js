@@ -23,20 +23,20 @@ $.fn.psendmodal = function() {
 		$('.modal_overlay').stop(true, true).fadeOut(500, function() { $(this).remove(); });
 		$('.modal_psend').stop(true, true).fadeOut(500, function() { $(this).remove(); });
 		return false;
-	}
+	};
 
-	$(".modal_close").click(function(e) {
+	$(".modal_close").on('click', function(e) {
 		e.preventDefault();
 		remove_modal();
 	});
 
-	$(".modal_overlay").click(function(e) {
+	$(".modal_overlay").on('click', function(e) {
 		e.preventDefault();
 		remove_modal();
 	});
 
 	$(document).keyup(function(e) {
-		if (e.keyCode == 27) { // Esc
+		if (e.keyCode === 27) { // Esc
 			remove_modal();
 		}
 	});

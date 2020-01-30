@@ -7,7 +7,7 @@
 
             // Send a keep alive action every 1 minute
             setInterval(function(){
-                var timestamp = new Date().getTime()
+                var timestamp = new Date().getTime();
                 $.ajax({
                     type:	'GET',
                     cache:	false,
@@ -39,7 +39,7 @@
 
                     uploader.bind('FileUploaded', function (up, file, info) {
                         var obj = JSON.parse(info.response);
-                        var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />'
+                        var new_file_field = '<input type="hidden" name="finished_files[]" value="'+obj.NewFileName+'" />';
                         $('form').append(new_file_field);
                     });
 

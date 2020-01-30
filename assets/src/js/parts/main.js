@@ -17,7 +17,7 @@
                 $(".chosen-container").each(function() {
                     $(this).attr('style', 'width: 100%');
                 });
-            }
+            };
             
             window.prepare_sidebar = function() {
                 var window_width = jQuery(window).width();
@@ -29,14 +29,14 @@
                         $('body').addClass('menu_contracted');
                     }
                 }
-            }
+            };
 
             /** Main side menu */
             prepare_sidebar();
 
             resizeChosen();
 
-            $('.main_menu > li.has_dropdown .nav_top_level').click(function(e) {
+            $('.main_menu > li.has_dropdown .nav_top_level').on('click', function(e) {
                 e.preventDefault();
 
                 var parent = $(this).parents('.has_dropdown');
@@ -54,7 +54,7 @@
                 }
             });
 
-            $('.toggle_main_menu').click(function(e) {
+            $('.toggle_main_menu').on('click', function(e) {
                 e.preventDefault();
 
                 var window_width = jQuery(window).width();
@@ -103,7 +103,7 @@
 
 
             /** Common for all tables */
-            $("#select_all").click(function(){
+            $("#select_all").on('click', function(){
                 var status = $(this).prop("checked");
                 /** Uncheck all first in case you used pagination */
                 $("tr td input[type=checkbox].batch_checkbox").prop("checked",false);
@@ -169,7 +169,7 @@
 
 
             /** Misc */
-            $('button').click(function() {
+            $('button').on('click', function() {
                 $(this).blur();
             });
 
@@ -182,11 +182,11 @@
                 var id		= $(this).data('id');
                 var token	= $(this).data('token');
 
-                if ( type == 'group' ) {
+                if ( type === 'group' ) {
                     var link_base = json_strings.uri.public_group + '?';
                     var note_text = json_strings.translations.public_group_note;
                 }
-                else if ( type == 'file' ) {
+                else if ( type === 'file' ) {
                     var link_base = json_strings.uri.public_download + '?';
                     var note_text = json_strings.translations.public_file_note;
                 }
@@ -302,7 +302,9 @@
             if ( typeof CKEDITOR !== "undefined" ) {
                 CKEDITOR.replaceAll( '.ckeditor' );
                 for (var i in CKEDITOR.instances) {
-                    CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
+                    (function(i) {
+                        CKEDITOR.instances[i].on('change', function() { CKEDITOR.instances[i].updateElement() });
+                    })(i);
                 }
             }
 

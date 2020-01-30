@@ -7,6 +7,13 @@
  *
  */
 
+/** @var PDO $dbh */
+global $dbh;
+
+global $groups_form_type;
+global $group_id;
+global $group_arguments;
+
 switch ($groups_form_type) {
 	case 'new_group':
 		$submit_value = __('Create group','cftp_admin');
@@ -41,7 +48,7 @@ switch ($groups_form_type) {
 		<div class="col-sm-8">
 			<select multiple="multiple" id="members" class="form-control chosen-select" name="members[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 				<?php
-					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name ASC");
+					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level = '0' ORDER BY name");
 					$sql->execute();
 					$sql->setFetchMode(PDO::FETCH_ASSOC);
 					while ( $row = $sql->fetch() ) {

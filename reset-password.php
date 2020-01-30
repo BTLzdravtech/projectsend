@@ -12,6 +12,8 @@ use ProjectSend\Classes\Validation;
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
+global $dbh;
+
 $page_title = __('Lost password','cftp_admin');
 
 $page_id = 'reset_password_enter_email';
@@ -156,11 +158,13 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 							if ($sql_query) {
 								$state['reset'] = 1;
 
+								$id = $token_info['id'] ?? -1;
+
 								$sql_query = $dbh->prepare("UPDATE " . TABLE_PASSWORD_RESET . " SET 
 															used = '1' 
 															WHERE id = :id"
 													);
-								$sql_query->bindParam(':id', $token_info['id'], PDO::PARAM_INT);
+								$sql_query->bindParam(':id', $id, PDO::PARAM_INT);
 								$sql_query->execute();							
 
 								$show_form = 'none';
@@ -224,7 +228,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 				/**
 				 * Show the ok or error message for the email.
 				 */
-				if (isset($state['email'])) {
+				if (isset($state) && isset($state['email'])) {
 					switch ($state['email']) {
 						case 1:
 							$msg = __('An e-mail with further instructions has been sent. Please check your inbox to proceed.','cftp_admin');
@@ -241,7 +245,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 				/**
 				 * Show the ok or error message for the password reset.
 				 */
-				if (isset($state['reset'])) {
+				if (isset($state) && isset($state['reset'])) {
 					switch ($state['reset']) {
 						case 1:
 							$msg = __('Your new password has been set. You can now log in using it.','cftp_admin');

@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUndefinedConstantInspection */
+
 /**
  * Class that handles all the actions and functions that can be applied to
  * users accounts.
@@ -155,41 +156,41 @@ class Users
     {
         $this->id = $id;
 
-        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
-        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
-        $this->statement->execute();
-        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+        $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
 
-        if ($this->statement->rowCount() == 0) {
+        if ($statement->rowCount() == 0) {
             return false;
         }
     
-        while ($this->row = $this->statement->fetch() ) {
-            $this->name = html_output($this->row['name']);
-            $this->email = html_output($this->row['email']);
-            $this->username = html_output($this->row['user']);
-            $this->password = html_output($this->row['password']);
-            $this->role = html_output($this->row['level']);
-            $this->active = html_output($this->row['active']);
-            $this->max_file_size = html_output($this->row['max_file_size']);
-            $this->created_date = html_output($this->row['timestamp']);
-            $this->owner_id = html_output($this->row['owner_id']);
-            $this->created_by = html_output($this->row['created_by']);
-            $this->objectguid = html_output($this->row['objectguid']);
-            $this->google_user = html_output($this->row['google_user']);
+        while ($row = $statement->fetch() ) {
+            $this->name = html_output($row['name']);
+            $this->email = html_output($row['email']);
+            $this->username = html_output($row['user']);
+            $this->password = html_output($row['password']);
+            $this->role = html_output($row['level']);
+            $this->active = html_output($row['active']);
+            $this->max_file_size = html_output($row['max_file_size']);
+            $this->created_date = html_output($row['timestamp']);
+            $this->owner_id = html_output($row['owner_id']);
+            $this->created_by = html_output($row['created_by']);
+            $this->objectguid = html_output($row['objectguid']);
+            $this->google_user = html_output($row['google_user']);
 
             // Specific for clients
-            $this->notify_upload = html_output($this->row['notify']);
+            $this->notify_upload = html_output($row['notify']);
 
             // Files
-            $this->statement = $this->dbh->prepare("SELECT DISTINCT id FROM " . TABLE_FILES . " WHERE uploader = :username");
-            $this->statement->bindParam(':username', $this->username);
-            $this->statement->execute();
+            $statement = $this->dbh->prepare("SELECT DISTINCT id FROM " . TABLE_FILES . " WHERE uploader = :username");
+            $statement->bindParam(':username', $this->username);
+            $statement->execute();
 
-            if ( $this->statement->rowCount() > 0) {
-                $this->statement->setFetchMode(PDO::FETCH_ASSOC);
-                while ($this->file = $this->statement->fetch() ) {
-                    $this->files[] = $this->file['id'];
+            if ( $statement->rowCount() > 0) {
+                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                while ($file = $statement->fetch() ) {
+                    $this->files[] = $file['id'];
                 }
             }
     
@@ -259,7 +260,7 @@ class Users
         $validation = new \ProjectSend\Classes\Validation;
 
 		global $json_strings;
-		$this->state = array();
+		$state = array();
 
 		/**
 		 * These validations are done both when creating a new user and
@@ -282,7 +283,7 @@ class Users
 			$validation->validate('length',$this->username,$json_strings['validation']['length_user'],MIN_USER_CHARS,MAX_USER_CHARS);
 
 			if (!$this->validation_type == 'new_google_user')
-			    $this->validate_password = true;
+			    $validate_password = true;
 		}
 		/**
 		 * Validations for USER EDITING only.
@@ -292,7 +293,7 @@ class Users
 			 * Changing password is optional.
 			 */
 			if(!empty($this->password)) {
-				$this->validate_password = true;
+				$validate_password = true;
 			}
 			/**
 			 * Check if the email is currently assigned to this users's id.
@@ -302,7 +303,7 @@ class Users
 		}
 
 		/** Password checks */
-		if (isset($this->validate_password) && $this->validate_password === true) {
+		if (isset($validate_password) && $validate_password === true) {
 			$validation->validate('completed',$this->password,$json_strings['validation']['no_pass']);
 			$validation->validate('password',$this->password,$json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']));
 			$validation->validate('pass_rules',$this->password,$json_strings['validation']['rules_pass']);
@@ -347,15 +348,15 @@ class Users
 	 */
     public function create()
 	{
-		$this->state = array();
+		$state = array();
 
 		if (isset($_SESSION['google_user']) || (LDAP_SIGNIN_ENABLED && $this->objectguid != null)) {
-            $this->password_hashed = null;
+            $password_hashed = null;
         } else {
-            $this->password_hashed = self::hashPassword($this->password);
+            $password_hashed = self::hashPassword($this->password);
         }
 
-		if (strlen($this->password_hashed) >= 20 || isset($_SESSION['google_user']) || (LDAP_SIGNIN_ENABLED && $this->objectguid != null)) {
+		if (strlen($password_hashed) >= 20 || isset($_SESSION['google_user']) || (LDAP_SIGNIN_ENABLED && $this->objectguid != null)) {
 
             /** Who is creating the client? */
 		    if (defined('CURRENT_USER_ID')) {
@@ -366,36 +367,36 @@ class Users
             }
 
 			/** Insert the client information into the database */
-			$this->timestamp = time();
-			$this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
+			$timestamp = time();
+			$statement = $this->dbh->prepare("INSERT INTO " . TABLE_USERS . " (
                     name, user, password, level, email, notify, owner_id, created_by, active, account_requested, max_file_size, objectguid, google_user
                 )
 			    VALUES (
                     :name, :username, :password, :role, :email, :notify_upload, :owner_id, :created_by, :active, :request, :max_file_size , :objectguid, :google_user
                 )"
             );
-			$this->statement->bindParam(':name', $this->name);
-			$this->statement->bindParam(':username', $this->username);
-            $this->statement->bindParam(':password', $this->password_hashed);
-            $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
-			$this->statement->bindParam(':email', $this->email);
-			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
-            $this->statement->bindParam(':owner_id', $this->owner_id);
-			$this->statement->bindParam(':created_by', $this->created_by);
-			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
-			$this->statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
-			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
-            $this->statement->bindParam(':objectguid', $this->objectguid);
-            $this->statement->bindParam(':google_user', $this->google_user, PDO::PARAM_INT);
+			$statement->bindParam(':name', $this->name);
+			$statement->bindParam(':username', $this->username);
+            $statement->bindParam(':password', $password_hashed);
+            $statement->bindParam(':role', $this->role, PDO::PARAM_INT);
+			$statement->bindParam(':email', $this->email);
+			$statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
+            $statement->bindParam(':owner_id', $this->owner_id);
+			$statement->bindParam(':created_by', $this->created_by);
+			$statement->bindParam(':active', $this->active, PDO::PARAM_INT);
+			$statement->bindParam(':request', $this->account_request, PDO::PARAM_INT);
+			$statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
+            $statement->bindParam(':objectguid', $this->objectguid);
+            $statement->bindParam(':google_user', $this->google_user, PDO::PARAM_INT);
 
-			$this->statement->execute();
+			$statement->execute();
 
-			if ($this->statement) {
+			if ($statement) {
                 $this->id = $this->dbh->lastInsertId();
-                $this->state['id'] = $this->id;
-                $this->state['name'] = $this->name;
+                $state['id'] = $this->id;
+                $state['name'] = $this->name;
 
-                $this->state['query'] = 1;
+                $state['query'] = 1;
 
                 if (!defined('CURRENT_USER_ID') && !defined('CURRENT_USER_USERNAME')) {
                     $statement = $this->dbh->prepare( "UPDATE " . TABLE_USERS . " SET owner_id = :owner_id, created_by = :created_by WHERE id = :id" );
@@ -411,6 +412,8 @@ class Users
                     'affected_account_name' => $this->name
                 ]);
 
+                $email_type = "";
+
                 switch ($this->role) {
                     case 0:
                         $email_type = "new_client";
@@ -423,36 +426,36 @@ class Users
                 }
                 
 				/** Send account data by email */
-				$this->notify_user = new Emails;
-				$this->email_arguments = array(
+				$notify_user = new Emails;
+				$email_arguments = array(
 												'type'		=> $email_type,
 												'address'	=> $this->email,
 												'username'	=> $this->username,
 												'password'	=> $this->password
 											);
 				if ($this->notify_account == 1) {
-					$this->notify_send = $this->notify_user->send($this->email_arguments);
+					$notify_send = $notify_user->send($email_arguments);
 
-					if ($this->notify_send == 1){
-						$this->state['email'] = 1;
+					if ($notify_send == 1){
+						$state['email'] = 1;
 					}
 					else {
-						$this->state['email'] = 0;
+						$state['email'] = 0;
 					}
 				}
 				else {
-					$this->state['email'] = 2;
+					$state['email'] = 2;
 				}
 			}
 			else {
-				$this->state['query'] = 0;
+				$state['query'] = 0;
 			}
 		}
 		else {
-			$this->state['hash'] = 0;
+			$state['hash'] = 0;
 		}
 
-		return $this->state;
+		return $state;
 	}
 
 	/**
@@ -464,16 +467,16 @@ class Users
             return false;
         }
 
-        $this->state = array();
+        $state = array();
 
-        $this->password_hashed = self::hashPassword($this->password);
+        $password_hashed = self::hashPassword($this->password);
 
-		if (strlen($this->password_hashed) >= 20) {
+		if (strlen($password_hashed) >= 20) {
 
-			$this->state['hash'] = 1;
+			$state['hash'] = 1;
 
 			/** SQL query */
-			$this->query = "UPDATE " . TABLE_USERS . " SET
+			$query = "UPDATE " . TABLE_USERS . " SET
                                         name = :name,
                                         level = :role,
 										email = :email,
@@ -484,27 +487,29 @@ class Users
 
 			/** Add the password to the query if it's not the dummy value '' */
 			if (!empty($this->password)) {
-				$this->query .= ", password = :password";
+				$query .= ", password = :password";
             }
             
-            $this->query .= " WHERE id = :id";
+            $query .= " WHERE id = :id";
             
-			$this->statement = $this->dbh->prepare($this->query);
-            $this->statement->bindParam(':name', $this->name);
-            $this->statement->bindParam(':role', $this->role, PDO::PARAM_INT);
-			$this->statement->bindParam(':email', $this->email);
-			$this->statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
-			$this->statement->bindParam(':active', $this->active, PDO::PARAM_INT);
-			$this->statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
-            $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+			$statement = $this->dbh->prepare($query);
+            $statement->bindParam(':name', $this->name);
+            $statement->bindParam(':role', $this->role, PDO::PARAM_INT);
+			$statement->bindParam(':email', $this->email);
+			$statement->bindParam(':notify_upload', $this->notify_upload, PDO::PARAM_INT);
+			$statement->bindParam(':active', $this->active, PDO::PARAM_INT);
+			$statement->bindParam(':max_file_size', $this->max_file_size, PDO::PARAM_INT);
+            $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
 			if (!empty($this->password)) {
-				$this->statement->bindParam(':password', $this->password_hashed);
+				$statement->bindParam(':password', $password_hashed);
 			}
 
-            $this->statement->execute();
+            $statement->execute();
 
-			if ($this->statement) {
-				$this->state['query'] = 1;
+			if ($statement) {
+				$state['query'] = 1;
+
+                $log_action_number = null;
 
                 switch ($this->role) {
                     case 0:
@@ -513,7 +518,7 @@ class Users
                     case 7:
                     case 8:
                     case 9:
-                    $log_action_number = 13;
+                        $log_action_number = 13;
                         break;
                 }
 
@@ -527,14 +532,14 @@ class Users
                 ]);
             }
 			else {
-				$this->state['query'] = 0;
+				$state['query'] = 0;
 			}
 		}
 		else {
-			$this->state['hash'] = 0;
+			$state['hash'] = 0;
 		}
 
-		return $this->state;
+		return $state;
 	}
 
 	/**
@@ -549,9 +554,9 @@ class Users
 		if (isset($this->id)) {
 			/** Do a permissions check */
 			if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-				$this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
-				$this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-                $this->sql->execute();
+				$sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
+				$sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $sql->execute();
 
                 switch ($this->role) {
                     case 0:
@@ -607,10 +612,10 @@ class Users
 		if (isset($this->id)) {
 			/** Do a permissions check */
 			if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-			    $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
-				$this->sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
-				$this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-                $this->sql->execute();
+			    $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
+				$sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
+				$sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $sql->execute();
 
                 /** Record the action log */
                 $record = $this->logger->addEntry([
@@ -635,12 +640,12 @@ class Users
 		if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
-                $this->sql->bindValue(':active', 1, PDO::PARAM_INT);
-                $this->sql->bindValue(':requested', 0, PDO::PARAM_INT);
-                $this->sql->bindValue(':denied', 0, PDO::PARAM_INT);
-                $this->sql->bindValue(':id', $this->id, PDO::PARAM_INT);
-                $this->status = $this->sql->execute();
+                $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
+                $sql->bindValue(':active', 1, PDO::PARAM_INT);
+                $sql->bindValue(':requested', 0, PDO::PARAM_INT);
+                $sql->bindValue(':denied', 0, PDO::PARAM_INT);
+                $sql->bindValue(':id', $this->id, PDO::PARAM_INT);
+                $status = $sql->execute();
 
                 /** Record the action log */
                 $record = $this->logger->addEntry([
@@ -664,12 +669,12 @@ class Users
 		if (isset($this->id)) {
             /** Do a permissions check */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-                $this->sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
-                $this->sql->bindValue(':active', 0, PDO::PARAM_INT);
-                $this->sql->bindValue(':account_requested', 1, PDO::PARAM_INT);
-                $this->sql->bindValue(':account_denied', 1, PDO::PARAM_INT);
-                $this->sql->bindValue(':id', $this->id, PDO::PARAM_INT);
-                $this->status = $this->sql->execute();
+                $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
+                $sql->bindValue(':active', 0, PDO::PARAM_INT);
+                $sql->bindValue(':account_requested', 1, PDO::PARAM_INT);
+                $sql->bindValue(':account_denied', 1, PDO::PARAM_INT);
+                $sql->bindValue(':id', $this->id, PDO::PARAM_INT);
+                $status = $sql->execute();
 
                 /** Record the action log */
                 $record = $this->logger->addEntry([

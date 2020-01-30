@@ -80,19 +80,19 @@ class Categories
     {
         $this->id = $id;
 
-        $this->statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE id=:id");
-        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
-        $this->statement->execute();
-        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES . " WHERE id=:id");
+        $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
 
-        if ($this->statement->rowCount() == 0) {
+        if ($statement->rowCount() == 0) {
             return false;
         }
     
-        while ($this->row = $this->statement->fetch() ) {
-            $this->name = html_output($this->row['name']);
-            $this->parent = html_output($this->row['parent']);
-            $this->description = html_output($this->row['description']);
+        while ($row = $statement->fetch() ) {
+            $this->name = html_output($row['name']);
+            $this->parent = html_output($row['parent']);
+            $this->description = html_output($row['description']);
         }
 
         return true;
@@ -119,7 +119,7 @@ class Categories
         $validation = new Validation;
 
 		global $json_strings;
-		$this->state = array();
+		$state = array();
 
 		/**
 		 * These validations are done both when creating a new client and
@@ -156,35 +156,35 @@ class Categories
 	 */
 	function create()
 	{
-		$this->state = array();
+		$state = array();
 
         /** Who is creating the category? */
         $this->owner_id = CURRENT_USER_ID;
         $this->created_by = CURRENT_USER_USERNAME;
 
         /** Insert the category information into the database */
-        $this->statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,owner_id,created_by)"
+        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,owner_id,created_by)"
                                             ."VALUES (:name, :parent, :description, :owner_id, :created_by)");
-        $this->statement->bindParam(':name', $this->name);
+        $statement->bindParam(':name', $this->name);
         
         if (empty($this->parent)) {
             $this->parent = 0;
-            $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
+            $statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
         }
         else {
-            $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
+            $statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
         }
         
-        $this->statement->bindParam(':description', $this->description);
-        $this->statement->bindParam(':owner_id', $this->owner_id);
-        $this->statement->bindParam(':created_by', $this->created_by);
+        $statement->bindParam(':description', $this->description);
+        $statement->bindParam(':owner_id', $this->owner_id);
+        $statement->bindParam(':created_by', $this->created_by);
 
-        $this->statement->execute();
+        $statement->execute();
 
-        if ($this->statement) {
-            $this->state['query'] = 1;
+        if ($statement) {
+            $state['query'] = 1;
             $this->id = $this->dbh->lastInsertId();
-            $this->state['id'] = $this->id;
+            $state['id'] = $this->id;
 
             /** Record the action log */
             $new_record_action = $this->logger->addEntry([
@@ -196,10 +196,10 @@ class Categories
         }
         else {
             /** Query couldn't be executed */
-            $this->state['query'] = 0;
+            $state['query'] = 0;
         }
 
-        return $this->state;
+        return $state;
     }
 
 	/**
@@ -211,10 +211,10 @@ class Categories
             return false;
         }
 
-        $this->state = array();
+        $state = array();
  
         /** SQL query */
-        $this->edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET 
+        $edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET 
                                     name = :name,
                                     parent = :parent,
                                     description = :description
@@ -222,24 +222,24 @@ class Categories
                                     ";
 
 
-        $this->statement = $this->dbh->prepare( $this->edit_category_query );
-        $this->statement->bindParam(':name', $this->name);
+        $statement = $this->dbh->prepare( $edit_category_query );
+        $statement->bindParam(':name', $this->name);
         if ( $this->parent == '0' ) {
             $this->parent == null;
-            $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
+            $statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
         }
         else {
-            $this->statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
+            $statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
         }
-        $this->statement->bindParam(':description', $this->description);
-        $this->statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $statement->bindParam(':description', $this->description);
+        $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
 
-        $this->statement->execute();
+        $statement->execute();
 
-        $this->state['id'] = $this->id;
+        $state['id'] = $this->id;
 
-        if ($this->statement) {
-            $this->state['query'] = 1;
+        if ($statement) {
+            $state['query'] = 1;
 
             /** Record the action log */
             $new_record_action = $this->logger->addEntry([
@@ -250,10 +250,10 @@ class Categories
             ]);
         }
         else {
-            $this->state['query'] = 0;
+            $state['query'] = 0;
         }
 
-		return $this->state;
+		return $state;
 	}
 
 	/**
@@ -266,9 +266,9 @@ class Categories
 
         /** Do a permissions check */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
-            $this->sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
-            $this->sql->bindParam(':id', $this->id, PDO::PARAM_INT);
-            $this->sql->execute();
+            $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
+            $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
+            $sql->execute();
             
             /** Record the action log */
             $record = $this->logger->addEntry([

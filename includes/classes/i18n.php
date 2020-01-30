@@ -93,13 +93,13 @@ class I18n
    */
 
   /**
-   * @var Array Loaded text domains and messages
+   * @var array Loaded text domains and messages
    *
    */
   private static $messages = array();
 
   /**
-   * @var Array Loaded MO files
+   * @var array Loaded MO files
    *
    */
   private static $moFiles = array();
@@ -169,7 +169,7 @@ class I18n
    *
    * @param String $string To be translate
    * @param String $domain Text domain where find
-   * @return Strint Translated string if possible
+   * @return String Translated string if possible
    *
    */
 	public static function Translate( $string, $domain )
@@ -357,7 +357,7 @@ class I18n
    * Completly taken from Habari project <http://habariproject.org/>.
    *
    * @see ParseFile()
-   * @return Unique function name as a string or False on error
+   * @return String Unique function name as a string or False on error
    *
    */
 	private static function GetPluralFunc( $moHeader )

@@ -6,6 +6,9 @@ use ProjectSend\Classes\DoProcess;
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 $_SESSION['last_call'] = time();
 
 if ( !empty( $_GET['do'] ) && $_GET['do'] != 'login' ) {

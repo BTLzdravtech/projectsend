@@ -7,6 +7,7 @@
  */
 function workspace_exists_id($id)
 {
+    /** @var PDO $dbh */
 	global $dbh;
 	$statement = $dbh->prepare("SELECT * FROM " . TABLE_WORKSPACES . " WHERE id=:id");
 	$statement->bindParam(':id', $id, PDO::PARAM_INT);
@@ -116,6 +117,8 @@ function get_workspaces($arguments)
     
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    $all_workspaces = array();
     while( $data_workspace = $statement->fetch() ) {
         $all_workspaces[$data_workspace['id']] = array(
                                     'id'            => $data_workspace['id'],

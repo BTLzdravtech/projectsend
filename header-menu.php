@@ -5,8 +5,10 @@
  *
  * @package ProjectSend
  */
-$items = array();
+
+/** @var PDO $dbh */
 global $dbh;
+$items = array();
 /**
  * Items for system users
  */

@@ -7,6 +7,12 @@
  *
  */
 
+global $dbh;
+
+global $workspaces_form_type;
+global $workspace_id;
+global $workspace_arguments;
+
 switch ($workspaces_form_type) {
 	case 'new_workspace':
 		$submit_value = __('Create workspace','cftp_admin');
@@ -41,7 +47,7 @@ switch ($workspaces_form_type) {
 		<div class="col-sm-8">
 			<select multiple="multiple" id="members" class="form-control chosen-select" name="users[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
 				<?php
-					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level IN ('9', '8') ORDER BY name ASC");
+					$sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level IN ('9', '8') ORDER BY name");
 					$sql->execute();
 					$sql->setFetchMode(PDO::FETCH_ASSOC);
 					while ( $row = $sql->fetch() ) {

@@ -14,6 +14,8 @@ use ProjectSend\Classes\Users;
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
+global $dbh;
+
 $page_title = __('Register new account','cftp_admin');
 
 $page_id = 'client_form';

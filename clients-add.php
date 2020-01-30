@@ -14,13 +14,14 @@ use ProjectSend\Classes\Users;
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 $active_nav = 'clients';
 
 $page_title = __('Add client','cftp_admin');
 
 $page_id = 'client_form';
-
-global $dbh;
 
 $new_client = new Users($dbh);
 

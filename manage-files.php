@@ -11,6 +11,9 @@ use ProjectSend\Classes\TableGenerate;
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 $active_nav = 'files';
 
 $page_title = __('Manage files','cftp_admin');
@@ -175,6 +178,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 		 * Global form action
 		 */
 		$query_table_files = true;
+        $sql = null;
 
 		if (isset($search_on)) {
 			$params = array();
@@ -442,7 +446,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 						<div class="form_actions">
 							<div class="form_actions_submit">
 								<div class="form-group group_float">
-									<label class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
+									<label for="action" class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions','cftp_admin'); ?>:</label>
 									<?php
 										if (isset($search_on)) {
 									?>

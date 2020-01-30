@@ -32,10 +32,10 @@
                         required: {
                             param: true,
                             depends: function(element) {
-                                if (form_type == 'new_user') {
+                                if (form_type === 'new_user') {
                                     return true;
                                 }
-                                if (form_type == 'edit_user' || form_type == 'edit_user_self') {
+                                if (form_type === 'edit_user' || form_type === 'edit_user_self') {
                                     if ($.trim($("#password").val()).length > 0) {
                                         return true;
                                     }

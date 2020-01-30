@@ -317,7 +317,7 @@ include_once ABS_PARENT . '/header-unlogged.php';
 						<div class="form-group">
 							<label for="lang" class="col-sm-4 control-label"><?php _e('Language','cftp_admin'); ?></label>
 							<div class="col-sm-6">
-								<select name="lang" class="form-control">
+								<select id="lang" name="lang" class="form-control">
 									<?php foreach ($langs as $filename => $name) : ?>
 										<option value="<?php echo $filename;?>" <?php echo $post_vars['lang']==$filename ? 'selected' : ''; ?>><?php echo $name;?></option>
 									<?php endforeach?>
@@ -330,7 +330,7 @@ include_once ABS_PARENT . '/header-unlogged.php';
 						<h3><?php _e('Files','cftp_admin'); ?></h3>
 
 						<div class="form-group">
-							<label for="lang" class="col-sm-4 control-label"><?php _e('Default maximum upload file size','cftp_admin'); ?></label>
+							<label for="maxfilesize" class="col-sm-4 control-label"><?php _e('Default maximum upload file size','cftp_admin'); ?></label>
 							<div class="col-sm-6">
 								<input type="number" name="maxfilesize" id="maxfilesize" class="required form-control" value="<?php echo ( !empty( $post_vars['maxfilesize'] ) ) ? $post_vars['maxfilesize'] : '2048'; ?>" />
 								<p class="field_note"><?php _e('Value expressed in MB, where 1GB = 1024','cftp_admin'); ?></p>

@@ -1,6 +1,7 @@
 <?php
     function option_exists($name)
     {
+        /** @var PDO $dbh */
         global $dbh;
 
         $get = $dbh->prepare( "SELECT name FROM " . TABLE_OPTIONS . " WHERE name=:name" );

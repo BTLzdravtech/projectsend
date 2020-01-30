@@ -2,6 +2,7 @@
 	if ( isset( $_GET['ajax_call'] ) ) {
 		require_once '../../bootstrap.php';
 	}
+    global $dbh;
 ?>
 <div class="widget widget_system_info">
 	<h4><?php _e('System information','cftp_admin'); ?></h4>

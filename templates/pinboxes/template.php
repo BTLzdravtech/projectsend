@@ -25,7 +25,7 @@ define('TEMPLATE_THUMBNAILS_WIDTH', '250');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title><?php echo html_output( $client_info['name'].' | '.$window_title . ' &raquo; ' . SYSTEM_NAME ); ?></title>
@@ -49,11 +49,11 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 						});
 					});
 
-					$('.button').click(function() {
+					$('.button').on('click', function() {
 						$(this).blur();
 					});
 					
-					$('.categories_trigger a').click(function(e) {
+					$('.categories_trigger a').on('click', function(e) {
 						if ( $('.categories').hasClass('visible') ) {
 							close_menu();
 						}
@@ -62,7 +62,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '400');
 						}
 					});
 					
-					$('.content_cover').click(function(e) {
+					$('.content_cover').on('click', function(e) {
 						close_menu();
 					});
 					

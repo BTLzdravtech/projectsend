@@ -100,8 +100,8 @@ function look_for_templates()
 			else {
 				// Generate another array with the templates that are not complete
 				$templates_error[] = array(
-										'templates_error'	=> $folder
-									);
+                    'templates_error'	=> $directory
+                );
 			}
 		}
 	}

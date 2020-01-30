@@ -7,6 +7,7 @@
  */
 function group_exists_id($id)
 {
+    /** @var PDO $dbh */
 	global $dbh;
 	$statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
 	$statement->bindParam(':id', $id, PDO::PARAM_INT);
@@ -108,6 +109,8 @@ function get_groups($arguments)
         $statement->bindParam(':ids', $group_ids);
     }
     if ( !empty( $is_public ) ) {
+        $pub = 0;
+
         switch ( $is_public ) {
             case 'true':
                 $pub = 1;
@@ -132,6 +135,8 @@ function get_groups($arguments)
     
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    $all_groups = array();
     while( $data_group = $statement->fetch() ) {
         $all_groups[$data_group['id']] = array(
                                     'id'            => $data_group['id'],

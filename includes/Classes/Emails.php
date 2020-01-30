@@ -168,6 +168,10 @@ class Emails
 	 */
 	private function email_prepare_body($type)
 	{
+        $filename = "";
+        $body_check = "";
+        $body_text = "";
+
 		switch ($type) {
 			case 'new_client':
 					$filename	= EMAIL_TEMPLATE_NEW_CLIENT;
@@ -227,39 +231,39 @@ class Emails
 		}
 
 		if ($body_check == '0') {
-            $this->get_body = file_get_contents(EMAIL_TEMPLATES_DIR . DS . $filename);
+            $get_body = file_get_contents(EMAIL_TEMPLATES_DIR . DS . $filename);
 		}
 		else {
-			$this->get_body = $body_text;
+			$get_body = $body_text;
 		}
 
 		/**
 		 * Header
 		 */
 		if (!defined('EMAIL_HEADER_FOOTER_CUSTOMIZE') || EMAIL_HEADER_FOOTER_CUSTOMIZE == '0') {
-			$this->make_body = $this->header;
+			$make_body = $this->header;
 		}
 		else {
-			$this->make_body = EMAIL_HEADER_TEXT;
+			$make_body = EMAIL_HEADER_TEXT;
 		}
 
 		/**
 		 * Body
 		 */
-		$this->make_body .= $this->get_body;
+		$make_body .= $get_body;
 
 		/**
 		 * Footer
 		 */
 		if (!defined('EMAIL_HEADER_FOOTER_CUSTOMIZE') || EMAIL_HEADER_FOOTER_CUSTOMIZE == '0') {
-			$this->make_body .= $this->footer;
+			$make_body .= $this->footer;
 		}
 		else {
-			$this->make_body .= EMAIL_FOOTER_TEXT;
+			$make_body .= EMAIL_FOOTER_TEXT;
 		}
 
 
-		return $this->make_body;
+		return $make_body;
 	}
 
 	/**
@@ -268,8 +272,8 @@ class Emails
 	 */
 	private function email_new_client($username,$password)
 	{
-        $this->email_body = $this->email_prepare_body('new_client');
-		$this->email_body = str_replace(
+        $email_body = $this->email_prepare_body('new_client');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLUSER%','%LBLPASS%','%USERNAME%','%PASSWORD%','%URI%'),
 									array(
 											$this->strings_new_client['subject'],
@@ -282,11 +286,11 @@ class Emails
 											$password,
 											BASE_URI
 										),
-									$this->email_body
+									$email_body
 								);
 		return array(
 					'subject' => $this->strings_new_client['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -296,8 +300,8 @@ class Emails
 	 */
 	private function email_new_client_self($username,$fullname,$memberships_requests)
 	{
-		$this->email_body = $this->email_prepare_body('new_client_self');
-		$this->email_body = str_replace(
+		$email_body = $this->email_prepare_body('new_client_self');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLNAME%','%LBLUSER%','%FULLNAME%','%USERNAME%','%URI%'),
 									array(
 										$this->strings_new_client_self['subject'],
@@ -308,32 +312,32 @@ class Emails
 										$this->strings_new_client_self['label_user'],
 										$fullname,$username,BASE_URI
 										),
-									$this->email_body
+									$email_body
 								);
 		if ( !empty( $memberships_requests ) ) {
-			$this->get_groups = get_groups([
+			$get_groups = get_groups([
                 'group_ids' => $memberships_requests
             ]);
 
-			$this->groups_list = '<ul>';
-			foreach ( $this->get_groups as $group ) {
-				$this->groups_list .= '<li>' . $group['name'] . '</li>';
+			$groups_list = '<ul>';
+			foreach ( $get_groups as $group ) {
+				$groups_list .= '<li>' . $group['name'] . '</li>';
 			}
-			$this->groups_list .= '</ul>';
+			$groups_list .= '</ul>';
 
 			$memberships_requests = implode(',',$memberships_requests);
-			$this->email_body = str_replace(
+			$email_body = str_replace(
 									array('%LABEL_REQUESTS%', '%GROUPS_REQUESTS%'),
 									array(
 										$this->strings_new_client_self['label_request'],
-										$this->groups_list
+										$groups_list
 									),
-								$this->email_body
+								$email_body
 							);
 		}
 		return array(
 					'subject' => $this->strings_new_client_self['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -345,7 +349,7 @@ class Emails
 	{
 		$requests_title_replace = false;
 
-		$this->get_groups = get_groups([]);
+		$get_groups = get_groups([]);
 
 		if ( !empty( $memberships_requests['approved'] ) ) {
 			$requests_title_replace = true;
@@ -353,7 +357,7 @@ class Emails
 			// Make the list
 			$approved_list = '<ul>';
 			foreach ( $memberships_requests['approved'] as $group_id ) {
-				$approved_list .= '<li style="list-style:disc;">' . $this->get_groups[$group_id]['name'] . '</li>';
+				$approved_list .= '<li style="list-style:disc;">' . $get_groups[$group_id]['name'] . '</li>';
 			}
 			$approved_list .= '</ul><hr>';
 		}
@@ -367,7 +371,7 @@ class Emails
 			// Make the list
 			$denied_list = '<ul>';
 			foreach ( $memberships_requests['denied'] as $group_id ) {
-				$denied_list .= '<li style="list-style:disc;">' . $this->get_groups[$group_id]['name'] . '</li>';
+				$denied_list .= '<li style="list-style:disc;">' . $get_groups[$group_id]['name'] . '</li>';
 			}
 			$denied_list .= '</ul><hr>';
 		}
@@ -378,8 +382,8 @@ class Emails
 
 		$requests_title = ( $requests_title_replace == true ) ? '<p>'.$this->strings_account_approved['title_approved'].'</p>' : '';
 
-		$this->email_body = $this->email_prepare_body('account_approve');
-		$this->email_body = str_replace(
+		$email_body = $this->email_prepare_body('account_approve');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%', '%REQUESTS_TITLE%', '%APPROVED_TITLE%','%GROUPS_APPROVED%','%DENIED_TITLE%','%GROUPS_DENIED%','%BODY2%','%BODY3%','%URI%'),
 									array(
 										$this->strings_account_approved['subject'],
@@ -393,11 +397,11 @@ class Emails
 										$this->strings_account_approved['body3'],
 										BASE_URI
 									),
-									$this->email_body
+									$email_body
 								);
 		return array(
 					'subject' => $this->strings_account_approved['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -406,19 +410,19 @@ class Emails
 	 */
 	private function email_account_deny($username,$name)
 	{
-		$this->email_body = $this->email_prepare_body('account_deny');
-		$this->email_body = str_replace(
+		$email_body = $this->email_prepare_body('account_deny');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%'),
 									array(
 										$this->strings_account_denied['subject'],
 										$this->strings_account_denied['body'],
 										$this->strings_account_denied['body2'],
 									),
-									$this->email_body
+									$email_body
 								);
 		return array(
 					'subject' => $this->strings_account_denied['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -428,8 +432,8 @@ class Emails
 	 */
 	private function email_new_user($username,$password)
 	{
-		$this->email_body = $this->email_prepare_body('new_user');
-		$this->email_body = str_replace(
+		$email_body = $this->email_prepare_body('new_user');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLUSER%','%LBLPASS%','%USERNAME%','%PASSWORD%','%URI%'),
 									array(
 										$this->strings_new_user['subject'],
@@ -442,11 +446,11 @@ class Emails
 										$password,
 										BASE_URI
 									),
-									$this->email_body
+									$email_body
 								);
 		return array(
 					'subject' => $this->strings_new_user['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -457,8 +461,8 @@ class Emails
 	 */
 	private function email_new_files_by_user($files_list)
 	{
-		$this->email_body = $this->email_prepare_body('new_file_by_user');
-		$this->email_body = str_replace(
+		$email_body = $this->email_prepare_body('new_file_by_user');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%BODY4%','%URI%'),
 									array(
 										$this->strings_file_by_user['subject'],
@@ -469,11 +473,11 @@ class Emails
 										$this->strings_file_by_user['body4'],
 										BASE_URI
 									),
-									$this->email_body
+									$email_body
 								);
 		return array(
 					'subject' => $this->strings_file_by_user['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -484,8 +488,8 @@ class Emails
 	 */
 	private function email_new_files_by_client($files_list)
 	{
-		$this->email_body = $this->email_prepare_body('new_files_by_client');
-		$this->email_body = str_replace(
+		$email_body = $this->email_prepare_body('new_files_by_client');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%URI%'),
 									array(
 										$this->strings_file_by_client['subject'],
@@ -495,11 +499,11 @@ class Emails
 										$this->strings_file_by_client['body3'],
 										BASE_URI
 									),
-									$this->email_body
+									$email_body
 								);
 		return array(
 					'subject' => $this->strings_file_by_client['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -510,8 +514,8 @@ class Emails
 	 */
 	private function email_password_reset($username, $token)
 	{
-		$this->email_body = $this->email_prepare_body('password_reset');
-		$this->email_body = str_replace(
+		$email_body = $this->email_prepare_body('password_reset');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%BODY4%','%LBLUSER%','%USERNAME%','%URI%'),
 									array(
 										$this->strings_pass_reset['subject'],
@@ -523,11 +527,11 @@ class Emails
 										$username,
 										BASE_URI.'reset-password.php?token=' . $token . '&user=' . $username,
 									),
-									$this->email_body
+									$email_body
 								);
 		return array(
 					'subject' => $this->strings_pass_reset['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -537,8 +541,8 @@ class Emails
 	 */
 	private function email_client_edited($username,$fullname,$memberships_requests)
 	{
-		$this->email_body = $this->email_prepare_body('client_edited');
-		$this->email_body = str_replace(
+		$email_body = $this->email_prepare_body('client_edited');
+		$email_body = str_replace(
 									array('%SUBJECT%','%BODY1%','%BODY2%','%LBLNAME%','%LBLUSER%','%FULLNAME%','%USERNAME%','%URI%'),
 									array(
 										$this->strings_client_edited['subject'],
@@ -548,32 +552,32 @@ class Emails
 										$this->strings_client_edited['label_user'],
 										$fullname,$username,BASE_URI
 										),
-									$this->email_body
+									$email_body
 								);
 		if ( !empty( $memberships_requests ) ) {
-			$this->get_groups = get_groups([
+			$get_groups = get_groups([
                 'group_ids' => $memberships_requests
             ]);
 
-			$this->groups_list = '<ul>';
-			foreach ( $this->get_groups as $group ) {
-				$this->groups_list .= '<li>' . $group['name'] . '</li>';
+			$groups_list = '<ul>';
+			foreach ( $get_groups as $group ) {
+				$groups_list .= '<li>' . $group['name'] . '</li>';
 			}
-			$this->groups_list .= '</ul>';
+			$groups_list .= '</ul>';
 
 			$memberships_requests = implode(',',$memberships_requests);
-			$this->email_body = str_replace(
+			$email_body = str_replace(
 									array('%LABEL_REQUESTS%', '%GROUPS_REQUESTS%'),
 									array(
 										$this->strings_client_edited['label_request'],
-										$this->groups_list
+										$groups_list
 									),
-								$this->email_body
+								$email_body
 							);
 		}
 		return array(
 					'subject' => $this->strings_client_edited['subject'],
-					'body' => $this->email_body
+					'body' => $email_body
 				);
 	}
 
@@ -582,8 +586,8 @@ class Emails
      */
      function email_limit_retention($files_list)
     {
-        $this->email_body = $this->email_prepare_body('limit_retention');
-        $this->email_body = str_replace(
+        $email_body = $this->email_prepare_body('limit_retention');
+        $email_body = str_replace(
                                     array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%URI%'),
                                     array(
                                         $this->strings_limit_retention['subject'],
@@ -593,11 +597,11 @@ class Emails
                                         $this->strings_limit_retention['body3'],
                                         BASE_URI
                                     ),
-                                    $this->email_body
+                                    $email_body
                                 );
         return array(
             'subject' => $this->strings_limit_retention['subject'],
-            'body' => $this->email_body
+            'body' => $email_body
          );
     }
 
@@ -606,8 +610,8 @@ class Emails
      */
     function email_public_links($links, $note, $uploader)
     {
-        $this->email_body = $this->email_prepare_body('public_links');
-        $this->email_body = str_replace(
+        $email_body = $this->email_prepare_body('public_links');
+        $email_body = str_replace(
             array('%SUBJECT%','%BODY1%','%UPLOADER%','%LINKS%','%NOTE%'),
             array(
                 $this->strings_public_links['subject'],
@@ -616,11 +620,11 @@ class Emails
                 $links,
                 $note
             ),
-            $this->email_body
+            $email_body
         );
         return array(
             'subject' => $this->strings_public_links['subject'],
-            'body' => $this->email_body
+            'body' => $email_body
         );
     }
 
@@ -635,72 +639,72 @@ class Emails
 	public function send($arguments)
 	{
 		/** Generate the values from the arguments */
-		$this->preview		= (!empty($arguments['preview'])) ? $arguments['preview'] : false;
-		$this->type			= $arguments['type'];
-		$this->addresses	= (!empty($arguments['address'])) ? $arguments['address'] : '';
-		$this->username		= (!empty($arguments['username'])) ? $arguments['username'] : '';
-		$this->password		= (!empty($arguments['password'])) ? $arguments['password'] : '';
-		$this->client_id	= (!empty($arguments['client_id'])) ? $arguments['client_id'] : '';
-		$this->name			= (!empty($arguments['name'])) ? $arguments['name'] : '';
-		$this->files_list	= (!empty($arguments['files_list'])) ? $arguments['files_list'] : '';
-        $this->file_id	    = (!empty($arguments['file_id'])) ? $arguments['file_id'] : '';
-		$this->token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
-		$this->memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
-        $this->note	        = (!empty($arguments['note'])) ? $arguments['note'] : '';
-        $this->links        = (!empty($arguments['links'])) ? $arguments['links'] : '';
-        $this->uploader     = (!empty($arguments['uploader'])) ? $arguments['uploader'] : '';
+		$preview		= (!empty($arguments['preview'])) ? $arguments['preview'] : false;
+		$type			= $arguments['type'];
+		$addresses	= (!empty($arguments['address'])) ? $arguments['address'] : '';
+		$username		= (!empty($arguments['username'])) ? $arguments['username'] : '';
+		$password		= (!empty($arguments['password'])) ? $arguments['password'] : '';
+		$client_id	= (!empty($arguments['client_id'])) ? $arguments['client_id'] : '';
+		$name			= (!empty($arguments['name'])) ? $arguments['name'] : '';
+		$files_list	= (!empty($arguments['files_list'])) ? $arguments['files_list'] : '';
+        $file_id	    = (!empty($arguments['file_id'])) ? $arguments['file_id'] : '';
+		$token		= (!empty($arguments['token'])) ? $arguments['token'] : '';
+		$memberships	= (!empty($arguments['memberships'])) ? $arguments['memberships'] : '';
+        $note	        = (!empty($arguments['note'])) ? $arguments['note'] : '';
+        $links        = (!empty($arguments['links'])) ? $arguments['links'] : '';
+        $uploader     = (!empty($arguments['uploader'])) ? $arguments['uploader'] : '';
 
-		$this->try_bcc = false;
-		switch($this->type) {
+		$try_bcc = false;
+		switch($type) {
             case 'new_files_by_user':
-                $this->body_variables = [ $this->files_list, ];
+                $body_variables = [ $files_list, ];
 				if (MAIL_COPY_USER_UPLOAD == '1') {
-					$this->try_bcc = true;
+					$try_bcc = true;
 				}
 			break;
             case 'new_files_by_client':
-                $this->body_variables = [ $this->files_list, ];
+                $body_variables = [ $files_list, ];
 				if (MAIL_COPY_CLIENT_UPLOAD == '1') {
-					$this->try_bcc = true;
+					$try_bcc = true;
 				}
 			break;
             case 'limit_retention':
-                $this->body_variables = [ $this->files_list, ];
+                $body_variables = [ $files_list, ];
             break;
             case 'new_client':
-                $this->body_variables = [ $this->username, $this->password, ];
+                $body_variables = [ $username, $password, ];
 			break;
             case 'new_client_self':
-                $this->body_variables = [ $this->username, $this->name, $this->memberships ];
+                $body_variables = [ $username, $name, $memberships ];
 			break;
 			case 'account_approve':
-                $this->body_variables = [ $this->username, $this->name, $this->memberships, ];
+                $body_variables = [ $username, $name, $memberships, ];
 			break;
 			case 'account_deny':
-                $this->body_variables = [ $this->username, $this->name, ];
+                $body_variables = [ $username, $name, ];
 			break;
 			case 'new_user':
-                $this->body_variables = [ $this->username, $this->password, ];
+                $body_variables = [ $username, $password, ];
 			break;
 			case 'password_reset':
-                $this->body_variables = [ $this->username, $this->token, ];
+                $body_variables = [ $username, $token, ];
 			break;
 			case 'client_edited':
-                $this->body_variables = [ $this->username, $this->name, $this->memberships, ];
+                $body_variables = [ $username, $name, $memberships, ];
 			break;
             case 'public_links':
-                $this->body_variables = [ $this->links, $this->note, $this->uploader ];
+                $body_variables = [ $links, $note, $uploader ];
             break;
         }
 
         /** Generates the subject and body contents */
-        $this->method = 'email_' . $this->type;
-        $this->mail_info = call_user_func_array([$this, $this->method], $this->body_variables );
+        $method = 'email_' . $type;
+        $mail_info = call_user_func_array([$this, $method], $body_variables );
 
 		/**
 		 * Replace the default info on the footer
 		 */
-		$this->mail_info['body'] = str_replace(
+		$mail_info['body'] = str_replace(
 									array(
 										'%FOOTER_SYSTEM_URI%',
 										'%FOOTER_URI%'
@@ -709,33 +713,33 @@ class Emails
 										SYSTEM_URI,
 										BASE_URI
 									),
-									$this->mail_info['body']
+									$mail_info['body']
 								);
 
 		/**
 		 * If we are generating a preview, just return the html content
 		 */
-		if ( $this->preview == true ) {
-			return $this->mail_info['body'];
+		if ( $preview == true ) {
+			return $mail_info['body'];
 		}
 		else {
 
 			/**
 			 * phpMailer
 			 */
-			$this->send_mail = new PHPMailer();
-            $this->send_mail->SMTPDebug = 0;
-			$this->send_mail->CharSet = EMAIL_ENCODING;
+			$send_mail = new PHPMailer();
+            $send_mail->SMTPDebug = 0;
+			$send_mail->CharSet = EMAIL_ENCODING;
 
             switch (MAIL_SYSTEM_USE) {
 				case 'smtp':
-						$this->send_mail->IsSMTP();
-						$this->send_mail->Host = MAIL_SMTP_HOST;
-						$this->send_mail->Port = MAIL_SMTP_PORT;
-						$this->send_mail->Username = MAIL_SMTP_USER;
-						$this->send_mail->Password = MAIL_SMTP_PASS;
+						$send_mail->IsSMTP();
+						$send_mail->Host = MAIL_SMTP_HOST;
+						$send_mail->Port = MAIL_SMTP_PORT;
+						$send_mail->Username = MAIL_SMTP_USER;
+						$send_mail->Password = MAIL_SMTP_PASS;
 
-                        $this->send_mail->SMTPOptions = array(
+                        $send_mail->SMTPOptions = array(
                             'ssl' => array(
                                 'verify_peer' => false,
                                 'verify_peer_name' => false,
@@ -744,44 +748,44 @@ class Emails
                         );
 
 						if ( defined('MAIL_SMTP_AUTH') && MAIL_SMTP_AUTH != 'none' ) {
-							$this->send_mail->SMTPAuth = true;
-							$this->send_mail->SMTPSecure = MAIL_SMTP_AUTH;
+							$send_mail->SMTPAuth = true;
+							$send_mail->SMTPSecure = MAIL_SMTP_AUTH;
 						}
 						else {
-							$this->send_mail->SMTPAuth = false;
+							$send_mail->SMTPAuth = false;
 						}
 					break;
 				case 'gmail':
-						$this->send_mail->IsSMTP();
-						$this->send_mail->SMTPAuth = true;
-						$this->send_mail->SMTPSecure = "tls";
-						$this->send_mail->Host = 'smtp.gmail.com';
-						$this->send_mail->Port = 587;
-						$this->send_mail->Username = MAIL_SMTP_USER;
-						$this->send_mail->Password = MAIL_SMTP_PASS;
+						$send_mail->IsSMTP();
+						$send_mail->SMTPAuth = true;
+						$send_mail->SMTPSecure = "tls";
+						$send_mail->Host = 'smtp.gmail.com';
+						$send_mail->Port = 587;
+						$send_mail->Username = MAIL_SMTP_USER;
+						$send_mail->Password = MAIL_SMTP_PASS;
 					break;
 				case 'sendmail':
-						$this->send_mail->IsSendmail();
+						$send_mail->IsSendmail();
 					break;
 			}
 
-			$this->send_mail->Subject = $this->mail_info['subject'];
-			$this->send_mail->MsgHTML($this->mail_info['body']);
-			$this->send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
+			$send_mail->Subject = $mail_info['subject'];
+			$send_mail->MsgHTML($mail_info['body']);
+			$send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.','cftp_admin');
 
-			$this->send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
-			$this->send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+			$send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+			$send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
 
-            if ( !empty( $this->name ) ) {
-                $this->send_mail->AddAddress($this->addresses, $this->name);
+            if ( !empty( $name ) ) {
+                $send_mail->AddAddress($addresses, $name);
             }
             else {
-                if (is_array($this->addresses)) {
-                    foreach ($this->addresses as $address) {
-                        $this->send_mail->AddAddress($address);
+                if (is_array($addresses)) {
+                    foreach ($addresses as $address) {
+                        $send_mail->AddAddress($address);
                     }
                 } else {
-                    $this->send_mail->AddAddress($this->addresses);
+                    $send_mail->AddAddress($addresses);
                 }
             }
 
@@ -789,16 +793,16 @@ class Emails
 			 * Check if BCC is enabled and get the list of
 			 * addresses to add, based on the email type.
 			 */
-			if ($this->try_bcc === true) {
-				$this->add_bcc_to = array();
+			if ($try_bcc === true) {
+				$add_bcc_to = array();
 				if (MAIL_COPY_MAIN_USER == '1') {
-					$this->add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
+					$add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
 				}
-				$this->more_addresses = MAIL_COPY_ADDRESSES;
-				if (!empty($this->more_addresses)) {
-					$this->more_addresses = explode(',',$this->more_addresses);
-					foreach ($this->more_addresses as $this->add_bcc) {
-						$this->add_bcc_to[] = $this->add_bcc;
+				$more_addresses = MAIL_COPY_ADDRESSES;
+				if (!empty($more_addresses)) {
+					$more_addresses = explode(',',$more_addresses);
+					foreach ($more_addresses as $add_bcc) {
+						$add_bcc_to[] = $add_bcc;
 					}
 				}
 				/**
@@ -806,23 +810,23 @@ class Emails
 				 * First, clean the array to make sure the admin
 				 * address is not written twice.
 				 */
-				if (!empty($this->add_bcc_to)) {
-					$this->add_bcc_to = array_unique($this->add_bcc_to);
-					foreach ($this->add_bcc_to as $this->set_bcc) {
-						$this->send_mail->AddBCC($this->set_bcc);
+				if (!empty($add_bcc_to)) {
+					$add_bcc_to = array_unique($add_bcc_to);
+					foreach ($add_bcc_to as $set_bcc) {
+						$send_mail->AddBCC($set_bcc);
 					}
 				}
 
 			}
 
 			/** Debug by echoing the email on page */
-			//echo $this->mail_info['body'];
+			//echo $mail_info['body'];
 			//die();
 
 			/**
 			 * Finally, send the e-mail.
 			 */
-			if($this->send_mail->Send()) {
+			if($send_mail->Send()) {
 				return 1;
 			}
 			else {
