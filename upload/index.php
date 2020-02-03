@@ -2,7 +2,7 @@
 /**
  * This file prevents direct access to the upload folder.
  *
- * @package	ProjectSend
+ * @package ProjectSend
  */
 header("location:../index.php");
 exit;

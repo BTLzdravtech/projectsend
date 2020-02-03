@@ -11,7 +11,7 @@ global $dbh;
 
 $_SESSION['last_call'] = time();
 
-if ( !empty( $_GET['do'] ) && $_GET['do'] != 'login' ) {
+if (!empty($_GET['do']) && $_GET['do'] != 'login') {
     check_for_session();
     can_see_content($allowed_levels);
 }

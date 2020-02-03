@@ -3,8 +3,8 @@
  * Class that handles all the actions and functions that can be applied to
  * users workspaces.
  *
- * @package		ProjectSend
- * @subpackage	Classes
+ * @package    ProjectSend
+ * @subpackage Classes
  */
 
 namespace ProjectSend\Classes;
@@ -44,6 +44,7 @@ class Workspaces
 
     /**
      * Set the ID
+     *
      * @param $id
      */
     public function setId($id)
@@ -53,6 +54,7 @@ class Workspaces
   
     /**
      * Return the ID
+     *
      * @return int
      */
     public function getId()
@@ -66,17 +68,19 @@ class Workspaces
 
     /**
      * Set the properties when editing
+     *
      * @param array $arguments
      */
     public function set($arguments = [])
     {
-		$this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
+        $this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
         $this->description = (!empty($arguments['description'])) ? encode_html($arguments['description']) : null;
         $this->users = (!empty($arguments['users'])) ? $arguments['users'] : null;
     }
 
     /**
      * Get existing user data from the database
+     *
      * @return bool
      */
     public function get($id)
@@ -92,7 +96,7 @@ class Workspaces
             return false;
         }
     
-        while ($row = $statement->fetch() ) {
+        while ($row = $statement->fetch()) {
             $this->name = html_output($row['name']);
             $this->description = html_output($row['description']);
             $this->owner_id = html_output($row['owner_id']);
@@ -105,9 +109,9 @@ class Workspaces
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         
-        if ( $statement->rowCount() > 0) {
+        if ($statement->rowCount() > 0) {
             $statement->setFetchMode(PDO::FETCH_ASSOC);
-            while ($user = $statement->fetch() ) {
+            while ($user = $statement->fetch()) {
                 $this->users[] = $user['user_id'];
             }
         }
@@ -132,33 +136,32 @@ class Workspaces
     }
 
     /**
-	 * Validate the information from the form.
-	 */
-	public function validate()
-	{
+     * Validate the information from the form.
+     */
+    public function validate()
+    {
         $validation = new Validation;
 
-		global $json_strings;
-		$state = array();
+        global $json_strings;
+        $state = array();
 
-		/**
-		 * These validations are done both when creating a new workspace and
-		 * when editing an existing one.
-		 */
-		$validation->validate('completed',$this->name,$json_strings['validation']['no_name']);
-        $validation->validate('completed',$this->description,$json_strings['validation']['no_description']);
+        /**
+         * These validations are done both when creating a new workspace and
+         * when editing an existing one.
+         */
+        $validation->validate('completed', $this->name, $json_strings['validation']['no_name']);
+        $validation->validate('completed', $this->description, $json_strings['validation']['no_description']);
 
         if ($validation->passed()) {
             $this->validation_passed = true;
             return true;
-		}
-		else {
+        } else {
             $this->validation_passed = false;
             $this->validation_errors = $validation->list_errors();
         }
         
         return false;
-	}
+    }
 
     /**
      * Return the validation errors the the front end
@@ -172,21 +175,25 @@ class Workspaces
         return false;
     }
 
-	/**
-	 * Create a new group.
-	 */
-	public function create()
-	{
+    /**
+     * Create a new group.
+     */
+    public function create()
+    {
         $state = array();
         
         if (!empty($this->name)) {
 
-   			/** Who is creating the client? */
+            /**
+             * Who is creating the client?
+            */
             $this->owner_id = CURRENT_USER_ID;
-			$this->created_by = CURRENT_USER_USERNAME;
+            $this->created_by = CURRENT_USER_USERNAME;
 
-            $sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_WORKSPACES . " (name, description, owner_id, created_by)"
-                                                    ." VALUES (:name, :description, :owner_id, :admin)");
+            $sql_query = $this->dbh->prepare(
+                "INSERT INTO " . TABLE_WORKSPACES . " (name, description, owner_id, created_by)"
+                ." VALUES (:name, :description, :owner_id, :admin)"
+            );
             $sql_query->bindParam(':name', $this->name);
             $sql_query->bindParam(':description', $this->description);
             $sql_query->bindParam(':owner_id', $this->owner_id);
@@ -197,13 +204,17 @@ class Workspaces
             $state['id'] = $this->id;
             $state['name'] = $this->name;
 
-            /** Create the users records */
-            if ( !empty( $this->users ) ) {
+            /**
+             * Create the users records
+            */
+            if (!empty($this->users)) {
                 foreach ($this->users as $user) {
                     $admin = 0;
 
-                    $sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id,admin)"
-                                                            ." VALUES (:added_by, :user, :id, :admin)");
+                    $sql_member = $this->dbh->prepare(
+                        "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id,admin)"
+                        ." VALUES (:added_by, :user, :id, :admin)"
+                    );
                     $sql_member->bindParam(':added_by', $this->created_by);
                     $sql_member->bindParam(':user', $user, PDO::PARAM_INT);
                     $sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
@@ -215,100 +226,122 @@ class Workspaces
             if ($sql_query) {
                 $state['query'] = 1;
 
-                /** Record the action log */
-                $new_record_action = $this->logger->addEntry([
-                    'action' => 23,
-                    'owner_id' => CURRENT_USER_ID,
-                    'affected_account' => $this->id,
-                    'affected_account_name' => $this->name,
-                ]);
-            }
-            else {
+                /**
+                 * Record the action log
+                */
+                $new_record_action = $this->logger->addEntry(
+                    [
+                        'action' => 23,
+                        'owner_id' => CURRENT_USER_ID,
+                        'affected_account' => $this->id,
+                        'affected_account_name' => $this->name,
+                    ]
+                );
+            } else {
                 $state['query'] = 0;
             }
         }
-		
-		return $state;
-	}
+        
+        return $state;
+    }
 
-	/**
-	 * Edit an existing workspace.
-	 */
-	public function edit()
-	{
+    /**
+     * Edit an existing workspace.
+     */
+    public function edit()
+    {
         if (empty($this->id)) {
             return false;
         }
 
         $state = array();
 
-        /** Who is creating the client? */
+        /**
+         * Who is creating the client?
+        */
         $this->created_by = CURRENT_USER_USERNAME;
 
-		/** SQL query */
-		$sql_query = $this->dbh->prepare( "UPDATE " . TABLE_WORKSPACES . " SET name = :name, description = :description WHERE id = :id" );
-		$sql_query->bindParam(':name', $this->name);
-		$sql_query->bindParam(':description', $this->description);
-		$sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
-		$sql_query->execute();
+        /**
+         * SQL query
+        */
+        $sql_query = $this->dbh->prepare("UPDATE " . TABLE_WORKSPACES . " SET name = :name, description = :description WHERE id = :id");
+        $sql_query->bindParam(':name', $this->name);
+        $sql_query->bindParam(':description', $this->description);
+        $sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $sql_query->execute();
 
-		/** Clean the users table */
-		$sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_WORKSPACES_USERS . " WHERE workspace_id = :id");
-		$sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
-		$sql_clean->execute();
-		
-		/** Create the users records */
-		if (!empty($this->users)) {
-			foreach ($this->users as $user) {
-				$sql_user = $this->dbh->prepare("INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id)"
-														." VALUES (:added_by, :user, :id)");
-				$sql_user->bindParam(':added_by', $this->created_by);
-				$sql_user->bindParam(':user', $user, PDO::PARAM_INT);
-				$sql_user->bindParam(':id', $this->id, PDO::PARAM_INT);
-				$sql_user->execute();
-			}
-		}
-
-		if ($sql_query) {
-			$state['query'] = 1;
-
-            /** Record the action log */
-            $new_record_action = $this->logger->addEntry([
-                'action' => 15,
-                'owner_id' => CURRENT_USER_ID,
-                'affected_account' => $this->id,
-                'affected_account_name' => $this->name,
-            ]);
+        /**
+         * Clean the users table
+        */
+        $sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_WORKSPACES_USERS . " WHERE workspace_id = :id");
+        $sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $sql_clean->execute();
+        
+        /**
+         * Create the users records
+        */
+        if (!empty($this->users)) {
+            foreach ($this->users as $user) {
+                $sql_user = $this->dbh->prepare(
+                    "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id)"
+                    ." VALUES (:added_by, :user, :id)"
+                );
+                $sql_user->bindParam(':added_by', $this->created_by);
+                $sql_user->bindParam(':user', $user, PDO::PARAM_INT);
+                $sql_user->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $sql_user->execute();
+            }
         }
-		else {
-			$state['query'] = 0;
-		}
-		
-		return $state;
-	}
 
-	/**
-	 * Delete an existing workspace.
-	 */
-	public function delete()
-	{
+        if ($sql_query) {
+            $state['query'] = 1;
+
+            /**
+             * Record the action log
+            */
+            $new_record_action = $this->logger->addEntry(
+                [
+                    'action' => 15,
+                    'owner_id' => CURRENT_USER_ID,
+                    'affected_account' => $this->id,
+                    'affected_account_name' => $this->name,
+                ]
+            );
+        } else {
+            $state['query'] = 0;
+        }
+        
+        return $state;
+    }
+
+    /**
+     * Delete an existing workspace.
+     */
+    public function delete()
+    {
         if (empty($this->id)) {
             return false;
         }
 
-        /** Do a permissions check */
+        /**
+         * Do a permissions check
+        */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
             $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_WORKSPACES . ' WHERE id=:id');
             $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $sql->execute();
         }
         
-        /** Record the action log */
-        $record = $this->logger->addEntry([
-            'action' => 18,
-            'owner_id' => CURRENT_USER_ID,
-            'affected_account_name' => $this->name,
-        ]);
+        /**
+         * Record the action log
+        */
+        $record = $this->logger->addEntry(
+            [
+                'action' => 18,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account_name' => $this->name,
+            ]
+        );
 
         return true;
     }

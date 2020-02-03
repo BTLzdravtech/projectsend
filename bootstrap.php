@@ -21,8 +21,8 @@ require_once ROOT_DIR . '/includes/flash.php';
 require_once ROOT_DIR.'/includes/database.php';
 
 /** Load the site options */
-if ( !defined( 'IS_MAKE_CONFIG' ) ) {
-	require_once ROOT_DIR.'/includes/site.options.php';
+if (!defined('IS_MAKE_CONFIG')) {
+    require_once ROOT_DIR.'/includes/site.options.php';
 }
 
 if (defined('IS_MAKE_CONFIG') || defined('IS_INSTALL')) {
@@ -51,8 +51,8 @@ require_once ROOT_DIR.'/includes/userlevel_check.php';
 require_once ROOT_DIR.'/includes/functions.templates.php';
 
 /** Contains the current session information */
-if ( !defined( 'IS_INSTALL' ) ) {
-	require_once ROOT_DIR.'/includes/active.session.php';
+if (!defined('IS_INSTALL')) {
+    require_once ROOT_DIR.'/includes/active.session.php';
 }
 
 /** Recreate the function if it doesn't exist. By Alan Reiblein */

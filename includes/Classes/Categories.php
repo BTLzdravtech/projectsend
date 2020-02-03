@@ -3,11 +3,12 @@
  * Class that handles all the actions and functions that can be applied to
  * files categories.
  *
- * @package		ProjectSend
- * @subpackage	Classes
+ * @package    ProjectSend
+ * @subpackage Classes
  */
 
 namespace ProjectSend\Classes;
+
 use \PDO;
 
 class Categories
@@ -50,6 +51,7 @@ class Categories
 
     /**
      * Return the ID
+     *
      * @return int
      */
     public function getId()
@@ -73,9 +75,10 @@ class Categories
     }
 
     /**
-    * Get existing user data from the database
-    * @return bool
-    */
+     * Get existing user data from the database
+     *
+     * @return bool
+     */
     public function get($id)
     {
         $this->id = $id;
@@ -89,7 +92,7 @@ class Categories
             return false;
         }
     
-        while ($row = $statement->fetch() ) {
+        while ($row = $statement->fetch()) {
             $this->name = html_output($row['name']);
             $this->parent = html_output($row['parent']);
             $this->description = html_output($row['description']);
@@ -111,33 +114,32 @@ class Categories
         ];
     }
  
-	/**
-	 * Validate the information from the form.
-	 */
-	function validate()
-	{
+    /**
+     * Validate the information from the form.
+     */
+    public function validate()
+    {
         $validation = new Validation;
 
-		global $json_strings;
-		$state = array();
+        global $json_strings;
+        $state = array();
 
-		/**
-		 * These validations are done both when creating a new client and
-		 * when editing an existing one.
-		 */
-		$validation->validate('completed',$this->name,$json_strings['validation']['no_name']);
+        /**
+         * These validations are done both when creating a new client and
+         * when editing an existing one.
+         */
+        $validation->validate('completed', $this->name, $json_strings['validation']['no_name']);
 
         if ($validation->passed()) {
             $this->validation_passed = true;
             return true;
-		}
-		else {
+        } else {
             $this->validation_passed = false;
             $this->validation_errors = $validation->list_errors();
         }
 
         return false;
-	}
+    }
 
     /**
      * Return the validation errors the the front end
@@ -151,27 +153,32 @@ class Categories
         return false;
     }
 
-	/**
-	 * Save or create, according the the ACTION parameter
-	 */
-	function create()
-	{
-		$state = array();
+    /**
+     * Save or create, according the the ACTION parameter
+     */
+    public function create()
+    {
+        $state = array();
 
-        /** Who is creating the category? */
+        /**
+         * Who is creating the category?
+        */
         $this->owner_id = CURRENT_USER_ID;
         $this->created_by = CURRENT_USER_USERNAME;
 
-        /** Insert the category information into the database */
-        $statement = $this->dbh->prepare("INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,owner_id,created_by)"
-                                            ."VALUES (:name, :parent, :description, :owner_id, :created_by)");
+        /**
+         * Insert the category information into the database
+        */
+        $statement = $this->dbh->prepare(
+            "INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,owner_id,created_by)"
+            ."VALUES (:name, :parent, :description, :owner_id, :created_by)"
+        );
         $statement->bindParam(':name', $this->name);
         
         if (empty($this->parent)) {
             $this->parent = 0;
             $statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
-        }
-        else {
+        } else {
             $statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
         }
         
@@ -186,25 +193,30 @@ class Categories
             $this->id = $this->dbh->lastInsertId();
             $state['id'] = $this->id;
 
-            /** Record the action log */
-            $new_record_action = $this->logger->addEntry([
-                'action'				=> 34,
-                'owner_id'				=> CURRENT_USER_ID,
-                'affected_account'		=> $this->id,
-                'affected_account_name'	=> $this->name
-            ]);
-        }
-        else {
-            /** Query couldn't be executed */
+            /**
+             * Record the action log
+            */
+            $new_record_action = $this->logger->addEntry(
+                [
+                'action'                => 34,
+                'owner_id'                => CURRENT_USER_ID,
+                'affected_account'        => $this->id,
+                'affected_account_name'    => $this->name
+                ]
+            );
+        } else {
+            /**
+             * Query couldn't be executed
+            */
             $state['query'] = 0;
         }
 
         return $state;
     }
 
-	/**
-	 * Edit an existing user.
-	 */
+    /**
+     * Edit an existing user.
+     */
     public function edit()
     {
         if (empty($this->id)) {
@@ -213,22 +225,23 @@ class Categories
 
         $state = array();
  
-        /** SQL query */
+        /**
+         * SQL query
+        */
         $edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET 
-                                    name = :name,
-                                    parent = :parent,
-                                    description = :description
-                                    WHERE id = :id
-                                    ";
+            name = :name,
+            parent = :parent,
+            description = :description
+            WHERE id = :id
+        ";
 
 
-        $statement = $this->dbh->prepare( $edit_category_query );
+        $statement = $this->dbh->prepare($edit_category_query);
         $statement->bindParam(':name', $this->name);
-        if ( $this->parent == '0' ) {
+        if ($this->parent == '0') {
             $this->parent == null;
             $statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
-        }
-        else {
+        } else {
             $statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
         }
         $statement->bindParam(':description', $this->description);
@@ -241,44 +254,53 @@ class Categories
         if ($statement) {
             $state['query'] = 1;
 
-            /** Record the action log */
-            $new_record_action = $this->logger->addEntry([
-                'action'				=> 35,
-                'owner_id'				=> CURRENT_USER_ID,
-                'affected_account'		=> $this->id,
-                'affected_account_name'	=> $this->name
-            ]);
-        }
-        else {
+            /**
+             * Record the action log
+            */
+            $new_record_action = $this->logger->addEntry(
+                [
+                'action' => 35,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account' => $this->id,
+                'affected_account_name' => $this->name
+                ]
+            );
+        } else {
             $state['query'] = 0;
         }
 
-		return $state;
-	}
+        return $state;
+    }
 
-	/**
-	 * Delete an existing category.
-	 */
-	function delete() {
+    /**
+     * Delete an existing category.
+     */
+    public function delete()
+    {
         if (empty($this->id)) {
             return false;
         }
 
-        /** Do a permissions check */
+        /**
+         * Do a permissions check
+        */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
             $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
             $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $sql->execute();
             
-            /** Record the action log */
-            $record = $this->logger->addEntry([
-                'action' => 36,
-                'owner_id' => CURRENT_USER_ID,
-                'affected_account_name' => $this->name,
-                ]);
+            /**
+             * Record the action log
+            */
+            $record = $this->logger->addEntry(
+                [
+                    'action' => 36,
+                    'owner_id' => CURRENT_USER_ID,
+                    'affected_account_name' => $this->name,
+                ]
+            );
         }
 
         return true;
-	}
-
+    }
 }

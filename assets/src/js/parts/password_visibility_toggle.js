@@ -9,7 +9,7 @@
         $(function () {
             $(".password_toggle").each(function (index, input) {
                 var $input = $(input);
-                var $container	= $($input).next('.password_toggle');
+                var $container = $($input).next('.password_toggle');
                 $(".password_toggler button").on('click', function () {
                     var change;
                     var icon = $(this).find('i');

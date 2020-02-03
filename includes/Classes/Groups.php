@@ -3,8 +3,8 @@
  * Class that handles all the actions and functions that can be applied to
  * clients groups.
  *
- * @package		ProjectSend
- * @subpackage	Classes
+ * @package    ProjectSend
+ * @subpackage Classes
  */
 
 namespace ProjectSend\Classes;
@@ -56,6 +56,7 @@ class Groups
   
     /**
      * Return the ID
+     *
      * @return int
      */
     public function getId()
@@ -72,7 +73,7 @@ class Groups
      */
     public function set($arguments = [])
     {
-		$this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
+        $this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
         $this->description = (!empty($arguments['description'])) ? encode_html($arguments['description']) : null;
         $this->members = (!empty($arguments['members'])) ? $arguments['members'] : null;
         $this->public = (!empty($arguments['public'])) ? (int)$arguments['public'] : 0;
@@ -80,6 +81,7 @@ class Groups
 
     /**
      * Get existing user data from the database
+     *
      * @return bool
      */
     public function get($id)
@@ -95,7 +97,7 @@ class Groups
             return false;
         }
     
-        while ($row = $statement->fetch() ) {
+        while ($row = $statement->fetch()) {
             $this->name = html_output($row['name']);
             $this->description = html_output($row['description']);
             $this->public = html_output($row['public']);
@@ -110,9 +112,9 @@ class Groups
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         
-        if ( $statement->rowCount() > 0) {
+        if ($statement->rowCount() > 0) {
             $statement->setFetchMode(PDO::FETCH_ASSOC);
-            while ($member = $statement->fetch() ) {
+            while ($member = $statement->fetch()) {
                 $this->members[] = $member['client_id'];
             }
         }
@@ -122,9 +124,9 @@ class Groups
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
 
-        if ( $statement->rowCount() > 0) {
+        if ($statement->rowCount() > 0) {
             $statement->setFetchMode(PDO::FETCH_ASSOC);
-            while ($file = $statement->fetch() ) {
+            while ($file = $statement->fetch()) {
                 $this->files[] = $file['file_id'];
             }
         }
@@ -153,6 +155,7 @@ class Groups
 
     /**
      * Is group public?
+     *
      * @return bool
      */
     public function isPublic()
@@ -164,34 +167,33 @@ class Groups
         return false;
     }
 
-	/**
-	 * Validate the information from the form.
-	 */
-	public function validate()
-	{
+    /**
+     * Validate the information from the form.
+     */
+    public function validate()
+    {
         $validation = new \ProjectSend\Classes\Validation;
 
-		global $json_strings;
-		$state = array();
+        global $json_strings;
+        $state = array();
 
-		/**
-		 * These validations are done both when creating a new group and
-		 * when editing an existing one.
-		 */
-		$validation->validate('completed',$this->name,$json_strings['validation']['no_name']);
-        $validation->validate('completed',$this->description,$json_strings['validation']['no_description']);
+        /**
+         * These validations are done both when creating a new group and
+         * when editing an existing one.
+         */
+        $validation->validate('completed', $this->name, $json_strings['validation']['no_name']);
+        $validation->validate('completed', $this->description, $json_strings['validation']['no_description']);
 
         if ($validation->passed()) {
             $this->validation_passed = true;
             return true;
-		}
-		else {
+        } else {
             $this->validation_passed = false;
             $this->validation_errors = $validation->list_errors();
         }
         
         return false;
-	}
+    }
 
     /**
      * Return the validation errors the the front end
@@ -205,24 +207,30 @@ class Groups
         return false;
     }
 
-	/**
-	 * Create a new group.
-	 */
-	public function create()
-	{
+    /**
+     * Create a new group.
+     */
+    public function create()
+    {
         $state = array();
         
         if (!empty($this->name)) {
 
-   			/** Who is creating the client? */
+            /**
+             * Who is creating the client?
+            */
             $this->owner_id = CURRENT_USER_ID;
-			$this->created_by = CURRENT_USER_USERNAME;
+            $this->created_by = CURRENT_USER_USERNAME;
 
-            /** Define the group information */
+            /**
+             * Define the group information
+            */
             $this->public_token = generateRandomString(32);
 
-            $sql_query = $this->dbh->prepare("INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, owner_id, created_by)"
-                                                    ." VALUES (:name, :description, :public, :token, :owner_id, :admin)");
+            $sql_query = $this->dbh->prepare(
+                "INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, owner_id, created_by)"
+                ." VALUES (:name, :description, :public, :token, :owner_id, :admin)"
+            );
             $sql_query->bindParam(':name', $this->name);
             $sql_query->bindParam(':description', $this->description);
             $sql_query->bindParam(':public', $this->public, PDO::PARAM_INT);
@@ -236,11 +244,15 @@ class Groups
             $state['name'] = $this->name;
             $state['public_token'] = $this->public_token;
 
-            /** Create the members records */
-            if ( !empty( $this->members ) ) {
+            /**
+             * Create the members records
+            */
+            if (!empty($this->members)) {
                 foreach ($this->members as $member) {
-                    $sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-                                                            ." VALUES (:admin, :member, :id)");
+                    $sql_member = $this->dbh->prepare(
+                        "INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+                        ." VALUES (:admin, :member, :id)"
+                    );
                     $sql_member->bindParam(':admin', $this->created_by);
                     $sql_member->bindParam(':member', $member, PDO::PARAM_INT);
                     $sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
@@ -251,101 +263,123 @@ class Groups
             if ($sql_query) {
                 $state['query'] = 1;
 
-                /** Record the action log */
-                $new_record_action = $this->logger->addEntry([
+                /**
+                 * Record the action log
+                */
+                $new_record_action = $this->logger->addEntry(
+                    [
                     'action' => 23,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account' => $this->id,
                     'affected_account_name' => $this->name,
-                ]);
-            }
-            else {
+                    ]
+                );
+            } else {
                 $state['query'] = 0;
             }
         }
-		
-		return $state;
-	}
+        
+        return $state;
+    }
 
-	/**
-	 * Edit an existing group.
-	 */
-	public function edit()
-	{
+    /**
+     * Edit an existing group.
+     */
+    public function edit()
+    {
         if (empty($this->id)) {
             return false;
         }
 
         $state = array();
 
-        /** Who is creating the client? */
+        /**
+         * Who is creating the client?
+        */
         $this->created_by = CURRENT_USER_USERNAME;
 
-		/** SQL query */
-		$sql_query = $this->dbh->prepare( "UPDATE " . TABLE_GROUPS . " SET name = :name, description = :description, public = :public WHERE id = :id" );
-		$sql_query->bindParam(':name', $this->name);
-		$sql_query->bindParam(':description', $this->description);
-		$sql_query->bindParam(':public', $this->public, PDO::PARAM_INT);
-		$sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
-		$sql_query->execute();
+        /**
+         * SQL query
+        */
+        $sql_query = $this->dbh->prepare("UPDATE " . TABLE_GROUPS . " SET name = :name, description = :description, public = :public WHERE id = :id");
+        $sql_query->bindParam(':name', $this->name);
+        $sql_query->bindParam(':description', $this->description);
+        $sql_query->bindParam(':public', $this->public, PDO::PARAM_INT);
+        $sql_query->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $sql_query->execute();
 
-		/** Clean the memmbers table */
-		$sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
-		$sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
-		$sql_clean->execute();
-		
-		/** Create the members records */
-		if (!empty($this->members)) {
-			foreach ($this->members as $member) {
-				$sql_member = $this->dbh->prepare("INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-														." VALUES (:admin, :member, :id)");
-				$sql_member->bindParam(':admin', $this->created_by);
-				$sql_member->bindParam(':member', $member, PDO::PARAM_INT);
-				$sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
-				$sql_member->execute();
-			}
-		}
+        /**
+         * Clean the memmbers table
+        */
+        $sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
+        $sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $sql_clean->execute();
 
-		if ($sql_query) {
-			$state['query'] = 1;
+        /**
+         * Create the members records
+        */
+        if (!empty($this->members)) {
+            foreach ($this->members as $member) {
+                $sql_member = $this->dbh->prepare(
+                    "INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
+                    ." VALUES (:admin, :member, :id)"
+                );
+                $sql_member->bindParam(':admin', $this->created_by);
+                $sql_member->bindParam(':member', $member, PDO::PARAM_INT);
+                $sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $sql_member->execute();
+            }
+        }
 
-            /** Record the action log */
-            $new_record_action = $this->logger->addEntry([
+        if ($sql_query) {
+            $state['query'] = 1;
+
+            /**
+             * Record the action log
+            */
+            $new_record_action = $this->logger->addEntry(
+                [
                 'action' => 15,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_account' => $this->id,
                 'affected_account_name' => $this->name,
-            ]);
+                ]
+            );
+        } else {
+            $state['query'] = 0;
         }
-		else {
-			$state['query'] = 0;
-		}
-		
-		return $state;
-	}
+        
+        return $state;
+    }
 
-	/**
-	 * Delete an existing group.
-	 */
-	public function delete()
-	{
+    /**
+     * Delete an existing group.
+     */
+    public function delete()
+    {
         if (empty($this->id)) {
             return false;
         }
 
-        /** Do a permissions check */
+        /**
+         * Do a permissions check
+        */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
             $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_GROUPS . ' WHERE id=:id');
             $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $sql->execute();
         }
         
-        /** Record the action log */
-        $record = $this->logger->addEntry([
+        /**
+         * Record the action log
+        */
+        $record = $this->logger->addEntry(
+            [
             'action' => 18,
             'owner_id' => CURRENT_USER_ID,
             'affected_account_name' => $this->name,
-        ]);
+            ]
+        );
 
         return true;
     }

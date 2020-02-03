@@ -8,16 +8,15 @@
 function workspace_exists_id($id)
 {
     /** @var PDO $dbh */
-	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_WORKSPACES . " WHERE id=:id");
-	$statement->bindParam(':id', $id, PDO::PARAM_INT);
-	$statement->execute();
-	if ( $statement->rowCount() > 0 ) {
-		return true;
-	}
-	else {
-		return false;
-	}
+    global $dbh;
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_WORKSPACES . " WHERE id=:id");
+    $statement->bindParam(':id', $id, PDO::PARAM_INT);
+    $statement->execute();
+    if ($statement->rowCount() > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -27,27 +26,26 @@ function workspace_exists_id($id)
  */
 function get_workspace_by_id($id)
 {
-	global $dbh;
-	$statement = $dbh->prepare("SELECT * FROM " . TABLE_WORKSPACES . " WHERE id=:id");
-	$statement->bindParam(':id', $id, PDO::PARAM_INT);
-	$statement->execute();
-	$statement->setFetchMode(PDO::FETCH_ASSOC);
+    global $dbh;
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_WORKSPACES . " WHERE id=:id");
+    $statement->bindParam(':id', $id, PDO::PARAM_INT);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
 
-	while ( $row = $statement->fetch() ) {
-		$information = array(
-							'id'			=> html_output($row['id']),
-							'created_by'	=> html_output($row['created_by']),
-							'created_date'	=> html_output($row['timestamp']),
-							'name'			=> html_output($row['name']),
-							'description'	=> html_output($row['description']),
-						);
-		if ( !empty( $information ) ) {
-			return $information;
-		}
-		else {
-			return false;
-		}
-	}
+    while ($row = $statement->fetch()) {
+        $information = array(
+            'id' => html_output($row['id']),
+            'created_by' => html_output($row['created_by']),
+            'created_date' => html_output($row['timestamp']),
+            'name' => html_output($row['name']),
+            'description' => html_output($row['description']),
+        );
+        if (!empty($information)) {
+            return $information;
+        } else {
+            return false;
+        }
+    }
 }
 
 /**
@@ -58,37 +56,36 @@ function get_workspaces($arguments)
 {
     global $dbh;
 
-    $workspace_ids	= !empty( $arguments['workspace_ids'] ) ? $arguments['workspace_ids'] : array();
-    $workspace_ids	= is_array( $workspace_ids ) ? $workspace_ids : array( $workspace_ids );
-    $is_public	= !empty( $arguments['public'] ) ? $arguments['public'] : '';
-    $owner_id	= !empty( $arguments['owner_id'] ) ? $arguments['owner_id'] : '';
-    $created_by	= !empty( $arguments['created_by'] ) ? $arguments['created_by'] : '';
-    $search		= !empty( $arguments['search'] ) ? $arguments['search'] : '';
+    $workspace_ids = !empty($arguments['workspace_ids']) ? $arguments['workspace_ids'] : array();
+    $workspace_ids = is_array($workspace_ids) ? $workspace_ids : array( $workspace_ids );
+    $is_public = !empty($arguments['public']) ? $arguments['public'] : '';
+    $owner_id = !empty($arguments['owner_id']) ? $arguments['owner_id'] : '';
+    $created_by = !empty($arguments['created_by']) ? $arguments['created_by'] : '';
+    $search = !empty($arguments['search']) ? $arguments['search'] : '';
 
     $workspaces = array();
     $query = "SELECT * FROM " . TABLE_WORKSPACES;
 
     $parameters = array();
-    if ( !empty( $workspace_ids ) ) {
+    if (!empty($workspace_ids)) {
         $parameters[] = "FIND_IN_SET(id, :ids)";
     }
-    if ( !empty( $created_by ) ) {
+    if (!empty($created_by)) {
         $parameters[] = "created_by=:created_by";
     }
-    if ( !empty( $owner_id ) ) {
+    if (!empty($owner_id)) {
         $parameters[] = "owner_id=:owner_id";
     }
-    if ( !empty( $search ) ) {
+    if (!empty($search)) {
         $parameters[] = "(name LIKE :name OR description LIKE :description)";
     }
     
-    if ( !empty( $parameters ) ) {
+    if (!empty($parameters)) {
         $p = 1;
-        foreach ( $parameters as $parameter ) {
-            if ( $p == 1 ) {
+        foreach ($parameters as $parameter) {
+            if ($p == 1) {
                 $connector = " WHERE ";
-            }
-            else {
+            } else {
                 $connector = " AND ";
             }
             $p++;
@@ -99,17 +96,17 @@ function get_workspaces($arguments)
 
     $statement = $dbh->prepare($query);
 
-    if ( !empty( $workspace_ids ) ) {
-        $workspace_ids = implode( ',', $workspace_ids );
+    if (!empty($workspace_ids)) {
+        $workspace_ids = implode(',', $workspace_ids);
         $statement->bindParam(':ids', $workspace_ids);
     }
-    if ( !empty( $created_by ) ) {
+    if (!empty($created_by)) {
         $statement->bindParam(':created_by', $created_by);
     }
-    if ( !empty( $owner_id ) ) {
+    if (!empty($owner_id)) {
         $statement->bindParam(':owner_id', $owner_id);
     }
-    if ( !empty( $search ) ) {
+    if (!empty($search)) {
         $search_value = '%' . $search . '%';
         $statement->bindValue(':name', $search_value);
         $statement->bindValue(':description', $search_value);
@@ -119,7 +116,7 @@ function get_workspaces($arguments)
     $statement->setFetchMode(PDO::FETCH_ASSOC);
 
     $all_workspaces = array();
-    while( $data_workspace = $statement->fetch() ) {
+    while ($data_workspace = $statement->fetch()) {
         $all_workspaces[$data_workspace['id']] = array(
                                     'id'            => $data_workspace['id'],
                                     'name'          => $data_workspace['name'],
@@ -129,10 +126,9 @@ function get_workspaces($arguments)
                                 );
     }
     
-    if ( !empty($all_workspaces) > 0 ) {
+    if (!empty($all_workspaces) > 0) {
         return $all_workspaces;
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -151,19 +147,17 @@ function count_members_on_workspace($workspace_id)
     $allowed_levels = array(9,8);
     // Do a permissions check
     if (isset($allowed_levels) && current_role_in($allowed_levels)) {
-        if ( workspace_exists_id($workspace_id) ) {
+        if (workspace_exists_id($workspace_id)) {
             $statement = $dbh->prepare("SELECT COUNT(user_id) as count FROM " . TABLE_WORKSPACES_USERS . " WHERE workspace_id = :workspace_id");
             $statement->bindValue(':workspace_id', $workspace_id, PDO::PARAM_INT);
             $statement->execute();
             $result = $statement->fetch();
 
             return $result['count'];
-        }
-        else {
+        } else {
             return 0;
         }
-    }
-    else {
+    } else {
         return 0;
     }
 }
@@ -184,7 +178,7 @@ function delete_workspace($workspace_id)
         if (isset($allowed_levels) && current_role_in($allowed_levels)) {
             $workspace_data = get_workspace_by_id($workspace_id);
 
-            if ( !empty( $workspace_data ) ) {
+            if (!empty($workspace_data)) {
                 $statement = $dbh->prepare('DELETE FROM ' . TABLE_WORKSPACES . ' WHERE id=:id');
                 $statement->bindParam(':id', $workspace_id, PDO::PARAM_INT);
                 $statement->execute();
@@ -196,19 +190,16 @@ function delete_workspace($workspace_id)
                                         'owner_id' => CURRENT_USER_ID,
                                         'affected_account_name' => $workspace_data['name']
                                     );
-                $new_record_action = $logger->addEntry($log_action_args);		
+                $new_record_action = $logger->addEntry($log_action_args);
 
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        else {
+        } else {
             return false;
         }
-    }
-    else {
+    } else {
         return false;
     }
 }

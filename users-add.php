@@ -2,9 +2,8 @@
 /**
  * Show the form to add a new system user.
  *
- * @package		ProjectSend
- * @subpackage	Users
- *
+ * @package    ProjectSend
+ * @subpackage Users
  */
 
 use ProjectSend\Classes\Users;
@@ -14,19 +13,19 @@ require_once 'bootstrap.php';
 
 global $dbh;
 
-if(!check_for_admin()) {
+if (!check_for_admin()) {
     return;
 }
 
 $active_nav = 'users';
 
-$page_title = __('Add system user','cftp_admin');
+$page_title = __('Add system user', 'cftp_admin');
 
 $page_id = 'user_form';
 
 $new_user = new Users($dbh);
 
-include_once ADMIN_VIEWS_DIR . DS . 'header.php';
+require_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /**
  * Set checkboxes as 1 to defaul them to checked when first entering
@@ -38,10 +37,10 @@ $user_arguments = array(
 );
 
 if ($_POST) {
-	/**
-	 * Clean the posted form values to be used on the user actions,
-	 * and again on the form if validation failed.
-	 */
+    /**
+     * Clean the posted form values to be used on the user actions,
+     * and again on the form if validation failed.
+     */
     $user_arguments = array(
         'username' => $_POST['username'],
         'password' => $_POST['password'],
@@ -54,11 +53,15 @@ if ($_POST) {
         'type' => 'new_user',
     );
 
-	/** Validate the information from the posted form. */
-    /** Create the user if validation is correct. */
+    /**
+     * Validate the information from the posted form.
+    */
+    /**
+     * Create the user if validation is correct.
+    */
     $new_user->setType('new_user');
     $new_user->set($user_arguments);
-	if ($new_user->validate()) {
+    if ($new_user->validate()) {
         $new_response = $new_user->create();
 
         if (!empty($new_response['id'])) {
@@ -70,37 +73,36 @@ if ($_POST) {
 }
 ?>
 <div class="col-xs-12 col-sm-12 col-lg-6">
-	<div class="white-box">
-		<div class="white-box-interior">
-		
-			<?php
+    <div class="white-box">
+        <div class="white-box-interior">
+        
+            <?php
                 // If the form was submited with errors, show them here.
                 echo $new_user->getValidationErrors();
 
-				if (isset($new_response)) {
-					/**
-					 * Get the process state and show the corresponding ok or error message.
-					 */
-					switch ($new_response['query']) {
-						case 0:
-							$msg = __('There was an error. Please try again.','cftp_admin');
-							echo system_message('danger',$msg);
-						break;
-					}
-				}
-				else {
-					/**
-					 * If not $new_response is set, it means we are just entering for the first time.
-					 * Include the form.
-					 */
-					$user_form_type = 'new_user';
-					include_once FORMS_DIR . DS . 'users.php';
-				}
-			?>
+            if (isset($new_response)) {
+                /**
+                 * Get the process state and show the corresponding ok or error message.
+                 */
+                switch ($new_response['query']) {
+                    case 0:
+                        $msg = __('There was an error. Please try again.', 'cftp_admin');
+                        echo system_message('danger', $msg);
+                        break;
+                }
+            } else {
+                /**
+                 * If not $new_response is set, it means we are just entering for the first time.
+                 * Include the form.
+                 */
+                $user_form_type = 'new_user';
+                include_once FORMS_DIR . DS . 'users.php';
+            }
+            ?>
 
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 
 <?php
-	include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

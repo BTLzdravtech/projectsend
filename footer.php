@@ -1,33 +1,34 @@
-					</div> <!-- row -->
-				</div> <!-- container-fluid -->
+                    </div> <!-- row -->
+                </div> <!-- container-fluid -->
 
-				<?php
-				/**
-				 * Footer for the backend. Outputs the default mark up and
-				 * information generated on functions.php.
-				 *
-				 * @package ProjectSend
-				 */
+                <?php
+                /**
+                 * Footer for the backend. Outputs the default mark up and
+                 * information generated on functions.php.
+                 *
+                 * @package ProjectSend
+                 */
                     default_footer_info();
-                    
-                    render_json_variables();
-					
-					load_js_files();
-				?>
-			</div> <!-- main_content -->
-		</div> <!-- container-custom -->
 
-	</body>
+                    render_json_variables();
+
+                    load_js_files();
+                ?>
+            </div> <!-- main_content -->
+        </div> <!-- container-custom -->
+
+    </body>
 </html>
 <?php
-	if ( DEBUG === true ) {
-        /** @var PDO $dbh */
-        global $dbh;
+if (DEBUG === true) {
+    /** @var PDO $dbh */
+    global $dbh;
 
-		echo "\n" . '<!-- DEBUG INFORMATION' . "\n";
-		// Print the total count of queries made by PDO
-		_e('Executed queries','cftp_admin'); echo ': ' . $dbh->GetCount();
-		echo "\n" . '-->' . "\n" ;
-	}
+    echo "\n" . '<!-- DEBUG INFORMATION' . "\n";
+    // Print the total count of queries made by PDO
+    _e('Executed queries', 'cftp_admin');
+    echo ': ' . $dbh->GetCount();
+    echo "\n" . '-->' . "\n" ;
+}
 
-	ob_end_flush();
+ob_end_flush();

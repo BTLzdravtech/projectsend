@@ -1,9 +1,9 @@
-var dataExtraction = function(node) {
-	if (node.childNodes.length > 1) {
-		return node.childNodes[1].innerHTML;
-	} else {
-		return node.innerHTML;
-	}
+var dataExtraction = function (node) {
+    if (node.childNodes.length > 1) {
+        return node.childNodes[1].innerHTML;
+    } else {
+        return node.innerHTML;
+    }
 };
 
 /**
@@ -12,7 +12,7 @@ var dataExtraction = function(node) {
  * https://stackoverflow.com/questions/29532788/how-to-display-a-loading-animation-while-file-is-generated-for-download
  */
 var downloadTimeout;
-var check_download_cookie = function() {
+var check_download_cookie = function () {
     if (Cookies.get("download_started") === 1) {
         Cookies.set("download_started", "false", { expires: 100 });
         remove_modal();
@@ -23,7 +23,7 @@ var check_download_cookie = function() {
 
 // Close the log CSV download modal
 var logdownloadTimeout;
-var check_log_download_cookie = function() {
+var check_log_download_cookie = function () {
     if (Cookies.get("log_download_started") === 1) {
         Cookies.set("log_download_started", "false", { expires: 100 });
         remove_modal();

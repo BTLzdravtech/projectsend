@@ -2,10 +2,11 @@
 /**
  * Class that handles log in, log out and account status checks.
  *
- * @package		ProjectSend
- * @subpackage	Classes
+ * @package    ProjectSend
+ * @subpackage Classes
  */
 namespace ProjectSend\Classes;
+
 use BruteForceBlock;
 use \PDO;
 
@@ -38,36 +39,39 @@ class Auth
     {
         global $logger;
         
-        if ( !$username || !$password )
+        if (!$username || !$password) {
             return false;
+        }
 
         $BFBresponse = BruteForceBlock::getLoginStatus();
 
-        switch ($BFBresponse['status']){
+        switch ($BFBresponse['status']) {
             case 'safe':
-                $selected_form_lang	= (!empty( $language ) ) ? $language : SITE_LANG;
-
+                $selected_form_lang = (!empty($language)) ? $language : SITE_LANG;
                 $this->ldap = new LDAP($this->dbh);
-
-                /** Look up the system users table to see if the entered username exists */
+                /**
+                 * Look up the system users table to see if the entered username exists
+                 */
                 $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user=:username OR email=:email");
                 $statement->execute(
                     array(
-                        ':username'	=> $username,
-                        ':email'	=> $username,
+                        ':username' => $username,
+                        ':email' => $username,
                     )
                 );
                 $count_user = $statement->rowCount();
                 if ($count_user > 0) {
-                    /** If the username was found on the users table */
+                    /**
+                     * If the username was found on the users table
+                     */
                     $statement->setFetchMode(PDO::FETCH_ASSOC);
-                    while ( $row = $statement->fetch() ) {
-                        $db_username              = $row['user'];
-                        $db_pass                  = $row['password'];
-                        $user_level               = $row["level"];
-                        $active_status            = $row['active'];
-                        $logged_id                = $row['id'];
-                        $name                     = $row['name'];
+                    while ($row = $statement->fetch()) {
+                        $db_username = $row['user'];
+                        $db_pass = $row['password'];
+                        $user_level = $row["level"];
+                        $active_status = $row['active'];
+                        $logged_id = $row['id'];
+                        $name = $row['name'];
                     }
                     $authenticated = false;
                     if (LDAP_SIGNIN_ENABLED && ($user_level == '8' || $user_level == '9')) {
@@ -115,11 +119,11 @@ class Auth
                                 $created_user = $new_user->create();
                             }
 
-                            $db_username	    = $attributes['sAMAccountName'][0];
-                            $user_level		= '8';
-                            $active_status	= '1';
-                            $logged_id		= $id ?? $created_user['id'] ;
-                            $name	        	= $attributes['displayName'][0];
+                            $db_username = $attributes['sAMAccountName'][0];
+                            $user_level = '8';
+                            $active_status = '1';
+                            $logged_id = $id ?? $created_user['id'];
+                            $name = $attributes['displayName'][0];
                         } else {
                             //$errorstate = 'wrong_username';
                             BruteForceBlock::addFailedLoginAttempt($username, $_SERVER['REMOTE_ADDR']);
@@ -135,7 +139,9 @@ class Auth
 
                 if ($authenticated) {
                     if ($active_status != '0') {
-                        /** Set SESSION values */
+                        /**
+                         * Set SESSION values
+                         */
                         $_SESSION['loggedin'] = $db_username;
                         $_SESSION['userlevel'] = $user_level;
                         $_SESSION['lang'] = $selected_form_lang;
@@ -160,13 +166,17 @@ class Auth
                             $_SESSION['access'] = $db_username;
                         }
 
-                        /** Record the action log */
-                        $new_record_action = $this->logger->addEntry([
-                            'action' => 1,
-                            'owner_id' => $logged_id,
-                            'owner_user' => $name,
-                            'affected_account_name' => $name
-                        ]);
+                        /**
+                         * Record the action log
+                         */
+                        $new_record_action = $this->logger->addEntry(
+                            [
+                                'action' => 1,
+                                'owner_id' => $logged_id,
+                                'owner_user' => $name,
+                                'affected_account_name' => $name
+                            ]
+                        );
 
                         $results = array(
                             'status' => 'success',
@@ -178,9 +188,13 @@ class Auth
                             $results['location'] = BASE_URI . "upload-from-computer.php";
                         }
 
-                        /** Using an external form */
+                        /**
+                         * Using an external form
+                         */
                         if (!empty($_GET['external']) && $_GET['external'] == '1' && empty($_GET['ajax'])) {
-                            /** Success */
+                            /**
+                             * Success
+                             */
                             if ($results['status'] == 'success') {
                                 header('Location: ' . $results['location']);
                                 exit;
@@ -207,70 +221,74 @@ class Auth
         } else {
             $error_message = $this->getLoginError($errorstate);
         }
-		$results = array(
-						'status'	=> 'error',
-						'message'	=> system_message('danger',$error_message,'login_error'),
-					);
+        $results = array(
+            'status' => 'error',
+            'message' => system_message('danger', $error_message, 'login_error'),
+        );
 
-		/** Using an external form */
-		if ( !empty( $_GET['external'] ) && $_GET['external'] == '1' && empty( $_GET['ajax'] ) ) {
-			/** Error */
-			if ( $results['status'] == 'error' ) {
-				header('Location: ' . BASE_URI . '?error=invalid_credentials');
+        /**
+         * Using an external form
+        */
+        if (!empty($_GET['external']) && $_GET['external'] == '1' && empty($_GET['ajax'])) {
+            /**
+             * Error
+            */
+            if ($results['status'] == 'error') {
+                header('Location: ' . BASE_URI . '?error=invalid_credentials');
                 exit;
-			}
-		}
+            }
+        }
 
         echo json_encode($results);
     }
 
     /**
      * Login error strings
-     * 
-     * @param string errorstate
+     *
+     * @param  string errorstate
      * @return string
      */
     public function getLoginError($errorstate, $delay = null)
     {
-        $error = __("Error during log in.",'cftp_admin');
+        $error = __("Error during log in.", 'cftp_admin');
 
-		if (isset($errorstate)) {
-			switch ($errorstate) {
-				case 'invalid_credentials':
-					$error = __("The supplied credentials are not valid.",'cftp_admin');
-					break;
-				case 'wrong_username':
-					$error = __("The supplied username doesn't exist.",'cftp_admin');
-					break;
-				case 'wrong_password':
-					$error = __("The supplied password is incorrect.",'cftp_admin');
-					break;
-				case 'inactive_client':
-					$error = __("This account is not active.",'cftp_admin');
-					if (CLIENTS_CAN_REGISTER == 1 && CLIENTS_AUTO_APPROVE == 0) {
-						$error .= ' '.__("If you just registered, please wait until a system administrator approves your account.",'cftp_admin');
-					}
-					break;
-				case 'no_self_registration':
-					$error = __('Client self registration is not allowed. If you need an account, please contact a system administrator.','cftp_admin');
-					break;
-				case 'no_account':
-					$error = __('Sign-in with Google cannot be used to create new accounts at this time.','cftp_admin');
-					break;
-				case 'access_denied':
-					$error = __('You must approve the requested permissions to sign in with Google.','cftp_admin');
-					break;
+        if (isset($errorstate)) {
+            switch ($errorstate) {
+                case 'invalid_credentials':
+                    $error = __("The supplied credentials are not valid.", 'cftp_admin');
+                    break;
+                case 'wrong_username':
+                    $error = __("The supplied username doesn't exist.", 'cftp_admin');
+                    break;
+                case 'wrong_password':
+                    $error = __("The supplied password is incorrect.", 'cftp_admin');
+                    break;
+                case 'inactive_client':
+                    $error = __("This account is not active.", 'cftp_admin');
+                    if (CLIENTS_CAN_REGISTER == 1 && CLIENTS_AUTO_APPROVE == 0) {
+                        $error .= ' '.__("If you just registered, please wait until a system administrator approves your account.", 'cftp_admin');
+                    }
+                    break;
+                case 'no_self_registration':
+                    $error = __('Client self registration is not allowed. If you need an account, please contact a system administrator.', 'cftp_admin');
+                    break;
+                case 'no_account':
+                    $error = __('Sign-in with Google cannot be used to create new accounts at this time.', 'cftp_admin');
+                    break;
+                case 'access_denied':
+                    $error = __('You must approve the requested permissions to sign in with Google.', 'cftp_admin');
+                    break;
                 case 'error':
-                    $error = __('Sorry, we can\'t process your request right now.','cftp_admin');
+                    $error = __('Sorry, we can\'t process your request right now.', 'cftp_admin');
                     break;
                 case 'delay':
                     if ($delay > 1) {
-                        $error = sprintf(__('There have been too many login failures from your network in a short time period.<br>Please wait %d seconds and try again.','cftp_admin'), $delay);
+                        $error = sprintf(__('There have been too many login failures from your network in a short time period.<br>Please wait %d seconds and try again.', 'cftp_admin'), $delay);
                     } else {
-                        $error = sprintf(__('There have been too many login failures from your network in a short time period.<br>Please wait %d second and try again.','cftp_admin'), $delay);
+                        $error = sprintf(__('There have been too many login failures from your network in a short time period.<br>Please wait %d second and try again.', 'cftp_admin'), $delay);
                     }
                     break;
-			}
+            }
         }
         
         return $error;
@@ -279,34 +297,38 @@ class Auth
     public function logout()
     {
         header("Cache-control: private");
-		unset($_SESSION['loggedin']);
-		unset($_SESSION['access']);
-		unset($_SESSION['userlevel']);
-		unset($_SESSION['lang']);
-		unset($_SESSION['last_call']);
-		session_destroy();
+        unset($_SESSION['loggedin']);
+        unset($_SESSION['access']);
+        unset($_SESSION['userlevel']);
+        unset($_SESSION['lang']);
+        unset($_SESSION['last_call']);
+        session_destroy();
 
-		/*
-		$language_cookie = 'projectsend_language';
-		setcookie ($language_cookie, "", 1);
-		setcookie ($language_cookie, false);
-		unset($_COOKIE[$language_cookie]);
-		*/
+        /*
+        $language_cookie = 'projectsend_language';
+        setcookie ($language_cookie, "", 1);
+        setcookie ($language_cookie, false);
+        unset($_COOKIE[$language_cookie]);
+        */
 
-		/** Record the action log */
-		$new_record_action = $this->logger->addEntry([
-            'action'	=> 31,
-            'owner_id'	=> CURRENT_USER_ID,
-            'affected_account_name' => CURRENT_USER_NAME
-        ]);
+        /**
+         * Record the action log
+        */
+        $new_record_action = $this->logger->addEntry(
+            [
+                'action' => 31,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account_name' => CURRENT_USER_NAME
+            ]
+        );
 
-		$redirect_to = 'index.php';
-		if ( isset( $_GET['timeout'] ) ) {
-			$redirect_to .= '?error=timeout';
-		}
+        $redirect_to = 'index.php';
+        if (isset($_GET['timeout'])) {
+            $redirect_to .= '?error=timeout';
+        }
 
-		header("Location: " . $redirect_to);
-		exit;
+        header("Location: " . $redirect_to);
+        exit;
     }
 
     public function unauthorized(Request $request, Response $response)
