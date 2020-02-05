@@ -3,7 +3,9 @@ use ProjectSend\Classes\Emails;
 
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
 global $dbh;
+
 $file_data = array();
 $mail_by_user = array();
 
@@ -17,7 +19,7 @@ $statement = $dbh->prepare("SELECT F.filename as filename, F.id as client_id, U.
                            ");
 
 $statement->execute();
-if ( $statement->rowCount() > 0 ) {
+if ($statement->rowCount() > 0) {
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while ($row = $statement->fetch()) {
         $file_data[$row['user']][] = array(
@@ -50,6 +52,6 @@ if (count($file_data) > 0) {
             'address' => $address,
             'files_list' => $files_list
         );
-        $notifier->send( $email_arguments_admin);
+        $notifier->send($email_arguments_admin);
     }
 }

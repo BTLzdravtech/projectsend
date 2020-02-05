@@ -2,313 +2,354 @@
 /**
  * Class that generates a form and its fields.
  *
- * @package		ProjectSend
- * @subpackage	Classes
+ * @package    ProjectSend
+ * @subpackage Classes
  */
 
 namespace ProjectSend\Classes;
 
-class FormGenerate {
-	
-	private $open;
-	public $new_password_fields;
+class FormGenerate
+{
+    private $dbh;
 
-	function __construct() {
-		global $dbh;
-		$this->dbh = $dbh;
-		
-		$this->close				= "</form>\n";
-		$this->output				= '';
-		$this->contents				= '';
+    private $open;
+    private $close;
+    private $output;
+    private $contents;
 
-		$this->group_class 			= 'form-group';
-		$this->checkbox_group_class = 'checkbox';
-		$this->label_class			= 'col-sm-4 control-label';
-		$this->wrap_class 			= 'col-sm-8';
-		$this->wrap_group 			= 'input-group';
-		$this->checkbox_wrap		= 'col-sm-8 col-sm-offset-4';
-		$this->field_class			= 'form-control';
+    private $group_class;
+    private $checkbox_group_class;
+    private $label_class;
+    private $wrap_class;
+    private $wrap_group;
+    private $checkbox_wrap;
+    private $field_class;
 
-		$this->password_toggle_wrap = 'input-group-btn password_toggler';		
-		$this->password_toggle_btn	= 'pass_toggler_show';
-		$this->new_password_fields	= array();
+    private $password_toggle_wrap;
+    private $password_toggle_btn;
+    public $new_password_fields;
 
-		$this->ignore_field_class	= array(
-											'hidden',
-											'checkbox',
-											'radio',
-											'separator',
-										);
+    private $ignore_field_class;
 
-		$this->ignore_layout		= array(
-											'hidden',
-											'separator',
-										);
-	}
+    private $ignore_layout;
 
-	/**
-	 * Create the form
-	 */
-	public function create( $arguments ) {
-		$this->open			.= $this->generate_tag( 'form', false, false, false, $arguments );
-	}
+    public function __construct()
+    {
+        global $dbh;
+        $this->dbh = $dbh;
+        
+        $this->close = "</form>\n";
+        $this->output = '';
+        $this->contents = '';
 
-	/**
-	 * Generate each tag
-	 * form, input, textarea, etc
-	 */
-	private function generate_tag( $element, $close_tag, $type, $add_type, $arguments ) {
+        $this->group_class = 'form-group';
+        $this->checkbox_group_class = 'checkbox';
+        $this->label_class = 'col-sm-4 control-label';
+        $this->wrap_class = 'col-sm-8';
+        $this->wrap_group = 'input-group';
+        $this->checkbox_wrap = 'col-sm-8 col-sm-offset-4';
+        $this->field_class = 'form-control';
 
-		$this->attributes 	= !( empty( $arguments['attributes'] ) )	? $arguments['attributes'] : null;
-		$this->value		= !( empty( $arguments['value'] ) )			? $arguments['value'] : null;
-		$this->content		= !( empty( $arguments['content'] ) )		? $arguments['content'] : null;
-		$this->options		= !( empty( $arguments['options'] ) )		? $arguments['options'] : null;
-		$this->check_var	= !( empty( $arguments['check_var'] ) )		? $arguments['check_var'] : null;
-		$this->selected		= !( empty( $arguments['selected'] ) )		? $arguments['selected'] : null;
-		$this->required		= !( empty( $arguments['required'] ) )		? true : false;
-		$this->label 		= !( empty( $arguments['label'] ) )			? $arguments['label'] : null;
+        $this->password_toggle_wrap = 'input-group-btn password_toggler';
+        $this->password_toggle_btn = 'pass_toggler_show';
+        $this->new_password_fields = array();
 
-		$this->properties	= array();
-		$this->result		= '';
+        $this->ignore_field_class = array(
+            'hidden',
+            'checkbox',
+            'radio',
+            'separator',
+        );
 
-		if ( $element != 'form' ) {
-			$this->result .= "\t";
-		}
+        $this->ignore_layout = array(
+            'hidden',
+            'separator',
+        );
+    }
 
-		$this->result .= '<' . $element . ' ';
-		
-		if ( $add_type == true ) {
-			$this->properties['type'] = $type;
-		}
+    /**
+     * Create the form
+     */
+    public function create($arguments)
+    {
+        $this->open .= $this->generate_tag('form', false, false, false, $arguments);
+    }
 
-		foreach ( $this->attributes as $tag => $val ) {
-			if ( empty( $val ) ) {
-				$this->properties[$tag] = '';
-			}
-			else {
-				$this->properties[$tag] = $val;
-			}
-		}
+    /**
+     * Generate each tag
+     * form, input, textarea, etc
+     */
+    private function generate_tag($element, $close_tag, $type, $add_type, $arguments)
+    {
+        $attributes = !(empty($arguments['attributes'])) ? $arguments['attributes'] : null;
+        $value = !(empty($arguments['value'])) ? $arguments['value'] : null;
+        $content = !(empty($arguments['content'])) ? $arguments['content'] : null;
+        $options = !(empty($arguments['options'])) ? $arguments['options'] : null;
+        $check_var = !(empty($arguments['check_var'])) ? $arguments['check_var'] : null;
+        $selected = !(empty($arguments['selected'])) ? $arguments['selected'] : null;
+        $required = !(empty($arguments['required'])) ? true : false;
+        $label = !(empty($arguments['label'])) ? $arguments['label'] : null;
 
-		/** If ID is not defined, use the name attr to add it */
-		if ( !empty( $this->attributes['name'] ) && empty( $this->attributes['id'] ) ) {
-			$this->properties['id'] = $this->attributes['name'];
-		}
+        $properties = array();
+        $result = '';
 
-		if ( $this->required == true ) {
-			$this->properties['required'] = '';
-		}
+        if ($element != 'form') {
+            $result .= "\t";
+        }
 
-		if ( !empty( $this->check_var ) ) {
-			if ( $this->check_var == $arguments['value'] ) {
-				$this->properties['checked'] = 'checked';
-			}
-		}
+        $result .= '<' . $element . ' ';
+        
+        if ($add_type == true) {
+            $properties['type'] = $type;
+        }
 
-		if ( !empty( $this->value ) ) {
-			$this->properties['value'] = $this->value;
-		}
+        foreach ($attributes as $tag => $val) {
+            if (empty($val)) {
+                $properties[$tag] = '';
+            } else {
+                $properties[$tag] = $val;
+            }
+        }
 
-		$this->produce = array();
-		foreach ( $this->properties as $property => $val ) {
-			if ( !empty( $val ) ) {
-				$this->produce[] = $property . '="' . $val . '"';
-			}
-			else {
-				$this->produce[] = $property;
-			}
-		}
-		
-		/** Add each attribute to the tag */
-		$this->result .= implode(' ', $this->produce);
+        /**
+         * If ID is not defined, use the name attr to add it
+        */
+        if (!empty($attributes['name']) && empty($attributes['id'])) {
+            $properties['id'] = $attributes['name'];
+        }
 
-		/** Close the opening tag */
-		$this->result .= '>' . "\n";
+        if ($required == true) {
+            $properties['required'] = '';
+        }
 
-		/** Used on textarea */
-		if ( !empty( $this->content ) ) {
-			$this->result .= $this->content;
-		}
+        if (!empty($check_var)) {
+            if ($check_var == $arguments['value']) {
+                $properties['checked'] = 'checked';
+            }
+        }
 
-		/** Used on select */
-		if ( !empty( $this->options ) ) {
-			foreach ( $this->options as $val => $name ) {
-				$this->result .= $this->generate_option( $val, $name, $this->selected );
-			}
-		}
+        if (!empty($value)) {
+            $properties['value'] = $value;
+        }
 
-		/** Does the element need closing tag? (textarea, select...) */
-		if ( $close_tag == true ) {
-			$this->result .= '</' . $type . '>' . "\n";
-		}
+        $produce = array();
+        foreach ($properties as $property => $val) {
+            if (!empty($val)) {
+                $produce[] = $property . '="' . $val . '"';
+            } else {
+                $produce[] = $property;
+            }
+        }
+        
+        /**
+         * Add each attribute to the tag
+        */
+        $result .= implode(' ', $produce);
 
-		return $this->result;
-	}
-	
-	/**
-	 * Generate the options for a select field
-	 */
-	private function generate_option( $value, $name, $selected ) {
-		$this->option_properties = array();
+        /**
+         * Close the opening tag
+        */
+        $result .= '>' . "\n";
 
-		$this->option = "\t\t\t" . '<option ';
-		$this->option_properties[] = 'value="' . $value . '"';
-		if ( !empty( $selected ) && $selected == $value ) {
-			$this->option_properties[] = 'selected="selected"';
-		}
-		/** Add the properties */
-		$this->option .= implode(' ', $this->option_properties);
+        /**
+         * Used on textarea
+        */
+        if (!empty($content)) {
+            $result .= $content;
+        }
 
-		$this->option .= '>' . $name;
-		$this->option .= '</option>' . "\n";
+        /**
+         * Used on select
+        */
+        if (!empty($options)) {
+            foreach ($options as $val => $name) {
+                $result .= $this->generate_option($val, $name, $selected);
+            }
+        }
 
-		return $this->option;
-	}
+        /**
+         * Does the element need closing tag? (textarea, select...)
+        */
+        if ($close_tag == true) {
+            $result .= '</' . $type . '>' . "\n";
+        }
 
-	/**
-	 * Generate a simple separator
-	 */
-	private function generate_separator() {
-		$this->option = "\n" . '<div class="separator"></div>' . "\n\n";
-		return $this->option;
-	}
-	
-	/**
-	 * This button goes under the password field and generates
-	 * a new random password. The $field_name param is the input
-	 * that the result will be applied to.
-	 */
-	private function generate_password_button( $field_name ) {
-		$this->button_arguments = array(
-									'type'			=> 'button',
-									'content'		=> 'Generate',
-									'attributes'	=> array(
-															'name'			=> 'generate_password',
-															'class'			=> 'btn btn-default btn-sm btn_generate_password',
-															'data-ref'		=> $field_name,
-															'data-min'		=> MIN_PASS_CHARS,
-															'data-max'		=> MAX_PASS_CHARS,
-														)
-									);
-		$this->button = $this->generate_tag( 'button', true, $this->button_arguments['type'], true, $this->button_arguments );
-		$this->new_password_fields[] = $this->button_arguments['attributes']['name'];
+        return $result;
+    }
+    
+    /**
+     * Generate the options for a select field
+     */
+    private function generate_option($value, $name, $selected)
+    {
+        $option_properties = array();
 
-		return $this->button;
-	}
+        $option = "\t\t\t" . '<option ';
+        $option_properties[] = 'value="' . $value . '"';
+        if (!empty($selected) && $selected == $value) {
+            $option_properties[] = 'selected="selected"';
+        }
+        /**
+         * Add the properties
+        */
+        $option .= implode(' ', $option_properties);
+
+        $option .= '>' . $name;
+        $option .= '</option>' . "\n";
+
+        return $option;
+    }
+
+    /**
+     * Generate a simple separator
+     */
+    private function generate_separator()
+    {
+        $option = "\n" . '<div class="separator"></div>' . "\n\n";
+        return $option;
+    }
+    
+    /**
+     * This button goes under the password field and generates
+     * a new random password. The $field_name param is the input
+     * that the result will be applied to.
+     */
+    private function generate_password_button($field_name)
+    {
+        $button_arguments = array(
+            'type' => 'button',
+            'content' => 'Generate',
+            'attributes' => array(
+                'name' => 'generate_password',
+                'class' => 'btn btn-default btn-sm btn_generate_password',
+                'data-ref' => $field_name,
+                'data-min' => MIN_PASS_CHARS,
+                'data-max' => MAX_PASS_CHARS,
+            )
+        );
+        $button = $this->generate_tag('button', true, $button_arguments['type'], true, $button_arguments);
+        $this->new_password_fields[] = $button_arguments['attributes']['name'];
+
+        return $button;
+    }
 
 
-	
-	public function field( $type, $arguments ) {
-		/** Set default to avoid repetition */
-		$this->label_location	= 'outside';
-		$this->use_layout		= ( !in_array( $type, $this->ignore_layout ) ) ? true : false;
+    
+    public function field($type, $arguments)
+    {
+        /**
+         * Set default to avoid repetition
+        */
+        $label_location = 'outside';
+        $use_layout = (!in_array($type, $this->ignore_layout)) ? true : false;
 
-		if ( !empty( $arguments['required'] ) && $arguments['required'] == true) {
-			$arguments['attributes']['class'][] = 'required';
-		}
+        if (!empty($arguments['required']) && $arguments['required'] == true) {
+            $arguments['attributes']['class'][] = 'required';
+        }
 
-		if ( !empty( $arguments['label'] ) ) {
-			$this->label = '<label>' . $arguments['label'] . '</label>' . "\n";
-		}
+        if (!empty($arguments['label'])) {
+            $label = '<label>' . $arguments['label'] . '</label>' . "\n";
+        }
 
-		/**
-		 * Try to add the default field class
-		 */
-		if ( !in_array( $type, $this->ignore_field_class ) ) {
-			if ( empty( $arguments['default_class'] ) || $arguments['default_class'] == true ) {
-				$arguments['attributes']['class'][] = $this->field_class;
-			}
-		}
-		
-		/** Concat the classes */
-		if ( !empty( $arguments['attributes']['class'] ) ) {
-			$arguments['attributes']['class'] = implode(' ', $arguments['attributes']['class']);
-		}
+        /**
+         * Try to add the default field class
+         */
+        if (!in_array($type, $this->ignore_field_class)) {
+            if (empty($arguments['default_class']) || $arguments['default_class'] == true) {
+                $arguments['attributes']['class'][] = $this->field_class;
+            }
+        }
+        
+        /**
+         * Concat the classes
+        */
+        if (!empty($arguments['attributes']['class'])) {
+            $arguments['attributes']['class'] = implode(' ', $arguments['attributes']['class']);
+        }
 
-		switch ( $type ) {
-			case 'text':
-			default:
-				$this->field = $this->generate_tag( 'input', false, $type, true, $arguments );
-				break;
-			case 'password':
-				$this->field = $this->generate_tag( 'input', false, $type, true, $arguments );
-				break;
-			case 'hidden':
-				$this->field = $this->generate_tag( 'input', false, $type, true, $arguments );
-				break;
-			case 'textarea':
-				$this->field = $this->generate_tag( 'textarea', true, $type, false, $arguments );
-				break;
-			case 'select':
-				$this->field = $this->generate_tag( 'select', true, $type, false, $arguments );
-				break;
-			case 'checkbox':
-			case 'radio':
-				$this->label_location = 'wrap';
-				$this->field = $this->generate_tag( 'input', false, $type, true, $arguments );
-				break;
-			case 'button':
-				$this->field = $this->generate_tag( 'button', true, $type, false, $arguments );
-				break;
-			case 'separator':
-				$this->field = $this->generate_separator();
-				break;
-		}
-		
-		/**
-		 * Format according to the Bootstrap 3 layout
-		 */
-		if ( $this->use_layout == true ) {
-			$this->layout = '<div class="' . $this->group_class . '">' . "\n";
-				switch ( $this->label_location ) {
-					case 'outside':
-							$this->format	= "\t" . '<label for="%s" class="%s">%s</label>' . "\n";
-							$this->layout	.= sprintf( $this->format, $arguments['attributes']['name'], $this->label_class, $arguments['label'] );
-							$this->layout	.= "\t" . '<div class="' . $this->wrap_class . '">' . "\n";
+        switch ($type) {
+            case 'text':
+            default:
+                $field = $this->generate_tag('input', false, $type, true, $arguments);
+                break;
+            case 'password':
+                $field = $this->generate_tag('input', false, $type, true, $arguments);
+                break;
+            case 'hidden':
+                $field = $this->generate_tag('input', false, $type, true, $arguments);
+                break;
+            case 'textarea':
+                $field = $this->generate_tag('textarea', true, $type, false, $arguments);
+                break;
+            case 'select':
+                $field = $this->generate_tag('select', true, $type, false, $arguments);
+                break;
+            case 'checkbox':
+            case 'radio':
+                $label_location = 'wrap';
+                $field = $this->generate_tag('input', false, $type, true, $arguments);
+                break;
+            case 'button':
+                $field = $this->generate_tag('button', true, $type, false, $arguments);
+                break;
+            case 'separator':
+                $field = $this->generate_separator();
+                break;
+        }
+        
+        /**
+         * Format according to the Bootstrap 3 layout
+         */
+        if ($use_layout == true) {
+            $layout = '<div class="' . $this->group_class . '">' . "\n";
+            switch ($label_location) {
+                case 'outside':
+                    $format    = "\t" . '<label for="%s" class="%s">%s</label>' . "\n";
+                    $layout    .= sprintf($format, $arguments['attributes']['name'], $this->label_class, $arguments['label']);
+                    $layout    .= "\t" . '<div class="' . $this->wrap_class . '">' . "\n";
 
-							if ( $type == 'password' ) {
-								$this->layout .= "\t\t" . '<div class="' . $this->wrap_group . '">' . "\n";
-								$this->layout .= "\t\t" . $this->field;
-								$this->layout .= "\t\t\t" . '<div class="' . $this->password_toggle_wrap . '">' . "\n";
-								$this->layout .= "\t\t\t\t" . '<button type="button" class="btn ' . $this->password_toggle_btn . '"><i class="glyphicon glyphicon-eye-open"></i></button>' . "\n";
-								$this->layout .= "\t\t\t" . '</div>' . "\n";
-								if ( function_exists( 'password_notes' ) ) {
-									$this->layout .= password_notes();
-								}
-								$this->layout .= "\t\t" . '</div>' . "\n";
-								
-								if ( !empty( $arguments['pass_type'] ) && $arguments['pass_type'] == 'create' ) {
-									$this->layout .= $this->generate_password_button( $arguments['attributes']['name'] );
-								}
-							}
-							else {
-								$this->layout .= "\t" . $this->field;
-							}
+                    if ($type == 'password') {
+                        $layout .= "\t\t" . '<div class="' . $this->wrap_group . '">' . "\n";
+                        $layout .= "\t\t" . $field;
+                        $layout .= "\t\t\t" . '<div class="' . $this->password_toggle_wrap . '">' . "\n";
+                        $layout .= "\t\t\t\t" . '<button type="button" class="btn ' . $this->password_toggle_btn . '"><i class="glyphicon glyphicon-eye-open"></i></button>' . "\n";
+                        $layout .= "\t\t\t" . '</div>' . "\n";
+                        if (function_exists('password_notes')) {
+                            $layout .= password_notes();
+                        }
+                        $layout .= "\t\t" . '</div>' . "\n";
 
-							$this->layout .= "\t" . '</div>' . "\n";
-						break;
-					case 'wrap':
-							$this->layout .= "\t" . '<div class="' . $this->checkbox_wrap . '">' . "\n";
-							$this->layout .= "\t\t" . '<div class="' . $type . '">' . "\n";
-							$this->layout .= "\t\t\t" . '<label for="' . $arguments['attributes']['name'] . '">' . "\n";
-							$this->layout .= "\t\t\t" . $this->field;
-							$this->layout .= "\t\t\t\t" . ' ' . $arguments['label'] . "\n";
-							$this->layout .= "\t\t\t" . '</label>' . "\n";
-							$this->layout .= "\t\t" . '</div>' . "\n";
-							$this->layout .= "\t" . '</div>' . "\n";
-						break;
-				}
-			$this->layout .= "</div>\n";
-		}
-		else {
-			$this->layout = $this->field;
-		}
-		
-		$this->contents .= $this->layout;
-	}
-	
-	public function output() {
-		$this->output = $this->open . $this->contents . $this->close;
-		return $this->output;
-	}
+                        if (!empty($arguments['pass_type']) && $arguments['pass_type'] == 'create') {
+                            $layout .= $this->generate_password_button($arguments['attributes']['name']);
+                        }
+                    } else {
+                        $layout .= "\t" . $field;
+                    }
+
+                    $layout .= "\t" . '</div>' . "\n";
+                    break;
+                case 'wrap':
+                    $layout .= "\t" . '<div class="' . $this->checkbox_wrap . '">' . "\n";
+                    $layout .= "\t\t" . '<div class="' . $type . '">' . "\n";
+                    $layout .= "\t\t\t" . '<label for="' . $arguments['attributes']['name'] . '">' . "\n";
+                    $layout .= "\t\t\t" . $field;
+                    $layout .= "\t\t\t\t" . ' ' . $arguments['label'] . "\n";
+                    $layout .= "\t\t\t" . '</label>' . "\n";
+                    $layout .= "\t\t" . '</div>' . "\n";
+                    $layout .= "\t" . '</div>' . "\n";
+                    break;
+            }
+            $layout .= "</div>\n";
+        } else {
+            $layout = $field;
+        }
+        
+        $this->contents .= $layout;
+    }
+    
+    public function output()
+    {
+        $this->output = $this->open . $this->contents . $this->close;
+        return $this->output;
+    }
 }
