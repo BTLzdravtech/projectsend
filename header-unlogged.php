@@ -26,7 +26,9 @@ if (defined('IS_INSTALL')) {
      */
     $header_vars = array(
         'html_lang' => SITE_LANG,
+        /** @noinspection PhpUndefinedConstantInspection */
         'title' => $page_title . ' &raquo; ' . html_output(THIS_INSTALL_TITLE),
+        /** @noinspection PhpUndefinedConstantInspection */
         'header_title' => html_output(THIS_INSTALL_TITLE),
     );
 

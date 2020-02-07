@@ -27,7 +27,8 @@ class Options
      * Gets the values from the options table, which has 2 columns.
      * The first one is the option name, and the second is the assigned value.
      *
-     * @return array
+     * @param $option
+     * @return array|bool
      */
     public function getOption($option)
     {
@@ -55,7 +56,7 @@ class Options
      * Gets the values from the options table, which has 2 columns.
      * The first one is the option name, and the second is the assigned value.
      *
-     * @return array
+     * @return array|bool
      */
     private function getOptions()
     {
@@ -106,17 +107,18 @@ class Options
              * Set the default timezone based on the value of the Timezone select box
              * of the options page.
              */
+            /** @noinspection PhpUndefinedConstantInspection */
             date_default_timezone_set(TIMEZONE);
             
             /**
              * Options that do not come from the db
             */
+            /** @noinspection PhpUndefinedConstantInspection */
             define('TEMPLATE_PATH', ROOT_DIR.DS.'templates'.DS.SELECTED_CLIENTS_TEMPLATE.DS.'template.php');
 
             /* Recaptcha */
-            if (RECAPTCHA_ENABLED == 1
-                && !empty(RECAPTCHA_SITE_KEY)
-                && !empty(RECAPTCHA_SECRET_KEY)
+            /** @noinspection PhpUndefinedConstantInspection */
+            if (RECAPTCHA_ENABLED == 1 && !empty(RECAPTCHA_SITE_KEY) && !empty(RECAPTCHA_SECRET_KEY)
             ) {
                 define('RECAPTCHA_AVAILABLE', true);
             }
@@ -169,6 +171,7 @@ class Options
 
     /**
      * Save to the database
+     * @param $options
      */
     public function save($options)
     {

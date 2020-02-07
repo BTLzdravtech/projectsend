@@ -222,6 +222,7 @@ require_once ADMIN_VIEWS_DIR . DS . 'header.php';
 /**
  * Explode, sort, and implode the values to list them alphabetically
 */
+/** @noinspection PhpUndefinedConstantInspection */
 $allowed_file_types = explode('|', ALLOWED_FILE_TYPES);
 sort($allowed_file_types);
 

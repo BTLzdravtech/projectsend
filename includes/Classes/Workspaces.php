@@ -81,6 +81,7 @@ class Workspaces
     /**
      * Get existing user data from the database
      *
+     * @param $id
      * @return bool
      */
     public function get($id)
@@ -143,7 +144,6 @@ class Workspaces
         $validation = new Validation;
 
         global $json_strings;
-        $state = array();
 
         /**
          * These validations are done both when creating a new workspace and
@@ -229,7 +229,7 @@ class Workspaces
                 /**
                  * Record the action log
                 */
-                $new_record_action = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => 23,
                         'owner_id' => CURRENT_USER_ID,
@@ -299,7 +299,7 @@ class Workspaces
             /**
              * Record the action log
             */
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => 15,
                     'owner_id' => CURRENT_USER_ID,
@@ -335,7 +335,7 @@ class Workspaces
         /**
          * Record the action log
         */
-        $record = $this->logger->addEntry(
+        $this->logger->addEntry(
             [
                 'action' => 18,
                 'owner_id' => CURRENT_USER_ID,

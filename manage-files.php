@@ -438,6 +438,7 @@ if ($query_table_files === true) {
         <?php form_add_existing_parameters(array( 'modify_id', 'modify_type' )); ?>
         <?php
         /** Actions are not available for clients */
+        /** @noinspection PhpUndefinedConstantInspection */
         if (CURRENT_USER_LEVEL != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') {
             ?>
             <div class="form_actions_right">
@@ -704,6 +705,7 @@ if ($query_table_files === true) {
                     $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
                     $visibility_label = __('Download', 'cftp_admin');
                 } else {
+                    /** @noinspection PhpUndefinedConstantInspection */
                     if (ENABLE_LANDING_FOR_ALL_FILES == '1') {
                         $visibility_link = '<a href="javascript:void(0);" class="btn btn-default btn-sm public_link" data-type="file" data-id="' . $row['id'] .'" data-token="' . html_output($row['public_token']) .'">';
                         $visibility_label = __('View information', 'cftp_admin');
@@ -720,6 +722,7 @@ if ($query_table_files === true) {
                     $expires_button = 'success';
                     $expires_label = __('Does not expire', 'cftp_admin');
                 } else {
+                    /** @noinspection PhpUndefinedConstantInspection */
                     $expires_date = date(TIMEFORMAT, strtotime($row['expiry_date']));
 
                     if (time() > strtotime($row['expiry_date'])) {

@@ -9,7 +9,6 @@
 
 namespace ProjectSend\Classes;
 
-use \ProjectSend\Classes\Validation;
 use \PDO;
 
 class Groups
@@ -48,6 +47,7 @@ class Groups
 
     /**
      * Set the ID
+     * @param $id
      */
     public function setId($id)
     {
@@ -70,6 +70,7 @@ class Groups
 
     /**
      * Set the properties when editing
+     * @param array $arguments
      */
     public function set($arguments = [])
     {
@@ -82,6 +83,7 @@ class Groups
     /**
      * Get existing user data from the database
      *
+     * @param $id
      * @return bool
      */
     public function get($id)
@@ -172,10 +174,9 @@ class Groups
      */
     public function validate()
     {
-        $validation = new \ProjectSend\Classes\Validation;
+        $validation = new Validation;
 
         global $json_strings;
-        $state = array();
 
         /**
          * These validations are done both when creating a new group and
@@ -266,7 +267,7 @@ class Groups
                 /**
                  * Record the action log
                 */
-                $new_record_action = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                     'action' => 23,
                     'owner_id' => CURRENT_USER_ID,
@@ -337,7 +338,7 @@ class Groups
             /**
              * Record the action log
             */
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                 'action' => 15,
                 'owner_id' => CURRENT_USER_ID,
@@ -373,7 +374,7 @@ class Groups
         /**
          * Record the action log
         */
-        $record = $this->logger->addEntry(
+        $this->logger->addEntry(
             [
             'action' => 18,
             'owner_id' => CURRENT_USER_ID,

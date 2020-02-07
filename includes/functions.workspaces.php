@@ -3,6 +3,7 @@
  * Check if a workspace id exists on the database.
  * Used on the Edit workspace page.
  *
+ * @param $id
  * @return bool
  */
 function workspace_exists_id($id)
@@ -22,7 +23,8 @@ function workspace_exists_id($id)
 /**
  * Get all the workspace information knowing only the id
  *
- * @return array
+ * @param $id
+ * @return array|bool
  */
 function get_workspace_by_id($id)
 {
@@ -50,6 +52,8 @@ function get_workspace_by_id($id)
 
 /**
  * Return an array of existing workspaces
+ * @param $arguments
+ * @return array|bool
  * @todo add limit and order to the query
  */
 function get_workspaces($arguments)
@@ -58,12 +62,10 @@ function get_workspaces($arguments)
 
     $workspace_ids = !empty($arguments['workspace_ids']) ? $arguments['workspace_ids'] : array();
     $workspace_ids = is_array($workspace_ids) ? $workspace_ids : array( $workspace_ids );
-    $is_public = !empty($arguments['public']) ? $arguments['public'] : '';
     $owner_id = !empty($arguments['owner_id']) ? $arguments['owner_id'] : '';
     $created_by = !empty($arguments['created_by']) ? $arguments['created_by'] : '';
     $search = !empty($arguments['search']) ? $arguments['search'] : '';
 
-    $workspaces = array();
     $query = "SELECT * FROM " . TABLE_WORKSPACES;
 
     $parameters = array();
@@ -190,7 +192,7 @@ function delete_workspace($workspace_id)
                                         'owner_id' => CURRENT_USER_ID,
                                         'affected_account_name' => $workspace_data['name']
                                     );
-                $new_record_action = $logger->addEntry($log_action_args);
+                $logger->addEntry($log_action_args);
 
                 return true;
             } else {

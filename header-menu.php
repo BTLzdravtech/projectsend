@@ -139,6 +139,7 @@ if (current_role_in(array( 9,8,7 ))) {
         ),
     );
 
+    /** @noinspection PhpUndefinedConstantInspection */
     if (CLIENTS_CAN_REGISTER) {
         $items['clients']['sub'][] = array(
             'label' => __('Account requests', 'cftp_admin'),
@@ -357,6 +358,7 @@ if (current_role_in(array( 9,8,7 ))) {
         ),
     );
 } else { /* Items for clients */
+    /** @noinspection PhpUndefinedConstantInspection */
     if (CLIENTS_CAN_UPLOAD == 1) {
         $items['upload'] = array(
             'nav' => 'upload',

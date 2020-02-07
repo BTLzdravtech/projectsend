@@ -189,9 +189,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_new_file_by_user_customize',
                         'body_textarea' => 'email_new_file_by_user_text',
                         'description' => __('This email will be sent to a client whenever a new file has been assigned to his account.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_NEW_FILE_BY_USER_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_NEW_FILE_BY_USER_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_NEW_FILE_BY_USER_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_NEW_FILE_BY_USER_TEXT,
                         'tags' => array(
                             '%FILES%' => __('Shows the list of files', 'cftp_admin'),
@@ -205,9 +209,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_new_file_by_client_customize',
                         'body_textarea' => 'email_new_file_by_client_text',
                         'description' => __('This email will be sent to the system administrator whenever a client uploads a new file.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_NEW_FILE_BY_CLIENT_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_NEW_FILE_BY_CLIENT_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_NEW_FILE_BY_CLIENT_TEXT,
                         'tags' => array(
                             '%FILES%' => __('Shows the list of files', 'cftp_admin'),
@@ -221,9 +229,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_new_client_by_user_customize',
                         'body_textarea' => 'email_new_client_by_user_text',
                         'description' => __('This email will be sent to the new client after an administrator has created his new account. It would be best to include the log in details (username and password).', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_NEW_CLIENT_BY_USER_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_NEW_CLIENT_BY_USER_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_NEW_CLIENT_BY_USER_TEXT,
                         'tags' => array(
                             '%USERNAME%' => __('The new username for this account', 'cftp_admin'),
@@ -238,9 +250,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_new_client_by_self_customize',
                         'body_textarea' => 'email_new_client_by_self_text',
                         'description' => __('This email will be sent to the system administrator after a new client has created a new account for himself.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_NEW_CLIENT_BY_SELF_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_NEW_CLIENT_BY_SELF_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_NEW_CLIENT_BY_SELF_TEXT,
                         'tags' => array(
                             '%FULLNAME%' => __('The full name the client registered with', 'cftp_admin'),
@@ -256,9 +272,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_account_approve_customize',
                         'body_textarea' => 'email_account_approve_text',
                         'description' => __('This email will be sent to a client that requested an account if it gets approved. Group membership requests are also mentioned on the email, separated by their approval status.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_ACCOUNT_APPROVE_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_ACCOUNT_APPROVE_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_ACCOUNT_APPROVE_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_ACCOUNT_APPROVE_TEXT,
                         'tags' => array(
                             '%GROUPS_APPROVED%' => __('List of approved group memberships', 'cftp_admin'),
@@ -273,9 +293,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_account_deny_customize',
                         'body_textarea' => 'email_account_deny_text',
                         'description' => __('This email will be sent to a client that requested an account if it gets denied. All group membership requests for this account are denied automatically.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_ACCOUNT_DENY_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_ACCOUNT_DENY_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_ACCOUNT_DENY_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_ACCOUNT_DENY_TEXT,
                         'tags' => array(
                         ),
@@ -287,9 +311,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_new_user_customize',
                         'body_textarea' => 'email_new_user_text',
                         'description' => __('This email will be sent to the new system user after an administrator has created his new account. It would be best to include the log in details (username and password).', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_NEW_USER_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_NEW_USER_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_NEW_USER_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_NEW_USER_TEXT,
                         'tags' => array(
                             '%USERNAME%' => __('The new username for this account', 'cftp_admin'),
@@ -304,9 +332,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_pass_reset_customize',
                         'body_textarea' => 'email_pass_reset_text',
                         'description' => __('This email will be sent to a user or client when they try to reset their password.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_PASS_RESET_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_PASS_RESET_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_PASS_RESET_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_PASS_RESET_TEXT,
                         'tags' => array(
                             '%USERNAME%' => __('The username for this account', 'cftp_admin'),
@@ -321,9 +353,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_client_edited_customize',
                         'body_textarea' => 'email_client_edited_text',
                         'description' => __('This email will be sent to the system administrator when a client edits his account and changes the public groups membership requests.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_CLIENT_EDITED_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_CLIENT_EDITED_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_CLIENT_EDITED_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_CLIENT_EDITED_TEXT,
                         'tags' => array(
                             '%FULLNAME%' => __('The full name the client registered with', 'cftp_admin'),
@@ -339,9 +375,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_limit_retention_customize',
                         'body_textarea' => 'email_limit_retention_text',
                         'description' => __('This email will be sent to all users whenever their files are reaching the expiration limit.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_LIMIT_RETENTION_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_LIMIT_RETENTION_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_LIMIT_RETENTION_TEXT,
                         'tags' => array(
                             '%FILES%' => __('Shows the list of files', 'cftp_admin'),
@@ -355,9 +395,13 @@ if ($_POST) {
                         'body_checkbox' => 'email_public_linksn_customize',
                         'body_textarea' => 'email_public_links_text',
                         'description' => __('This email will contain public URLs for uploaded files and will be sent to chosen address.', 'cftp_admin'),
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_check' => EMAIL_PUBLIC_LINKS_SUBJECT_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'subject_text' => EMAIL_PUBLIC_LINKS_SUBJECT,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_check' => EMAIL_PUBLIC_LINKS_CUSTOMIZE,
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'body_text' => EMAIL_PUBLIC_LINKS_TEXT,
                         'tags' => array(
                             '%LINKS%' => __('Shows the list of public URLs', 'cftp_admin'),
@@ -387,7 +431,7 @@ if ($_POST) {
                         <div class="form-group">
                             <div class="col-sm-12">
                                 <label for="email_header_footer_customize">
-                                    <input type="checkbox" value="1" id="email_header_footer_customize" name="email_header_footer_customize" <?php echo (EMAIL_HEADER_FOOTER_CUSTOMIZE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer', 'cftp_admin'); ?>
+                                    <input type="checkbox" value="1" id="email_header_footer_customize" name="email_header_footer_customize" <?php /** @noinspection PhpUndefinedConstantInspection */ echo (EMAIL_HEADER_FOOTER_CUSTOMIZE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer', 'cftp_admin'); ?>
                                 </label>
                             </div>
                         </div>
@@ -395,7 +439,7 @@ if ($_POST) {
                         <div class="form-group">
                             <div class="col-sm-12">
                                 <label for="email_header_text"><?php _e('Header', 'cftp_admin'); ?></label>
-                                <textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo EMAIL_HEADER_TEXT; ?></textarea>
+                                <textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php /** @noinspection PhpUndefinedConstantInspection */ echo EMAIL_HEADER_TEXT; ?></textarea>
                                 <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>
@@ -409,7 +453,7 @@ if ($_POST) {
                         <div class="form-group">
                             <div class="col-sm-12">
                                 <label for="email_footer_text"><?php _e('Footer', 'cftp_admin'); ?></label>
-                                <textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo EMAIL_FOOTER_TEXT; ?></textarea>
+                                <textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php /** @noinspection PhpUndefinedConstantInspection */ echo EMAIL_FOOTER_TEXT; ?></textarea>
                                 <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>

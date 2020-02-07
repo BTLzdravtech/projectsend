@@ -32,6 +32,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
      * Get the user's id
      */
     $sql_query = "SELECT * FROM " . TABLE_FILES . " WHERE id = :file_id AND BINARY public_token = :token";
+    /** @noinspection PhpUndefinedConstantInspection */
     if (ENABLE_LANDING_FOR_ALL_FILES != '1') {
         $sql_query .= " AND public_allow = '1'";
     }
@@ -68,6 +69,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     /**
      * If landing for all files is enabled but the file is not public, do not allow download
     */
+    /** @noinspection PhpUndefinedConstantInspection */
     if (ENABLE_LANDING_FOR_ALL_FILES == '1' && $is_public == '0') {
         $can_download = false;
         $can_view = true;
@@ -100,7 +102,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
                 'affected_file' => (int)$got_file_id,
                 'affected_file_name' => $real_file_url,
             );
-            $new_record_action = $logger->addEntry($log_action_args);
+            $logger->addEntry($log_action_args);
 
             // DOWNLOAD
             $real_file = UPLOADED_FILES_DIR.DS.basename($real_file_url);

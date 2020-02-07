@@ -30,6 +30,7 @@ if ($_POST) {
     if (defined('RECAPTCHA_AVAILABLE')) {
         $recaptcha_user_ip = $_SERVER["REMOTE_ADDR"];
         $recaptcha_response = $_POST['g-recaptcha-response'];
+        /** @noinspection PhpUndefinedConstantInspection */
         $recaptcha_secret_key = RECAPTCHA_SECRET_KEY;
         $recaptcha_request = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
     }
@@ -45,7 +46,9 @@ if ($_POST) {
         'max_file_size' => UPLOAD_MAX_FILESIZE,
         'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
         'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
+        /** @noinspection PhpUndefinedConstantInspection */
         'active' => (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1,
+        /** @noinspection PhpUndefinedConstantInspection */
         'account_requested'    => (CLIENTS_AUTO_APPROVE == 0) ? 1 : 0,
         'group' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
         'type' => 'new_client',
@@ -68,7 +71,9 @@ if ($_POST) {
          * Check if the option to auto-add to a group
          * is active.
          */
+        /** @noinspection PhpUndefinedConstantInspection */
         if (CLIENTS_AUTO_GROUP != '0') {
+            /** @noinspection PhpUndefinedConstantInspection */
             $group_id = CLIENTS_AUTO_GROUP;
             define('AUTOGROUP', true);
 
@@ -101,6 +106,7 @@ if ($_POST) {
         $notify_admin = new Emails;
         $email_arguments = array(
             'type' => 'new_client_self',
+            /** @noinspection PhpUndefinedConstantInspection */
             'address' => ADMIN_EMAIL_ADDRESS,
             'username' => $client_arguments['username'],
             'name' => $client_arguments['name'],
@@ -127,6 +133,7 @@ if ($_POST) {
         <div class="white-box-interior">
 
             <?php
+            /** @noinspection PhpUndefinedConstantInspection */
             if (CLIENTS_CAN_REGISTER == '0') {
                 $msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.', 'cftp_admin');
                 echo system_message('danger', $msg);
@@ -147,6 +154,7 @@ if ($_POST) {
                             $msg = __('Account added correctly.', 'cftp_admin');
                             echo system_message('success', $msg);
 
+                            /** @noinspection PhpUndefinedConstantInspection */
                             if (CLIENTS_AUTO_APPROVE == 0) {
                                 $msg = __('Please remember that an administrator needs to approve your account before you can log in.', 'cftp_admin');
                                 $type = 'warning';

@@ -352,8 +352,9 @@ class I18n
      *
      * Completly taken from Habari project <http://habariproject.org/>.
      *
-     * @see    ParseFile()
+     * @param $moHeader
      * @return String Unique function name as a string or False on error
+     * @see    ParseFile()
      */
     private static function GetPluralFunc($moHeader)
     {
@@ -425,6 +426,8 @@ class I18n
              * default: one plural form for all cases
              * but n==1 (english and spanish for example)
              * http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html#Plural-forms
+             * @param $n
+             * @return int
              */
             $fn = function ($n) {
                 $nplurals = 2;

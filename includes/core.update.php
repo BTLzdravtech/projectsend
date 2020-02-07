@@ -400,13 +400,14 @@ if (current_role_in($allowed_update)) {
          */
         if ($last_update < 282) {
             $new_database_values = array(
-                                            'mail_system_use' => 'mail',
-                                            'mail_smtp_host' => '',
-                                            'mail_smtp_port' => '',
-                                            'mail_smtp_user' => '',
-                                            'mail_smtp_pass' => '',
-                                            'mail_from_name' => THIS_INSTALL_TITLE
-                                        );
+                'mail_system_use' => 'mail',
+                'mail_smtp_host' => '',
+                'mail_smtp_port' => '',
+                'mail_smtp_user' => '',
+                'mail_smtp_pass' => '',
+                /** @noinspection PhpUndefinedConstantInspection */
+                'mail_from_name' => THIS_INSTALL_TITLE
+            );
             
             foreach ($new_database_values as $row => $value) {
                 if (add_option_if_not_exists($row, $value)) {
@@ -524,7 +525,7 @@ if (current_role_in($allowed_update)) {
                                 'owner_id' => CURRENT_USER_ID,
                                 'affected_account_name' => $current_version
                             );
-        $new_record_action = $logger->addEntry($log_action_args);
+        $logger->addEntry($log_action_args);
 
 
         /**
@@ -1311,8 +1312,10 @@ if (current_role_in($allowed_update)) {
             chmod(ADMIN_UPLOADS_DIR, 0755);
 
             /* Move the logo into the new folder */
+            /** @noinspection PhpUndefinedConstantInspection */
             $old_logo_location = ROOT_DIR . DS . 'img' . DS . 'custom' . DS . 'logo' . DS . LOGO_FILENAME;
             if (file_exists($old_logo_location)) {
+                /** @noinspection PhpUndefinedConstantInspection */
                 $new_logo_location = ADMIN_UPLOADS_DIR . DS . LOGO_FILENAME;
                 rename($old_logo_location, $new_logo_location);
             }

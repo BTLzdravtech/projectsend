@@ -80,7 +80,7 @@ if (isset($_SESSION['id_token_token']) && isset($_SESSION['id_token_token']['id_
                     'owner_id' => $logged_id,
                     'affected_account_name' => $global_name
                 );
-                $new_record_action = $logger->addEntry($log_action_args);
+                $logger->addEntry($log_action_args);
 
                 if ($user_level == '0') {
                     header("location:" . BASE_URI . "upload-from-computer.php");

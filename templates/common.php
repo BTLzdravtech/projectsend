@@ -30,8 +30,10 @@ if (!isset($ld)) {
     $ld = 'cftp_admin';
 }
 require_once ROOT_DIR.'/includes/classes/i18n.php';
+/** @noinspection PhpUndefinedConstantInspection */
 I18n::LoadDomain(ROOT_DIR.DS."templates".DS.SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
 
+/** @noinspection PhpUndefinedConstantInspection */
 $this_template = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/';
 
 require_once ROOT_DIR.'/templates/session_check.php';
@@ -39,6 +41,7 @@ require_once ROOT_DIR.'/templates/session_check.php';
 /**
  * URI to the default template CSS file.
  */
+/** @noinspection PhpUndefinedConstantInspection */
 $this_template_css = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/main.css';
 
 /**
@@ -210,6 +213,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
         */
         if ($data['expires'] == '1') {
             if (time() > strtotime($data['expiry_date'])) {
+                /** @noinspection PhpUndefinedConstantInspection */
                 if (EXPIRED_FILES_HIDE == '1') {
                     $add_file = false;
                 }

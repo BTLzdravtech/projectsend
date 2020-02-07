@@ -11,7 +11,7 @@
  * Based on the WordPress (LOVE IT!) function get_file_data()
  *
  * @param  [type] $template_file
- * @return array
+ * @return array|bool
  */
 function extract_template_info($template_directory)
 {
@@ -54,6 +54,7 @@ function extract_template_info($template_directory)
     $template_info['location'] = $folder;
     
     // Currently active template
+    /** @noinspection PhpUndefinedConstantInspection */
     if ($folder == SELECTED_CLIENTS_TEMPLATE) {
         $template_info['active'] = 1;
     }
@@ -72,13 +73,13 @@ function extract_template_info($template_directory)
     return $template_info;
 }
 
- /**
-  * Generates an array of valid templates to use on the options page.
-  *
-  * The template name must be defined on line 4 of template.php
-  *
-  * @return void
-  */
+/**
+ * Generates an array of valid templates to use on the options page.
+ *
+ * The template name must be defined on line 4 of template.php
+ *
+ * @return array|void
+ */
 function look_for_templates()
 {
     // Get all folders under the templates directory

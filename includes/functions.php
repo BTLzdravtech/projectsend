@@ -97,6 +97,9 @@ function return_account_type()
 
 /**
  * Gets a Json file from and url and caches the result
+ * @param $url
+ * @param $cache_time
+ * @return false|string
  */
 function getJson($url, $cache_time)
 {
@@ -132,6 +135,10 @@ function getJson($url, $cache_time)
  * check if the column exists on the table and validate that order
  * is either ASC or DESC.
  * Defaults to ORDER BY: id, ORDER: DESC
+ * @param $table
+ * @param string $column
+ * @param string $initial_order
+ * @return bool|string
  */
 function sql_add_order($table, $column = 'id', $initial_order = 'ASC')
 {
@@ -215,6 +222,8 @@ function get_available_languages()
  * - Count anonymous downloads (Public downloads)
  * - Unique logged in clients downloads
  * - Total count
+ * @param null $id
+ * @return array
  */
 function generate_downloads_count($id = null)
 {
@@ -281,6 +290,7 @@ function tableExists($table)
  * Check if a file id exists on the database.
  * Used on the download information page.
  *
+ * @param $id
  * @return bool
  */
 function download_information_exists($id)
@@ -301,6 +311,7 @@ function download_information_exists($id)
  * Check if a client id exists on the database.
  * Used on the Edit client page.
  *
+ * @param $id
  * @return bool
  */
 function client_exists_id($id)
@@ -320,6 +331,7 @@ function client_exists_id($id)
  * Check if a user id exists on the database.
  * Used on the Edit user page.
  *
+ * @param $id
  * @return bool
  */
 function user_exists_id($id)
@@ -339,7 +351,8 @@ function user_exists_id($id)
  * Get all the client information knowing only the id
  * Used on the Manage files page.
  *
- * @return array
+ * @param $client
+ * @return array|bool
  */
 function get_client_by_id($client)
 {
@@ -380,7 +393,8 @@ function get_client_by_id($client)
 /**
  * Get all the client information knowing only the log in username
  *
- * @return array
+ * @param $client
+ * @return array|bool
  */
 function get_client_by_username($client)
 {
@@ -400,12 +414,13 @@ function get_client_by_username($client)
         }
     }
 }
- 
- 
+
+
 /**
  * Get all the client information knowing only the log in username
  *
- * @return array
+ * @param $username
+ * @return array|bool
  */
 function get_logged_account_id($username)
 {
@@ -432,6 +447,8 @@ function get_logged_account_id($username)
 /**
  * Used on the file uploading process to determine if the client
  * needs to be notified by e-mail.
+ * @param $client
+ * @return bool|string
  */
 function check_if_notify_client($client)
 {
@@ -456,8 +473,11 @@ function check_if_notify_client($client)
 /**
  * Get a user using any of the accepted field names
  *
+ * @param $user_type
+ * @param $field
+ * @param $value
+ * @return array|bool
  * @uses   get_user_by_id
- * @return array
  */
 function get_user_by($user_type, $field, $value)
 {
@@ -500,7 +520,8 @@ function get_user_by($user_type, $field, $value)
 /**
  * Get all the user information knowing only the id
  *
- * @return array
+ * @param $id
+ * @return array|bool
  */
 function get_user_by_id($id)
 {
@@ -535,7 +556,8 @@ function get_user_by_id($id)
 /**
  * Get all the user information knowing only the log in username
  *
- * @return array
+ * @param $user
+ * @return array|bool
  * @uses   get_user_by_id
  */
 function get_user_by_username($user)
@@ -563,13 +585,14 @@ function get_user_by_username($user)
         return false;
     }
 }
- 
+
 
 /**
  * Get all the file information knowing only the id
  * Used on the Download information page.
  *
- * @return array
+ * @param $id
+ * @return array|bool
  */
 function get_file_by_id($id)
 {
@@ -606,7 +629,8 @@ function get_file_by_id($id)
  * Get all the file information knowing only the id
  * Used on the Download information page.
  *
- * @return array
+ * @param $filename
+ * @return array|bool
  */
 function get_file_by_filename($filename)
 {
@@ -700,6 +724,7 @@ function get_expired_file_ids()
  * prevent code repetition.
  * Used on the default template, log in page, install page and the back-end
  * footer file.
+ * @param bool $logged
  */
 function default_footer_info($logged = true)
 {
@@ -708,6 +733,7 @@ function default_footer_info($logged = true)
         <div id="footer">
     <?php
     if (defined('FOOTER_CUSTOM_ENABLE') && FOOTER_CUSTOM_ENABLE == '1') {
+        /** @noinspection PhpUndefinedConstantInspection */
         echo '© ' . date("Y") . ', ' . strip_tags(FOOTER_CUSTOM_CONTENT, '<br><span><a><strong><em><b><i><u><s>');
     } else {
         _e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if ($logged == true) {
@@ -761,6 +787,11 @@ function message_no_clients()
  */
 /**
  * Generate a system text message using Bootstrap's alert box.
+ * @param $type
+ * @param $message
+ * @param string $div_id
+ * @param bool $text_center
+ * @return string
  */
 function system_message($type, $message, $div_id = '', $text_center = false)
 {
@@ -769,13 +800,10 @@ function system_message($type, $message, $div_id = '', $text_center = false)
     }
 
     switch ($type) {
-        case 'success':
-            break;
         case 'danger':
-            break;
         case 'info':
-            break;
         case 'warning':
+        case 'success':
             break;
     }
 
@@ -800,6 +828,8 @@ function system_message($type, $message, $div_id = '', $text_center = false)
 /**
  * Function used accross the system to determine if the current logged in
  * account has permission to do something.
+ * @param $levels
+ * @return bool
  */
 function current_role_in($levels)
 {
@@ -833,6 +863,7 @@ function get_current_user_level()
 
 /**
  * Wrap print_r with pre tags
+ * @param $array
  */
 function print_array($array)
 {
@@ -843,6 +874,7 @@ function print_array($array)
 
 /**
  * Alias for previous function
+ * @param $array
  */
 function pa($array)
 {
@@ -851,6 +883,7 @@ function pa($array)
 
 /**
  * Prints array and ends execution
+ * @param $array
  */
 function pax($array)
 {
@@ -876,6 +909,11 @@ function get_current_user_username()
 
 /**
  * Wrapper for htmlentities with default options
+ * @param $str
+ * @param int $flags
+ * @param string $encoding
+ * @param bool $double_encode
+ * @return string
  */
 function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_encode = false)
 {
@@ -884,6 +922,11 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_enc
 
 /**
  * Allow some html tags for file descriptions on htmlentities
+ * @param $str
+ * @param int $quoteStyle
+ * @param string $charset
+ * @param bool $doubleEncode
+ * @return string|string[]
  */
 function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
@@ -914,6 +957,8 @@ function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET
 /**
  * Solution by Philippe Flipflip. Fixes an error that would not convert special
  * characters when saving to the database.
+ * @param $str
+ * @return string
  */
 function encode_html($str)
 {
@@ -963,6 +1008,8 @@ function get_current_url()
 /**
  * Receives the size of a file in bytes, and formats it for readability.
  * Used on files listings (templates and the files manager).
+ * @param $file
+ * @return string
  */
 function format_file_size($file)
 {
@@ -1002,6 +1049,8 @@ function format_file_size($file)
  *
  * I changed the name of the function and split it in 2,
  * because I do not want to display it directly.
+ * @param $file
+ * @return false|int|string
  */
 function get_real_size($file)
 {
@@ -1036,6 +1085,7 @@ function get_real_size($file)
 /**
  * Delete just one file.
  * Used on the files managment page.
+ * @param $filename
  */
 function delete_file_from_disk($filename)
 {
@@ -1048,6 +1098,7 @@ function delete_file_from_disk($filename)
 /**
  * Deletes all files and sub-folders of the selected directory.
  * Used when deleting a client.
+ * @param $dir
  */
 function delete_recursive($dir)
 {
@@ -1072,6 +1123,10 @@ function delete_recursive($dir)
 
 /**
  * Takes a text string and makes an excerpt.
+ * @param $string
+ * @param $length
+ * @param string $break
+ * @return string
  */
 function make_excerpt($string, $length, $break = "...")
 {
@@ -1085,6 +1140,8 @@ function make_excerpt($string, $length, $break = "...")
 /**
  * Generates a random string to be used on the automatically
  * created zip files and tokens.
+ * @param int $length
+ * @return string
  */
 function generateRandomString($length = 10)
 {
@@ -1099,6 +1156,8 @@ function generateRandomString($length = 10)
 /**
  * Try to recognize if a file is an image
  *
+ * @param $file
+ * @return bool
  * @todo Check the mime type also
  */
 function file_is_image($file)
@@ -1122,6 +1181,8 @@ function file_is_image($file)
 
 /**
  * Try to recognize if a file is a valid svg
+ * @param $file
+ * @return bool|string
  */
 function file_is_svg($file)
 {
@@ -1138,6 +1199,12 @@ function file_is_svg($file)
 
 /**
  * Make a thumbnail with SimpleImage
+ * @param $file
+ * @param string $type
+ * @param int $width
+ * @param int $height
+ * @param int $quality
+ * @return array
  */
 function make_thumbnail($file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY)
 {
@@ -1206,11 +1273,14 @@ function generate_logo_url()
     $branding = array();
     $branding['exists'] = false;
     // LOGO_FILENAME: filename gotten from the database
+    /** @noinspection PhpUndefinedConstantInspection */
     if (empty(LOGO_FILENAME)) {
         $branding['dir'] = ASSETS_IMG_DIR . DS . DEFAULT_LOGO_FILENAME;
         $branding['url'] = ASSETS_IMG_URL . '/' . DEFAULT_LOGO_FILENAME;
     } else {
+        /** @noinspection PhpUndefinedConstantInspection */
         $branding['dir'] = ADMIN_UPLOADS_DIR . DS . LOGO_FILENAME;
+        /** @noinspection PhpUndefinedConstantInspection */
         $branding['url'] = ADMIN_UPLOADS_URI . LOGO_FILENAME;
     }
 
@@ -1237,6 +1307,8 @@ function generate_logo_url()
 /**
  * Returns the corresponding layout to show an image tag or the svg contents
  * of the current uploaded logo file.
+ * @param bool $return_thumbnail
+ * @return string|string[]
  */
 function get_branding_layout($return_thumbnail = false)
 {
@@ -1256,6 +1328,7 @@ function get_branding_layout($return_thumbnail = false)
 
     $replace = "";
     if ($branding['type'] == 'raster') {
+        /** @noinspection PhpUndefinedConstantInspection */
         $replace = '<img src="' . $branding_image . '" alt="' . html_output(THIS_INSTALL_TITLE) . '" />';
     } elseif ($branding['type'] == 'vector') {
         $replace = file_is_svg($branding['dir']);
@@ -1314,18 +1387,22 @@ function password_notes()
     $rules_active = array();
     $rules  = array(
         'lower' => array(
+            /** @noinspection PhpUndefinedConstantInspection */
             'value' => PASS_REQUIRE_UPPER,
             'text' => $json_strings['validation']['req_upper'],
         ),
         'upper' => array(
+            /** @noinspection PhpUndefinedConstantInspection */
             'value' => PASS_REQUIRE_LOWER,
             'text' => $json_strings['validation']['req_lower'],
         ),
         'number' => array(
+            /** @noinspection PhpUndefinedConstantInspection */
             'value' => PASS_REQUIRE_NUMBER,
             'text' => $json_strings['validation']['req_number'],
         ),
         'special' => array(
+            /** @noinspection PhpUndefinedConstantInspection */
             'value' => PASS_REQUIRE_SPECIAL,
             'text' => $json_strings['validation']['req_special'],
         ),
@@ -1350,6 +1427,8 @@ function password_notes()
 
 /**
  * Adds default and custom css classes to the body.
+ * @param string $custom
+ * @return string
  */
 function add_body_class($custom = '')
 {
@@ -1404,6 +1483,8 @@ function add_page_id($id)
 /**
  * Creates a standarized download link. Used on
  * each template.
+ * @param $file_info
+ * @return string
  */
 function make_download_link($file_info)
 {
@@ -1412,6 +1493,8 @@ function make_download_link($file_info)
 
 /**
  * Convert to array only if it's not one already
+ * @param $data
+ * @return array
  */
 function to_array_if_not($data)
 {
@@ -1426,6 +1509,11 @@ function to_array_if_not($data)
 
 /**
  * Simple file upload. Used on normal file fields, eg: logo on branding page
+ * @param $file
+ * @param string $validate_ext
+ * @param string $option
+ * @param string $action
+ * @return array
  */
 function option_file_upload($file, $validate_ext = '', $option = '', $action = '')
 {
@@ -1483,7 +1571,7 @@ function option_file_upload($file, $validate_ext = '', $option = '', $action = '
                         'action' => $action,
                         'owner_id' => CURRENT_USER_ID
                     );
-                    $new_record_action = $logger->addEntry($log_action_args);
+                    $logger->addEntry($log_action_args);
                 }
             } else {
                 $return['status'] = '2';
@@ -1504,12 +1592,13 @@ function format_date($date)
         return false;
     }
 
+    /** @noinspection PhpUndefinedConstantInspection */
     return date(TIMEFORMAT, strtotime($date));
 }
 
 function format_time($date)
 {
-    if (!date) {
+    if (!$date) {
         return false;
     }
 
@@ -1518,6 +1607,8 @@ function format_time($date)
 
 /**
  * Renders an action recorded on the log.
+ * @param $params
+ * @return mixed
  */
 function render_log_action($params)
 {
@@ -1539,6 +1630,7 @@ function render_log_action($params)
             $action_text = __('ProjectSend was installed', 'cftp_admin');
             break;
         case 1:
+        case 24:
             $action_ico = 'login';
             $part1 = $owner_user;
             $action_text = __('logged in to the system.', 'cftp_admin');
@@ -1681,11 +1773,6 @@ function render_log_action($params)
             $action_text = __('created the group', 'cftp_admin');
             $part2 = $affected_account_name;
             break;
-        case 24:
-            $action_ico = 'login';
-            $part1 = $owner_user;
-            $action_text = __('logged in to the system.', 'cftp_admin');
-            break;
         case 25:
             $action_ico = 'file-assign';
             $part1 = $owner_user;
@@ -1816,7 +1903,9 @@ function render_log_action($params)
 function getGoogleLoginClient()
 {
     $client = new Google_Client();
+    /** @noinspection PhpUndefinedConstantInspection */
     $client->setClientId(GOOGLE_CLIENT_ID);
+    /** @noinspection PhpUndefinedConstantInspection */
     $client->setClientSecret(GOOGLE_CLIENT_SECRET);
     $client->setRedirectUri(BASE_URI . 'google/callback.php');
     $client->addScope(array('profile','email'));

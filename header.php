@@ -67,7 +67,7 @@ if (current_role_in($core_update_allowed)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php echo html_output($page_title . ' &raquo; ' . htmlspecialchars(THIS_INSTALL_TITLE, ENT_QUOTES, CHARSET)); ?></title>
+    <title><?php /** @noinspection PhpUndefinedConstantInspection */ echo html_output($page_title . ' &raquo; ' . htmlspecialchars(THIS_INSTALL_TITLE, ENT_QUOTES, CHARSET)); ?></title>
     <?php meta_favicon(); ?>
 
     <?php
@@ -103,7 +103,7 @@ if (current_role_in($core_update_allowed)) {
             </ul>
 
             <div class="navbar-header">
-                <span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php require_once 'assets/img/ps-icon.svg'; ?></a> <?php echo html_output(THIS_INSTALL_TITLE); ?></span>
+                <span class="navbar-brand"><a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php require_once 'assets/img/ps-icon.svg'; ?></a> <?php /** @noinspection PhpUndefinedConstantInspection */ echo html_output(THIS_INSTALL_TITLE); ?></span>
             </div>
 
             <ul class="nav pull-right nav_account">

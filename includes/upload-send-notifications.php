@@ -44,12 +44,15 @@ $notifications_inactive = array();
  */
 $params = array();
 $query = "SELECT * FROM " . TABLE_NOTIFICATIONS . " WHERE sent_status = '0' AND times_failed < :times";
+/** @noinspection PhpUndefinedConstantInspection */
 $params[':times'] = NOTIFICATIONS_MAX_TRIES;
 /**
  * Add the time limit
 */
+/** @noinspection PhpUndefinedConstantInspection */
 if (NOTIFICATIONS_MAX_DAYS != '0') {
     $query .= " AND timestamp >= DATE_SUB(NOW(), INTERVAL :days DAY)";
+    /** @noinspection PhpUndefinedConstantInspection */
     $params[':days'] = NOTIFICATIONS_MAX_DAYS;
 }
 

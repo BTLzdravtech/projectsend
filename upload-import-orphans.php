@@ -228,6 +228,7 @@ if (!empty($_GET['search'])) {
                         ),
                     ),
                     array(
+                        /** @noinspection PhpUndefinedConstantInspection */
                         'content' => date(TIMEFORMAT, filemtime($add_file['path'])),
                         'attributes' => array(
                             'data-value' => filemtime($add_file['path']),

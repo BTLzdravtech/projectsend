@@ -36,7 +36,7 @@ class ActionsLog
    
     public function getActivitiesReferences()
     {
-        $activities_references = array(
+        return array(
             0 => __('ProjecSend has been installed', 'cftp_admin'),
             1 => __('Account logs in through the form', 'cftp_admin'),
             2 => __('A user creates a new user account', 'cftp_admin'),
@@ -80,12 +80,11 @@ class ActionsLog
             40 => __('A file was marked as hidden for everyone', 'cftp_admin'),
             41 => __("A client was transferred", 'cftp_admin'),
         );
-
-        return $activities_references;
     }
 
     /**
      * Create a new log entry.
+     * @param $arguments
      */
     public function addEntry($arguments)
     {

@@ -47,6 +47,7 @@ class UploadFile
 
     /**
      * Set the ID
+     * @param $id
      */
     public function setId($id)
     {
@@ -103,10 +104,12 @@ class UploadFile
     
         return $uri . '.' . $ext;
     }
-    
+
     /**
      * Check if the file extension is among the allowed ones, that are defined on
      * the options page.
+     * @param $filename
+     * @return bool
      */
     public function isFiletypeAllowed($filename)
     {
@@ -114,6 +117,7 @@ class UploadFile
             return true;
         } else {
             $safe_filename = $filename;
+            /** @noinspection PhpUndefinedConstantInspection */
             $allowed_file_types = str_replace(',', '|', ALLOWED_FILE_TYPES);
             $file_types = "/^\.(".$allowed_file_types."){1}$/i";
             if (preg_match($file_types, strrchr($safe_filename, '.'))) {
@@ -121,11 +125,13 @@ class UploadFile
             }
         }
     }
-    
+
     /**
      * Generate a safe filename that includes only letters, numbers and underscores.
      * If there are multiple invalid characters in a row, only one replacement character
      * will be used, to avoid unnecessarily long file names.
+     * @param $name
+     * @return string
      */
     public function safeRename($name)
     {
@@ -133,13 +139,16 @@ class UploadFile
         $safe_filename = $this->generateSafeFilename($this->name);
         return basename($safe_filename);
     }
-    
+
     /**
      * Rename a file using only letters, numbers and underscores.
      * Used when reading the temp folder to add files to ProjectSend via the "Add from FTP"
      * feature.
      *
      * Files are renamed before being shown on the list.
+     * @param $name
+     * @param $folder
+     * @return bool|string
      */
     public function safeRenameOnDisk($name, $folder)
     {
@@ -152,11 +161,13 @@ class UploadFile
             return false;
         }
     }
-    
+
     /**
      * Used to copy a file from the temporary folder (the default location where it's put
      * after uploading it) to the final folder.
      * If succesful, the original file is then deleted.
+     * @param $arguments
+     * @return array|bool|string
      */
     public function moveFile($arguments)
     {
@@ -180,9 +191,11 @@ class UploadFile
             return false;
         }
     }
-    
+
     /**
      * Called after correctly moving the file to the final location.
+     * @param $arguments
+     * @return mixed
      */
     public function addNew($arguments)
     {
@@ -230,7 +243,7 @@ class UploadFile
                 $action_type = 6;
             }
 
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => $action_type,
                     'owner_id' => $this->uploader_id,
@@ -250,6 +263,8 @@ class UploadFile
 
     /**
      * Called after correctly moving the file to the final location.
+     * @param $arguments
+     * @return mixed
      */
     public function saveExisting($arguments)
     {
@@ -315,7 +330,7 @@ class UploadFile
                 $action_type = 33;
             }
 
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => $action_type,
                     'owner_id' => $this->uploader_id,
@@ -335,6 +350,7 @@ class UploadFile
 
     /**
      * Used to add new assignments and notifications
+     * @param $arguments
      */
     public function addFileAssignment($arguments)
     {
@@ -392,7 +408,7 @@ class UploadFile
             /**
              * Record the action log
             */
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => $action_number,
                     'owner_id' => $this->uploader_id,
@@ -409,6 +425,7 @@ class UploadFile
 
     /**
      * Used to create the new notifications on the database
+     * @param $arguments
      */
     public function addNotifications($arguments)
     {
@@ -480,6 +497,7 @@ class UploadFile
 
     /**
      * Used when editing a file
+     * @param $arguments
      */
     public function cleanAssignments($arguments)
     {
@@ -529,6 +547,7 @@ class UploadFile
 
     /**
      * Used when editing a file
+     * @param $arguments
      */
     public function cleanAllAssignments($arguments)
     {
@@ -563,6 +582,7 @@ class UploadFile
 
     /**
      * Receives the data from any of the 2 clear assignments functions
+     * @param $arguments
      */
     private function deleteAssignments($arguments)
     {
@@ -596,7 +616,7 @@ class UploadFile
              * Record the action log
             */
             foreach ($clients as $deleted_client) {
-                $new_record_action = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => 10,
                         'owner_id' => $owner_id,
@@ -634,7 +654,7 @@ class UploadFile
              * Record the action log
             */
             foreach ($groups as $deleted_group) {
-                $new_record_action = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => 11,
                         'owner_id' => $owner_id,
@@ -650,6 +670,7 @@ class UploadFile
 
     /**
      * Used to save the categories relations
+     * @param $arguments
      */
     public function setCategories($arguments)
     {

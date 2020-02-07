@@ -69,6 +69,7 @@ class FormGenerate
 
     /**
      * Create the form
+     * @param $arguments
      */
     public function create($arguments)
     {
@@ -78,6 +79,12 @@ class FormGenerate
     /**
      * Generate each tag
      * form, input, textarea, etc
+     * @param $element
+     * @param $close_tag
+     * @param $type
+     * @param $add_type
+     * @param $arguments
+     * @return string
      */
     private function generate_tag($element, $close_tag, $type, $add_type, $arguments)
     {
@@ -176,9 +183,13 @@ class FormGenerate
 
         return $result;
     }
-    
+
     /**
      * Generate the options for a select field
+     * @param $value
+     * @param $name
+     * @param $selected
+     * @return string
      */
     private function generate_option($value, $name, $selected)
     {
@@ -205,14 +216,15 @@ class FormGenerate
      */
     private function generate_separator()
     {
-        $option = "\n" . '<div class="separator"></div>' . "\n\n";
-        return $option;
+        return "\n" . '<div class="separator"></div>' . "\n\n";
     }
-    
+
     /**
      * This button goes under the password field and generates
      * a new random password. The $field_name param is the input
      * that the result will be applied to.
+     * @param $field_name
+     * @return string
      */
     private function generate_password_button($field_name)
     {
@@ -269,13 +281,9 @@ class FormGenerate
 
         switch ($type) {
             case 'text':
-            default:
-                $field = $this->generate_tag('input', false, $type, true, $arguments);
-                break;
             case 'password':
-                $field = $this->generate_tag('input', false, $type, true, $arguments);
-                break;
             case 'hidden':
+            default:
                 $field = $this->generate_tag('input', false, $type, true, $arguments);
                 break;
             case 'textarea':

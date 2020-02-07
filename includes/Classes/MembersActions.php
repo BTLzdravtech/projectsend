@@ -9,6 +9,7 @@
 namespace ProjectSend\Classes;
 
 use \PDO;
+use PHPMailer\PHPMailer\Exception;
 
 class MembersActions
 {
@@ -161,7 +162,6 @@ class MembersActions
     {
         $client_id = $arguments['client_id'];
         $group_ids = is_array($arguments['group_ids']) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
-        $added_by = $arguments['added_by'];
 
         if (in_array(CURRENT_USER_LEVEL, array(9,8))) {
             $results = array(
@@ -215,6 +215,7 @@ class MembersActions
         }
     }
 
+    /** @noinspection PhpIllegalStringOffsetInspection */
     public function get_membership_requests($arguments = '')
     {
         $client_id = !empty($arguments['client_id']) ? $arguments['client_id'] : '';
@@ -257,6 +258,7 @@ class MembersActions
     public function group_request_membership($arguments)
     {
         if (in_array(CURRENT_USER_LEVEL, array(9,8)) || (defined('REGISTERING')) || (defined('EDITING_SELF_ACCOUNT'))) {
+            /** @noinspection PhpUndefinedConstantInspection */
             if (CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all') {
                 $client_id = $arguments['client_id'];
                 $group_ids = is_array($arguments['group_ids']) ? $arguments['group_ids'] : array( $arguments['group_ids'] );
@@ -295,7 +297,8 @@ class MembersActions
                         }
                     }
                 }
-    
+
+                /** @noinspection PhpUndefinedConstantInspection */
                 if (CLIENTS_CAN_SELECT_GROUP == 'public') {
                     /**
                      * Make a list of public groups in case clients can only request
@@ -318,6 +321,7 @@ class MembersActions
                     $requests = array();
                     foreach ($group_ids as $group_id) {
                         if (defined('REGISTERING')) {
+                            /** @noinspection PhpUndefinedConstantInspection */
                             if (CLIENTS_CAN_SELECT_GROUP == 'public') {
                                 $permitted = array();
                                 foreach ($public_groups as $public_group) {
@@ -362,6 +366,9 @@ class MembersActions
 
     /**
      * Approve and deny group memberships requests
+     * @param $arguments
+     * @return array
+     * @throws Exception
      */
     public function group_process_memberships($arguments)
     {
@@ -389,7 +396,7 @@ class MembersActions
             $sql = $this->dbh->prepare('UPDATE ' . TABLE_MEMBERS_REQUESTS . ' SET denied=:denied WHERE client_id=:client_id');
             $sql->bindValue(':denied', 1, PDO::PARAM_INT);
             $sql->bindValue(':client_id', $client_id, PDO::PARAM_INT);
-            $status = $sql->execute();
+            $sql->execute();
         }
 
         /**
@@ -425,7 +432,7 @@ class MembersActions
                 $sql->bindValue(':denied', 1, PDO::PARAM_INT);
                 $sql->bindValue(':client_id', $client_id, PDO::PARAM_INT);
                 $sql->bindValue(':group_id', $request, PDO::PARAM_INT);
-                $status = $sql->execute();
+                $sql->execute();
                 $return_info['memberships']['denied'][] = $request;
             }
         }
@@ -440,7 +447,7 @@ class MembersActions
         
         // Add to the log
         $client = get_client_by_id($client_id);
-        $new_record_action = $this->logger->addEntry(
+        $this->logger->addEntry(
             [
                 'action' => 39,
                 'owner_id' => CURRENT_USER_ID,
@@ -452,7 +459,7 @@ class MembersActions
          * Send email
         */
         $notify_client = new Emails;
-        $notify_send = $notify_client->send(
+        $notify_client->send(
             [
                 'type' => 'client_memberships_process',
                 'username' => $client['username'],
@@ -468,6 +475,7 @@ class MembersActions
 
     /**
      * Delete memberships requests
+     * @param $arguments
      */
     public function group_delete_requests($arguments)
     {
@@ -482,7 +490,7 @@ class MembersActions
 
             // Add to the log
             $client = get_client_by_id($client_id);
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => 39,
                     'owner_id' => CURRENT_USER_ID,
@@ -496,6 +504,8 @@ class MembersActions
     /**
      * Takes a submitted memberships array. Adds new ones and removes
      * those that are in the database but not in the new request.
+     * @param $arguments
+     * @throws Exception
      */
     public function update_membership_requests($arguments)
     {
@@ -549,7 +559,7 @@ class MembersActions
                         'group_ids' => $add,
                         'request_by' => $request_by,
                     );
-                    $process_add = self::group_request_membership($add_arguments);
+                    self::group_request_membership($add_arguments);
                 }
             }
 
@@ -562,13 +572,14 @@ class MembersActions
 
                 $email_arguments = array(
                     'type' => 'client_edited',
+                    /** @noinspection PhpUndefinedConstantInspection */
                     'address' => ADMIN_EMAIL_ADDRESS,
                     'username' => $client_info['username'],
                     'name' => $client_info['name'],
                     'memberships' => $group_ids
                 );
 
-                $notify_admin_status = $notify_admin->send($email_arguments);
+                $notify_admin->send($email_arguments);
             }
         }
     }

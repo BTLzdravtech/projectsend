@@ -20,6 +20,7 @@ $page_title = __('Upload files', 'cftp_admin');
 $page_id = 'upload_form';
 
 $allowed_levels = array(9,8,7);
+/** @noinspection PhpUndefinedConstantInspection */
 if (CLIENTS_CAN_UPLOAD == 1) {
     $allowed_levels[] = 0;
 }
@@ -73,6 +74,7 @@ require_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         if (false === CAN_UPLOAD_ANY_FILE_TYPE) {
                             ?>
                             ,mime_types: [
+                                /** @noinspection PhpUndefinedConstantInspection */
                                 {title : "Allowed files", extensions : "<?php echo ALLOWED_FILE_TYPES; ?>"}
                             ]
                             <?php

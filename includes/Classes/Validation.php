@@ -11,6 +11,8 @@
 
 namespace ProjectSend\Classes;
 
+use PDO;
+
 class Validation
 {
     /**
@@ -41,6 +43,8 @@ class Validation
 
     /**
      * Check if the field is complete
+     * @param $field
+     * @param $err
      */
     private function is_complete($field, $err)
     {
@@ -51,6 +55,8 @@ class Validation
 
     /**
      * Check if the field value is a valid e-mail address
+     * @param $field
+     * @param $err
      */
     private function is_email($field, $err)
     {
@@ -61,6 +67,8 @@ class Validation
 
     /**
      * Check if the field value is alphanumeric
+     * @param $field
+     * @param $err
      */
     private function is_alpha($field, $err)
     {
@@ -71,6 +79,8 @@ class Validation
 
     /**
      * Check if the field value is a number
+     * @param $field
+     * @param $err
      */
     private function is_number($field, $err)
     {
@@ -81,6 +91,8 @@ class Validation
 
     /**
      * Check if the field value is alphanumeric
+     * @param $field
+     * @param $err
      */
     private function is_alpha_or_dot($field, $err)
     {
@@ -91,6 +103,8 @@ class Validation
 
     /**
      * Check if the password field value contains invalid characters
+     * @param $field
+     * @param $err
      */
     private function is_password($field, $err)
     {
@@ -110,23 +124,29 @@ class Validation
 
     /**
      * Check if the password meets the characters requirements
+     * @param $field
+     * @param $err
      */
     private function is_password_rules($field, $err)
     {
         $rules = array(
             'lower' => array(
+                /** @noinspection PhpUndefinedConstantInspection */
                 'value' => PASS_REQUIRE_UPPER,
                 'chars' => $this->allowed_lower,
             ),
             'upper' => array(
+                /** @noinspection PhpUndefinedConstantInspection */
                 'value' => PASS_REQUIRE_LOWER,
                 'chars' => $this->allowed_upper,
             ),
             'number' => array(
+                /** @noinspection PhpUndefinedConstantInspection */
                 'value' => PASS_REQUIRE_NUMBER,
                 'chars' => $this->allowed_numbers,
             ),
             'special' => array(
+                /** @noinspection PhpUndefinedConstantInspection */
                 'value' => PASS_REQUIRE_SPECIAL,
                 'chars' => $this->allowed_symbols,
             ),
@@ -140,7 +160,6 @@ class Validation
         }
         
         if (count($rules_active) > 0) {
-            $passw = str_split($field);
             $char_errors = 0;
 
             foreach ($rules_active as $rule => $characters) {
@@ -163,6 +182,10 @@ class Validation
 
     /**
      * Check if the character count is within range
+     * @param $field
+     * @param $err
+     * @param $min
+     * @param $max
      */
     private function is_length($field, $err, $min, $max)
     {
@@ -173,6 +196,9 @@ class Validation
 
     /**
      * Check if both password fields match
+     * @param $err
+     * @param $pass1
+     * @param $pass2
      */
     public function is_pass_match($err, $pass1, $pass2)
     {
@@ -184,6 +210,8 @@ class Validation
     /**
      * Check if the supplied username already exists on either a client or
      * a system user.
+     * @param $field
+     * @param $err
      */
     private function is_user_exists($field, $err)
     {
@@ -202,6 +230,9 @@ class Validation
     /**
      * Check if the supplied e-mail address already is already assigned to
      * either a client or a system user.
+     * @param $field
+     * @param $err
+     * @param $current_id
      */
     private function is_email_exists($field, $err, $current_id)
     {
@@ -229,6 +260,8 @@ class Validation
 
     /**
      * Check if the recaptcha response is ok
+     * @param $field
+     * @param $err
      */
     private function recaptcha_verify($field, $err)
     {
@@ -240,6 +273,15 @@ class Validation
 
     /**
      * Call the requested method and pass the corresponding values
+     * @param $val_type
+     * @param $field
+     * @param string $err
+     * @param string $min
+     * @param string $max
+     * @param string $pass1
+     * @param string $pass2
+     * @param string $row
+     * @param string $current_id
      */
     public function validate($val_type, $field, $err = '', $min = '', $max = '', $pass1 = '', $pass2 = '', $row = '', $current_id = '')
     {

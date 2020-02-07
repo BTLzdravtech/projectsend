@@ -36,7 +36,7 @@ class WorkspacesUsers
 
         $results = array(
             'added' => 0,
-            'queue' => count($this->user_ids),
+            'queue' => count($user_ids),
             'errors' => array(),
         );
 
@@ -161,7 +161,6 @@ class WorkspacesUsers
     {
         $user_id = $arguments['user_id'];
         $workspace_ids = is_array($arguments['workspace_ids']) ? $arguments['workspace_ids'] : array( $arguments['workspace_ids'] );
-        $added_by = $arguments['added_by'];
 
         if (in_array(CURRENT_USER_LEVEL, array(9,8))) {
             $results = array(

@@ -53,6 +53,9 @@ function get_latest_version_data()
 
 /**
  * Add a new row to the options table
+ * @param $row
+ * @param $value
+ * @return bool
  */
 function add_option_if_not_exists($row, $value)
 {
@@ -153,7 +156,6 @@ function import_files_relations()
 {
     global $dbh;
     global $updates_made;
-    global $updates_errors;
     global $updates_error_messages;
 
     /**

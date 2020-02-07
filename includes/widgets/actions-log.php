@@ -26,6 +26,7 @@ $actions_buttons = array(
     ),
 );
 
+/** @noinspection PhpUndefinedConstantInspection */
 if (CLIENTS_CAN_REGISTER == 1) {
     $actions_buttons[] = array(
         'action' => '4',

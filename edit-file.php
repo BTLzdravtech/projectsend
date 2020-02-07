@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpIllegalStringOffsetInspection */
+
 /**
  * Edit a file name or description.
  * Files can only be edited by the uploader and level 9 or 8 users.
@@ -182,12 +183,12 @@ if (isset($no_results_error)) {
                  * Add to the database for each client / group selected
                 */
                 $add_arguments = array(
-                'file_original' => $edit_file_info['url'],
-                'name' => $file['name'],
-                'description' => $file['description'],
-                'uploader' => $global_user,
-                'uploader_id' => CURRENT_USER_ID,
-                'expiry_date' => $file['expiry_date']
+                    'file_original' => $edit_file_info['url'],
+                    'name' => $file['name'],
+                    'description' => $file['description'],
+                    'uploader' => $global_user,
+                    'uploader_id' => CURRENT_USER_ID,
+                    'expiry_date' => $file['expiry_date']
                 );
 
                 /**
@@ -250,32 +251,32 @@ if (isset($no_results_error)) {
                     */
                     if ($clean_who == 'All') {
                         $clean_all_arguments = array(
-                        'owner_id' => CURRENT_USER_ID,
-                        /**
-                         * For the log
-                        */
-                        'file_id' => $this_file_id,
-                        'file_name' => $file['name']
+                            'owner_id' => CURRENT_USER_ID,
+                            /**
+                             * For the log
+                            */
+                            'file_id' => $this_file_id,
+                            'file_name' => $file['name']
                         );
-                        $clean_assignments = $this_upload->cleanAllAssignments($clean_all_arguments);
+                        $this_upload->cleanAllAssignments($clean_all_arguments);
                     } else {
                         $clean_arguments = array(
-                        'owner_id' => CURRENT_USER_ID,
-                        /**
-                         * For the log
-                        */
-                        'file_id' => $this_file_id,
-                        'file_name' => $file['name'],
-                        'assign_to' => $clean_who,
-                        'current_clients' => $file_on_clients,
-                        'current_groups' => $file_on_groups
+                            'owner_id' => CURRENT_USER_ID,
+                            /**
+                             * For the log
+                            */
+                            'file_id' => $this_file_id,
+                            'file_name' => $file['name'],
+                            'assign_to' => $clean_who,
+                            'current_clients' => $file_on_clients,
+                            'current_groups' => $file_on_groups
                         );
-                        $clean_assignments = $this_upload->cleanAssignments($clean_arguments);
+                        $this_upload->cleanAssignments($clean_arguments);
                     }
 
                     $categories_arguments = array(
-                    'file_id'        => $this_file_id,
-                    'categories'    => !empty($file['categories']) ? $file['categories'] : '',
+                        'file_id'        => $this_file_id,
+                        'categories'    => !empty($file['categories']) ? $file['categories'] : '',
                     );
                     $this_upload->setCategories($categories_arguments);
                 }
@@ -305,7 +306,7 @@ if (isset($no_results_error)) {
                         /**
                          * 2- Add the assignments to the database
                          */
-                        $process_assignment = $this_upload->addFileAssignment($add_arguments);
+                        $this_upload->addFileAssignment($add_arguments);
 
                         /**
                          * 3- Hide for everyone if checked
@@ -318,19 +319,19 @@ if (isset($no_results_error)) {
                          * 4- Add the notifications to the database
                          */
                         if ($send_notifications == true) {
-                            $process_notifications = $this_upload->addNotifications($add_arguments);
+                            $this_upload->addNotifications($add_arguments);
                         }
                     }
 
                     $logger = new ActionsLog();
                     $log_action_args = array(
-                    'action' => $action_log_number,
-                    'owner_id' => CURRENT_USER_ID,
-                    'owner_user' => $global_user,
-                    'affected_file' => $process_file['new_file_id'],
-                    'affected_file_name' => $file['name']
+                        'action' => $action_log_number,
+                        'owner_id' => CURRENT_USER_ID,
+                        'owner_user' => $global_user,
+                        'affected_file' => $process_file['new_file_id'],
+                        'affected_file_name' => $file['name']
                     );
-                    $new_record_action = $logger->addEntry($log_action_args);
+                    $logger->addEntry($log_action_args);
 
                     $msg = __('The file has been edited succesfuly.', 'cftp_admin');
                     echo system_message('success', $msg);
@@ -396,7 +397,7 @@ if (isset($no_results_error)) {
                             <div class="row edit_files">
                                 <div class="col-sm-12">
                                     <div class="row edit_files_blocks">
-                                        <div class="<?php echo ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1') ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?>  column">
+                                        <div class="<?php /** @noinspection PhpUndefinedConstantInspection */ echo ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1') ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?>  column">
                                             <div class="file_data">
                                                 <div class="row">
                                                     <div class="col-sm-12">
@@ -409,7 +410,7 @@ if (isset($no_results_error)) {
 
                                                         <div class="form-group">
                                                             <label for="file[<?php echo $i; ?>][description]"><?php _e('Description', 'cftp_admin'); ?></label>
-                                                            <textarea id="file[<?php echo $i; ?>][description]" name="file[<?php echo $i; ?>][description]" class="<?php echo FILES_DESCRIPTIONS_USE_CKEDITOR == 1 ? 'ckeditor' : ''; ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin'); ?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
+                                                            <textarea id="file[<?php echo $i; ?>][description]" name="file[<?php echo $i; ?>][description]" class="<?php /** @noinspection PhpUndefinedConstantInspection */ echo FILES_DESCRIPTIONS_USE_CKEDITOR == 1 ? 'ckeditor' : ''; ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin'); ?>"><?php echo (!empty($row['description'])) ? html_output($row['description']) : ''; ?></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -420,6 +421,7 @@ if (isset($no_results_error)) {
                                             /**
                                              * The following options are available to users or client if clients_can_set_expiration_date set.
                                              */
+                                            /** @noinspection PhpUndefinedConstantInspection */
                                             if ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1') {
                                                 ?>
                                                 <?php if (CATEGORIES_ENABLED) { ?>

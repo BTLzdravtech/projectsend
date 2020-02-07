@@ -8,7 +8,6 @@
  */
 namespace ProjectSend\Classes;
 
-use \ProjectSend\Classes\MembersActions;
 use \PDO;
 use \ZipArchive;
 
@@ -39,14 +38,15 @@ class DoProcess
 
     public function login($username, $password, $language = SITE_LANG)
     {
-        $try_login = $this->auth->login($username, $password, $language);
-
-        return $try_login;
+        $this->username = $username;
+        $this->password = $password;
+        $this->language = $language;
+        return $this->auth->login($username, $password, $language);
     }
 
     public function logout()
     {
-        return $this->auth->logout();
+        $this->auth->logout();
     }
 
 
@@ -54,7 +54,11 @@ class DoProcess
      * @todo From here on, move everything into a Download class
      */
 
-
+    /**
+     * Download
+     * @param $file_id
+     * @return bool
+     */
     public function download($file_id)
     {
         if (!$file_id) {
@@ -95,7 +99,7 @@ class DoProcess
                      *
                      * @todo move into a method for an yet to create File class, for example can_download_this_file($client_id)
                      */
-                    $get_groups = new \ProjectSend\Classes\MembersActions();
+                    $get_groups = new MembersActions();
                     $get_arguments = array(
                         'client_id' => CURRENT_USER_ID,
                         'return' => 'list',
@@ -158,6 +162,7 @@ class DoProcess
     /**
      * Make a list of files ids to download on a compressed zip file
      *
+     * @param $file_ids
      * @return string
      */
     public function returnFilesIds($file_ids)
@@ -185,6 +190,7 @@ class DoProcess
 
     /**
      * Make and serve a zip file
+     * @param $file_ids
      */
     public function downloadZip($file_ids)
     {
@@ -202,7 +208,7 @@ class DoProcess
         /**
          * Get the list of different groups the client belongs to.
          */
-        $get_groups = new \ProjectSend\Classes\MembersActions();
+        $get_groups = new MembersActions();
         $get_arguments    = array(
             'client_id' => CURRENT_USER_ID,
             'return' => 'list',
@@ -301,7 +307,7 @@ class DoProcess
                 /**
                  * Record the action log
                 */
-                $record = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => 9,
                         'owner_id' => CURRENT_USER_ID,
@@ -324,9 +330,13 @@ class DoProcess
     /**
      * Sends the file to the browser
      *
+     * @param $filename
+     * @param $save_as
+     * @param $file_id
+     * @param $log_action_number
+     * @return void
      * @todo move into a Download class
      *
-     * @return void
      */
     private function downloadFile($filename, $save_as, $file_id, $log_action_number)
     {
@@ -334,9 +344,9 @@ class DoProcess
 
         if (file_exists($file_location)) {
             /**
- * Record the action log
-*/
-            $record = $this->logger->addEntry(
+             * Record the action log
+            */
+            $this->logger->addEntry(
                 [
                     'action' => $log_action_number,
                     'owner_id' => CURRENT_USER_ID,
