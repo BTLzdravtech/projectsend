@@ -570,9 +570,9 @@ class MembersActions
                 $client_info = get_client_by_id($client_id);
                 $notify_admin = new Emails;
 
+                /** @noinspection PhpUndefinedConstantInspection */
                 $email_arguments = array(
                     'type' => 'client_edited',
-                    /** @noinspection PhpUndefinedConstantInspection */
                     'address' => ADMIN_EMAIL_ADDRESS,
                     'username' => $client_info['username'],
                     'name' => $client_info['name'],

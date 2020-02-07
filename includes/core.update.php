@@ -399,13 +399,13 @@ if (current_role_in($allowed_update)) {
          * Add new options to select the handler for sending emails.
          */
         if ($last_update < 282) {
+            /** @noinspection PhpUndefinedConstantInspection */
             $new_database_values = array(
                 'mail_system_use' => 'mail',
                 'mail_smtp_host' => '',
                 'mail_smtp_port' => '',
                 'mail_smtp_user' => '',
                 'mail_smtp_pass' => '',
-                /** @noinspection PhpUndefinedConstantInspection */
                 'mail_from_name' => THIS_INSTALL_TITLE
             );
             

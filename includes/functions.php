@@ -1385,24 +1385,21 @@ function password_notes()
     global $json_strings;
 
     $rules_active = array();
+    /** @noinspection PhpUndefinedConstantInspection */
     $rules  = array(
         'lower' => array(
-            /** @noinspection PhpUndefinedConstantInspection */
             'value' => PASS_REQUIRE_UPPER,
             'text' => $json_strings['validation']['req_upper'],
         ),
         'upper' => array(
-            /** @noinspection PhpUndefinedConstantInspection */
             'value' => PASS_REQUIRE_LOWER,
             'text' => $json_strings['validation']['req_lower'],
         ),
         'number' => array(
-            /** @noinspection PhpUndefinedConstantInspection */
             'value' => PASS_REQUIRE_NUMBER,
             'text' => $json_strings['validation']['req_number'],
         ),
         'special' => array(
-            /** @noinspection PhpUndefinedConstantInspection */
             'value' => PASS_REQUIRE_SPECIAL,
             'text' => $json_strings['validation']['req_special'],
         ),

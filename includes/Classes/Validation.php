@@ -129,24 +129,21 @@ class Validation
      */
     private function is_password_rules($field, $err)
     {
+        /** @noinspection PhpUndefinedConstantInspection */
         $rules = array(
             'lower' => array(
-                /** @noinspection PhpUndefinedConstantInspection */
                 'value' => PASS_REQUIRE_UPPER,
                 'chars' => $this->allowed_lower,
             ),
             'upper' => array(
-                /** @noinspection PhpUndefinedConstantInspection */
                 'value' => PASS_REQUIRE_LOWER,
                 'chars' => $this->allowed_upper,
             ),
             'number' => array(
-                /** @noinspection PhpUndefinedConstantInspection */
                 'value' => PASS_REQUIRE_NUMBER,
                 'chars' => $this->allowed_numbers,
             ),
             'special' => array(
-                /** @noinspection PhpUndefinedConstantInspection */
                 'value' => PASS_REQUIRE_SPECIAL,
                 'chars' => $this->allowed_symbols,
             ),

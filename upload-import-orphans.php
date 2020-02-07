@@ -214,6 +214,7 @@ if (!empty($_GET['search'])) {
                 /**
                  * Add the cells to the row
                  */
+                /** @noinspection PhpUndefinedConstantInspection */
                 $tbody_cells = array(
                     array(
                         'content' => '<input type="checkbox" name="add[]" class="batch_checkbox select_file_checkbox" value="' . html_output($add_file['name']) . '" />',
@@ -228,7 +229,6 @@ if (!empty($_GET['search'])) {
                         ),
                     ),
                     array(
-                        /** @noinspection PhpUndefinedConstantInspection */
                         'content' => date(TIMEFORMAT, filemtime($add_file['path'])),
                         'attributes' => array(
                             'data-value' => filemtime($add_file['path']),

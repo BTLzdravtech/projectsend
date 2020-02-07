@@ -38,6 +38,7 @@ if ($_POST) {
     /**
      * Arguments used on validation and client creation.
     */
+    /** @noinspection PhpUndefinedConstantInspection */
     $client_arguments = array(
         'username' => $_POST['username'],
         'password' => $_POST['password'],
@@ -46,9 +47,7 @@ if ($_POST) {
         'max_file_size' => UPLOAD_MAX_FILESIZE,
         'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
         'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
-        /** @noinspection PhpUndefinedConstantInspection */
         'active' => (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1,
-        /** @noinspection PhpUndefinedConstantInspection */
         'account_requested'    => (CLIENTS_AUTO_APPROVE == 0) ? 1 : 0,
         'group' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
         'type' => 'new_client',
@@ -104,9 +103,9 @@ if ($_POST) {
          * Prepare and send an email to administrator(s)
          */
         $notify_admin = new Emails;
+        /** @noinspection PhpUndefinedConstantInspection */
         $email_arguments = array(
             'type' => 'new_client_self',
-            /** @noinspection PhpUndefinedConstantInspection */
             'address' => ADMIN_EMAIL_ADDRESS,
             'username' => $client_arguments['username'],
             'name' => $client_arguments['name'],

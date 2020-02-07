@@ -871,6 +871,7 @@ class Emails
              */
             if ($try_bcc === true) {
                 $add_bcc_to = array();
+                /** @noinspection PhpUndefinedConstantInspection */
                 if (MAIL_COPY_MAIN_USER == '1') {
                     /** @noinspection PhpUndefinedConstantInspection */
                     $add_bcc_to[] = ADMIN_EMAIL_ADDRESS;

@@ -74,7 +74,6 @@ require_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         if (false === CAN_UPLOAD_ANY_FILE_TYPE) {
                             ?>
                             ,mime_types: [
-                                /** @noinspection PhpUndefinedConstantInspection */
                                 {title : "Allowed files", extensions : "<?php echo ALLOWED_FILE_TYPES; ?>"}
                             ]
                             <?php

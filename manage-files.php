@@ -539,6 +539,7 @@ if ($query_table_files === true) {
              * avoid repetition
              * They will be used to generate or no certain columns
              */
+            /** @noinspection PhpUndefinedConstantInspection */
             $conditions = array(
                 'select_all' => (CURRENT_USER_LEVEL != '0' || CLIENTS_CAN_DELETE_OWN_FILES == '1') ? true : false,
                 'is_not_client' => (CURRENT_USER_LEVEL != '0') ? true : false,
