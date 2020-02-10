@@ -5,13 +5,17 @@
  * @package ProjectSend
  */
 
+/**
+ * Get category
+ * @param $id
+ * @return array|string
+ */
 function get_category($id)
 {
     global $dbh;
     
     $return = '';
 
-    $file_count = 0;
     $statement = $dbh->prepare("SELECT COUNT(file_id) as count FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id GROUP BY cat_id");
     $statement->bindParam(':cat_id', $id, PDO::PARAM_INT);
     $statement->execute();
@@ -181,7 +185,6 @@ function get_categories($params = array())
         }
 
         $statement->execute($sql_params);
-        $count = $statement->rowCount();
 
         $return['arranged'] = arrange_categories($found_categories);
 
@@ -194,6 +197,10 @@ function get_categories($params = array())
 /**
  * Arrange is an external recursive function
  * Returns an array of categories nested by parent
+ * @param array $elements
+ * @param int $parent
+ * @param int $depth
+ * @return array
  */
 function arrange_categories(array &$elements, $parent = 0, $depth = 0)
 {
@@ -237,7 +244,7 @@ function generate_categories_options($categories, $parent = 0, $selected = array
                             $add_to_results = false;
                         }
                         break;
-                    case 'exclude':
+                    /** @noinspection PhpMissingBreakStatementInspection */ case 'exclude':
                         if (in_array($category['id'], $filter_values)) {
                             $add_to_results = false;
                         }

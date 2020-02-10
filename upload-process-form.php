@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpIllegalStringOffsetInspection */
 /**
  * Uploading files, step 2
  *
@@ -212,6 +212,7 @@ if (isset($_POST['submit'])) {
                         $add_arguments['assign_to']['clients'] = array($client_my_id);
                         $add_arguments['hidden'] = '0';
                         $add_arguments['uploader_type'] = 'client';
+                        /** @noinspection PhpUndefinedConstantInspection */
                         if (CLIENTS_CAN_SET_EXPIRATION_DATE && !empty($file['expires'])) {
                             $add_arguments['expires'] = '1';
                             $add_arguments['expiry_date'] = $file['expiry_date'];
@@ -246,7 +247,7 @@ if (isset($_POST['submit'])) {
                         /**
                          * 2- Add the assignments to the database
                          */
-                        $process_assignment = $this_upload->addFileAssignment($add_arguments);
+                        $this_upload->addFileAssignment($add_arguments);
 
                         /**
                          * 3- Add the assignments to the database
@@ -261,7 +262,7 @@ if (isset($_POST['submit'])) {
                          * 4- Add the notifications to the database
                          */
                         if ($send_notifications == true) {
-                            $process_notifications = $this_upload->addNotifications($add_arguments);
+                            $this_upload->addNotifications($add_arguments);
                         }
                         /**
                          * 5- Mark is as correctly uploaded / assigned
@@ -475,7 +476,7 @@ if (!empty($uploaded_files)) {
                     <div class="row edit_files">
                         <div class="col-sm-12">
                             <div class="row edit_files_blocks">
-                                <div class="<?php echo ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1') ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?> column">
+                                <div class="<?php /** @noinspection PhpUndefinedConstantInspection */ echo ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1') ? 'col-sm-6 col-md-3' : 'col-sm-12 col-md-12'; ?> column">
                                     <div class="file_data">
                                         <div class="row">
                                             <div class="col-sm-12">
@@ -490,7 +491,7 @@ if (!empty($uploaded_files)) {
 
                                                 <div class="form-group">
                                                     <label for="file[<?php echo $i; ?>][description]"><?php _e('Description', 'cftp_admin'); ?></label>
-                                                    <textarea id="file[<?php echo $i; ?>][description]" name="file[<?php echo $i; ?>][description]" class="<?php echo FILES_DESCRIPTIONS_USE_CKEDITOR == 1 ? 'ckeditor' : ''; ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin'); ?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
+                                                    <textarea id="file[<?php echo $i; ?>][description]" name="file[<?php echo $i; ?>][description]" class="<?php /** @noinspection PhpUndefinedConstantInspection */ echo FILES_DESCRIPTIONS_USE_CKEDITOR == 1 ? 'ckeditor' : ''; ?> form-control" placeholder="<?php _e('Optionally, enter here a description for the file.', 'cftp_admin'); ?>"><?php echo (isset($description)) ? html_output($description) : ''; ?></textarea>
                                                 </div>
 
                                             </div>
@@ -502,6 +503,7 @@ if (!empty($uploaded_files)) {
                         /**
                          * The following options are available to users or client if clients_can_set_expiration_date set.
                          */
+                        /** @noinspection PhpUndefinedConstantInspection */
                         if ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1') {
                             ?>
                             <?php if (CATEGORIES_ENABLED) { ?>

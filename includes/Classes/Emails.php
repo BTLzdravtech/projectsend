@@ -20,8 +20,8 @@
 
 namespace ProjectSend\Classes;
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class Emails
 {
@@ -184,6 +184,8 @@ class Emails
     /**
      * The body of the e-mails is gotten from the html templates
      * found on the /emails folder.
+     * @param $type
+     * @return false|string
      */
     private function email_prepare_body($type)
     {
@@ -195,56 +197,67 @@ class Emails
             case 'new_client':
                 $filename    = EMAIL_TEMPLATE_NEW_CLIENT;
                 $body_check    = (!defined('EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE') || EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_NEW_CLIENT_BY_USER_TEXT;
                 break;
             case 'new_client_self':
                 $filename    = EMAIL_TEMPLATE_NEW_CLIENT_SELF;
                 $body_check    = (!defined('EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE') || EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_NEW_CLIENT_BY_SELF_TEXT;
                 break;
             case 'account_approve':
                 $filename    = EMAIL_TEMPLATE_ACCOUNT_APPROVE;
                 $body_check    = (!defined('EMAIL_ACCOUNT_APPROVE_CUSTOMIZE') || EMAIL_ACCOUNT_APPROVE_CUSTOMIZE == '0') ? '0' : EMAIL_ACCOUNT_APPROVE_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_ACCOUNT_APPROVE_TEXT;
                 break;
             case 'account_deny':
                 $filename    = EMAIL_TEMPLATE_ACCOUNT_DENY;
                 $body_check    = (!defined('EMAIL_ACCOUNT_DENY_CUSTOMIZE') || EMAIL_ACCOUNT_DENY_CUSTOMIZE == '0') ? '0' : EMAIL_ACCOUNT_DENY_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_ACCOUNT_DENY_TEXT;
                 break;
             case 'new_user':
                 $filename    = EMAIL_TEMPLATE_NEW_USER;
                 $body_check    = (!defined('EMAIL_NEW_USER_CUSTOMIZE') || EMAIL_NEW_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_USER_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_NEW_USER_TEXT;
                 break;
             case 'new_file_by_user':
                 $filename    = EMAIL_TEMPLATE_NEW_FILE_BY_USER;
                 $body_check    = (!defined('EMAIL_NEW_FILE_BY_USER_CUSTOMIZE') || EMAIL_NEW_FILE_BY_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_FILE_BY_USER_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_NEW_FILE_BY_USER_TEXT;
                 break;
             case 'new_files_by_client':
                 $filename    = EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT;
                 $body_check    = (!defined('EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE') || EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_NEW_FILE_BY_CLIENT_TEXT;
                 break;
             case 'password_reset':
                 $filename    = EMAIL_TEMPLATE_PASSWORD_RESET;
                 $body_check    = (!defined('EMAIL_PASS_RESET_CUSTOMIZE') || EMAIL_PASS_RESET_CUSTOMIZE == '0') ? '0' : EMAIL_PASS_RESET_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_PASS_RESET_TEXT;
                 break;
             case 'client_edited':
                 $filename    = EMAIL_TEMPLATE_CLIENT_EDITED;
                 $body_check    = (!defined('EMAIL_CLIENT_EDITED_CUSTOMIZE') || EMAIL_CLIENT_EDITED_CUSTOMIZE == '0') ? '0' : EMAIL_CLIENT_EDITED_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_CLIENT_EDITED_TEXT;
                 break;
             case 'limit_retention':
                 $filename    = EMAIL_TEMPLATE_LIMIT_RETENTION;
                 $body_check    = (!defined('EMAIL_LIMIT_RETENTION_CUSTOMIZE') || EMAIL_LIMIT_RETENTION_CUSTOMIZE == '0') ? '0' : EMAIL_LIMIT_RETENTION_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_LIMIT_RETENTION_TEXT;
                 break;
             case 'public_links':
                 $filename    = EMAIL_TEMPLATE_PUBLIC_LINKS;
                 $body_check    = (!defined('EMAIL_PUBLIC_LINKS_CUSTOMIZE') || EMAIL_PUBLIC_LINKS_CUSTOMIZE == '0') ? '0' : EMAIL_PUBLIC_LINKS_CUSTOMIZE;
+                /** @noinspection PhpUndefinedConstantInspection */
                 $body_text    = EMAIL_PUBLIC_LINKS_TEXT;
                 break;
         }
@@ -261,6 +274,7 @@ class Emails
         if (!defined('EMAIL_HEADER_FOOTER_CUSTOMIZE') || EMAIL_HEADER_FOOTER_CUSTOMIZE == '0') {
             $make_body = $this->header;
         } else {
+            /** @noinspection PhpUndefinedConstantInspection */
             $make_body = EMAIL_HEADER_TEXT;
         }
 
@@ -275,6 +289,7 @@ class Emails
         if (!defined('EMAIL_HEADER_FOOTER_CUSTOMIZE') || EMAIL_HEADER_FOOTER_CUSTOMIZE == '0') {
             $make_body .= $this->footer;
         } else {
+            /** @noinspection PhpUndefinedConstantInspection */
             $make_body .= EMAIL_FOOTER_TEXT;
         }
 
@@ -285,6 +300,9 @@ class Emails
     /**
      * Prepare the body for the "New Client" e-mail.
      * The new username and password are also sent.
+     * @param $username
+     * @param $password
+     * @return array
      */
     private function email_new_client($username, $password)
     {
@@ -313,6 +331,10 @@ class Emails
     /**
      * Prepare the body for the "New Client" self registration e-mail.
      * The name of the client and username are also sent.
+     * @param $username
+     * @param $fullname
+     * @param $memberships_requests
+     * @return array
      */
     private function email_new_client_self($username, $fullname, $memberships_requests)
     {
@@ -343,7 +365,6 @@ class Emails
             }
             $groups_list .= '</ul>';
 
-            $memberships_requests = implode(',', $memberships_requests);
             $email_body = str_replace(
                 array('%LABEL_REQUESTS%', '%GROUPS_REQUESTS%'),
                 array(
@@ -362,6 +383,10 @@ class Emails
     /**
      * Prepare the body for the "Account approved" e-mail.
      * Also sends the memberships requests approval status.
+     * @param $username
+     * @param $name
+     * @param $memberships_requests
+     * @return array
      */
     private function email_account_approve($username, $name, $memberships_requests)
     {
@@ -423,6 +448,9 @@ class Emails
 
     /**
      * Prepare the body for the "Account denied" e-mail.
+     * @param $username
+     * @param $name
+     * @return array
      */
     private function email_account_deny($username, $name)
     {
@@ -445,6 +473,9 @@ class Emails
     /**
      * Prepare the body for the "New User" e-mail.
      * The new username and password are also sent.
+     * @param $username
+     * @param $password
+     * @return array
      */
     private function email_new_user($username, $password)
     {
@@ -474,6 +505,8 @@ class Emails
      * Prepare the body for the "New files for client" e-mail and replace the
      * tags with the strings values set at the top of this file and the
      * link to the log in page.
+     * @param $files_list
+     * @return array
      */
     private function email_new_files_by_user($files_list)
     {
@@ -501,6 +534,8 @@ class Emails
      * Prepare the body for the "New files by client" e-mail and replace the
      * tags with the strings values set at the top of this file and the
      * link to the log in page.
+     * @param $files_list
+     * @return array
      */
     private function email_new_files_by_client($files_list)
     {
@@ -527,6 +562,9 @@ class Emails
      * Prepare the body for the "Password reset" e-mail and replace the
      * tags with the strings values set at the top of this file and the
      * link to the log in page.
+     * @param $username
+     * @param $token
+     * @return array
      */
     private function email_password_reset($username, $token)
     {
@@ -554,6 +592,10 @@ class Emails
     /**
      * Prepare the body for the e-mail sent when a client changes group
      *  membeship requests.
+     * @param $username
+     * @param $fullname
+     * @param $memberships_requests
+     * @return array
      */
     private function email_client_edited($username, $fullname, $memberships_requests)
     {
@@ -583,7 +625,6 @@ class Emails
             }
             $groups_list .= '</ul>';
 
-            $memberships_requests = implode(',', $memberships_requests);
             $email_body = str_replace(
                 array('%LABEL_REQUESTS%', '%GROUPS_REQUESTS%'),
                 array(
@@ -601,6 +642,8 @@ class Emails
 
     /**
      *  Prepare the body for email sent when the data upload expires
+     * @param $files_list
+     * @return array
      */
     public function email_limit_retention($files_list)
     {
@@ -625,6 +668,10 @@ class Emails
 
     /**
      *  Prepare the body for email sent when the data upload expires
+     * @param $links
+     * @param $note
+     * @param $uploader
+     * @return array
      */
     public function email_public_links($links, $note, $uploader)
     {
@@ -653,6 +700,9 @@ class Emails
      *
      * Returns custom values instead of a boolean value to allow more
      * codes in the future, on new validations and functions.
+     * @param $arguments
+     * @return int|string|string[]
+     * @throws Exception
      */
     public function send($arguments)
     {
@@ -678,12 +728,14 @@ class Emails
         switch ($type) {
             case 'new_files_by_user':
                 $body_variables = [ $files_list, ];
+                /** @noinspection PhpUndefinedConstantInspection */
                 if (MAIL_COPY_USER_UPLOAD == '1') {
                     $try_bcc = true;
                 }
                 break;
             case 'new_files_by_client':
                 $body_variables = [ $files_list, ];
+                /** @noinspection PhpUndefinedConstantInspection */
                 if (MAIL_COPY_CLIENT_UPLOAD == '1') {
                     $try_bcc = true;
                 }
@@ -691,26 +743,22 @@ class Emails
             case 'limit_retention':
                 $body_variables = [ $files_list, ];
                 break;
+            case 'new_user':
             case 'new_client':
                 $body_variables = [ $username, $password, ];
                 break;
             case 'new_client_self':
                 $body_variables = [ $username, $name, $memberships ];
                 break;
+            case 'client_edited':
             case 'account_approve':
                 $body_variables = [ $username, $name, $memberships, ];
                 break;
             case 'account_deny':
                 $body_variables = [ $username, $name, ];
                 break;
-            case 'new_user':
-                $body_variables = [ $username, $password, ];
-                break;
             case 'password_reset':
                 $body_variables = [ $username, $token, ];
-                break;
-            case 'client_edited':
-                $body_variables = [ $username, $name, $memberships, ];
                 break;
             case 'public_links':
                 $body_variables = [ $links, $note, $uploader ];
@@ -752,12 +800,17 @@ class Emails
             $send_mail->SMTPDebug = 0;
             $send_mail->CharSet = EMAIL_ENCODING;
 
+            /** @noinspection PhpUndefinedConstantInspection */
             switch (MAIL_SYSTEM_USE) {
                 case 'smtp':
                     $send_mail->IsSMTP();
+                    /** @noinspection PhpUndefinedConstantInspection */
                     $send_mail->Host = MAIL_SMTP_HOST;
+                    /** @noinspection PhpUndefinedConstantInspection */
                     $send_mail->Port = MAIL_SMTP_PORT;
+                    /** @noinspection PhpUndefinedConstantInspection */
                     $send_mail->Username = MAIL_SMTP_USER;
+                    /** @noinspection PhpUndefinedConstantInspection */
                     $send_mail->Password = MAIL_SMTP_PASS;
 
                     $send_mail->SMTPOptions = array(
@@ -781,7 +834,9 @@ class Emails
                     $send_mail->SMTPSecure = "tls";
                     $send_mail->Host = 'smtp.gmail.com';
                     $send_mail->Port = 587;
+                    /** @noinspection PhpUndefinedConstantInspection */
                     $send_mail->Username = MAIL_SMTP_USER;
+                    /** @noinspection PhpUndefinedConstantInspection */
                     $send_mail->Password = MAIL_SMTP_PASS;
                     break;
                 case 'sendmail':
@@ -793,7 +848,9 @@ class Emails
             $send_mail->MsgHTML($mail_info['body']);
             $send_mail->AltBody = __('This email contains HTML formatting and cannot be displayed right now. Please use an HTML compatible reader.', 'cftp_admin');
 
+            /** @noinspection PhpUndefinedConstantInspection */
             $send_mail->SetFrom(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
+            /** @noinspection PhpUndefinedConstantInspection */
             $send_mail->AddReplyTo(ADMIN_EMAIL_ADDRESS, MAIL_FROM_NAME);
 
             if (!empty($name)) {
@@ -814,9 +871,12 @@ class Emails
              */
             if ($try_bcc === true) {
                 $add_bcc_to = array();
+                /** @noinspection PhpUndefinedConstantInspection */
                 if (MAIL_COPY_MAIN_USER == '1') {
+                    /** @noinspection PhpUndefinedConstantInspection */
                     $add_bcc_to[] = ADMIN_EMAIL_ADDRESS;
                 }
+                /** @noinspection PhpUndefinedConstantInspection */
                 $more_addresses = MAIL_COPY_ADDRESSES;
                 if (!empty($more_addresses)) {
                     $more_addresses = explode(',', $more_addresses);

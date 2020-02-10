@@ -22,6 +22,13 @@ switch ($workspaces_form_type) {
         $form_action = 'workspaces-edit.php?id='.$workspace_id;
         break;
 }
+
+if ($workspace_id == null) {
+    $users_inner_join = " INNER JOIN " . TABLE_USERS . " U2 ON U.id = U2.id AND U2.id <> " . CURRENT_USER_ID;
+} else {
+    $users_inner_join = " INNER JOIN (SELECT U.* FROM " . TABLE_USERS . ' U LEFT JOIN ' . TABLE_WORKSPACES . " W ON U.id = W.owner_id AND W.id = " . $workspace_id . " WHERE W.owner_id IS NULL) U2 ON U.id = U2.id";
+}
+
 ?>
 
 <form action="<?php echo html_output($form_action); ?>" name="workspace_form" id="workspace_form" method="post" class="form-horizontal">
@@ -42,13 +49,46 @@ switch ($workspaces_form_type) {
     </div>
 
     <div class="form-group assigns">
+        <label for="admins" class="col-sm-4 control-label"><?php _e('Admins', 'cftp_admin'); ?></label>
+        <div class="col-sm-8">
+            <select multiple="multiple" id="admins" class="form-control chosen-select" name="admins[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
+                <?php
+                $sql = $dbh->prepare("SELECT U.* FROM " . TABLE_USERS . " U" . $users_inner_join . " WHERE U.level IN ('9', '8') ORDER BY name");
+                $sql->execute();
+                $sql->setFetchMode(PDO::FETCH_ASSOC);
+
+                while ($row = $sql->fetch()) {
+                    ?>
+                    <option value="<?php echo $row["id"]; ?>"
+                        <?php
+                        if ($workspaces_form_type == 'edit_workspace') {
+                            if (!empty($workspace_arguments['admins'])) {
+                                if (in_array($row["id"], $workspace_arguments['admins'])) {
+                                    echo ' selected="selected"';
+                                }
+                            }
+                        } ?>
+                    ><?php echo html_output($row["name"]); ?></option>
+                    <?php
+                }
+                ?>
+            </select>
+            <div class="list_mass_admins">
+                <a href="#" class="btn btn-default add-all" data-type="assigns"><?php _e('Add all', 'cftp_admin'); ?></a>
+                <a href="#" class="btn btn-default remove-all" data-type="assigns"><?php _e('Remove all', 'cftp_admin'); ?></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group assigns">
         <label for="members" class="col-sm-4 control-label"><?php _e('Members', 'cftp_admin'); ?></label>
         <div class="col-sm-8">
             <select multiple="multiple" id="members" class="form-control chosen-select" name="users[]" data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin');?>">
                 <?php
-                    $sql = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE level IN ('9', '8') ORDER BY name");
-                    $sql->execute();
-                    $sql->setFetchMode(PDO::FETCH_ASSOC);
+                $sql = $dbh->prepare("SELECT U.* FROM " . TABLE_USERS . " U" . $users_inner_join . " WHERE U.level IN ('9', '8') ORDER BY name");
+                $sql->execute();
+                $sql->setFetchMode(PDO::FETCH_ASSOC);
+
                 while ($row = $sql->fetch()) {
                     ?>
                         <option value="<?php echo $row["id"]; ?>"

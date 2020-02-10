@@ -90,7 +90,7 @@ if (isset($_GET['action']) && $_GET['action'] != 'none') {
 }
     
     $params = array();
-    $cq = "SELECT id FROM " . TABLE_WORKSPACES;
+    $cq = "SELECT W.id FROM " . TABLE_WORKSPACES . " W INNER JOIN " . TABLE_WORKSPACES_USERS . " WU ON W.id = WU.workspace_id";
 
 /**
  * Add the search terms
@@ -108,10 +108,10 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 }
 
 if (CURRENT_USER_LEVEL == '8') {
-    $cq .= $next_clause. " owner_id = :owner_id";
+    $cq .= $next_clause. " WU.user_id = :user_id AND WU.admin = 1";
     $next_clause = ' AND';
 
-    $params[':owner_id'] = CURRENT_USER_ID;
+    $params[':user_id'] = CURRENT_USER_ID;
 }
 
 /**
@@ -126,6 +126,8 @@ if (isset($found_workspaces)) {
     }
     $no_results_error = 'is_not_member';
 }
+
+$cq .= ' GROUP BY W.id';
 
 /**
  * Add the order.
@@ -295,7 +297,7 @@ $count = $sql->rowCount();
                         'content' => $workspace_data["description"],
                     ),
                     array(
-                        'content' => (!empty($workspace_data['users'])) ? count($workspace_data['users']) : '0',
+                        'content' => ((!empty($workspace_data['admins'])) ? count($workspace_data['admins']) : 0) + ((!empty($workspace_data['users'])) ? count($workspace_data['users']) : 0) - 1,
                     ),
                     array(
                         'content' => $workspace_data["created_by"],

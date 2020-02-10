@@ -72,7 +72,7 @@ if (isset($_GET['status'])) {
             foreach ($templates as $template) {
                 ?>
                 <div class="col-xs-12 col-sm-6 col-md-3">
-                    <div class="template <?php echo $template['location'] == SELECTED_CLIENTS_TEMPLATE ? 'current_template' : ''; ?>">
+                    <div class="template <?php /** @noinspection PhpUndefinedConstantInspection */ echo $template['location'] == SELECTED_CLIENTS_TEMPLATE ? 'current_template' : ''; ?>">
                         <div class="col-xs-12">
                             <div class="images">
                             <?php
@@ -111,6 +111,7 @@ if (isset($_GET['status'])) {
                         <div class="col-xs-4">
                             <div class="buttons">
                                 <?php
+                                /** @noinspection PhpUndefinedConstantInspection */
                                 if ($template['location'] == SELECTED_CLIENTS_TEMPLATE) {
                                     ?>
                                         <a href="#" class="btn btn-default disabled">

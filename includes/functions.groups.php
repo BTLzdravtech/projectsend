@@ -3,6 +3,7 @@
  * Check if a group id exists on the database.
  * Used on the Edit group page.
  *
+ * @param $id
  * @return bool
  */
 function group_exists_id($id)
@@ -24,7 +25,8 @@ function group_exists_id($id)
 /**
  * Get all the group information knowing only the id
  *
- * @return array
+ * @param $id
+ * @return array|bool
  */
 function get_group_by_id($id)
 {
@@ -55,6 +57,8 @@ function get_group_by_id($id)
 /**
  * Return an array of existing groups
  *
+ * @param $arguments
+ * @return array|bool
  * @todo add limit and order to the query
  */
 function get_groups($arguments)
@@ -68,7 +72,6 @@ function get_groups($arguments)
     $created_by = !empty($arguments['created_by']) ? $arguments['created_by'] : '';
     $search = !empty($arguments['search']) ? $arguments['search'] : '';
 
-    $groups = array();
     $query = "SELECT * FROM " . TABLE_GROUPS;
 
     $parameters = array();
@@ -243,7 +246,7 @@ function delete_group($group_id)
                                         'owner_id' => CURRENT_USER_ID,
                                         'affected_account_name' => $group_data['name']
                                     );
-                $new_record_action = $logger->addEntry($log_action_args);
+                $logger->addEntry($log_action_args);
 
                 return true;
             } else {

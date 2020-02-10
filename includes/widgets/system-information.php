@@ -16,6 +16,7 @@ global $dbh;
                 if (defined('VERSION_NEW_NUMBER') && !empty(VERSION_NEW_NUMBER)) {
                     echo ' - <strong>';
                     _e('New version available', 'cftp_admin');
+                    /** @noinspection PhpUndefinedConstantInspection */
                     echo ':</strong> <a href="'. VERSION_NEW_URL . '">' . VERSION_NEW_NUMBER . '</a>';
                 }
                 ?>
@@ -25,7 +26,7 @@ global $dbh;
             <dd><?php echo MAX_FILESIZE; ?> mb.</dd>
 
             <dt><?php _e('Template', 'cftp_admin'); ?></dt>
-            <dd><?php echo ucfirst(SELECTED_CLIENTS_TEMPLATE); ?> <a href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change', 'cftp_admin'); ?>]</a></dd>
+            <dd><?php /** @noinspection PhpUndefinedConstantInspection */ echo ucfirst(SELECTED_CLIENTS_TEMPLATE); ?> <a href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change', 'cftp_admin'); ?>]</a></dd>
 
             <?php
                 /**

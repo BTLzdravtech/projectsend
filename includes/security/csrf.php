@@ -4,6 +4,7 @@
  * Generate a new csrf protection token with a cryptographically secure random generator
  *
  * @return string
+ * @throws Exception
  */
 function getCsrfToken()
 {

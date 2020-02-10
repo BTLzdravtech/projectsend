@@ -33,6 +33,7 @@ if ($_POST) {
     $workspace_arguments = [
         'name' => $_POST['name'],
         'description' => $_POST['description'],
+        'admins' => (!empty($_POST['admins'])) ? $_POST['admins'] : null,
         'users' => (!empty($_POST['users'])) ? $_POST['users'] : null,
     ];
 

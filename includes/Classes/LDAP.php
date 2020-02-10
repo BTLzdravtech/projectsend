@@ -20,10 +20,12 @@ class LDAP
 
     public function bind($username, $password)
     {
+        /** @noinspection PhpUndefinedConstantInspection */
         $this->ldap = ldap_connect(LDAP_HOST, LDAP_PORT);
         ldap_set_option($this->ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($this->ldap, LDAP_OPT_REFERRALS, 0);
 
+        /** @noinspection PhpUndefinedConstantInspection */
         return ldap_bind($this->ldap, LDAP_DOMAIN . "\\" . $username, $password);
     }
 
@@ -31,6 +33,7 @@ class LDAP
     {
         $filter='(sAMAccountName=' . $username . ')';
         $attributes = array('sAMAccountName', 'displayName', 'mail', 'objectGUID');
+        /** @noinspection PhpUndefinedConstantInspection */
         $search_result = ldap_search($this->ldap, LDAP_BASEDN, $filter, $attributes);
         $ldap_user = ldap_first_entry($this->ldap, $search_result);
 

@@ -15,7 +15,6 @@ class Auth
     private $dbh;
     private $logger;
 
-    private $user;
     private $ldap;
 
     public function __construct(PDO $dbh = null)
@@ -34,11 +33,10 @@ class Auth
      * @param $username
      * @param $password
      * @param $language
+     * @return bool
      */
     public function login($username, $password, $language)
     {
-        global $logger;
-        
         if (!$username || !$password) {
             return false;
         }
@@ -74,6 +72,7 @@ class Auth
                         $name = $row['name'];
                     }
                     $authenticated = false;
+                    /** @noinspection PhpUndefinedConstantInspection */
                     if (LDAP_SIGNIN_ENABLED && ($user_level == '8' || $user_level == '9')) {
                         $authenticated = $this->ldap->bind($username, $password);
                         if ($authenticated) {
@@ -89,6 +88,7 @@ class Auth
                         $errorstate = 'invalid_credentials';
                     }
                 } else {
+                    /** @noinspection PhpUndefinedConstantInspection */
                     if (LDAP_SIGNIN_ENABLED) {
                         if ($authenticated = $this->ldap->bind($username, $password)) {
                             $attributes = $this->ldap->get_entry_attributes($username);
@@ -169,7 +169,7 @@ class Auth
                         /**
                          * Record the action log
                          */
-                        $new_record_action = $this->logger->addEntry(
+                        $this->logger->addEntry(
                             [
                                 'action' => 1,
                                 'owner_id' => $logged_id,
@@ -245,7 +245,8 @@ class Auth
     /**
      * Login error strings
      *
-     * @param  string errorstate
+     * @param $errorstate
+     * @param null $delay
      * @return string
      */
     public function getLoginError($errorstate, $delay = null)
@@ -265,6 +266,8 @@ class Auth
                     break;
                 case 'inactive_client':
                     $error = __("This account is not active.", 'cftp_admin');
+                    /** @noinspection PhpUndefinedConstantInspection */
+                    /** @noinspection PhpUndefinedConstantInspection */
                     if (CLIENTS_CAN_REGISTER == 1 && CLIENTS_AUTO_APPROVE == 0) {
                         $error .= ' '.__("If you just registered, please wait until a system administrator approves your account.", 'cftp_admin');
                     }
@@ -314,7 +317,7 @@ class Auth
         /**
          * Record the action log
         */
-        $new_record_action = $this->logger->addEntry(
+        $this->logger->addEntry(
             [
                 'action' => 31,
                 'owner_id' => CURRENT_USER_ID,
@@ -329,10 +332,5 @@ class Auth
 
         header("Location: " . $redirect_to);
         exit;
-    }
-
-    public function unauthorized(Request $request, Response $response)
-    {
-        return $this->render($response, 'auth/unauthorized.twig');
     }
 }

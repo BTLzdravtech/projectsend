@@ -31,7 +31,6 @@ class FilesActions
     public function deleteFiles($rel_id, $service_run = false)
     {
         $can_delete = false;
-        $result = '';
         $check_level = array(9,8,7,0);
 
         if (isset($rel_id)) {
@@ -46,6 +45,7 @@ class FilesActions
                 $sql->setFetchMode(PDO::FETCH_ASSOC);
                 while ($row = $sql->fetch()) {
                     if (CURRENT_USER_LEVEL == '0') {
+                        /** @noinspection PhpUndefinedConstantInspection */
                         if (CLIENTS_CAN_DELETE_OWN_FILES == '1' && $row['uploader'] == CURRENT_USER_USERNAME) {
                             $can_delete    = true;
                         }
@@ -94,7 +94,7 @@ class FilesActions
                     /**
                      * Record the action log
                     */
-                    $record = $this->logger->addEntry(
+                    $this->logger->addEntry(
                         [
                             'action' => 12,
                             'owner_id' => $service_run? '-1' : CURRENT_USER_ID,
@@ -129,7 +129,6 @@ class FilesActions
                 break;
             default:
                 throw new Exception('Invalid status code');
-                return false;
         }
 
         switch ($modify_type) {
@@ -143,7 +142,6 @@ class FilesActions
                 break;
             default:
                 throw new Exception('Invalid modify type');
-                return false;
         }
 
         /**
@@ -162,7 +160,7 @@ class FilesActions
             /**
              * Record the action log
             */
-            $record = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => $log_action_number,
                     'owner_id' => CURRENT_USER_ID,
@@ -199,7 +197,7 @@ class FilesActions
             /**
              * Record the action log
             */
-            $record = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => 40,
                     'owner_id' => CURRENT_USER_ID,
@@ -235,7 +233,6 @@ class FilesActions
                 break;
             default:
                 throw new Exception('Invalid modify type');
-                return false;
         }
 
         /**
@@ -253,7 +250,7 @@ class FilesActions
             /**
              * Record the action log
             */
-            $record = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => $log_action_number,
                     'owner_id' => CURRENT_USER_ID,

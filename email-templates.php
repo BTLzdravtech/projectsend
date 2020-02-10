@@ -181,7 +181,8 @@ if ($_POST) {
         <div class="white-box-interior">
             <?php
                 $href_string = ' ' . __('(to be used as href on a link tag)', 'cftp_admin');
-        
+
+                /** @noinspection PhpUndefinedConstantInspection */
                 $options_groups = array(
                     'new_files_by_user' => array(
                         'subject_checkbox' => 'email_new_file_by_user_subject_customize',
@@ -387,7 +388,7 @@ if ($_POST) {
                         <div class="form-group">
                             <div class="col-sm-12">
                                 <label for="email_header_footer_customize">
-                                    <input type="checkbox" value="1" id="email_header_footer_customize" name="email_header_footer_customize" <?php echo (EMAIL_HEADER_FOOTER_CUSTOMIZE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer', 'cftp_admin'); ?>
+                                    <input type="checkbox" value="1" id="email_header_footer_customize" name="email_header_footer_customize" <?php /** @noinspection PhpUndefinedConstantInspection */ echo (EMAIL_HEADER_FOOTER_CUSTOMIZE == 1) ? 'checked="checked"' : ''; ?> /> <?php _e('Use custom header / footer', 'cftp_admin'); ?>
                                 </label>
                             </div>
                         </div>
@@ -395,7 +396,7 @@ if ($_POST) {
                         <div class="form-group">
                             <div class="col-sm-12">
                                 <label for="email_header_text"><?php _e('Header', 'cftp_admin'); ?></label>
-                                <textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php echo EMAIL_HEADER_TEXT; ?></textarea>
+                                <textarea name="email_header_text" id="email_header_text" class="form-control textarea_high"><?php /** @noinspection PhpUndefinedConstantInspection */ echo EMAIL_HEADER_TEXT; ?></textarea>
                                 <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>
@@ -409,7 +410,7 @@ if ($_POST) {
                         <div class="form-group">
                             <div class="col-sm-12">
                                 <label for="email_footer_text"><?php _e('Footer', 'cftp_admin'); ?></label>
-                                <textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php echo EMAIL_FOOTER_TEXT; ?></textarea>
+                                <textarea name="email_footer_text" id="email_footer_text" class="form-control textarea_high"><?php /** @noinspection PhpUndefinedConstantInspection */ echo EMAIL_FOOTER_TEXT; ?></textarea>
                                 <p class="field_note"><?php _e('You can use HTML tags here.', 'cftp_admin'); ?></p>
                             </div>
                         </div>

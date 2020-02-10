@@ -47,13 +47,9 @@ class BruteForceBlock
         //get db connection
         $db = BruteForceBlock::_databaseConnect();
         
-        //get current timestamp
-        $timestamp = date('Y-m-d H:i:s');
-        
         //attempt to insert failed login attempt
         try {
-            $stmt = $db->query('INSERT INTO ' . TABLE_LOGON . ' SET username = "'.$username.'", ip_address = "'.$ip_address.'", attempted_at = NOW()');
-            //$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $db->query('INSERT INTO ' . TABLE_LOGON . ' SET username = "'.$username.'", ip_address = "'.$ip_address.'", attempted_at = NOW()');
             return true;
         } catch (PDOException $ex) {
             //return errors
@@ -137,8 +133,6 @@ class BruteForceBlock
             if (self::$_db['auto_clear'] == true) {
                 //attempt to delete all records that are no longer recent/relevant
                 try {
-                    //get current timestamp
-                    $now = date('Y-m-d H:i:s');
                     $stmt = $db->query('DELETE from ' . TABLE_LOGON . ' WHERE ip_address = "' . $_SERVER['REMOTE_ADDR'] . '" AND attempted_at < DATE_SUB(NOW(), INTERVAL '.(self::$time_frame_minutes * 2).' MINUTE)');
                     $stmt->execute();
                 } catch (PDOException $ex) {
@@ -164,7 +158,7 @@ class BruteForceBlock
         
         //attempt to delete all records
         try {
-            $stmt = $db->query('TRUNCATE TABLE ' . TABLE_LOGON);
+            $db->query('TRUNCATE TABLE ' . TABLE_LOGON);
             return true;
         } catch (PDOException $ex) {
             //return errors

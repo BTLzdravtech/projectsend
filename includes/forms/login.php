@@ -45,7 +45,7 @@ global $auth_url;
         </div>
 
         <div class="google-login">
-            <?php if (GOOGLE_SIGNIN_ENABLED == '1') : ?>
+            <?php /** @noinspection PhpUndefinedConstantInspection */ if (GOOGLE_SIGNIN_ENABLED == '1') : ?>
                 <a href="<?php echo $auth_url; ?>" class="btn btn-wide btn-secondary"><?php echo __('Login as BTL Employee', 'cftp_admin') ?></a>
             <?php endif; ?>
         </div>

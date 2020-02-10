@@ -12,8 +12,6 @@
 
 namespace ProjectSend\Classes;
 
-use \ProjectSend\Classes\Validation;
-use \ProjectSend\Classes\MembersActions;
 use \PDO;
 
 class Users
@@ -76,6 +74,7 @@ class Users
 
     /**
      * Set the ID
+     * @param $id
      */
     public function setId($id)
     {
@@ -95,9 +94,10 @@ class Users
 
         return false;
     }
-  
+
     /**
      * Set the validation type (user or client, new or edit)
+     * @param $type
      */
     public function setType($type)
     {
@@ -129,6 +129,7 @@ class Users
 
     /**
      * Set the properties when editing
+     * @param array $arguments
      */
     public function set($arguments = [])
     {
@@ -154,6 +155,7 @@ class Users
     /**
      * Get existing user data from the database
      *
+     * @param $id
      * @return bool
      */
     public function get($id)
@@ -199,7 +201,7 @@ class Users
             }
     
             // Groups
-            $groups_object = new \ProjectSend\Classes\MembersActions($this->dbh);
+            $groups_object = new MembersActions($this->dbh);
             $this->groups = $groups_object->client_get_groups(
                 [
                     'client_id' => $this->id
@@ -266,10 +268,9 @@ class Users
      */
     public function validate()
     {
-        $validation = new \ProjectSend\Classes\Validation;
+        $validation = new Validation;
 
         global $json_strings;
-        $state = array();
 
         /**
          * These validations are done both when creating a new user and
@@ -347,7 +348,7 @@ class Users
 
     private function hashPassword($password)
     {
-        return password_hash($this->password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+        return password_hash(password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
     }
 
     /**
@@ -378,7 +379,6 @@ class Users
             /**
              * Insert the client information into the database
             */
-            $timestamp = time();
             $statement = $this->dbh->prepare(
                 "INSERT INTO " . TABLE_USERS . " (
                     name, user, password, level, email, notify, owner_id, created_by, active, account_requested, max_file_size, objectguid, google_user
@@ -416,10 +416,10 @@ class Users
                 }
 
                 /**
- * Record the action log
-*/
+                 * Record the action log
+                */
                 $created_by = !empty(CURRENT_USER_ID) ? CURRENT_USER_ID : $this->id;
-                $record = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => 2,
                         'owner_id' => $created_by,
@@ -542,7 +542,7 @@ class Users
                 /**
                  * Record the action log
                 */
-                $record = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => $log_action_number,
                         'owner_id' => CURRENT_USER_ID,
@@ -593,7 +593,7 @@ class Users
                 /**
                  * Record the action log
                 */
-                $record = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => $log_action_number,
                         'owner_id' => CURRENT_USER_ID,
@@ -610,6 +610,8 @@ class Users
 
     /**
      * Mark the user as active or inactive.
+     * @param $change_to
+     * @return bool
      */
     public function setActiveStatus($change_to)
     {
@@ -647,7 +649,7 @@ class Users
                 /**
                  * Record the action log
                 */
-                $record = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => $log_action_number,
                         'owner_id' => CURRENT_USER_ID,
@@ -678,12 +680,12 @@ class Users
                 $sql->bindValue(':requested', 0, PDO::PARAM_INT);
                 $sql->bindValue(':denied', 0, PDO::PARAM_INT);
                 $sql->bindValue(':id', $this->id, PDO::PARAM_INT);
-                $status = $sql->execute();
+                $sql->execute();
 
                 /**
                  * Record the action log
                 */
-                $record = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => 38,
                         'owner_id' => CURRENT_USER_ID,
@@ -713,12 +715,12 @@ class Users
                 $sql->bindValue(':account_requested', 1, PDO::PARAM_INT);
                 $sql->bindValue(':account_denied', 1, PDO::PARAM_INT);
                 $sql->bindValue(':id', $this->id, PDO::PARAM_INT);
-                $status = $sql->execute();
+                $sql->execute();
 
                 /**
                  * Record the action log
                 */
-                $record = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => 38,
                         'owner_id' => CURRENT_USER_ID,

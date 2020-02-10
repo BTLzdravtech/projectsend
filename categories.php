@@ -294,13 +294,13 @@ if (isset($_POST['btn_process'])) {
             $pagination_start = ($pagination_page - 1) * RESULTS_PER_PAGE;
             $limit_start = $pagination_start;
             $limit_number = RESULTS_PER_PAGE;
-            $limit_amount = $limit_start + RESULTS_PER_PAGE;
+            $limit_amount = $limit_start + (int)RESULTS_PER_PAGE;
 
             $i = 0;
             
             function format_category_row($arranged)
             {
-                global $table, $c, $i, $page, $pagination_page, $pagination_start, $limit_start, $limit_number, $limit_amount;
+                global $table, $c, $i, $limit_start, $limit_amount;
 
                 $c++;
                 if (!empty($arranged)) {

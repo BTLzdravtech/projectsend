@@ -24,6 +24,7 @@ if (defined('IS_INSTALL')) {
      * page since all other are inaccessible if no valid session or cookie
      * is set.
      */
+    /** @noinspection PhpUndefinedConstantInspection */
     $header_vars = array(
         'html_lang' => SITE_LANG,
         'title' => $page_title . ' &raquo; ' . html_output(THIS_INSTALL_TITLE),

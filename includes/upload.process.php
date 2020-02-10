@@ -53,6 +53,7 @@ $fileName = $this_file->safeRename($fileName);
 
 // Validate file has an acceptable extension
 $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
+/** @noinspection PhpUndefinedConstantInspection */
 $allowedExt = explode(',', ALLOWED_FILE_TYPES);
 if (false === CAN_UPLOAD_ANY_FILE_TYPE) {
     if (!in_array($fileExt, $allowedExt)) {

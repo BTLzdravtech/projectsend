@@ -53,6 +53,7 @@ switch ($clients_form_type) {
         $extra_fields = false;
         $name_placeholder = __("Your full name", 'cftp_admin');
         $group_field = false;
+        /** @noinspection PhpUndefinedConstantInspection */
         if (CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all') {
             $group_field = true;
             $group_label = __('Request access to groups', 'cftp_admin');
@@ -69,6 +70,7 @@ switch ($clients_form_type) {
         $info_box = false;
         $extra_fields = false;
         $group_field = false;
+        /** @noinspection PhpUndefinedConstantInspection */
         if (CLIENTS_CAN_SELECT_GROUP == 'public' || CLIENTS_CAN_SELECT_GROUP == 'all') {
             $group_field            = true;
             $group_label            = __('Request access to groups', 'cftp_admin');
@@ -153,6 +155,7 @@ switch ($clients_form_type) {
             /**
              * Someone is registering an account for himself
             */
+            /** @noinspection PhpUndefinedConstantInspection */
             if (CLIENTS_CAN_SELECT_GROUP == 'public') {
                 $arguments['public'] = true;
             }
@@ -255,7 +258,7 @@ switch ($clients_form_type) {
                 <div class="form-group">
                     <label class="col-sm-4 control-label"><?php _e('Verification', 'cftp_admin'); ?></label>
                     <div class="col-sm-8">
-                        <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
+                        <div class="g-recaptcha" data-sitekey="<?php /** @noinspection PhpUndefinedConstantInspection */ echo RECAPTCHA_SITE_KEY; ?>"></div>
                     </div>
                 </div>
             <?php

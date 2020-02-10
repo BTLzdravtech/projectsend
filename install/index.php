@@ -60,6 +60,7 @@ if (!empty($error_msg)) {
 global $dbh;
 /**
  * Function that takes an array of SQL queries and executes them in order.
+ * @param $queries
  */
 function try_query($queries)
 {
@@ -221,7 +222,7 @@ require_once '../header-unlogged.php';
                                     'owner_id' => 1,
                                     'owner_user' => $admin_name
                                 );
-                                $new_record_action = $logger->addEntry($log_action_args);
+                                $logger->addEntry($log_action_args);
 
                                 $location = 'index.php?status=success';
                                 header("Location: $location");

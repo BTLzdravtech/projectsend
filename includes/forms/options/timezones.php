@@ -83,6 +83,7 @@
         return $structure;
     }
 
-        echo timezonechoice(TIMEZONE);
+    /** @noinspection PhpUndefinedConstantInspection */
+    echo timezonechoice(TIMEZONE);
     ?>
 </select>

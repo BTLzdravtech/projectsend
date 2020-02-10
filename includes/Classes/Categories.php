@@ -43,6 +43,7 @@ class Categories
 
     /**
      * Set the ID
+     * @param $id
      */
     public function setId($id)
     {
@@ -65,6 +66,7 @@ class Categories
 
     /**
      * Set the properties when editing
+     * @param array $arguments
      */
     public function set($arguments = [])
     {
@@ -77,6 +79,7 @@ class Categories
     /**
      * Get existing user data from the database
      *
+     * @param $id
      * @return bool
      */
     public function get($id)
@@ -122,7 +125,6 @@ class Categories
         $validation = new Validation;
 
         global $json_strings;
-        $state = array();
 
         /**
          * These validations are done both when creating a new client and
@@ -196,7 +198,7 @@ class Categories
             /**
              * Record the action log
             */
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                 'action'                => 34,
                 'owner_id'                => CURRENT_USER_ID,
@@ -257,7 +259,7 @@ class Categories
             /**
              * Record the action log
             */
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                 'action' => 35,
                 'owner_id' => CURRENT_USER_ID,
@@ -292,7 +294,7 @@ class Categories
             /**
              * Record the action log
             */
-            $record = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => 36,
                     'owner_id' => CURRENT_USER_ID,

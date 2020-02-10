@@ -22,6 +22,8 @@ class TableGenerate
 
     /**
      * Create the form
+     * @param $attributes
+     * @return string
      */
     public function open($attributes)
     {
@@ -32,13 +34,17 @@ class TableGenerate
         $output .= ">\n";
         return $output;
     }
-    
+
     /**
      * If a column name is sortable, it's content has to be a link
      * to the current page + existing $_GET parameters, but adding
      * the orderby and order ones.
      * If "order" is set and the current column in the loop contains
      * the current sort order needs to be inversed on the link.
+     * @param $sort_url
+     * @param $is_current_sorted
+     * @param $content
+     * @return string
      */
     private function buildSortableThContent($sort_url, $is_current_sorted, $content)
     {
@@ -233,6 +239,9 @@ class TableGenerate
 
     /**
      * PAGINATION
+     * @param $link
+     * @param int $page
+     * @return string
      */
     private function constructPaginationLink($link, $page = 1)
     {

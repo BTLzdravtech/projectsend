@@ -88,7 +88,7 @@ if (!empty($_POST)) {
                         'type' => (!empty($_POST['denied']) && $_POST['denied'] == 1) ? 'denied' : 'new',
                     );
 
-                    $delete_requests = $process_memberships->group_delete_requests($memberships_arguments);
+                    $process_memberships->group_delete_requests($memberships_arguments);
                 }
                 break;
             default:

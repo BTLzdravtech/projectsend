@@ -19,6 +19,7 @@ class Workspaces
     private $id;
     private $name;
     private $description;
+    private $admins;
     private $users;
     private $owner_id;
     private $created_by;
@@ -75,12 +76,15 @@ class Workspaces
     {
         $this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
         $this->description = (!empty($arguments['description'])) ? encode_html($arguments['description']) : null;
+        $this->admins = (!empty($arguments['admins'])) ? $arguments['admins'] : [];
         $this->users = (!empty($arguments['users'])) ? $arguments['users'] : null;
+        $this->users = array_diff($this->users, $this->admins);
     }
 
     /**
      * Get existing user data from the database
      *
+     * @param $id
      * @return bool
      */
     public function get($id)
@@ -104,8 +108,20 @@ class Workspaces
             $this->created_date = html_output($row['timestamp']);
         }
 
+        /* Get workspace admins IDs */
+        $statement = $this->dbh->prepare("SELECT user_id FROM " . TABLE_WORKSPACES_USERS . " WHERE admin = 1 AND workspace_id = :id");
+        $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($statement->rowCount() > 0) {
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            while ($user = $statement->fetch()) {
+                $this->admins[] = $user['user_id'];
+            }
+        }
+
         /* Get workspace users IDs */
-        $statement = $this->dbh->prepare("SELECT user_id FROM " . TABLE_WORKSPACES_USERS . " WHERE workspace_id = :id");
+        $statement = $this->dbh->prepare("SELECT user_id FROM " . TABLE_WORKSPACES_USERS . " WHERE admin = 0 AND workspace_id = :id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
         
@@ -128,6 +144,7 @@ class Workspaces
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'admins' => $this->admins,
             'users' => $this->users,
             'owner_id' => $this->owner_id,
             'created_by' => $this->created_by,
@@ -143,7 +160,6 @@ class Workspaces
         $validation = new Validation;
 
         global $json_strings;
-        $state = array();
 
         /**
          * These validations are done both when creating a new workspace and
@@ -204,13 +220,44 @@ class Workspaces
             $state['id'] = $this->id;
             $state['name'] = $this->name;
 
+            $admin = 1;
+
+            $current_user_id = CURRENT_USER_ID;
+            $sql_member = $this->dbh->prepare(
+                "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id,admin)"
+                ." VALUES (:added_by, :user, :id, :admin)"
+            );
+            $sql_member->bindParam(':added_by', $this->created_by);
+            $sql_member->bindParam(':user', $current_user_id, PDO::PARAM_INT);
+            $sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
+            $sql_member->bindParam(':admin', $admin, PDO::PARAM_INT);
+            $sql_member->execute();
+
+            /**
+             * Create the admins records
+             */
+            if (!empty($this->admins)) {
+                $admin = 1;
+
+                foreach ($this->admins as $user) {
+                    $sql_member = $this->dbh->prepare(
+                        "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id,admin)"
+                        ." VALUES (:added_by, :user, :id, :admin)"
+                    );
+                    $sql_member->bindParam(':added_by', $this->created_by);
+                    $sql_member->bindParam(':user', $user, PDO::PARAM_INT);
+                    $sql_member->bindParam(':id', $this->id, PDO::PARAM_INT);
+                    $sql_member->bindParam(':admin', $admin, PDO::PARAM_INT);
+                    $sql_member->execute();
+                }
+            }
+
             /**
              * Create the users records
             */
             if (!empty($this->users)) {
+                $admin = 0;
                 foreach ($this->users as $user) {
-                    $admin = 0;
-
                     $sql_member = $this->dbh->prepare(
                         "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id,admin)"
                         ." VALUES (:added_by, :user, :id, :admin)"
@@ -229,7 +276,7 @@ class Workspaces
                 /**
                  * Record the action log
                 */
-                $new_record_action = $this->logger->addEntry(
+                $this->logger->addEntry(
                     [
                         'action' => 23,
                         'owner_id' => CURRENT_USER_ID,
@@ -273,22 +320,42 @@ class Workspaces
         /**
          * Clean the users table
         */
-        $sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_WORKSPACES_USERS . " WHERE workspace_id = :id");
+        $sql_clean = $this->dbh->prepare("DELETE WU.* FROM " . TABLE_WORKSPACES_USERS . " WU INNER JOIN " . TABLE_WORKSPACES . " W  ON W.id = WU.workspace_id WHERE WU.user_id <> W.owner_id AND workspace_id = :id");
         $sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
         $sql_clean->execute();
-        
+
         /**
-         * Create the users records
-        */
-        if (!empty($this->users)) {
-            foreach ($this->users as $user) {
+         * Create the admins records
+         */
+        if (!empty($this->admins)) {
+            $admin = 1;
+            foreach ($this->admins as $user) {
                 $sql_user = $this->dbh->prepare(
-                    "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id)"
-                    ." VALUES (:added_by, :user, :id)"
+                    "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id,admin)"
+                    ." VALUES (:added_by, :user, :id, :admin)"
                 );
                 $sql_user->bindParam(':added_by', $this->created_by);
                 $sql_user->bindParam(':user', $user, PDO::PARAM_INT);
                 $sql_user->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $sql_user->bindParam(':admin', $admin, PDO::PARAM_INT);
+                $sql_user->execute();
+            }
+        }
+
+        /**
+         * Create the users records
+        */
+        if (!empty($this->users)) {
+            $admin = 0;
+            foreach ($this->users as $user) {
+                $sql_user = $this->dbh->prepare(
+                    "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id,admin)"
+                    ." VALUES (:added_by, :user, :id, :admin)"
+                );
+                $sql_user->bindParam(':added_by', $this->created_by);
+                $sql_user->bindParam(':user', $user, PDO::PARAM_INT);
+                $sql_user->bindParam(':id', $this->id, PDO::PARAM_INT);
+                $sql_user->bindParam(':admin', $admin, PDO::PARAM_INT);
                 $sql_user->execute();
             }
         }
@@ -299,7 +366,7 @@ class Workspaces
             /**
              * Record the action log
             */
-            $new_record_action = $this->logger->addEntry(
+            $this->logger->addEntry(
                 [
                     'action' => 15,
                     'owner_id' => CURRENT_USER_ID,
@@ -335,7 +402,7 @@ class Workspaces
         /**
          * Record the action log
         */
-        $record = $this->logger->addEntry(
+        $this->logger->addEntry(
             [
                 'action' => 18,
                 'owner_id' => CURRENT_USER_ID,

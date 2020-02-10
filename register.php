@@ -30,6 +30,7 @@ if ($_POST) {
     if (defined('RECAPTCHA_AVAILABLE')) {
         $recaptcha_user_ip = $_SERVER["REMOTE_ADDR"];
         $recaptcha_response = $_POST['g-recaptcha-response'];
+        /** @noinspection PhpUndefinedConstantInspection */
         $recaptcha_secret_key = RECAPTCHA_SECRET_KEY;
         $recaptcha_request = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret_key}&response={$recaptcha_response}&remoteip={$recaptcha_user_ip}");
     }
@@ -37,6 +38,7 @@ if ($_POST) {
     /**
      * Arguments used on validation and client creation.
     */
+    /** @noinspection PhpUndefinedConstantInspection */
     $client_arguments = array(
         'username' => $_POST['username'],
         'password' => $_POST['password'],
@@ -68,7 +70,9 @@ if ($_POST) {
          * Check if the option to auto-add to a group
          * is active.
          */
+        /** @noinspection PhpUndefinedConstantInspection */
         if (CLIENTS_AUTO_GROUP != '0') {
+            /** @noinspection PhpUndefinedConstantInspection */
             $group_id = CLIENTS_AUTO_GROUP;
             define('AUTOGROUP', true);
 
@@ -99,6 +103,7 @@ if ($_POST) {
          * Prepare and send an email to administrator(s)
          */
         $notify_admin = new Emails;
+        /** @noinspection PhpUndefinedConstantInspection */
         $email_arguments = array(
             'type' => 'new_client_self',
             'address' => ADMIN_EMAIL_ADDRESS,
@@ -127,6 +132,7 @@ if ($_POST) {
         <div class="white-box-interior">
 
             <?php
+            /** @noinspection PhpUndefinedConstantInspection */
             if (CLIENTS_CAN_REGISTER == '0') {
                 $msg = __('Client self registration is not allowed. If you need an account, please contact a system administrator.', 'cftp_admin');
                 echo system_message('danger', $msg);
@@ -147,6 +153,7 @@ if ($_POST) {
                             $msg = __('Account added correctly.', 'cftp_admin');
                             echo system_message('success', $msg);
 
+                            /** @noinspection PhpUndefinedConstantInspection */
                             if (CLIENTS_AUTO_APPROVE == 0) {
                                 $msg = __('Please remember that an administrator needs to approve your account before you can log in.', 'cftp_admin');
                                 $type = 'warning';

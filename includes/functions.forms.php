@@ -7,6 +7,10 @@
  *
  */
 
+/**
+ * Show search form
+ * @param string $action
+ */
 function show_search_form($action = '')
 {
     ?>
@@ -22,6 +26,7 @@ function show_search_form($action = '')
 
 /**
  * Add any existing $_GET parameters as hidden fields on a form
+ * @param array $ignore
  */
 function form_add_existing_parameters($ignore = array())
 {

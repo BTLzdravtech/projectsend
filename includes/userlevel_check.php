@@ -11,6 +11,8 @@
  * Used on header.php to check if there is an active session or valid
  * cookie before generating the content.
  * If none is found, redirect to the log in form.
+ * @param bool $redirect
+ * @return bool
  */
 function check_for_session($redirect = true)
 {
@@ -65,6 +67,7 @@ function check_for_client()
 /**
  * Used on header.php to check if the current logged in system user has the
  * permission to view this page.
+ * @param $allowed_levels
  */
 function can_see_content($allowed_levels)
 {

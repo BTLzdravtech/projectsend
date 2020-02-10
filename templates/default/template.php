@@ -227,7 +227,8 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                             } else {
                                 $class = 'danger';
                             }
-                                
+
+                            /** @noinspection PhpUndefinedConstantInspection */
                             $value = date(TIMEFORMAT, strtotime($file['expiry_date']));
                         } else {
                             $class = 'success';
