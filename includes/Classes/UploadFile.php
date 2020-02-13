@@ -32,6 +32,7 @@ class UploadFile
     public $name;
     public $description;
     public $upload_state;
+    private $hidden;
     /**
      * the $separator is used to replace invalid characters on a file name.
      */
@@ -206,7 +207,7 @@ class UploadFile
         $this->uploader = $arguments['uploader'];
         $this->uploader_id = $arguments['uploader_id'];
         $this->uploader_type = $arguments['uploader_type'];
-        $hidden = (!empty($arguments['hidden'])) ? 1 : 0;
+        $this->hidden = (!empty($arguments['hidden'])) ? 1 : 0;
         $expires = (!empty($arguments['expires'])) ? 1 : 0;
         $expiry_date = (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
         $is_public = (!empty($arguments['public'])) ? 1 : 0;
@@ -275,7 +276,7 @@ class UploadFile
         $this->uploader = $arguments['uploader'];
         $this->uploader_id = $arguments['uploader_id'];
         $this->uploader_type = $arguments['uploader_type'];
-        $hidden = (!empty($arguments['hidden'])) ? 1 : 0;
+        $this->hidden = (!empty($arguments['hidden'])) ? 1 : 0;
         $expires = (!empty($arguments['expires'])) ? 1 : 0;
         $expiry_date = (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
         $is_public = (!empty($arguments['public'])) ? 1 : 0;
@@ -401,7 +402,7 @@ class UploadFile
         $statement = $this->dbh->prepare("INSERT INTO " . TABLE_FILES_RELATIONS . " (file_id, " . $add_to . ", hidden) VALUES (:file_id, :assignment, :hidden)");
         $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
         $statement->bindParam(':assignment', $id);
-        $statement->bindParam(':hidden', $hidden, PDO::PARAM_INT);
+        $statement->bindParam(':hidden', $this->hidden, PDO::PARAM_INT);
         $statement->execute();
 
         if ($this->uploader_type == 'user') {

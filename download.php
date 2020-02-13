@@ -41,6 +41,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     $statement->bindParam(':file_id', $got_file_id, PDO::PARAM_INT);
     $statement->execute();
 
+    $owner_id = null;
     $is_public = null;
     $real_file_url = null;
     $file_on_disk = null;
@@ -48,7 +49,8 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
     if ($statement->rowCount() > 0) {
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         $got_url = $statement->fetch();
-            
+
+        $owner_id = $got_url['owner_id'];
         $is_public = $got_url['public_allow'];
         $expires = $got_url['expires'];
         $expiry_date = $got_url['expiry_date'];
@@ -98,7 +100,7 @@ if (!empty($_GET['token']) && !empty($_GET['id'])) {
             $logger = new ActionsLog();
             $log_action_args = array(
                 'action' => 37,
-                'owner_id' => 0,
+                'owner_id' => $owner_id,
                 'affected_file' => (int)$got_file_id,
                 'affected_file_name' => $real_file_url,
             );

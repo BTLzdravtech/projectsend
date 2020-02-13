@@ -88,13 +88,13 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                 <div class="right_clear"></div><br />
 
                 <div class="form_actions_count">
-                    <p class="form_count_total"><?php _e('Found', 'cftp_admin'); ?>: <span><?php echo (isset($count_for_pagination)) ? $count_for_pagination : 0; ?> <?php _e('files', 'cftp_admin'); ?></span></p>
+                    <p class="form_count_total"><?php _e('Found', 'cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('files', 'cftp_admin'); ?></span></p>
                 </div>
     
                 <div class="right_clear"></div>
     
                 <?php
-                if (!isset($count_for_pagination)) {
+                if (!$count_for_pagination) {
                     if (isset($no_results_error)) {
                         switch ($no_results_error) {
                             case 'search':
@@ -323,7 +323,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                     $pagination_args = array(
                         'link' => basename($_SERVER['SCRIPT_FILENAME']),
                         'current' => $pagination_page,
-                        'pages' => ceil(isset($count_for_pagination) ? $count_for_pagination : 0 / TEMPLATE_RESULTS_PER_PAGE),
+                        'pages' => ceil($count_for_pagination / TEMPLATE_RESULTS_PER_PAGE),
                     );
                         
                     echo $table->pagination($pagination_args);

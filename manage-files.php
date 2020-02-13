@@ -7,6 +7,7 @@
  */
 
 use ProjectSend\Classes\TableGenerate;
+use ProjectSend\Classes\Workspaces;
 
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
@@ -231,7 +232,7 @@ if ($query_table_files === true) {
         $add_user_to_query = "AND user_id = :user_id";
         $params[':user_id'] = $this_id;
     }
-    $cq = "SELECT files.*, ( SELECT COUNT(file_id) FROM " . TABLE_DOWNLOADS . " WHERE " . TABLE_DOWNLOADS . ".file_id=files.id " . $add_user_to_query . ") as download_count FROM " . TABLE_FILES . " files";
+    $cq = "SELECT files.*, SUM(IF(downloads.id IS NULL, 0, 1)) as download_count FROM " . TABLE_FILES . " files LEFT JOIN " . TABLE_DOWNLOADS . " downloads ON files.id = downloads.file_id " . $add_user_to_query;
 
     if (isset($search_on) && !empty($gotten_files)) {
         $conditions[] = "FIND_IN_SET(id, :files)";
@@ -259,22 +260,46 @@ if ($query_table_files === true) {
     }
 
     /**
-     * If the user is an account manager is editing his files
-     * only show files uploaded by that account.
+     * Filter by workspace
      */
-    if (CURRENT_USER_LEVEL == '8') {
-        $clients_condition = '';
-        foreach ($clients as $key => $client) {
-            if (strlen($clients_condition) > 0) {
-                $clients_condition .= ",";
-            }
-            $clients_condition .= ":client" . $key;
-            $params[":client" . $key] = $client;
-        }
-        $conditions[] = "(owner_id = :owner_id" . (strlen($clients_condition) > 0 ? " OR owner_id IN (" . $clients_condition . ")" : "") . ")";
-        $no_results_error = 'account_level';
+    if (isset($_GET['workspace']) && !empty($_GET['workspace'])) {
+        $workspace_object = new Workspaces($dbh);
+        $workspace_object->get($_GET['workspace']);
+        $workspace_data = $workspace_object->getProperties();
 
-        $params[':owner_id'] = CURRENT_USER_ID;
+        $workspace_condition = '';
+        foreach (array_diff(array_merge($workspace_data['admins'], $workspace_data['users']), [CURRENT_USER_ID]) as $key => $client) {
+            if (strlen($workspace_condition) > 0) {
+                $workspace_condition .= ",";
+            }
+            $workspace_condition .= ":user" . $key;
+            $params[":user" . $key] = $client;
+        }
+        $conditions[] = "(owner_id = :owner_id_workspace" . (strlen($workspace_condition) > 0 ? " OR owner_id IN (" . $workspace_condition . ")" : "") . ")";
+        $no_results_error = 'filter';
+
+        $params[':owner_id_workspace'] = CURRENT_USER_ID;
+    } else {
+
+        /**
+         * If the user is an account manager is editing his files
+         * only show files uploaded by that account.
+         */
+        if (CURRENT_USER_LEVEL == '8') {
+            $clients_condition = '';
+            foreach ($clients as $key => $client) {
+                if (strlen($clients_condition) > 0) {
+                    $clients_condition .= ",";
+                }
+                $clients_condition .= ":client" . $key;
+                $params[":client" . $key] = $client;
+            }
+            $conditions[] = "(owner_id = :owner_id" . (strlen($clients_condition) > 0 ? " OR owner_id IN (" . $clients_condition . ")" : "") . ")";
+            $no_results_error = 'account_level';
+
+            $params[':owner_id'] = CURRENT_USER_ID;
+        }
+
     }
 
     /**
@@ -329,6 +354,8 @@ if ($query_table_files === true) {
         }
     }
 
+    $cq .= " GROUP BY files.id";
+
     /**
      * Add the order.
      * Defaults to order by: date, order: ASC
@@ -368,6 +395,37 @@ if ($query_table_files === true) {
             <?php show_search_form('manage-files.php'); ?>
 
             <?php
+            if (CURRENT_USER_LEVEL == 9 || CURRENT_USER_LEVEL == 8) {
+                ?>
+                <form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
+                    <?php form_add_existing_parameters(array('hidden', 'action', 'workspace')); ?>
+                    <div class="form-group group_float">
+                        <select name="workspace" id="workspace" class="txtfield form-control">
+                            <?php
+                            $status_options = array(
+                                '0' => __('Workspace', 'cftp_admin'),
+                            );
+
+                            $sql_workspaces = $dbh->prepare("SELECT W.id, W.name FROM " . TABLE_WORKSPACES . " W INNER JOIN " . TABLE_WORKSPACES_USERS . " WU ON W.id = WU.workspace_id AND WU.user_id = " . CURRENT_USER_ID . " GROUP BY W.id");
+                            $sql_workspaces->execute();
+                            $sql_workspaces->setFetchMode(PDO::FETCH_ASSOC);
+
+                            while ($data_workspaces = $sql_workspaces->fetch()) {
+                                $status_options[$data_workspaces['id']] = $data_workspaces['name'];
+                            }
+
+                            foreach ($status_options as $val => $text) {
+                                ?>
+                                <option value="<?php echo $val; ?>" <?php echo isset($_GET['workspace']) && $_GET['workspace'] == $val ? 'selected="selected"' : ''; ?>><?php echo $text; ?></option>
+                                <?php
+                            } ?>
+                        </select>
+                    </div>
+                    <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
+                </form>
+                <?php
+            }
+
             if (CURRENT_USER_LEVEL != '0' && $results_type == 'global') {
                 ?>
                 <form action="manage-files.php" name="files_filters" method="get" class="form-inline form_filters">
@@ -381,7 +439,15 @@ if ($query_table_files === true) {
 
                 $owner_condition = '';
                 if (CURRENT_USER_LEVEL == 8 || CURRENT_USER_LEVEL == 7) {
-                    $owner_condition = " WHERE owner_id=" . CURRENT_USER_ID . (count($clients) > 0 ? " OR owner_id IN(" . implode(',', $clients) . ")" : "");
+                    if (CURRENT_USER_LEVEL == 8 && isset($_GET['workspace']) && !empty($_GET['workspace'])) {
+                        $workspace_object = new Workspaces($dbh);
+                        $workspace_object->get($_GET['workspace']);
+                        $workspace_data = $workspace_object->getProperties();
+
+                        $owner_condition = " WHERE owner_id=" . CURRENT_USER_ID . (count(array_diff(array_merge($workspace_data['admins'], $workspace_data['users']), [CURRENT_USER_ID])) > 0 ? " OR owner_id IN(" . implode(',', array_diff(array_merge($workspace_data['admins'], $workspace_data['users']), [CURRENT_USER_ID])) . ")" : "");
+                    } else {
+                        $owner_condition = " WHERE owner_id=" . CURRENT_USER_ID . (count($clients) > 0 ? " OR owner_id IN(" . implode(',', $clients) . ")" : "");
+                    }
                 }
 
                 $sql_uploaders = $dbh->prepare("SELECT uploader FROM " . TABLE_FILES . $owner_condition . " GROUP BY uploader");
@@ -840,7 +906,7 @@ if ($query_table_files === true) {
                         'condition' => $conditions['total_downloads'],
                     ),
                     array(
-                        'content' => '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm edit-button"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a><a href="manage-files.php?action=delete&batch%5B%5D=' . $row["id"] .'" class="btn btn-primary btn-sm delete-button"><i class="fa fa-trash"></i><span class="button_label">' . __('Delete', 'cftp_admin') . '</span></a>',
+                        'content' => $row["owner_id"] == CURRENT_USER_ID ? '<a href="edit-file.php?file_id=' . $row["id"] .'" class="btn btn-primary btn-sm edit-button"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a><a href="manage-files.php?action=delete&batch%5B%5D=' . $row["id"] .'" class="btn btn-primary btn-sm delete-button"><i class="fa fa-trash"></i><span class="button_label">' . __('Delete', 'cftp_admin') . '</span></a>' : '',
                     ),
                 );
 
