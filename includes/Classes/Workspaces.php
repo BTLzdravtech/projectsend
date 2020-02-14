@@ -118,6 +118,8 @@ class Workspaces
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
 
+        $this->admins = [];
+
         if ($statement->rowCount() > 0) {
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             while ($user = $statement->fetch()) {
@@ -129,7 +131,9 @@ class Workspaces
         $statement = $this->dbh->prepare("SELECT user_id FROM " . TABLE_WORKSPACES_USERS . " WHERE admin = 0 AND workspace_id = :id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
-        
+
+        $this->users = [];
+
         if ($statement->rowCount() > 0) {
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             while ($user = $statement->fetch()) {

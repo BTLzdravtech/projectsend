@@ -1524,5 +1524,16 @@ if (current_role_in($allowed_update)) {
 
             $updates_made++;
         }
+
+        /**
+         * r1116 updates
+         * Add workspace boolean to files.
+         */
+        if ($last_update < 1116) {
+            $q = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD COLUMN workspace_included int(1) NOT NULL DEFAULT 1 AFTER public_allow");
+            if ($q) {
+                $updates_made++;
+            }
+        }
     }
 }
