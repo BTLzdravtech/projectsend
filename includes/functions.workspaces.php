@@ -194,7 +194,7 @@ function delete_workspace($workspace_id)
                 // Record the action log
                 $logger = new ProjectSend\Classes\ActionsLog;
                 $log_action_args = array(
-                                        'action' => 18,
+                                        'action' => 43,
                                         'owner_id' => CURRENT_USER_ID,
                                         'affected_account_name' => $workspace_data['name']
                                     );

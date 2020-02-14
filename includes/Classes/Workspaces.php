@@ -283,7 +283,7 @@ class Workspaces
                 */
                 $this->logger->addEntry(
                     [
-                        'action' => 23,
+                        'action' => 44,
                         'owner_id' => CURRENT_USER_ID,
                         'affected_account' => $this->id,
                         'affected_account_name' => $this->name,
@@ -373,7 +373,7 @@ class Workspaces
             */
             $this->logger->addEntry(
                 [
-                    'action' => 15,
+                    'action' => 42,
                     'owner_id' => CURRENT_USER_ID,
                     'affected_account' => $this->id,
                     'affected_account_name' => $this->name,
@@ -409,7 +409,7 @@ class Workspaces
         */
         $this->logger->addEntry(
             [
-                'action' => 18,
+                'action' => 43,
                 'owner_id' => CURRENT_USER_ID,
                 'affected_account_name' => $this->name,
             ]

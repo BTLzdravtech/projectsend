@@ -1880,6 +1880,24 @@ function render_log_action($params)
             $action_text = __('transferred the client', 'cftp_admin');
             $part2 = $affected_account_name . ' (from: ' . get_client_by_id($owner_id)['name'] . ')';
             break;
+        case 42:
+            $action_ico = 'workspace-edit';
+            $part1 = $owner_user;
+            $action_text = __('edited the workspace', 'cftp_admin');
+            $part2 = $affected_account_name;
+            break;
+        case 43:
+            $action_ico = 'workspace-delete';
+            $part1 = $owner_user;
+            $action_text = __('deleted the workspace', 'cftp_admin');
+            $part2 = $affected_account_name;
+            break;
+        case 44:
+            $action_ico = 'workspace-add';
+            $part1 = $owner_user;
+            $action_text = __('created the workspace', 'cftp_admin');
+            $part2 = $affected_account_name;
+            break;
     }
 
     $date = format_date($timestamp);
