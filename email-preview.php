@@ -5,10 +5,13 @@
  * @package ProjectSend
  * @subpackage Options
  */
+
+use ProjectSend\Classes\Emails;
+
 $allowed_levels = array(9);
 require_once 'bootstrap.php';
 
-$page_title = __('E-mail templates','cftp_admin') . ': ' . __('Preview','cftp_admin');
+$page_title = __('E-mail templates', 'cftp_admin') . ': ' . __('Preview', 'cftp_admin');
 
 $active_nav = 'options';
 
@@ -22,11 +25,11 @@ can_see_content($allowed_levels);
 $type = $_GET['t'];
 
 /** Generate the preview using the email sending class */
-$preview = new \ProjectSend\Classes\Emails;
+$preview = new Emails;
 $preview_arguments = array(
-								'preview'	=> true,
-								'type'		=> $type,
-							);
+    'preview' => true,
+    'type' => $type,
+);
 $preview_results = $preview->send($preview_arguments);
 echo $preview_results;
 

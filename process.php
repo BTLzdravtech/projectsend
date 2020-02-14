@@ -1,16 +1,22 @@
 <?php
 /** Process an action */
+
+use ProjectSend\Classes\DoProcess;
+
 $allowed_levels = array(9,8,7,0);
 require_once 'bootstrap.php';
 
+/** @var PDO $dbh */
+global $dbh;
+
 $_SESSION['last_call'] = time();
 
-if ( !empty( $_GET['do'] ) && $_GET['do'] != 'login' ) {
+if (!empty($_GET['do']) && $_GET['do'] != 'login') {
     check_for_session();
     can_see_content($allowed_levels);
 }
 
-$process = new \ProjectSend\Classes\DoProcess($dbh);
+$process = new DoProcess($dbh);
 
 switch ($_GET['do']) {
     case 'login':

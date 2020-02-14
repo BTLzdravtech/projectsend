@@ -2,22 +2,29 @@
 /**
  * Show the form to add a new client.
  *
- * @package		ProjectSend
- * @subpackage	Clients
- *
+ * @package    ProjectSend
+ * @subpackage Clients
  */
+
+use ProjectSend\Classes\ActionsLog;
+use ProjectSend\Classes\MembersActions;
+use ProjectSend\Classes\Users;
+
 $allowed_levels = array(9,8);
 require_once 'bootstrap.php';
 
+/**
+ * @var PDO $dbh
+*/
+global $dbh;
+
 $active_nav = 'clients';
 
-$page_title = __('Add client','cftp_admin');
+$page_title = __('Add client', 'cftp_admin');
 
 $page_id = 'client_form';
 
-global $dbh;
-
-$new_client = new \ProjectSend\Classes\Users($dbh);
+$new_client = new Users($dbh);
 
 if (!isset($_POST['ajax'])) {
     include_once ADMIN_VIEWS_DIR . DS . 'header.php';
@@ -28,9 +35,9 @@ if (!isset($_POST['ajax'])) {
  * the form
  */
 $client_arguments = array(
-    'notify_upload'     => 1,
-    'active'            => 1,
-    'notify_account'    => 1,
+    'notify_upload' => 1,
+    'active' => 1,
+    'notify_account' => 1,
 );
 
 if ($_POST) {
@@ -51,8 +58,12 @@ if ($_POST) {
     );
 
     if (!isset($_POST['transfer'])) {
-        /** Validate the information from the posted form. */
-        /** Create the user if validation is correct. */
+        /**
+         * Validate the information from the posted form.
+        */
+        /**
+         * Create the user if validation is correct.
+        */
         $new_client->setType('new_client');
         $new_client->set($client_arguments);
 
@@ -62,7 +73,7 @@ if ($_POST) {
             $add_to_groups = (!empty($_POST['groups_request'])) ? $_POST['groups_request'] : '';
             if (!empty($add_to_groups)) {
                 array_map('encode_html', $add_to_groups);
-                $memberships = new \ProjectSend\Classes\MembersActions;
+                $memberships = new MembersActions;
                 $arguments = array(
                     'client_id' => $new_client->getId(),
                     'group_ids' => $add_to_groups,
@@ -95,24 +106,26 @@ if ($_POST) {
         $transferred_from_id = $client['owner_id'];
 
         // remove client from all groups
-        $statement = $dbh->prepare( "DELETE FROM " . TABLE_MEMBERS . " WHERE client_id = :client_id" );
+        $statement = $dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE client_id = :client_id");
         $statement->execute(array(':client_id' => $client['id']));
 
         // change owner of client files to old owner before transfer
 
-        $statement = $dbh->prepare( "UPDATE " . TABLE_FILES . " SET owner_id = :owner_id WHERE owner_id = :client_id" );
+        $statement = $dbh->prepare("UPDATE " . TABLE_FILES . " SET owner_id = :owner_id WHERE owner_id = :client_id");
         $statement->execute(array(':owner_id' => $transferred_from_id, 'client_id' => $client['id']));
 
         // change client owner_id
-        $statement = $dbh->prepare( "UPDATE " . TABLE_USERS . " SET owner_id = :owner_id WHERE id = :id" );
+        $statement = $dbh->prepare("UPDATE " . TABLE_USERS . " SET owner_id = :owner_id WHERE id = :id");
         $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, 'id' => $client['id']));
-        $logger = new \ProjectSend\Classes\ActionsLog;
-        $logger->addEntry([
+        $logger = new ActionsLog;
+        $logger->addEntry(
+            [
             'action' => 41,
             'owner_id' => $transferred_from_id,
             'affected_account' => $client['id'],
             'affected_account_name' => $client['name'],
-        ]);
+            ]
+        );
         if (!isset($_POST['ajax'])) {
             $redirect_to = BASE_URI . 'clients-edit.php?id=' . $client['id'] . '&status=' . ($result ? 1 : 0);
             header('Location:' . $redirect_to);
@@ -133,29 +146,28 @@ if ($_POST) {
                 // If the form was submited with errors, show them here.
                 echo $new_client->getValidationErrors();
 
-                if (isset($new_response)) {
-                    /**
-                     * Get the process state and show the corresponding ok or error messages.
-                     */
-                    switch ($new_response['query']) {
-                        case 0:
-                            $msg = __('There was an error. Please try again.','cftp_admin');
-                            echo system_message('danger',$msg);
+            if (isset($new_response)) {
+                /**
+                 * Get the process state and show the corresponding ok or error messages.
+                 */
+                switch ($new_response['query']) {
+                    case 0:
+                        $msg = __('There was an error. Please try again.', 'cftp_admin');
+                        echo system_message('danger', $msg);
                         break;
-                    }
                 }
-                else {
-                    /**
-                     * If not $new_response is set, it means we are just entering for the first time.
-                     * Include the form.
-                     */
-                    $clients_form_type = 'new_client';
-                    include_once FORMS_DIR . DS . 'clients.php';
-                }
+            } else {
+                /**
+                 * If not $new_response is set, it means we are just entering for the first time.
+                 * Include the form.
+                 */
+                $clients_form_type = 'new_client';
+                include_once FORMS_DIR . DS . 'clients.php';
+            }
             ?>
         </div>
     </div>
 </div>
 
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

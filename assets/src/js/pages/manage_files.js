@@ -3,8 +3,8 @@
 
     admin.pages.manageFiles = function () {
 
-        $(document).ready(function(e) {
-            $(".delete-button").on('click', function(e) {
+        $(document).ready(function (e) {
+            $(".delete-button").on('click', function (e) {
                 var button = $(this);
                 var _formatted = sprintf(json_strings.translations.confirm_delete, 1);
                 bootbox.confirm({
