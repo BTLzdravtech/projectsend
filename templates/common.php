@@ -75,11 +75,11 @@ $found_group_files_temp    = array();
  * Get the client's own files
  * Construct the query first.
  */
-$files_query = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE (client_id = :id";
+$files_query = "SELECT FR.id, FR.file_id, FR.client_id, FR.group_id FROM " . TABLE_FILES_RELATIONS . " FR INNER JOIN " . TABLE_FILES . " F ON FR.file_id = F.id WHERE (FR.client_id = :id";
 if (!empty($found_groups)) {
-    $files_query .= " OR FIND_IN_SET(group_id, :groups)";
+    $files_query .= " OR FIND_IN_SET(FR.group_id, :groups)";
 }
-$files_query .= ") AND hidden = '0'";
+$files_query .= ") AND FR.hidden = '0' AND (F.expires = 0 OR (F.expires = 1 AND F.expiry_date > NOW()))";
 
 $files_sql = $dbh->prepare($files_query);
 

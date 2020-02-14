@@ -90,8 +90,12 @@ class Groups
     {
         $this->id = $id;
 
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
+        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id" . (CURRENT_USER_LEVEL != 9 ? " AND owner_id=:owner_id" : ""));
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        if (CURRENT_USER_LEVEL != 9) {
+            $owner_id = CURRENT_USER_ID;
+            $statement->bindParam(':owner_id', $owner_id, PDO::PARAM_INT);
+        }
         $statement->execute();
         $statement->setFetchMode(PDO::FETCH_ASSOC);
 
@@ -288,7 +292,7 @@ class Groups
      */
     public function edit()
     {
-        if (empty($this->id)) {
+        if (empty($this->id) || !group_exists_id($this->id)) {
             return false;
         }
 

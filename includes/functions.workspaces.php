@@ -10,8 +10,14 @@ function workspace_exists_id($id)
 {
     /** @var PDO $dbh */
     global $dbh;
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_WORKSPACES . " WHERE id=:id");
+
+    $user_id = CURRENT_USER_ID;
+
+    $statement = $dbh->prepare("SELECT W.* FROM " . TABLE_WORKSPACES . " W INNER JOIN " . TABLE_WORKSPACES_USERS . " WU ON W.id = WU.workspace_id" . (CURRENT_USER_LEVEL != 9 ? " AND WU.user_id=:user_id AND admin=1" : "") . " WHERE W.id=:id GROUP BY W.id");
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
+    if (CURRENT_USER_LEVEL != 9) {
+        $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    }
     $statement->execute();
     if ($statement->rowCount() > 0) {
         return true;
@@ -188,7 +194,7 @@ function delete_workspace($workspace_id)
                 // Record the action log
                 $logger = new ProjectSend\Classes\ActionsLog;
                 $log_action_args = array(
-                                        'action' => 18,
+                                        'action' => 43,
                                         'owner_id' => CURRENT_USER_ID,
                                         'affected_account_name' => $workspace_data['name']
                                     );

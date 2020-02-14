@@ -86,8 +86,10 @@ $get_categories = get_categories();
 if (empty($this_file_id)) {
     $no_results_error = 'no_id_passed';
 } else {
-    $sql = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id");
+    $sql = $dbh->prepare("SELECT * FROM " . TABLE_FILES . " WHERE id = :id AND owner_id = :owner_id");
+    $owner_id = CURRENT_USER_ID;
     $sql->bindParam(':id', $this_file_id, PDO::PARAM_INT);
+    $sql->bindParam(':owner_id', $owner_id, PDO::PARAM_INT);
     $sql->execute();
 
     /**

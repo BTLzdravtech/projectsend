@@ -59,7 +59,14 @@ function check_for_admin()
 function check_for_client()
 {
     if (isset($_SESSION['userlevel']) && $_SESSION['userlevel'] == '0') {
-        header("location:" . CLIENT_VIEW_FILE_LIST_URL);
+        $params = '';
+        foreach ($_GET as $key => $value) {
+            if (strlen($params) > 0) {
+                $params .= '&';
+            }
+            $params .= $key . '=' . $value;
+        }
+        header("location:" . CLIENT_VIEW_FILE_LIST_URL . '?' .  $params);
         exit;
     }
 }

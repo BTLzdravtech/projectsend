@@ -79,6 +79,9 @@ class ActionsLog
             39 => __("A client's groups membership requests were processed.", 'cftp_admin'),
             40 => __('A file was marked as hidden for everyone', 'cftp_admin'),
             41 => __("A client was transferred", 'cftp_admin'),
+            42 => __("A workspace was edited", 'cftp_admin'),
+            43 => __("A workspace was deleted", 'cftp_admin'),
+            44 => __("A user created a new workspace", 'cftp_admin'),
         );
     }
 

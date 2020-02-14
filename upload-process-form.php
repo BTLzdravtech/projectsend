@@ -386,9 +386,18 @@ if (!empty($upload_finish)) {
             </tbody>
         </table>
 
-        <a href="javascript:void(0);" class="btn btn-default btn-sm public_links" data-name="<?php echo CURRENT_USER_NAME ?>" rel="" title=""><?php echo __('View public links', 'cftp_admin'); ?></a>
     <?php
-    if ($all_public) { ?>
+    /*
+     * Show the "My files" button only to clients
+     */
+    if (CURRENT_USER_LEVEL > 0) {
+        ?>
+        <a href="javascript:void(0);" class="btn btn-default btn-sm public_links"
+           data-name="<?php echo CURRENT_USER_NAME ?>" rel=""
+           title=""><?php echo __('View public links', 'cftp_admin'); ?></a>
+        <?php
+    }
+    if ($all_public && CURRENT_USER_LEVEL > 0) { ?>
             <script>
                 $(document).ready(function() {
                     setTimeout(function(){ $('.public_links').click(); }, 100);
