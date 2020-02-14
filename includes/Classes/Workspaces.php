@@ -91,8 +91,13 @@ class Workspaces
     {
         $this->id = $id;
 
-        $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_WORKSPACES . " WHERE id=:id");
+        $user_id = CURRENT_USER_ID;
+
+        $statement = $this->dbh->prepare("SELECT W.* FROM " . TABLE_WORKSPACES . " W INNER JOIN " . TABLE_WORKSPACES_USERS . " WU ON W.id = WU.workspace_id" . (CURRENT_USER_LEVEL != 9 ? " AND WU.user_id=:user_id" : "") . " WHERE W.id=:id GROUP BY W.id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
+        if (CURRENT_USER_LEVEL != 9) {
+            $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        }
         $statement->execute();
         $statement->setFetchMode(PDO::FETCH_ASSOC);
 
@@ -297,7 +302,7 @@ class Workspaces
      */
     public function edit()
     {
-        if (empty($this->id)) {
+        if (empty($this->id) || !workspace_exists_id($this->id)) {
             return false;
         }
 

@@ -12,8 +12,12 @@ function group_exists_id($id)
      * @var PDO $dbh
     */
     global $dbh;
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id");
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id" . (CURRENT_USER_LEVEL != 9 ? " AND owner_id=:owner_id" : ""));
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
+    if (CURRENT_USER_LEVEL != 9) {
+        $owner_id = CURRENT_USER_ID;
+        $statement->bindParam(':owner_id', $owner_id, PDO::PARAM_INT);
+    }
     $statement->execute();
     if ($statement->rowCount() > 0) {
         return true;

@@ -317,8 +317,14 @@ function download_information_exists($id)
 function client_exists_id($id)
 {
     global $dbh;
-    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id");
+
+
+    $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE id=:id" . (CURRENT_USER_LEVEL != 9 ? " AND owner_id=:owner_id" : ""));
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
+    if (CURRENT_USER_LEVEL != 9) {
+        $owner_id = CURRENT_USER_ID;
+        $statement->bindParam(':owner_id', $owner_id, PDO::PARAM_INT);
+    }
     $statement->execute();
     if ($statement->rowCount() > 0) {
         return true;
