@@ -1517,8 +1517,6 @@ if (current_role_in($allowed_update)) {
          */
         if ($last_update < 1115) {
             $statement = $dbh->query("ALTER TABLE " . TABLE_LOG . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
-            $statement = $dbh->query("ALTER TABLE " . TABLE_LOG . " ADD FOREIGN KEY (`affected_file`) REFERENCES " . TABLE_FILES . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
-            $statement = $dbh->query("ALTER TABLE " . TABLE_LOG . " ADD FOREIGN KEY (`affected_account`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
             $statement = $dbh->query("ALTER TABLE " . TABLE_CATEGORIES . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
             $statement = $dbh->query("ALTER TABLE " . TABLE_FILES . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
             $statement = $dbh->query("ALTER TABLE " . TABLE_GROUPS . " ADD FOREIGN KEY (`owner_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
