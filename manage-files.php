@@ -279,6 +279,7 @@ if ($query_table_files === true) {
             $workspace_condition .= ":user" . $key;
             $params[":user" . $key] = $client;
         }
+        $conditions[] = "workspace_included = 1";
         $conditions[] = "(owner_id = :owner_id_workspace" . (strlen($workspace_condition) > 0 ? " OR owner_id IN (" . $workspace_condition . ")" : "") . ")";
         $no_results_error = 'filter';
 

@@ -104,11 +104,11 @@ class DoProcess
                         'client_id' => CURRENT_USER_ID,
                         'return' => 'list',
                     );
-                    $found_groups    = $get_groups->client_get_groups($get_arguments);
+                    $found_groups = $get_groups->client_get_groups($get_arguments);
 
                     /**
                      * Get assignments
-                    */
+                     */
                     $params = array(
                         ':client_id' => CURRENT_USER_ID,
                     );
@@ -127,12 +127,17 @@ class DoProcess
 
                     /**
                      * Continue
-                    */
+                     */
                     if ($files->rowCount() > 0) {
                         $can_download = true;
                         $log_action = 8;
                     }
                 }
+            } else if (CURRENT_USER_LEVEL < 9) {
+                // TODO: kontrola jestli to je file meho clienta nebo to je file v mem workspace, ktery je oznacen, ze ho muzu mit nebo to je muj soubor
+                // TODO: je to takhle vse?
+                $can_download = true;
+                $log_action = 7;
             } else {
                 $can_download = true;
                 $log_action = 7;
@@ -195,16 +200,16 @@ class DoProcess
     public function downloadZip($file_ids)
     {
         $files_to_zip = array_map('intval', explode(',', $file_ids));
-        
+
         foreach ($files_to_zip as $idx => $file) {
             $file = UPLOADED_FILES_DIR . DS . $file;
             if (!(realpath($file) && substr(realpath($file), 0, strlen(UPLOADED_FILES_DIR))) === UPLOADED_FILES_DIR) {
                 unset($files_to_zip[$idx]);
             }
         }
-        
+
         $added_files = 0;
-        
+
         /**
          * Get the list of different groups the client belongs to.
          */
@@ -223,18 +228,18 @@ class DoProcess
             $statement->execute();
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $row = $statement->fetch();
-        
+
             $this_file_id  = $row['id'];
             $this_file_on_disk = $row['url'];
             $this_file_save_as = (!empty($row['original_url'])) ? $row['original_url'] : $row['url'];
             $this_file_expires = $row['expires'];
             $this_file_expiry_date = $row['expiry_date'];
-        
+
             $this_file_expired = false;
             if ($this_file_expires == '1' && time() > strtotime($this_file_expiry_date)) {
                 $this_file_expired = true;
             }
-        
+
             /**
              * Check download permission
              */
@@ -247,7 +252,7 @@ class DoProcess
                     $statement->execute();
                     $statement->setFetchMode(PDO::FETCH_ASSOC);
                     $row = $statement->fetch();
-        
+
                     if ($row) {
                         /**
                          * Add the file
@@ -265,7 +270,7 @@ class DoProcess
                 );
             }
         }
-        
+
         /**
          * Start adding the files to the zip
         */
@@ -300,9 +305,9 @@ class DoProcess
                     */
                 }
             }
-        
+
             $zip->close();
-        
+
             if ($added_files > 0) {
                 /**
                  * Record the action log
@@ -314,7 +319,7 @@ class DoProcess
                         'affected_account_name' => CURRENT_USER_USERNAME
                     ]
                 );
-            
+
                 if (file_exists($zip_file)) {
                     setCookie("download_started", 1, time() + 20, '/', "", false, false);
 
