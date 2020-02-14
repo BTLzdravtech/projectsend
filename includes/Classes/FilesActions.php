@@ -97,7 +97,7 @@ class FilesActions
                     $this->logger->addEntry(
                         [
                             'action' => 12,
-                            'owner_id' => $service_run? '-1' : CURRENT_USER_ID,
+                            'owner_id' => $service_run? '1' : CURRENT_USER_ID,
                             'owner_user' => $service_run? 'service' : CURRENT_USER_NAME,
                             'affected_file' => $file_id,
                             'affected_file_name' => $title
