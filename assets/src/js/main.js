@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         admin.parts.bulkActions();
         admin.parts.main();
         admin.parts.jqueryValidationCustomMethods();

@@ -8,23 +8,23 @@ switch ($error_type) {
     default:
     case '401':
         http_response_code(401);
-        $page_title = __('Access denied','cftp_admin');
-        $error_message = __("Your account type doesn't allow you to view this page. Please contact a system administrator if you need to access this function.",'cftp_admin');
+        $page_title = __('Access denied', 'cftp_admin');
+        $error_message = __("Your account type doesn't allow you to view this page. Please contact a system administrator if you need to access this function.", 'cftp_admin');
         break;
     case 'csrf':
         http_response_code(403);
-        $page_title = __('Token mismatch','cftp_admin');
-        $error_message = __("The security token could not be validated.",'cftp_admin');
+        $page_title = __('Token mismatch', 'cftp_admin');
+        $error_message = __("The security token could not be validated.", 'cftp_admin');
         break;
     case '404':
         http_response_code(404);
-        $page_title = __('Error 404','cftp_admin');
-        $error_message = __("Resource not found.",'cftp_admin');
+        $page_title = __('Error 404', 'cftp_admin');
+        $error_message = __("Resource not found.", 'cftp_admin');
         break;
     case '403':
         http_response_code(403);
-        $page_title = __('Error 403','cftp_admin');
-        $error_message = __("Forbidden.",'cftp_admin');
+        $page_title = __('Error 403', 'cftp_admin');
+        $error_message = __("Forbidden.", 'cftp_admin');
         break;
 }
 ?>
@@ -34,8 +34,8 @@ switch ($error_type) {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-        <title><?php echo html_output( $page_title . ' &raquo; ' . THIS_INSTALL_TITLE ); ?></title>
+
+        <title><?php /** @noinspection PhpUndefinedConstantInspection */ echo html_output($page_title . ' &raquo; ' . THIS_INSTALL_TITLE); ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <?php meta_favicon(); ?>
         

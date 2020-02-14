@@ -16,16 +16,16 @@ session_start();
  * on the footer blocks.
  *
  */
- define('SYSTEM_NAME','ProjectSend');
- define('SYSTEM_URI','https://send.medictech.com/');
- define('SYSTEM_URI_LABEL','ProjectSend on github');
- define('DONATIONS_URL','https://www.projectsend.org/donations/');
+ define('SYSTEM_NAME', 'ProjectSend');
+ define('SYSTEM_URI', 'https://send.medictech.com/');
+ define('SYSTEM_URI_LABEL', 'ProjectSend on github');
+ define('DONATIONS_URL', 'https://www.projectsend.org/donations/');
  
 /**
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1113');
+define('CURRENT_VERSION', 'r1115');
 
 /**
  * Required software versions
@@ -66,11 +66,10 @@ define('DB_CHARSET', 'utf8');
  *
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
-if ( DEBUG === true ) {
-	error_reporting(E_ALL);
-}
-else {
-	error_reporting(0);
+if (DEBUG === true) {
+    error_reporting(E_ALL);
+} else {
+    error_reporting(0);
 }
 
 define('GLOBAL_TIME_LIMIT', 240*60);
@@ -80,13 +79,13 @@ define('UPLOAD_TIME_LIMIT', 120*60);
 /**
  * Define the RSS url to use on the home news list.
  */
-define('NEWS_FEED_URI','https://www.projectsend.org/serve/news');
+define('NEWS_FEED_URI', 'https://www.projectsend.org/serve/news');
 
 /**
  * Define the Feed from where to take the latest version
  * number.
  */
-define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
+define('UPDATES_FEED_URI', 'https://projectsend.org/serve/versions');
 
 /**
  * Check if the personal configuration file exists
@@ -94,35 +93,33 @@ define('UPDATES_FEED_URI','https://projectsend.org/serve/versions');
  *
  * @see sys.config.sample.php
  */
-if ( !file_exists(ROOT_DIR.'/includes/sys.config.php') ) {
-	if ( !defined( 'IS_MAKE_CONFIG' ) ) {
-		// the following script returns only after the creation of the configuration file
-		if ( defined('IS_INSTALL') ) {
-			header('Location:make-config.php');
-		}
-		else {
-			header('Location:install/make-config.php');
-		}
-	}
-}
-else {
-	include_once ROOT_DIR.'/includes/sys.config.php';
+if (!file_exists(ROOT_DIR.'/includes/sys.config.php')) {
+    if (!defined('IS_MAKE_CONFIG')) {
+        // the following script returns only after the creation of the configuration file
+        if (defined('IS_INSTALL')) {
+            header('Location:make-config.php');
+        } else {
+            header('Location:install/make-config.php');
+        }
+    }
+} else {
+    include_once ROOT_DIR.'/includes/sys.config.php';
 }
 
 /**
  * Database connection driver
  */
 if (!defined('DB_DRIVER')) {
-	define('DB_DRIVER', 'mysql');
+    define('DB_DRIVER', 'mysql');
 }
 
 /**
  * Check for PDO extensions
  */
 $pdo_available_drivers = PDO::getAvailableDrivers();
-if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
-	echo '<h1>Missing a required extension</h1>';
-	echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
+if ((DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+    echo '<h1>Missing a required extension</h1>';
+    echo "<p>The system couldn't find the configuration the <strong>PDO extension for mysql</strong>.</p>
 	<p>This extension is required for database comunication.</p>
 	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
 	<ul>
@@ -130,11 +127,11 @@ if( (DB_DRIVER == 'mysql') && !defined('PDO::MYSQL_ATTR_INIT_COMMAND') ) {
 		<li>sudo yum install php-mysql   		<strong># centos/fedora</strong></li>
 	</ul>
 	<p>You also need to restart the webserver after the installation of PDO_mysql.</p>";
-	exit;
+    exit;
 }
-if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
-	echo '<h1>Missing a required extension</h1>';
-	echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
+if ((DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers)) {
+    echo '<h1>Missing a required extension</h1>';
+    echo "<p>The system couldn't find the configuration the <strong>PDO extension for MS SQL Server</strong>.</p>
 	<p>This extension is required for database comunication.</p>
 	<p>You can install this extension via the package manager of your linux distro, most likely with one of these commands:</p>
 	<ul>
@@ -142,14 +139,14 @@ if( (DB_DRIVER == 'mssql') && !in_array('dblib', $pdo_available_drivers) ) {
 		<li>sudo yum install php-mssql			<strong># centos/fedora (you need EPEL)</strong></li>
 	</ul>
 	<p>You also need to restart the webserver after the installation of PDO_mssql.</p>";
-	exit;
+    exit;
 }
 
 /**
  * Define the tables names
  */
 if (!defined('TABLES_PREFIX')) {
-	define('TABLES_PREFIX', 'tbl_');
+    define('TABLES_PREFIX', 'tbl_');
 }
 define('TABLE_FILES', TABLES_PREFIX . 'files');
 define('TABLE_FILES_RELATIONS', TABLES_PREFIX . 'files_relations');
@@ -166,29 +163,31 @@ define('TABLE_CATEGORIES_RELATIONS', TABLES_PREFIX . 'categories_relations');
 define('TABLE_LOG', TABLES_PREFIX . 'actions_log');
 define('TABLE_PASSWORD_RESET', TABLES_PREFIX . 'password_reset');
 define('TABLE_LOGON', TABLES_PREFIX . 'logon');
+define('TABLE_WORKSPACES', TABLES_PREFIX . 'workspaces');
+define('TABLE_WORKSPACES_USERS', TABLES_PREFIX . 'workspaces_users');
 
 $original_basic_tables = array(
-								TABLE_FILES,
-								TABLE_OPTIONS,
-								TABLE_USERS
-							);
+                                TABLE_FILES,
+                                TABLE_OPTIONS,
+                                TABLE_USERS
+                            );
 
 $all_system_tables = array(
-							'files',
-							'files_relations',
-							'downloads',
-							'notifications',
-							'options',
-							'users',
-							'groups',
-							'members',
-							'members_requests',
-							'folders',
-							'categories',
-							'categories_relations',
-							'actions_log',
-							'password_reset',
-						);
+                            'files',
+                            'files_relations',
+                            'downloads',
+                            'notifications',
+                            'options',
+                            'users',
+                            'groups',
+                            'members',
+                            'members_requests',
+                            'folders',
+                            'categories',
+                            'categories_relations',
+                            'actions_log',
+                            'password_reset',
+                        );
 
 //$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLES_PREFIX,TABLE_LOG,TABLE_CATEGORIES,TABLE_CATEGORIES_RELATIONS);
 
@@ -261,7 +260,7 @@ define('THUMBS_MAX_HEIGHT', 300);
 define('THUMBS_QUALITY', 90);
 
 /* Widgets */
-define('WIDGETS_FOLDER',ROOT_DIR.'/includes/widgets/');
+define('WIDGETS_FOLDER', ROOT_DIR.'/includes/widgets/');
 
 /* Default e-mail templates files */
 define('EMAIL_TEMPLATE_HEADER', 'header.html');

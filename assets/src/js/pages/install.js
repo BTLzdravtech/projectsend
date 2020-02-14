@@ -3,7 +3,7 @@
 
     admin.pages.install = function () {
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             var validator = $("#install_form").validate({
                 rules: {
                     install_title: {
@@ -38,7 +38,7 @@
                         required: json_strings.validation.no_name,
                     }
                 },
-                errorPlacement: function(error, element) {
+                errorPlacement: function (error, element) {
                     error.appendTo(element.closest('div'));
                 },
             });

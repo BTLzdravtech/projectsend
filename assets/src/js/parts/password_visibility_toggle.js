@@ -9,9 +9,9 @@
         $(function () {
             $(".password_toggle").each(function (index, input) {
                 var $input = $(input);
-                var $container	= $($input).next('.password_toggle');
-                $(".password_toggler button").click(function () {
-                    var change = "";
+                var $container = $($input).next('.password_toggle');
+                $(".password_toggler button").on('click', function () {
+                    var change;
                     var icon = $(this).find('i');
                     if ($(this).hasClass('pass_toggler_show')) {
                         $(this).removeClass('pass_toggler_show').addClass('pass_toggler_hide');

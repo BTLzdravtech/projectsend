@@ -3,16 +3,16 @@
 
     admin.pages.fileEditor = function () {
 
-        $(document).ready(function(){
+        $(document).ready(function () {
             var validator = $("#edit_file").validate({
-                errorPlacement: function(error, element) {
+                errorPlacement: function (error, element) {
                     error.appendTo(element.closest('div'));
                 }
             });
 
             var file = $('input[name^="file"]');
 
-            file.filter('input[name$="[name]"]').each(function() {
+            file.filter('input[name$="[name]"]').each(function () {
                 $(this).rules("add", {
                     required: true,
                     messages: {
@@ -21,7 +21,7 @@
                 });
             });
 
-            file.filter('input[name$="[expiry_date]"]').each(function() {
+            file.filter('input[name$="[expiry_date]"]').each(function () {
                 $(this).rules("add", {
                     required: true,
                     messages: {
@@ -30,7 +30,7 @@
                 });
             });
 
-            file.filter('input[name$="[expires]"]').each(function() {
+            file.filter('input[name$="[expires]"]').each(function () {
                 $(this).rules("add", {
                     required: true,
                     messages: {
@@ -40,7 +40,7 @@
             });
 
             /*
-            file.filter('input[name$="[public]"]').each(function() {
+            file.filter('input[name$="[public]"]').each(function () {
                 $(this).rules("add", {
                     required: true,
                     messages: {
