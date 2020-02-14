@@ -45,8 +45,6 @@ if (isset($_GET['id'])) {
 
 /**
  * Get the workspace information from the database to use on the form.
- *
- * @todo replace when a Workspace class is made
  */
 if ($page_status === 1) {
     $edit_workspace->get($workspace_id);

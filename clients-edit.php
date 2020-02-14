@@ -33,8 +33,6 @@ if (isset($_GET['id'])) {
 
 /**
  * Get the clients information from the database to use on the form.
- *
- * @todo replace when a Client class is made
  */
 if ($page_status === 1) {
     $edit_client->get($client_id);

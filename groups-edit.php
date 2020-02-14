@@ -45,8 +45,6 @@ if (isset($_GET['id'])) {
 
 /**
  * Get the group information from the database to use on the form.
- *
- * @todo replace when a Group class is made
  */
 if ($page_status === 1) {
     $edit_group->get($group_id);

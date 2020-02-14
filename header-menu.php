@@ -110,6 +110,34 @@ if (current_role_in(array( 9,8,7 ))) {
         array_push($items['files']['sub'], $inserted);
     }
 
+    $user = new Users($dbh);
+    $user->get(CURRENT_USER_ID);
+    $user_data = $user->getProperties();
+
+    $workspace_object = new Workspaces($dbh);
+
+    $workspaces = [];
+
+    foreach ($user_data['workspaces'] as $id) {
+        $workspace_object->get($id);
+        $workspace_data = $workspace_object->getProperties();
+
+        $workspaces[] = array(
+            'label' =>  $workspace_data['name'],
+            'link' => 'manage-files.php?workspace=' . $id
+        );
+    }
+
+    $items['workspaces'] = array(
+        'nav' => 'workspaces',
+        'level' => array( 9,8 ),
+        'main' => array(
+            'label' => __('Workspaces', 'cftp_admin'),
+            'icon' => 'users'
+        ),
+        'sub' => $workspaces
+    );
+
     if (CATEGORIES_ENABLED) {
         $inserted = array(
             'label' => __('Categories', 'cftp_admin'),
@@ -174,8 +202,8 @@ if (current_role_in(array( 9,8,7 ))) {
         ),
     );
 
-    $items['workspaces'] = array(
-        'nav' => 'workspaces',
+    $items['users_workspaces'] = array(
+        'nav' => 'users-workspaces',
         'level' => array( 9,8 ),
         'main' => array(
             'label' => __('Users workspaces', 'cftp_admin'),
@@ -360,31 +388,6 @@ if (current_role_in(array( 9,8,7 ))) {
             ),
         ),
     );
-
-    $items[] = 'separator';
-
-    $user = new Users($dbh);
-    $user->get(CURRENT_USER_ID);
-    $user_data = $user->getProperties();
-
-    $workspace_object = new Workspaces($dbh);
-
-    foreach ($user_data['workspaces'] as $id) {
-        $workspace_object->get($id);
-        $workspace_data = $workspace_object->getProperties();
-
-        $items['workspace' . $id] = array(
-            'nav' => 'workspace1',
-            'level' => array(9, 8),
-            'main' => array(
-                'label' => $workspace_data['name'],
-                'icon' => 'users',
-                'link' => 'manage-files.php?workspace=' . $id,
-            ),
-        );
-
-    }
-
 } else { /* Items for clients */
     /** @noinspection PhpUndefinedConstantInspection */
     if (CLIENTS_CAN_UPLOAD == 1) {

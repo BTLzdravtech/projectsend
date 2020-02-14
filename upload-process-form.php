@@ -229,6 +229,9 @@ if (isset($_POST['submit'])) {
                         if (!empty($file['public'])) {
                             $add_arguments['public'] = '1';
                         }
+                        if (!empty($file['workspaces'])) {
+                            $add_arguments['workspaces'] = '1';
+                        }
                     }
 
                     if (!in_array($new_filename, $urls_db_files)) {
@@ -553,6 +556,16 @@ if (!empty($uploaded_files)) {
                                  */
                                 if ($global_level != 0) {
                                     ?>
+
+                                    <h3><?php _e('Workspaces', 'cftp_admin'); ?></h3>
+
+                                    <div class="checkbox form-group">
+                                        <label for="workspaces_checkbox_<?php echo $i; ?>">
+                                            <div class="input-group">
+                                                <input type="checkbox" id="workspaces_checkbox_<?php echo $i; ?>" name="file[<?php echo $i; ?>][workspaces]" value="1" checked="checked" /> <?php _e('Allow workspace downloading of this file.', 'cftp_admin'); ?>
+                                            </div>
+                                        </label>
+                                    </div>
 
                                     <div class="divider"></div>
 
