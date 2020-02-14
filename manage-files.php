@@ -17,6 +17,10 @@ global $dbh;
 
 $active_nav = 'files';
 
+if (isset($_GET['workspace'])) {
+    $active_nav = 'workspaces';
+}
+
 $page_title = __('Manage files', 'cftp_admin');
 
 $page_id = 'manage_files';

@@ -211,11 +211,12 @@ class UploadFile
         $expires = (!empty($arguments['expires'])) ? 1 : 0;
         $expiry_date = (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
         $is_public = (!empty($arguments['public'])) ? 1 : 0;
+        $is_workspace = (!empty($arguments['workspaces'])) ? 1 : 0;
         $public_token = generateRandomString(32);
         
         $statement = $this->dbh->prepare(
-            "INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, owner_id, uploader, expires, expiry_date, public_allow, public_token)"
-            ."VALUES (:url, :original_url, :name, :description, :owner_id, :uploader, :expires, :expiry_date, :public, :token)"
+            "INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, owner_id, uploader, expires, expiry_date, public_allow, workspace_included, public_token)"
+            ."VALUES (:url, :original_url, :name, :description, :owner_id, :uploader, :expires, :expiry_date, :public, :workspace, :token)"
         );
         $statement->bindParam(':url', $file_on_disk);
         $statement->bindParam(':original_url', $post_file);
@@ -226,6 +227,8 @@ class UploadFile
         $statement->bindParam(':expires', $expires, PDO::PARAM_INT);
         $statement->bindParam(':expiry_date', $expiry_date);
         $statement->bindParam(':public', $is_public, PDO::PARAM_INT);
+        $statement->bindParam(':workspace', $is_workspace, PDO::PARAM_INT);
+
         $statement->bindParam(':token', $public_token);
         $statement->execute();
 
@@ -280,6 +283,7 @@ class UploadFile
         $expires = (!empty($arguments['expires'])) ? 1 : 0;
         $expiry_date = (!empty($arguments['expiry_date'])) ? date("Y-m-d", strtotime($arguments['expiry_date'])) : date("Y-m-d");
         $is_public = (!empty($arguments['public'])) ? 1 : 0;
+        $is_workspace = (!empty($arguments['workspaces'])) ? 1 : 0;
         $public_token = generateRandomString(32);
         
         $statement = $this->dbh->prepare("SELECT id, public_allow, public_token FROM " . TABLE_FILES . " WHERE url = :url");
@@ -308,6 +312,7 @@ class UploadFile
                 expires = :expires,
                 expiry_date = :expiry_date,
                 public_allow = :public,
+                workspace_included = :workspace,
                 public_token = :token
                 WHERE id = :id
             "
@@ -317,6 +322,7 @@ class UploadFile
         $statement->bindParam(':expires', $expires, PDO::PARAM_INT);
         $statement->bindParam(':expiry_date', $expiry_date);
         $statement->bindParam(':public', $is_public, PDO::PARAM_INT);
+        $statement->bindParam(':workspace', $is_workspace, PDO::PARAM_INT);
         $statement->bindParam(':token', $public_token);
         $statement->bindParam(':id', $this->file_id, PDO::PARAM_INT);
         $statement->execute();
