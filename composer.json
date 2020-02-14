@@ -36,7 +36,8 @@
 		"ext-zip": "*",
 		"ext-ctype": "*",
 		"ext-fileinfo": "*",
-		"ext-ldap": "*"
+		"ext-ldap": "*",
+		"ext-posix": "*"
 	},
 	"scripts": {
 		"phpcs": "phpcs --standard=ruleset.xml",
