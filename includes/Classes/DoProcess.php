@@ -134,10 +134,40 @@ class DoProcess
                     }
                 }
             } else if (CURRENT_USER_LEVEL < 9) {
-                // TODO: kontrola jestli to je file meho clienta nebo to je file v mem workspace, ktery je oznacen, ze ho muzu mit nebo to je muj soubor
-                // TODO: je to takhle vse?
-                $can_download = true;
-                $log_action = 7;
+                $user_id = CURRENT_USER_ID;
+
+                $fq = 'SELECT * FROM ' . TABLE_FILES . ' F INNER JOIN ' . TABLE_USERS . ' U ON F.owner_id = U.id AND (U.id = :user_id OR U.owner_id = :owner_id) WHERE F.id=:file_id';
+                $params = array();
+                $params[':owner_id'] = $user_id;
+                $params[':user_id'] = $user_id;
+                $params[':file_id'] = (int)$file_id;
+
+                $files = $this->dbh->prepare($fq);
+                $files->execute($params);
+
+                /**
+                 * Continue
+                 */
+                if ($files->rowCount() > 0) {
+                    $can_download = true;
+                    $log_action = 7;
+                }
+
+                $fq = 'SELECT F.* FROM ' . TABLE_FILES . ' F INNER JOIN ' . TABLE_USERS . ' U ON F.owner_id = U.id INNER JOIN ' . TABLE_WORKSPACES_USERS . ' WU ON U.id = WU.user_id INNER JOIN ' . TABLE_WORKSPACES . ' W ON WU.workspace_id = W.id INNER JOIN ' . TABLE_WORKSPACES_USERS . ' WU2 ON WU2.workspace_id = W.id AND WU2.user_id = :user_id WHERE F.id=:file_id AND F.workspace_included=1 GROUP BY F.id';
+                $params = array();
+                $params[':user_id'] = $user_id;
+                $params[':file_id'] = (int)$file_id;
+
+                $files = $this->dbh->prepare($fq);
+                $files->execute($params);
+
+                /**
+                 * Continue
+                 */
+                if ($files->rowCount() > 0) {
+                    $can_download = true;
+                    $log_action = 7;
+                }
             } else {
                 $can_download = true;
                 $log_action = 7;
