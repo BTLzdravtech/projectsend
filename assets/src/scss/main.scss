@@ -1088,7 +1088,7 @@ body.login {
 			> li {
 				position:relative;
 
-				::before {
+				:not(i)::before {
 					content:'';
 					background-color:$side_menu_subtle;
 					position:absolute;

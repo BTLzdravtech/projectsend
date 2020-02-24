@@ -123,10 +123,24 @@ if (current_role_in(array( 9,8,7 ))) {
         $workspace_data = $workspace_object->getProperties();
 
         $workspaces[] = array(
-            'label' =>  $workspace_data['name'],
+            'label' => '<i class="fa fa-users fa-fw" aria-hidden="true"></i> ' . $workspace_data['name'],
             'link' => 'manage-files.php?workspace=' . $id
         );
     }
+
+    $workspaces[] = array(
+        'label' => __('Add new', 'cftp_admin'),
+        'link' => 'workspaces-add.php',
+    );
+
+    $workspaces[] = array(
+        'label' => __('Manage workspaces', 'cftp_admin'),
+        'link' => 'workspaces.php',
+    );
+
+    $workspaces[] = array(
+        'divider' => true,
+    );
 
     $items['workspaces'] = array(
         'nav' => 'workspaces',
@@ -195,28 +209,6 @@ if (current_role_in(array( 9,8,7 ))) {
             array(
                 'label' => __('Manage groups', 'cftp_admin'),
                 'link' => 'groups.php',
-            ),
-            array(
-                'divider' => true,
-            ),
-        ),
-    );
-
-    $items['users_workspaces'] = array(
-        'nav' => 'users-workspaces',
-        'level' => array( 9,8 ),
-        'main' => array(
-            'label' => __('Users workspaces', 'cftp_admin'),
-            'icon' => 'th-large'
-        ),
-        'sub' => array(
-            array(
-                'label' => __('Add new', 'cftp_admin'),
-                'link' => 'workspaces-add.php',
-            ),
-            array(
-                'label' => __('Manage workspaces', 'cftp_admin'),
-                'link' => 'workspaces.php',
             ),
             array(
                 'divider' => true,
