@@ -358,7 +358,7 @@ class Users
 
     private function hashPassword($password)
     {
-        return password_hash(password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+        return password_hash($password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
     }
 
     /**
