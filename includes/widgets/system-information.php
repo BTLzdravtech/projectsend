@@ -12,12 +12,12 @@ global $dbh;
         <dl class="dl-horizontal">
             <dt><?php _e('Version', 'cftp_admin'); ?></dt>
             <dd>
-                <?php echo CURRENT_VERSION; ?> <?php
+                <?php echo CURRENT_VERSION; ?><?php
                 if (defined('VERSION_NEW_NUMBER') && !empty(VERSION_NEW_NUMBER)) {
                     echo ' - <strong>';
                     _e('New version available', 'cftp_admin');
                     /** @noinspection PhpUndefinedConstantInspection */
-                    echo ':</strong> <a href="'. VERSION_NEW_URL . '">' . VERSION_NEW_NUMBER . '</a>';
+                    echo ':</strong> <a href="' . VERSION_NEW_URL . '">' . VERSION_NEW_NUMBER . '</a>';
                 }
                 ?>
             </dd>
@@ -26,26 +26,28 @@ global $dbh;
             <dd><?php echo MAX_FILESIZE; ?> mb.</dd>
 
             <dt><?php _e('Template', 'cftp_admin'); ?></dt>
-            <dd><?php /** @noinspection PhpUndefinedConstantInspection */ echo ucfirst(SELECTED_CLIENTS_TEMPLATE); ?> <a href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change', 'cftp_admin'); ?>]</a></dd>
+            <dd><?php /** @noinspection PhpUndefinedConstantInspection */
+                echo ucfirst(SELECTED_CLIENTS_TEMPLATE); ?> <a
+                        href="<?php echo BASE_URI; ?>templates.php">[<?php _e('Change', 'cftp_admin'); ?>]</a></dd>
 
             <?php
-                /**
-                 * Get the data to show on the bars graphic
-                 */
-                $statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES);
-                $total_files = $statement->rowCount();
-            
-                $statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level = '0'");
-                $total_clients = $statement->rowCount();
-            
-                $statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
-                $total_groups = $statement->rowCount();
-            
-                $statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level != '0'");
-                $total_users = $statement->rowCount();
+            /**
+             * Get the data to show on the bars graphic
+             */
+            $statement = $dbh->query("SELECT distinct id FROM " . TABLE_FILES);
+            $total_files = $statement->rowCount();
 
-                $statement = $dbh->query("SELECT distinct id FROM " . TABLE_CATEGORIES);
-                $total_categories = $statement->rowCount();
+            $statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level = '0'");
+            $total_clients = $statement->rowCount();
+
+            $statement = $dbh->query("SELECT distinct id FROM " . TABLE_GROUPS);
+            $total_groups = $statement->rowCount();
+
+            $statement = $dbh->query("SELECT distinct id FROM " . TABLE_USERS . " WHERE level != '0'");
+            $total_users = $statement->rowCount();
+
+            $statement = $dbh->query("SELECT distinct id FROM " . TABLE_CATEGORIES);
+            $total_categories = $statement->rowCount();
             ?>
         </dl>
 
@@ -67,17 +69,17 @@ global $dbh;
             <dd><?php echo $total_categories; ?></dd>
 
             <?php
-                /**
-                 * Hidden so it doesn't get shared by accident in any bug report
-                <dt><?php _e('Root directory','cftp_admin'); ?></dt>
-                <dd><?php echo ROOT_DIR; ?></dd>
-
-                <dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
-                <dd><?php echo UPLOADED_FILES_DIR; ?></dd>
-                 */
+            /**
+             * Hidden so it doesn't get shared by accident in any bug report
+             * <dt><?php _e('Root directory','cftp_admin'); ?></dt>
+             * <dd><?php echo ROOT_DIR; ?></dd>
+             *
+             * <dt><?php _e('Uploads folder','cftp_admin'); ?></dt>
+             * <dd><?php echo UPLOADED_FILES_DIR; ?></dd>
+             */
             ?>
         </dl>
-        
+
         <h3><?php _e('System', 'cftp_admin'); ?></h3>
         <dl class="dl-horizontal">
             <dt><?php _e('Server', 'cftp_admin'); ?></dt>
@@ -95,7 +97,7 @@ global $dbh;
             <dt><?php _e('Post max size', 'cftp_admin'); ?></dt>
             <dd><?php echo ini_get('post_max_size'); ?></dd>
         </dl>
-        
+
         <h3><?php _e('Database', 'cftp_admin'); ?></h3>
         <dl class="dl-horizontal">
             <dt><?php _e('Driver', 'cftp_admin'); ?></dt>

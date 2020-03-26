@@ -1,48 +1,46 @@
 (function () {
     'use strict';
-    
+
     admin.pages.dashboard = function () {
-        
+
         $(document).ready(
             function () {
                 // Statistics
-                function ajax_widget_statistics( days )
-                {
+                function ajax_widget_statistics(days) {
                     var target = $('.statistics_graph');
                     target.html(
-                        '<div class="loading-graph">'+
-                                '<img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" />'+
-                            '</div>'
+                        '<div class="loading-graph">' +
+                        '<img src="' + json_strings.uri.assets_img + '/ajax-loader.gif" alt="Loading" />' +
+                        '</div>'
                     );
                     $.ajax(
                         {
-                            url: json_strings.uri.widgets+'statistics.php',
-                            data: { days:days, ajax_call:true },
+                            url: json_strings.uri.widgets + 'statistics.php',
+                            data: {days: days, ajax_call: true},
                             success: function (response) {
                                 target.html(response);
                             },
-                            cache:false
+                            cache: false
                         }
                     );
                 }
 
                 // Action log
-                function ajax_widget_log( action )
-                {
+                function ajax_widget_log(action) {
                     var target = $('.activities_log');
                     target.html(
-                        '<div class="loading-graph">'+
-                                '<img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" />'+
-                            '</div>'
+                        '<div class="loading-graph">' +
+                        '<img src="' + json_strings.uri.assets_img + '/ajax-loader.gif" alt="Loading" />' +
+                        '</div>'
                     );
                     $.ajax(
                         {
-                            url: json_strings.uri.widgets+'actions-log.php',
-                            data: { action:action, ajax_call:true },
+                            url: json_strings.uri.widgets + 'actions-log.php',
+                            data: {action: action, ajax_call: true},
                             success: function (response) {
                                 target.html(response);
                             },
-                            cache:false
+                            cache: false
                         }
                     );
                 }

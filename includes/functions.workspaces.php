@@ -67,7 +67,7 @@ function get_workspaces($arguments)
     global $dbh;
 
     $workspace_ids = !empty($arguments['workspace_ids']) ? $arguments['workspace_ids'] : array();
-    $workspace_ids = is_array($workspace_ids) ? $workspace_ids : array( $workspace_ids );
+    $workspace_ids = is_array($workspace_ids) ? $workspace_ids : array($workspace_ids);
     $owner_id = !empty($arguments['owner_id']) ? $arguments['owner_id'] : '';
     $created_by = !empty($arguments['created_by']) ? $arguments['created_by'] : '';
     $search = !empty($arguments['search']) ? $arguments['search'] : '';
@@ -87,7 +87,7 @@ function get_workspaces($arguments)
     if (!empty($search)) {
         $parameters[] = "(name LIKE :name OR description LIKE :description)";
     }
-    
+
     if (!empty($parameters)) {
         $p = 1;
         foreach ($parameters as $parameter) {
@@ -97,7 +97,7 @@ function get_workspaces($arguments)
                 $connector = " AND ";
             }
             $p++;
-            
+
             $query .= $connector . $parameter;
         }
     }
@@ -119,21 +119,21 @@ function get_workspaces($arguments)
         $statement->bindValue(':name', $search_value);
         $statement->bindValue(':description', $search_value);
     }
-    
+
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
 
     $all_workspaces = array();
     while ($data_workspace = $statement->fetch()) {
         $all_workspaces[$data_workspace['id']] = array(
-                                    'id'            => $data_workspace['id'],
-                                    'name'          => $data_workspace['name'],
-                                    'description'   => $data_workspace['description'],
-                                    'created_by'    => $data_workspace['created_by'],
-                                    'owner_id'    => $data_workspace['owner_id'],
-                                );
+            'id' => $data_workspace['id'],
+            'name' => $data_workspace['name'],
+            'description' => $data_workspace['description'],
+            'created_by' => $data_workspace['created_by'],
+            'owner_id' => $data_workspace['owner_id'],
+        );
     }
-    
+
     if (!empty($all_workspaces) > 0) {
         return $all_workspaces;
     } else {
@@ -152,7 +152,7 @@ function count_members_on_workspace($workspace_id)
     global $dbh;
 
     $workspace_id = (int)$workspace_id;
-    $allowed_levels = array(9,8);
+    $allowed_levels = array(9, 8);
     // Do a permissions check
     if (isset($allowed_levels) && current_role_in($allowed_levels)) {
         if (workspace_exists_id($workspace_id)) {
@@ -170,7 +170,7 @@ function count_members_on_workspace($workspace_id)
     }
 }
 
- /**
+/**
  * Delete an existing workspace.
  * @param int $workspace_id
  * @return bool
@@ -179,7 +179,7 @@ function delete_workspace($workspace_id)
 {
     global $dbh;
 
-    $allowed_levels = array(9,8);
+    $allowed_levels = array(9, 8);
     if (isset($workspace_id)) {
         $workspace_id = (int)$workspace_id;
         // Do a permissions check
@@ -194,10 +194,10 @@ function delete_workspace($workspace_id)
                 // Record the action log
                 $logger = new ProjectSend\Classes\ActionsLog;
                 $log_action_args = array(
-                                        'action' => 43,
-                                        'owner_id' => CURRENT_USER_ID,
-                                        'affected_account_name' => $workspace_data['name']
-                                    );
+                    'action' => 43,
+                    'owner_id' => CURRENT_USER_ID,
+                    'affected_account_name' => $workspace_data['name']
+                );
                 $logger->addEntry($log_action_args);
 
                 return true;

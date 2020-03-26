@@ -30,8 +30,8 @@ switch ($section) {
         );
         break;
     case 'privacy':
-        $section_title  = __('Privacy', 'cftp_admin');
-        $checkboxes  = array(
+        $section_title = __('Privacy', 'cftp_admin');
+        $checkboxes = array(
             'privacy_noindex_site',
             'enable_landing_for_all_files',
             'public_listing_page_enable',
@@ -60,18 +60,15 @@ switch ($section) {
         break;
     case 'branding':
         $section_title = __('Branding', 'cftp_admin');
-        $checkboxes = array(
-        );
+        $checkboxes = array();
         break;
     case 'google_login':
         $section_title = __('Google Login', 'cftp_admin');
-        $checkboxes = array(
-        );
+        $checkboxes = array();
         break;
     case 'ldap':
         $section_title = __('LDAP', 'cftp_admin');
-        $checkboxes = array(
-        );
+        $checkboxes = array();
         break;
     default:
         $location = BASE_URI . 'options.php?section=general';
@@ -91,7 +88,7 @@ $logo_file_info = generate_logo_url();
 
 /**
  * Form sent
-*/
+ */
 if ($_POST) {
     /**
      * Escape all the posted values on a single function.
@@ -99,8 +96,8 @@ if ($_POST) {
      */
     /**
      * Values that can be empty
-    */
-    $allowed_empty_values    = array(
+     */
+    $allowed_empty_values = array(
         'footer_custom_content',
         'mail_copy_addresses',
         'mail_smtp_host',
@@ -127,7 +124,7 @@ if ($_POST) {
     foreach ($checkboxes as $checkbox) {
         $_POST[$checkbox] = (empty($_POST[$checkbox]) || !isset($_POST[$checkbox])) ? 0 : 1;
     }
-    
+
     // Remove values that should not be saved
     $remove_keys = array(
         'csrf_token',
@@ -158,7 +155,7 @@ if ($_POST) {
 
     /**
      * If every option is completed, continue
-    */
+     */
     if ($query_state == '0') {
         // Convert file types, they are posted as a json string via tagify
         $_POST['allowed_file_types'] = str_replace(' ', '', implode(', ', array_column(json_decode($_POST['allowed_file_types']), 'value')));
@@ -185,7 +182,7 @@ if ($_POST) {
 
     /**
      * If uploading a logo on the branding page
-    */
+     */
     $file_logo = $_FILES['select_logo'];
     if (!empty($file_logo)) {
         $logo = option_file_upload($file_logo, 'image', 'logo_filename', 29);
@@ -194,7 +191,7 @@ if ($_POST) {
 
     /**
      * Redirect so the options are reflected immediatly
-    */
+     */
     while (ob_get_level()) {
         ob_end_clean();
     }
@@ -218,17 +215,17 @@ require_once ADMIN_VIEWS_DIR . DS . 'header.php';
  * Replace | with , to use the tags system when showing
  * the allowed filetypes on the form. This value comes from
  * site.options.php
-*/
+ */
 /**
  * Explode, sort, and implode the values to list them alphabetically
-*/
+ */
 /** @noinspection PhpUndefinedConstantInspection */
 $allowed_file_types = explode('|', ALLOWED_FILE_TYPES);
 sort($allowed_file_types);
 
 /**
  * If .php files are allowed, set the flag for the warning message
-*/
+ */
 if (in_array('php', $allowed_file_types)) {
     $php_allowed_warning = true;
 }
@@ -237,76 +234,78 @@ $allowed_file_types = implode(',', $allowed_file_types);
 
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-6">
-    <?php
-    if (isset($_GET['status'])) {
-        switch ($_GET['status']) {
-            case '1':
-                $msg = __('Options updated succesfuly.', 'cftp_admin');
-                echo system_message('success', $msg);
-                break;
-            case '2':
-                $msg = __('There was an error. Please try again.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                break;
-            case '3':
-                $msg = __('Some fields were not completed. Options could not be saved.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                $show_options_form = 1;
-                break;
+    <div class="col-xs-12 col-sm-12 col-lg-6">
+        <?php
+        if (isset($_GET['status'])) {
+            switch ($_GET['status']) {
+                case '1':
+                    $msg = __('Options updated succesfuly.', 'cftp_admin');
+                    echo system_message('success', $msg);
+                    break;
+                case '2':
+                    $msg = __('There was an error. Please try again.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    break;
+                case '3':
+                    $msg = __('Some fields were not completed. Options could not be saved.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    $show_options_form = 1;
+                    break;
+            }
         }
-    }
 
-    /**
-     * Logo uploading status
-    */
-    if (isset($_GET['file_status'])) {
-        switch ($_GET['file_status']) {
-            case '1':
-                break;
-            case '2':
-                $msg = __('The file could not be moved to the corresponding folder.', 'cftp_admin');
-                $msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the", 'cftp_admin');
-                $msg .= ' '.ADMIN_UPLOADS_DIR.' ';
-                $msg .= __('directory to 755, or 777 as a last resource.', 'cftp_admin');
-                $msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.", 'cftp_admin');
-                echo system_message('danger', $msg);
-                break;
-            case '3':
-                $msg = __('The file you selected is not an allowed format.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                break;
-            case '4':
-                $msg = __('There was an error uploading the file. Please try again.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                break;
+        /**
+         * Logo uploading status
+         */
+        if (isset($_GET['file_status'])) {
+            switch ($_GET['file_status']) {
+                case '1':
+                    break;
+                case '2':
+                    $msg = __('The file could not be moved to the corresponding folder.', 'cftp_admin');
+                    $msg .= __("This is most likely a permissions issue. If that's the case, it can be corrected via FTP by setting the chmod value of the", 'cftp_admin');
+                    $msg .= ' ' . ADMIN_UPLOADS_DIR . ' ';
+                    $msg .= __('directory to 755, or 777 as a last resource.', 'cftp_admin');
+                    $msg .= __("If this doesn't solve the issue, try giving the same values to the directories above that one until it works.", 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    break;
+                case '3':
+                    $msg = __('The file you selected is not an allowed format.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    break;
+                case '4':
+                    $msg = __('There was an error uploading the file. Please try again.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    break;
+            }
         }
-    }
-    ?>
+        ?>
 
-    <div class="white-box">
-        <div class="white-box-interior">
+        <div class="white-box">
+            <div class="white-box-interior">
 
-            <form action="options.php" name="options" id="options" method="post" enctype="multipart/form-data" class="form-horizontal">
-                <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>" />
-                <input type="hidden" name="section" value="<?php echo $section; ?>">
+                <form action="options.php" name="options" id="options" method="post" enctype="multipart/form-data"
+                      class="form-horizontal">
+                    <input type="hidden" name="csrf_token" value="<?php echo getCsrfToken(); ?>"/>
+                    <input type="hidden" name="section" value="<?php echo $section; ?>">
 
-                <?php
+                    <?php
                     $form_file = FORMS_DIR . DS . 'options' . DS . $section . '.php';
-                if (file_exists($form_file)) {
-                    include_once $form_file;
-                }
-                ?>
+                    if (file_exists($form_file)) {
+                        include_once $form_file;
+                    }
+                    ?>
 
-                <div class="options_divide"></div>
+                    <div class="options_divide"></div>
 
-                <div class="after_form_buttons">
-                    <button type="submit" class="btn btn-wide btn-primary empty"><?php _e('Save options', 'cftp_admin'); ?></button>
-                </div>
-            </form>
+                    <div class="after_form_buttons">
+                        <button type="submit"
+                                class="btn btn-wide btn-primary empty"><?php _e('Save options', 'cftp_admin'); ?></button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

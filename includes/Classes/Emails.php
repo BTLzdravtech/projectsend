@@ -47,13 +47,13 @@ class Emails
 
         /**
          * Define the messages texts
-        */
+         */
         $this->header = file_get_contents(EMAIL_TEMPLATES_DIR . DS . EMAIL_TEMPLATE_HEADER);
         $this->footer = file_get_contents(EMAIL_TEMPLATES_DIR . DS . EMAIL_TEMPLATE_FOOTER);
-        
+
         /**
          * Strings for the "New file uploaded" BY A SYSTEM USER e-mail
-        */
+         */
         $this->strings_file_by_user = array(
             'subject' => (defined('EMAIL_NEW_FILE_BY_USER_SUBJECT_CUSTOMIZE') && EMAIL_NEW_FILE_BY_USER_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_NEW_FILE_BY_USER_SUBJECT')) ? EMAIL_NEW_FILE_BY_USER_SUBJECT : __('New files uploaded for you', 'cftp_admin'),
             'body' => __('The following files are now available for you to download.', 'cftp_admin'),
@@ -64,7 +64,7 @@ class Emails
 
         /**
          * Strings for the "New file uploaded" BY A CLIENT e-mail
-        */
+         */
         $this->strings_file_by_client = array(
             'subject' => (defined('EMAIL_NEW_FILE_BY_CLIENT_SUBJECT_CUSTOMIZE') && EMAIL_NEW_FILE_BY_CLIENT_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_NEW_FILE_BY_CLIENT_SUBJECT')) ? EMAIL_NEW_FILE_BY_CLIENT_SUBJECT : __('New files uploaded by clients', 'cftp_admin'),
             'body' => __('New files has been uploaded by the following clients', 'cftp_admin'),
@@ -75,7 +75,7 @@ class Emails
 
         /**
          * Strings for the "New client created" e-mail
-        */
+         */
         $this->strings_new_client = array(
             'subject' => (defined('EMAIL_NEW_CLIENT_BY_USER_SUBJECT_CUSTOMIZE') && EMAIL_NEW_CLIENT_BY_USER_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_NEW_CLIENT_BY_USER_SUBJECT')) ? EMAIL_NEW_CLIENT_BY_USER_SUBJECT : __('Welcome to ProjectSend', 'cftp_admin'),
             'body' => __('A new account was created for you. From now on, you can access the files that have been uploaded under your account using the following credentials:', 'cftp_admin'),
@@ -88,7 +88,7 @@ class Emails
         /**
          * Strings for the "New client" e-mail to the admin
          * on self registration.
-        */
+         */
         $this->strings_new_client_self = array(
             'subject' => (defined('EMAIL_NEW_CLIENT_BY_SELF_SUBJECT_CUSTOMIZE') && EMAIL_NEW_CLIENT_BY_SELF_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_NEW_CLIENT_BY_SELF_SUBJECT')) ? EMAIL_NEW_CLIENT_BY_SELF_SUBJECT : __('A new client has registered.', 'cftp_admin'),
             'body' => __('A new account was created using the self registration form on your site. Registration information:', 'cftp_admin'),
@@ -106,7 +106,7 @@ class Emails
 
         /**
          * Strings for the "Account approved" e-mail
-        */
+         */
         $this->strings_account_approved = array(
             'subject' => (defined('EMAIL_ACCOUNT_APPROVE_SUBJECT_CUSTOMIZE') && EMAIL_ACCOUNT_APPROVE_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_ACCOUNT_APPROVE_SUBJECT')) ? EMAIL_ACCOUNT_APPROVE_SUBJECT : __('You account has been approved', 'cftp_admin'),
             'body' => __('Your account has been approved.', 'cftp_admin'),
@@ -119,7 +119,7 @@ class Emails
 
         /**
          * Strings for the "Account denied" e-mail
-        */
+         */
         $this->strings_account_denied = array(
             'subject' => (defined('EMAIL_ACCOUNT_DENY_SUBJECT_CUSTOMIZE') && EMAIL_ACCOUNT_DENY_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_ACCOUNT_DENY_SUBJECT')) ? EMAIL_ACCOUNT_DENY_SUBJECT : __('You account has been denied', 'cftp_admin'),
             'body' => __('Your account request has been denied.', 'cftp_admin'),
@@ -128,7 +128,7 @@ class Emails
 
         /**
          * Strings for the "New system user created" e-mail
-        */
+         */
         $this->strings_new_user = array(
             'subject' => (defined('EMAIL_NEW_USER_SUBJECT_CUSTOMIZE') && EMAIL_NEW_USER_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_NEW_USER_SUBJECT')) ? EMAIL_NEW_USER_SUBJECT : __('Welcome to ProjectSend', 'cftp_admin'),
             'body' => __('A new account was created for you. From now on, you can access the system administrator using the following credentials:', 'cftp_admin'),
@@ -140,7 +140,7 @@ class Emails
 
         /**
          * Strings for the "Reset password" e-mail
-        */
+         */
         $this->strings_pass_reset = array(
             'subject' => (defined('EMAIL_PASS_RESET_SUBJECT_CUSTOMIZE') && EMAIL_PASS_RESET_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_PASS_RESET_SUBJECT')) ? EMAIL_PASS_RESET_SUBJECT : __('Password reset instructions', 'cftp_admin'),
             'body' => __('A request has been received to reset the password for the following account:', 'cftp_admin'),
@@ -152,7 +152,7 @@ class Emails
 
         /**
          * Strings for the "Review client group requests" e-mail to the admin
-        */
+         */
         $this->strings_client_edited = array(
             'subject' => (defined('EMAIL_CLIENT_EDITED_SUBJECT_CUSTOMIZE') && EMAIL_CLIENT_EDITED_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_CLIENT_EDITED_SUBJECT')) ? EMAIL_CLIENT_EDITED_SUBJECT : __('A client has changed memberships requests.', 'cftp_admin'),
             'body' => __('A client on you site has just changed his groups membership requests and needs your approval.', 'cftp_admin'),
@@ -164,7 +164,7 @@ class Emails
 
         /**
          * Strings for the "data retention period ends" e-mail
-        */
+         */
         $this->strings_limit_retention = array(
             'subject' => (defined('EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE') && EMAIL_LIMIT_RETENTION_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_LIMIT_RETENTION_SUBJECT')) ? EMAIL_LIMIT_RETENTION_SUBJECT : __('Expiration reminder', 'cftp_admin'),
             'body' => __('Two days left before the expiration of your files', 'cftp_admin'),
@@ -174,7 +174,7 @@ class Emails
 
         /**
          * Strings for the "send public links" e-mail
-        */
+         */
         $this->strings_public_links = array(
             'subject' => (defined('EMAIL_PUBLIC_LINKS_SUBJECT_CUSTOMIZE') && EMAIL_PUBLIC_LINKS_SUBJECT_CUSTOMIZE == 1 && defined('EMAIL_PUBLIC_LINKS_SUBJECT')) ? EMAIL_PUBLIC_LINKS_SUBJECT : __('Links to download files', 'cftp_admin'),
             'body' => __('These files was uploaded for you by', 'cftp_admin')
@@ -195,70 +195,70 @@ class Emails
 
         switch ($type) {
             case 'new_client':
-                $filename    = EMAIL_TEMPLATE_NEW_CLIENT;
-                $body_check    = (!defined('EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE') || EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_NEW_CLIENT;
+                $body_check = (!defined('EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE') || EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_CLIENT_BY_USER_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_NEW_CLIENT_BY_USER_TEXT;
+                $body_text = EMAIL_NEW_CLIENT_BY_USER_TEXT;
                 break;
             case 'new_client_self':
-                $filename    = EMAIL_TEMPLATE_NEW_CLIENT_SELF;
-                $body_check    = (!defined('EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE') || EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_NEW_CLIENT_SELF;
+                $body_check = (!defined('EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE') || EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_CLIENT_BY_SELF_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_NEW_CLIENT_BY_SELF_TEXT;
+                $body_text = EMAIL_NEW_CLIENT_BY_SELF_TEXT;
                 break;
             case 'account_approve':
-                $filename    = EMAIL_TEMPLATE_ACCOUNT_APPROVE;
-                $body_check    = (!defined('EMAIL_ACCOUNT_APPROVE_CUSTOMIZE') || EMAIL_ACCOUNT_APPROVE_CUSTOMIZE == '0') ? '0' : EMAIL_ACCOUNT_APPROVE_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_ACCOUNT_APPROVE;
+                $body_check = (!defined('EMAIL_ACCOUNT_APPROVE_CUSTOMIZE') || EMAIL_ACCOUNT_APPROVE_CUSTOMIZE == '0') ? '0' : EMAIL_ACCOUNT_APPROVE_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_ACCOUNT_APPROVE_TEXT;
+                $body_text = EMAIL_ACCOUNT_APPROVE_TEXT;
                 break;
             case 'account_deny':
-                $filename    = EMAIL_TEMPLATE_ACCOUNT_DENY;
-                $body_check    = (!defined('EMAIL_ACCOUNT_DENY_CUSTOMIZE') || EMAIL_ACCOUNT_DENY_CUSTOMIZE == '0') ? '0' : EMAIL_ACCOUNT_DENY_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_ACCOUNT_DENY;
+                $body_check = (!defined('EMAIL_ACCOUNT_DENY_CUSTOMIZE') || EMAIL_ACCOUNT_DENY_CUSTOMIZE == '0') ? '0' : EMAIL_ACCOUNT_DENY_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_ACCOUNT_DENY_TEXT;
+                $body_text = EMAIL_ACCOUNT_DENY_TEXT;
                 break;
             case 'new_user':
-                $filename    = EMAIL_TEMPLATE_NEW_USER;
-                $body_check    = (!defined('EMAIL_NEW_USER_CUSTOMIZE') || EMAIL_NEW_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_USER_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_NEW_USER;
+                $body_check = (!defined('EMAIL_NEW_USER_CUSTOMIZE') || EMAIL_NEW_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_USER_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_NEW_USER_TEXT;
+                $body_text = EMAIL_NEW_USER_TEXT;
                 break;
             case 'new_file_by_user':
-                $filename    = EMAIL_TEMPLATE_NEW_FILE_BY_USER;
-                $body_check    = (!defined('EMAIL_NEW_FILE_BY_USER_CUSTOMIZE') || EMAIL_NEW_FILE_BY_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_FILE_BY_USER_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_NEW_FILE_BY_USER;
+                $body_check = (!defined('EMAIL_NEW_FILE_BY_USER_CUSTOMIZE') || EMAIL_NEW_FILE_BY_USER_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_FILE_BY_USER_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_NEW_FILE_BY_USER_TEXT;
+                $body_text = EMAIL_NEW_FILE_BY_USER_TEXT;
                 break;
             case 'new_files_by_client':
-                $filename    = EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT;
-                $body_check    = (!defined('EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE') || EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_NEW_FILE_BY_CLIENT;
+                $body_check = (!defined('EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE') || EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE == '0') ? '0' : EMAIL_NEW_FILE_BY_CLIENT_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_NEW_FILE_BY_CLIENT_TEXT;
+                $body_text = EMAIL_NEW_FILE_BY_CLIENT_TEXT;
                 break;
             case 'password_reset':
-                $filename    = EMAIL_TEMPLATE_PASSWORD_RESET;
-                $body_check    = (!defined('EMAIL_PASS_RESET_CUSTOMIZE') || EMAIL_PASS_RESET_CUSTOMIZE == '0') ? '0' : EMAIL_PASS_RESET_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_PASSWORD_RESET;
+                $body_check = (!defined('EMAIL_PASS_RESET_CUSTOMIZE') || EMAIL_PASS_RESET_CUSTOMIZE == '0') ? '0' : EMAIL_PASS_RESET_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_PASS_RESET_TEXT;
+                $body_text = EMAIL_PASS_RESET_TEXT;
                 break;
             case 'client_edited':
-                $filename    = EMAIL_TEMPLATE_CLIENT_EDITED;
-                $body_check    = (!defined('EMAIL_CLIENT_EDITED_CUSTOMIZE') || EMAIL_CLIENT_EDITED_CUSTOMIZE == '0') ? '0' : EMAIL_CLIENT_EDITED_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_CLIENT_EDITED;
+                $body_check = (!defined('EMAIL_CLIENT_EDITED_CUSTOMIZE') || EMAIL_CLIENT_EDITED_CUSTOMIZE == '0') ? '0' : EMAIL_CLIENT_EDITED_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_CLIENT_EDITED_TEXT;
+                $body_text = EMAIL_CLIENT_EDITED_TEXT;
                 break;
             case 'limit_retention':
-                $filename    = EMAIL_TEMPLATE_LIMIT_RETENTION;
-                $body_check    = (!defined('EMAIL_LIMIT_RETENTION_CUSTOMIZE') || EMAIL_LIMIT_RETENTION_CUSTOMIZE == '0') ? '0' : EMAIL_LIMIT_RETENTION_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_LIMIT_RETENTION;
+                $body_check = (!defined('EMAIL_LIMIT_RETENTION_CUSTOMIZE') || EMAIL_LIMIT_RETENTION_CUSTOMIZE == '0') ? '0' : EMAIL_LIMIT_RETENTION_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_LIMIT_RETENTION_TEXT;
+                $body_text = EMAIL_LIMIT_RETENTION_TEXT;
                 break;
             case 'public_links':
-                $filename    = EMAIL_TEMPLATE_PUBLIC_LINKS;
-                $body_check    = (!defined('EMAIL_PUBLIC_LINKS_CUSTOMIZE') || EMAIL_PUBLIC_LINKS_CUSTOMIZE == '0') ? '0' : EMAIL_PUBLIC_LINKS_CUSTOMIZE;
+                $filename = EMAIL_TEMPLATE_PUBLIC_LINKS;
+                $body_check = (!defined('EMAIL_PUBLIC_LINKS_CUSTOMIZE') || EMAIL_PUBLIC_LINKS_CUSTOMIZE == '0') ? '0' : EMAIL_PUBLIC_LINKS_CUSTOMIZE;
                 /** @noinspection PhpUndefinedConstantInspection */
-                $body_text    = EMAIL_PUBLIC_LINKS_TEXT;
+                $body_text = EMAIL_PUBLIC_LINKS_TEXT;
                 break;
         }
 
@@ -308,7 +308,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('new_client');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLUSER%','%LBLPASS%','%USERNAME%','%PASSWORD%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%BODY2%', '%BODY3%', '%LBLUSER%', '%LBLPASS%', '%USERNAME%', '%PASSWORD%', '%URI%'),
             array(
                 $this->strings_new_client['subject'],
                 $this->strings_new_client['body'],
@@ -340,7 +340,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('new_client_self');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLNAME%','%LBLUSER%','%FULLNAME%','%USERNAME%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%BODY2%', '%BODY3%', '%LBLNAME%', '%LBLUSER%', '%FULLNAME%', '%USERNAME%', '%URI%'),
             array(
                 $this->strings_new_client_self['subject'],
                 $this->strings_new_client_self['body'],
@@ -348,7 +348,7 @@ class Emails
                 $this->strings_new_client_self['body3'],
                 $this->strings_new_client_self['label_name'],
                 $this->strings_new_client_self['label_user'],
-                $fullname,$username,BASE_URI
+                $fullname, $username, BASE_URI
             ),
             $email_body
         );
@@ -396,7 +396,7 @@ class Emails
 
         if (!empty($memberships_requests['approved'])) {
             $requests_title_replace = true;
-            $approved_title = '<p>'.$this->strings_account_approved['title_approved'].'</p>';
+            $approved_title = '<p>' . $this->strings_account_approved['title_approved'] . '</p>';
             // Make the list
             $approved_list = '<ul>';
             foreach ($memberships_requests['approved'] as $group_id) {
@@ -404,12 +404,12 @@ class Emails
             }
             $approved_list .= '</ul><hr>';
         } else {
-            $approved_list =  '';
+            $approved_list = '';
             $approved_title = '';
         }
         if (!empty($memberships_requests['denied'])) {
             $requests_title_replace = true;
-            $denied_title = '<p>'.$this->strings_account_approved['title_denied'].'</p>';
+            $denied_title = '<p>' . $this->strings_account_approved['title_denied'] . '</p>';
             // Make the list
             $denied_list = '<ul>';
             foreach ($memberships_requests['denied'] as $group_id) {
@@ -417,19 +417,19 @@ class Emails
             }
             $denied_list .= '</ul><hr>';
         } else {
-            $denied_list =  '';
+            $denied_list = '';
             $denied_title = '';
         }
 
-        $requests_title = ($requests_title_replace == true) ? '<p>'.$this->strings_account_approved['title_approved'].'</p>' : '';
+        $requests_title = ($requests_title_replace == true) ? '<p>' . $this->strings_account_approved['title_approved'] . '</p>' : '';
 
         $email_body = $this->email_prepare_body('account_approve');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%', '%REQUESTS_TITLE%', '%APPROVED_TITLE%','%GROUPS_APPROVED%','%DENIED_TITLE%','%GROUPS_DENIED%','%BODY2%','%BODY3%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%REQUESTS_TITLE%', '%APPROVED_TITLE%', '%GROUPS_APPROVED%', '%DENIED_TITLE%', '%GROUPS_DENIED%', '%BODY2%', '%BODY3%', '%URI%'),
             array(
                 $this->strings_account_approved['subject'],
                 $this->strings_account_approved['body'],
-                '<p>'.$this->strings_account_approved['title_memberships'].'</p>',
+                '<p>' . $this->strings_account_approved['title_memberships'] . '</p>',
                 $approved_title,
                 $approved_list,
                 $denied_title,
@@ -456,7 +456,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('account_deny');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%BODY2%'),
+            array('%SUBJECT%', '%BODY1%', '%BODY2%'),
             array(
                 $this->strings_account_denied['subject'],
                 $this->strings_account_denied['body'],
@@ -481,7 +481,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('new_user');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%LBLUSER%','%LBLPASS%','%USERNAME%','%PASSWORD%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%BODY2%', '%BODY3%', '%LBLUSER%', '%LBLPASS%', '%USERNAME%', '%PASSWORD%', '%URI%'),
             array(
                 $this->strings_new_user['subject'],
                 $this->strings_new_user['body'],
@@ -512,7 +512,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('new_file_by_user');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%BODY4%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%FILES%', '%BODY2%', '%BODY3%', '%BODY4%', '%URI%'),
             array(
                 $this->strings_file_by_user['subject'],
                 $this->strings_file_by_user['body'],
@@ -541,7 +541,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('new_files_by_client');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%FILES%', '%BODY2%', '%BODY3%', '%URI%'),
             array(
                 $this->strings_file_by_client['subject'],
                 $this->strings_file_by_client['body'],
@@ -570,7 +570,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('password_reset');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%BODY2%','%BODY3%','%BODY4%','%LBLUSER%','%USERNAME%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%BODY2%', '%BODY3%', '%BODY4%', '%LBLUSER%', '%USERNAME%', '%URI%'),
             array(
                 $this->strings_pass_reset['subject'],
                 $this->strings_pass_reset['body'],
@@ -579,7 +579,7 @@ class Emails
                 $this->strings_pass_reset['body4'],
                 $this->strings_pass_reset['label_user'],
                 $username,
-                BASE_URI.'reset-password.php?token=' . $token . '&user=' . $username,
+                BASE_URI . 'reset-password.php?token=' . $token . '&user=' . $username,
             ),
             $email_body
         );
@@ -601,21 +601,21 @@ class Emails
     {
         $email_body = $this->email_prepare_body('client_edited');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%BODY2%','%LBLNAME%','%LBLUSER%','%FULLNAME%','%USERNAME%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%BODY2%', '%LBLNAME%', '%LBLUSER%', '%FULLNAME%', '%USERNAME%', '%URI%'),
             array(
                 $this->strings_client_edited['subject'],
                 $this->strings_client_edited['body'],
                 $this->strings_client_edited['body2'],
                 $this->strings_client_edited['label_name'],
                 $this->strings_client_edited['label_user'],
-                $fullname,$username,BASE_URI
+                $fullname, $username, BASE_URI
             ),
             $email_body
         );
         if (!empty($memberships_requests)) {
             $get_groups = get_groups(
                 [
-                'group_ids' => $memberships_requests
+                    'group_ids' => $memberships_requests
                 ]
             );
 
@@ -649,7 +649,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('limit_retention');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%FILES%','%BODY2%','%BODY3%','%URI%'),
+            array('%SUBJECT%', '%BODY1%', '%FILES%', '%BODY2%', '%BODY3%', '%URI%'),
             array(
                 $this->strings_limit_retention['subject'],
                 $this->strings_limit_retention['body'],
@@ -663,7 +663,7 @@ class Emails
         return array(
             'subject' => $this->strings_limit_retention['subject'],
             'body' => $email_body
-         );
+        );
     }
 
     /**
@@ -677,7 +677,7 @@ class Emails
     {
         $email_body = $this->email_prepare_body('public_links');
         $email_body = str_replace(
-            array('%SUBJECT%','%BODY1%','%UPLOADER%','%LINKS%','%NOTE%'),
+            array('%SUBJECT%', '%BODY1%', '%UPLOADER%', '%LINKS%', '%NOTE%'),
             array(
                 $this->strings_public_links['subject'],
                 $this->strings_public_links['body'],
@@ -708,7 +708,7 @@ class Emails
     {
         /**
          * Generate the values from the arguments
-        */
+         */
         $preview = (!empty($arguments['preview'])) ? $arguments['preview'] : false;
         $type = $arguments['type'];
         $addresses = (!empty($arguments['address'])) ? $arguments['address'] : '';
@@ -727,47 +727,47 @@ class Emails
         $try_bcc = false;
         switch ($type) {
             case 'new_files_by_user':
-                $body_variables = [ $files_list, ];
+                $body_variables = [$files_list,];
                 /** @noinspection PhpUndefinedConstantInspection */
                 if (MAIL_COPY_USER_UPLOAD == '1') {
                     $try_bcc = true;
                 }
                 break;
             case 'new_files_by_client':
-                $body_variables = [ $files_list, ];
+                $body_variables = [$files_list,];
                 /** @noinspection PhpUndefinedConstantInspection */
                 if (MAIL_COPY_CLIENT_UPLOAD == '1') {
                     $try_bcc = true;
                 }
                 break;
             case 'limit_retention':
-                $body_variables = [ $files_list, ];
+                $body_variables = [$files_list,];
                 break;
             case 'new_user':
             case 'new_client':
-                $body_variables = [ $username, $password, ];
+                $body_variables = [$username, $password,];
                 break;
             case 'new_client_self':
-                $body_variables = [ $username, $name, $memberships ];
+                $body_variables = [$username, $name, $memberships];
                 break;
             case 'client_edited':
             case 'account_approve':
-                $body_variables = [ $username, $name, $memberships, ];
+                $body_variables = [$username, $name, $memberships,];
                 break;
             case 'account_deny':
-                $body_variables = [ $username, $name, ];
+                $body_variables = [$username, $name,];
                 break;
             case 'password_reset':
-                $body_variables = [ $username, $token, ];
+                $body_variables = [$username, $token,];
                 break;
             case 'public_links':
-                $body_variables = [ $links, $note, $uploader ];
+                $body_variables = [$links, $note, $uploader];
                 break;
         }
 
         /**
          * Generates the subject and body contents
-        */
+         */
         $method = 'email_' . $type;
         $mail_info = call_user_func_array([$this, $method], $body_variables);
 
@@ -899,7 +899,7 @@ class Emails
 
             /**
              * Debug by echoing the email on page
-            */
+             */
             //echo $mail_info['body'];
             //die();
 

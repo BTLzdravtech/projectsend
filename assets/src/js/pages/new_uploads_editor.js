@@ -74,7 +74,7 @@
                             callback: function (result) {
                                 if (result) {
                                     var type = $(event.target).data('type');
-                                    var selector = $(event.target).closest('.file_data').find('.select-'+ type);
+                                    var selector = $(event.target).closest('.file_data').find('.select-' + type);
 
                                     var selected = [];
                                     $(selector).find('option:selected').each(
@@ -83,7 +83,7 @@
                                         }
                                     );
 
-                                    $('.select-'+ type).each(
+                                    $('.select-' + type).each(
                                         function () {
                                             $(this).find('option').each(
                                                 function () {
@@ -126,12 +126,12 @@
                         dialog.on('shown.bs.modal', function (event) {
                             admin.pages.clientForm();
                             admin.parts.passwordVisibilityToggle();
-                            if ($.isFunction($.fn.chosen) ) {
+                            if ($.isFunction($.fn.chosen)) {
                                 $(this).find('.chosen-select').chosen(
                                     {
-                                        no_results_text : json_strings.translations.no_results,
-                                        width : "100%",
-                                        search_contains : true
+                                        no_results_text: json_strings.translations.no_results,
+                                        width: "100%",
+                                        search_contains: true
                                     }
                                 );
                             }
@@ -258,16 +258,16 @@
                         });
                         dialog.on('shown.bs.modal', function (event) {
                             admin.pages.groupForm();
-                            if ($.isFunction($.fn.chosen) ) {
+                            if ($.isFunction($.fn.chosen)) {
                                 $(this).find('.chosen-select').chosen(
                                     {
-                                        no_results_text : json_strings.translations.no_results,
-                                        width : "100%",
-                                        search_contains : true
+                                        no_results_text: json_strings.translations.no_results,
+                                        width: "100%",
+                                        search_contains: true
                                     }
                                 );
                             }
-                            if (typeof CKEDITOR !== "undefined" ) {
+                            if (typeof CKEDITOR !== "undefined") {
                                 CKEDITOR.replace('description');
                                 for (var i in CKEDITOR.instances) {
                                     (function (i) {

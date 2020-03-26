@@ -8,13 +8,13 @@
         <?php
         if ($logo_file_info['exists'] === true) {
             /**
- * Make the image
-*/
+             * Make the image
+             */
             $logo = make_thumbnail($logo_file_info['dir'], LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
 
             /**
- * If the generator failed, use the original image
-*/
+             * If the generator failed, use the original image
+             */
             $img_src = (!empty($logo)) ? $logo['thumbnail']['url'] : $logo_file_info['url'];
         } else {
             $img_src = ASSETS_IMG_URL . '/projectsend-logo.png';
@@ -31,7 +31,7 @@
     <div class="form-group">
         <label class="col-sm-4 control-label"><?php _e('Select image to upload', 'cftp_admin'); ?></label>
         <div class="col-sm-8">
-            <input type="file" name="select_logo" class="empty" accept=".jpg, .jpeg, .jpe, .gif, .png" />
+            <input type="file" name="select_logo" class="empty" accept=".jpg, .jpeg, .jpe, .gif, .png"/>
         </div>
     </div>
 </div>

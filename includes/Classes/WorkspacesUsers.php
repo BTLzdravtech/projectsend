@@ -15,8 +15,8 @@ class WorkspacesUsers
     private $dbh;
     private $logger;
 
-    public $user    = '';
-    public $workspaces    = '';
+    public $user = '';
+    public $workspaces = '';
 
     public function __construct(PDO $dbh = null)
     {
@@ -30,7 +30,7 @@ class WorkspacesUsers
 
     public function workspace_add_users($arguments)
     {
-        $user_ids = is_array($arguments['user_id']) ? $arguments['user_id'] : array( $arguments['user_id'] );
+        $user_ids = is_array($arguments['user_id']) ? $arguments['user_id'] : array($arguments['user_id']);
         $workspace_id = $arguments['workspace_id'];
         $added_by = $arguments['added_by'];
 
@@ -43,13 +43,13 @@ class WorkspacesUsers
         foreach ($user_ids as $user_id) {
             $statement = $this->dbh->prepare(
                 "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id)"
-                ." VALUES (:added_by, :id, :workspace)"
+                . " VALUES (:added_by, :id, :workspace)"
             );
             $statement->bindParam(':added_by', $added_by);
             $statement->bindParam(':id', $user_id, PDO::PARAM_INT);
             $statement->bindParam(':workspace', $workspace_id, PDO::PARAM_INT);
             $status = $statement->execute();
-            
+
             if ($status) {
                 $results['added']++;
             } else {
@@ -58,13 +58,13 @@ class WorkspacesUsers
                 );
             }
         }
-        
+
         return $results;
     }
 
     public function workspace_remove_users($arguments)
     {
-        $user_ids = is_array($arguments['user_id']) ? $arguments['user_id'] : array( $arguments['user_id'] );
+        $user_ids = is_array($arguments['user_id']) ? $arguments['user_id'] : array($arguments['user_id']);
         $workspace_id = $arguments['workspace_id'];
 
         $results = array(
@@ -78,7 +78,7 @@ class WorkspacesUsers
             $statement->bindParam(':user', $user_id, PDO::PARAM_INT);
             $statement->bindParam(':workspace_id', $workspace_id, PDO::PARAM_INT);
             $status = $statement->execute();
-            
+
             if ($status) {
                 $results['removed']++;
             } else {
@@ -87,7 +87,7 @@ class WorkspacesUsers
                 );
             }
         }
-        
+
         return $results;
     }
 
@@ -101,14 +101,14 @@ class WorkspacesUsers
         $sql_workspaces->bindParam(':id', $user_id, PDO::PARAM_INT);
         $sql_workspaces->execute();
         $count_workspaces = $sql_workspaces->rowCount();
-    
+
         if ($count_workspaces > 0) {
             $sql_workspaces->setFetchMode(PDO::FETCH_ASSOC);
             while ($row_workspaces = $sql_workspaces->fetch()) {
                 $found_workspaces[] = $row_workspaces["workspace_id"];
             }
         }
-        
+
         switch ($return_type) {
             case 'array':
                 $results = $found_workspaces;
@@ -117,33 +117,34 @@ class WorkspacesUsers
                 $results = implode(',', $found_workspaces);
                 break;
         }
-        
+
         return $results;
     }
 
-    public function user_add_to_workspaces($arguments)
+    public function user_add_to_workspaces($arguments, $is_client)
     {
         $user_id = $arguments['user_id'];
-        $workspace_ids = is_array($arguments['workspace_ids']) ? $arguments['workspace_ids'] : array( $arguments['workspace_ids'] );
+        $workspace_ids = is_array($arguments['workspace_ids']) ? $arguments['workspace_ids'] : array($arguments['workspace_ids']);
         $added_by = $arguments['added_by'];
-        
-        if (in_array(CURRENT_USER_LEVEL, array(9,8)) || (defined('AUTOGROUP'))) {
+
+        if (in_array(CURRENT_USER_LEVEL, array(9, 8)) || (defined('AUTOWORKSPACE'))) {
             $results = array(
                 'added' => 0,
                 'queue' => count($workspace_ids),
                 'errors' => array(),
             );
-    
+
             foreach ($workspace_ids as $workspace_id) {
                 $statement = $this->dbh->prepare(
-                    "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id)"
-                    ." VALUES (:added_by, :id, :workspace)"
+                    "INSERT INTO " . TABLE_WORKSPACES_USERS . " (added_by,user_id,workspace_id,client)"
+                    . " VALUES (:added_by, :id, :workspace, :client)"
                 );
                 $statement->bindParam(':added_by', $added_by);
                 $statement->bindParam(':id', $user_id, PDO::PARAM_INT);
                 $statement->bindParam(':workspace', $workspace_id, PDO::PARAM_INT);
+                $statement->bindParam(':client', $is_client, PDO::PARAM_INT);
                 $status = $statement->execute();
-                
+
                 if ($status) {
                     $results['added']++;
                 } else {
@@ -152,17 +153,17 @@ class WorkspacesUsers
                     );
                 }
             }
-            
+
             return $results;
         }
     }
 
-    public function user_edit_workspaces($arguments)
+    public function user_edit_workspaces($arguments, $is_client = false)
     {
         $user_id = $arguments['user_id'];
-        $workspace_ids = is_array($arguments['workspace_ids']) ? $arguments['workspace_ids'] : array( $arguments['workspace_ids'] );
+        $workspace_ids = is_array($arguments['workspace_ids']) ? $arguments['workspace_ids'] : array($arguments['workspace_ids']);
 
-        if (in_array(CURRENT_USER_LEVEL, array(9,8))) {
+        if (in_array(CURRENT_USER_LEVEL, array(9, 8))) {
             $results = array(
                 'added' => 0,
                 'queue' => count($workspace_ids),
@@ -174,14 +175,14 @@ class WorkspacesUsers
             $sql_workspaces->bindParam(':id', $user_id, PDO::PARAM_INT);
             $sql_workspaces->execute();
             $count_workspaces = $sql_workspaces->rowCount();
-        
+
             if ($count_workspaces > 0) {
                 $sql_workspaces->setFetchMode(PDO::FETCH_ASSOC);
                 while ($row_workspaces = $sql_workspaces->fetch()) {
                     $found_workspaces[] = $row_workspaces["workspace_id"];
                 }
             }
-            
+
             /**
              * 1- Make an array of workspaces where the user is actually a member,
              * but they are not on the array of selected workspaces.
@@ -195,7 +196,7 @@ class WorkspacesUsers
                 $statement->bindParam(':delete', $delete_ids);
                 $statement->execute();
             }
-             
+
             /**
              * 2- Make an array of workspaces in which the user is not a current member.
              */
@@ -207,9 +208,9 @@ class WorkspacesUsers
                     'workspace_ids' => $new_workspaces,
                     'added_by' => CURRENT_USER_USERNAME,
                 );
-                $results['new'] = $new_workspaces_add->user_add_to_workspaces($add_arguments);
+                $results['new'] = $new_workspaces_add->user_add_to_workspaces($add_arguments, $is_client);
             }
-    
+
             return $results;
         }
     }

@@ -8,7 +8,7 @@
 use ProjectSend\Classes\Emails;
 use ProjectSend\Classes\Validation;
 
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -21,11 +21,11 @@ if (!empty($_GET['token']) && !empty($_GET['user'])) {
 }
 
 require_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
-    $show_form = 'enter_email';
+$show_form = 'enter_email';
 
 if (!empty($_GET['token']) && !empty($_GET['user'])) {
-    $got_token    = $_GET['token'];
-    $got_user    = $_GET['user'];
+    $got_token = $_GET['token'];
+    $got_user = $_GET['user'];
 
     /**
      * Get the user's id
@@ -43,7 +43,7 @@ if (!empty($_GET['token']) && !empty($_GET['user'])) {
 
         /**
          * Check if the token has been used already
-        */
+         */
         if ($token_info['used'] == '1') {
             $errorstate = 'token_used';
         } elseif (time() - strtotime($token_info['timestamp']) > PASSWORD_RECOVERY_TOKEN_EXPIRATION_TIME) { /* Check if the token has expired. */
@@ -59,13 +59,13 @@ if (!empty($_GET['token']) && !empty($_GET['user'])) {
 
 /**
  * The form was submitted
-*/
+ */
 if ($_POST) {
     /**
      * Clean the posted form values.
      */
     $form_type = encode_html($_POST['form_type']);
-        
+
     switch ($form_type) {
         /**
          * The form submited contains a new token request
@@ -75,8 +75,8 @@ if ($_POST) {
 
             if ($get_user && $get_user['objectguid'] == null && $get_user['google_user'] != 1) {
                 /**
-                * Email exists on the database
-                */
+                 * Email exists on the database
+                 */
                 $token = generateRandomString(32);
 
                 /**
@@ -92,7 +92,7 @@ if ($_POST) {
                 } else {
                     $sql_pass = $dbh->prepare(
                         "INSERT INTO " . TABLE_PASSWORD_RESET . " (user_id, token)"
-                                                    ."VALUES (:id, :token)"
+                        . "VALUES (:id, :token)"
                     );
                     $sql_pass->bindParam(':token', $token);
                     $sql_pass->bindParam(':id', $get_user['id'], PDO::PARAM_INT);
@@ -100,7 +100,7 @@ if ($_POST) {
 
                     /**
                      * Send email
-                    */
+                     */
                     $notify_user = new Emails;
                     $email_arguments = array(
                         'type' => 'password_reset',
@@ -126,31 +126,31 @@ if ($_POST) {
             }
             break;
 
-            /**
-             * The form submited contains the new password
-             */
+        /**
+         * The form submited contains the new password
+         */
         case 'new_password':
             if (!empty($user_data['id'])) {
                 $reset_password_new = $_POST['password'];
 
                 /**
                  * Password checks
-                */
+                 */
                 $validation = new Validation;
                 $validation->validate('completed', $reset_password_new, $json_strings['validation']['no_pass']);
-                $validation->validate('password', $reset_password_new, $json_strings['validation']['valid_pass'].' '.$json_strings['validation']['valid_chars']);
+                $validation->validate('password', $reset_password_new, $json_strings['validation']['valid_pass'] . ' ' . $json_strings['validation']['valid_chars']);
                 $validation->validate('pass_rules', $reset_password_new, $json_strings['validation']['rules_pass']);
                 $validation->validate('length', $reset_password_new, $json_strings['validation']['length_pass'], MIN_PASS_CHARS, MAX_PASS_CHARS);
 
                 if ($validation->passed()) {
-                    $enc_password = password_hash($reset_password_new, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+                    $enc_password = password_hash($reset_password_new, PASSWORD_DEFAULT, ['cost' => HASH_COST_LOG2]);
 
                     if (strlen($enc_password) >= 20) {
                         $state['hash'] = 1;
 
                         /**
                          * SQL queries
-                        */
+                         */
 
                         $sql_query = $dbh->prepare(
                             "UPDATE " . TABLE_USERS . " SET 
@@ -189,100 +189,101 @@ if ($_POST) {
 }
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
-    <?php echo get_branding_layout(true); ?>
+        <?php echo get_branding_layout(true); ?>
 
-    <div class="white-box">
-        <div class="white-box-interior">
-            <?php
-            /**
-             * If the form was submited with errors, show them here.
-             */
-            if (!empty($validation)) {
-                echo $validation->list_errors();
-            }
-            ?>
-    
-            <?php
-            /**
-             * Show status message
-             */
-            if (isset($errorstate)) {
-                switch ($errorstate) {
-                    case 'email_not_found':
-                        $login_err_message = __("The supplied email address does not correspond to any user.", 'cftp_admin');
-                        break;
-                    case 'token_invalid':
+        <div class="white-box">
+            <div class="white-box-interior">
+                <?php
+                /**
+                 * If the form was submited with errors, show them here.
+                 */
+                if (!empty($validation)) {
+                    echo $validation->list_errors();
+                }
+                ?>
+
+                <?php
+                /**
+                 * Show status message
+                 */
+                if (isset($errorstate)) {
+                    switch ($errorstate) {
+                        case 'email_not_found':
+                            $login_err_message = __("The supplied email address does not correspond to any user.", 'cftp_admin');
+                            break;
+                        case 'token_invalid':
                             $login_err_message = __("The request is not valid.", 'cftp_admin');
+                            break;
+                        case 'token_expired':
+                            $login_err_message = __("This request has expired. Please make a new one.", 'cftp_admin');
+                            break;
+                        case 'token_used':
+                            $login_err_message = __("This request has already been completed. Please make a new one.", 'cftp_admin');
+                            break;
+                        case 'too_many_today':
+                            $login_err_message = __("There are 3 unused requests done in less than 24 hs. Please wait until one expires (1 day since made) to make a new one.", 'cftp_admin');
+                            break;
+                    }
+
+                    echo system_message('danger', $login_err_message, 'login_error');
+                }
+
+                /**
+                 * Show the ok or error message for the email.
+                 */
+                if (isset($state) && isset($state['email'])) {
+                    switch ($state['email']) {
+                        case 1:
+                            $msg = __('An e-mail with further instructions has been sent. Please check your inbox to proceed.', 'cftp_admin');
+                            echo system_message('success', $msg);
+                            break;
+                        case 0:
+                            $msg = __("E-mail couldn't be sent.", 'cftp_admin');
+                            $msg .= ' ' . __("If the problem persists, please contact an administrator.", 'cftp_admin');
+                            echo system_message('danger', $msg);
+                            break;
+                    }
+                }
+
+                /**
+                 * Show the ok or error message for the password reset.
+                 */
+                if (isset($state) && isset($state['reset'])) {
+                    switch ($state['reset']) {
+                        case 1:
+                            $msg = __('Your new password has been set. You can now log in using it.', 'cftp_admin');
+                            echo system_message('success', $msg);
+                            break;
+                        case 0:
+                            $msg = __("Your new password couldn't be set.", 'cftp_admin');
+                            $msg .= ' ' . __("If the problem persists, please contact an administrator.", 'cftp_admin');
+                            echo system_message('danger', $msg);
+                            break;
+                    }
+                }
+
+                switch ($show_form) {
+                    case 'enter_email':
+                    default:
+                        include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-email.php';
                         break;
-                    case 'token_expired':
-                        $login_err_message = __("This request has expired. Please make a new one.", 'cftp_admin');
+                    case 'enter_new_password':
+                        include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-password.php';
                         break;
-                    case 'token_used':
-                        $login_err_message = __("This request has already been completed. Please make a new one.", 'cftp_admin');
-                        break;
-                    case 'too_many_today':
-                        $login_err_message = __("There are 3 unused requests done in less than 24 hs. Please wait until one expires (1 day since made) to make a new one.", 'cftp_admin');
+                    case 'none':
                         break;
                 }
-    
-                echo system_message('danger', $login_err_message, 'login_error');
-            }
+                ?>
 
-            /**
-             * Show the ok or error message for the email.
-             */
-            if (isset($state) && isset($state['email'])) {
-                switch ($state['email']) {
-                    case 1:
-                        $msg = __('An e-mail with further instructions has been sent. Please check your inbox to proceed.', 'cftp_admin');
-                        echo system_message('success', $msg);
-                        break;
-                    case 0:
-                        $msg = __("E-mail couldn't be sent.", 'cftp_admin');
-                        $msg .= ' ' . __("If the problem persists, please contact an administrator.", 'cftp_admin');
-                        echo system_message('danger', $msg);
-                        break;
-                }
-            }
-
-            /**
-             * Show the ok or error message for the password reset.
-             */
-            if (isset($state) && isset($state['reset'])) {
-                switch ($state['reset']) {
-                    case 1:
-                        $msg = __('Your new password has been set. You can now log in using it.', 'cftp_admin');
-                        echo system_message('success', $msg);
-                        break;
-                    case 0:
-                        $msg = __("Your new password couldn't be set.", 'cftp_admin');
-                        $msg .= ' ' . __("If the problem persists, please contact an administrator.", 'cftp_admin');
-                        echo system_message('danger', $msg);
-                        break;
-                }
-            }
-
-            switch ($show_form) {
-                case 'enter_email':
-                default:
-                    include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-email.php';
-                    break;
-                case 'enter_new_password':
-                    include_once FORMS_DIR . DS . 'reset-password' . DS . 'enter-password.php';
-                    break;
-                case 'none':
-                    break;
-            }
-            ?>
-
-            <div class="login_form_links">
-                <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
+                <div class="login_form_links">
+                    <p><a href="<?php echo BASE_URI; ?>"
+                          target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
+                </div>
             </div>
-        </div>
-    </div> <!-- container-custom -->
-</div>
+        </div> <!-- container-custom -->
+    </div>
 
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

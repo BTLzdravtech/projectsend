@@ -6,6 +6,7 @@
  * @package    ProjectSend
  * @subpackage Classes
  */
+
 namespace ProjectSend\Classes;
 
 use Exception;
@@ -31,12 +32,12 @@ class FilesActions
     public function deleteFiles($rel_id, $service_run = false)
     {
         $can_delete = false;
-        $check_level = array(9,8,7,0);
+        $check_level = array(9, 8, 7, 0);
 
         if (isset($rel_id)) {
             /**
              * Do a permissions check
-            */
+             */
             if ($service_run || (isset($check_level) && current_role_in($check_level))) {
                 $file_id = $rel_id;
                 $sql = $this->dbh->prepare("SELECT url, original_url, uploader, filename FROM " . TABLE_FILES . " WHERE id = :file_id");
@@ -47,7 +48,7 @@ class FilesActions
                     if (CURRENT_USER_LEVEL == '0') {
                         /** @noinspection PhpUndefinedConstantInspection */
                         if (CLIENTS_CAN_DELETE_OWN_FILES == '1' && $row['uploader'] == CURRENT_USER_USERNAME) {
-                            $can_delete    = true;
+                            $can_delete = true;
                         }
                     } elseif (CURRENT_USER_LEVEL == '7') {
                         if ($row['uploader'] == CURRENT_USER_USERNAME) {
@@ -59,7 +60,7 @@ class FilesActions
 
                     $file_url = $row['url'];
                     $title = $row['filename'];
-                    
+
                     /**
                      * Thumbnails should be deleted too.
                      * Start by making a pattern with the file name, a shorter version of what's
@@ -72,7 +73,7 @@ class FilesActions
 
                 /**
                  * Delete the reference to the file on the database
-                */
+                 */
                 if (true === $can_delete) {
                     $sql = $this->dbh->prepare("DELETE FROM " . TABLE_FILES . " WHERE id = :file_id");
                     $sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
@@ -83,22 +84,22 @@ class FilesActions
                      * @see delete_file_from_disk
                      */
                     delete_file_from_disk(UPLOADED_FILES_DIR . DS . $file_url);
-                    
+
                     /**
                      * Delete the thumbnails
-                    */
+                     */
                     foreach ($find_thumbnails as $thumbnail) {
                         delete_file_from_disk($thumbnail);
                     }
 
                     /**
                      * Record the action log
-                    */
+                     */
                     $this->logger->addEntry(
                         [
                             'action' => 12,
-                            'owner_id' => $service_run? '1' : CURRENT_USER_ID,
-                            'owner_user' => $service_run? 'service' : CURRENT_USER_NAME,
+                            'owner_id' => $service_run ? '1' : CURRENT_USER_ID,
+                            'owner_user' => $service_run ? 'service' : CURRENT_USER_NAME,
                             'affected_file' => $file_id,
                             'affected_file_name' => $title
                         ]
@@ -114,8 +115,8 @@ class FilesActions
 
     public function changeHiddenStatus($change_to, $file_id, $modify_type, $modify_id)
     {
-        $check_level = array(9,8,7);
-        
+        $check_level = array(9, 8, 7);
+
         if (empty($file_id)) {
             return false;
         }
@@ -146,7 +147,7 @@ class FilesActions
 
         /**
          * Do a permissions check
-        */
+         */
         if (isset($check_level) && current_role_in($check_level)) {
             $sql = "UPDATE " . TABLE_FILES_RELATIONS . " SET hidden=:hidden WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";
             $statement = $this->dbh->prepare($sql);
@@ -159,7 +160,7 @@ class FilesActions
 
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
                     'action' => $log_action_number,
@@ -172,21 +173,21 @@ class FilesActions
 
             return true;
         }
-        
+
         return false;
     }
 
     public function hideForEveryone($file_id)
     {
-        $check_level = array(9,8,7);
-        
+        $check_level = array(9, 8, 7);
+
         if (empty($file_id)) {
             return false;
         }
 
         /**
          * Do a permissions check
-        */
+         */
         if (isset($check_level) && current_role_in($check_level)) {
             $sql = $this->dbh->prepare("UPDATE " . TABLE_FILES_RELATIONS . " SET hidden='1' WHERE file_id = :file_id");
             $sql->bindParam(':file_id', $file_id, PDO::PARAM_INT);
@@ -196,7 +197,7 @@ class FilesActions
 
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
                     'action' => 40,
@@ -214,8 +215,8 @@ class FilesActions
 
     public function unassignFile($file_id, $modify_type, $modify_id)
     {
-        $check_level = array(9,8,7);
-        
+        $check_level = array(9, 8, 7);
+
         if (empty($file_id)) {
             return false;
         }
@@ -237,7 +238,7 @@ class FilesActions
 
         /**
          * Do a permissions check
-        */
+         */
         if (isset($check_level) && current_role_in($check_level)) {
             $sql = "DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND " . $modify_type . " = :modify_id";
             $statement = $this->dbh->prepare($sql);
@@ -249,7 +250,7 @@ class FilesActions
 
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
                     'action' => $log_action_number,

@@ -4,7 +4,7 @@ function option_exists($name)
 {
     /**
      * @var PDO $dbh
-    */
+     */
     global $dbh;
 
     $get = $dbh->prepare("SELECT name FROM " . TABLE_OPTIONS . " WHERE name=:name");
@@ -43,7 +43,7 @@ function save_option($name, $value)
     } else {
         $save = $dbh->prepare(
             "INSERT INTO " . TABLE_OPTIONS . " (name, value)"
-            ." VALUES (:name, :value)"
+            . " VALUES (:name, :value)"
         );
         $save->bindParam(':name', $name);
         $save->bindParam(':value', $value);

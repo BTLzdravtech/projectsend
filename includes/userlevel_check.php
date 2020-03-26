@@ -66,7 +66,7 @@ function check_for_client()
             }
             $params .= $key . '=' . $value;
         }
-        header("location:" . CLIENT_VIEW_FILE_LIST_URL . '?' .  $params);
+        header("location:" . CLIENT_VIEW_FILE_LIST_URL . '?' . $params);
         exit;
     }
 }
@@ -85,7 +85,7 @@ function can_see_content($allowed_levels)
          * level is among those defined by the page.
          *
          * $allowed_levels in defined on each page before the inclusion of header.php
-        */
+         */
         if (isset($_SESSION['userlevel']) && in_array($_SESSION['userlevel'], $allowed_levels)) {
             $permission = true;
         }
@@ -93,7 +93,7 @@ function can_see_content($allowed_levels)
          * After the checks, if the user is allowed, continue.
          * If not, show the "Not allowed message", then the footer, then die(); so the
          * actual page content is not generated.
-        */
+         */
     }
     if (!$permission) {
         header("location:error.php");

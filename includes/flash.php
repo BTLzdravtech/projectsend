@@ -1,4 +1,5 @@
 <?php
+
 use \Tamtamchik\SimpleFlash\Flash;
 
 global $flash;

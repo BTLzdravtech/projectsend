@@ -5,6 +5,7 @@
  * @package    ProjectSend
  * @subpackage Classes
  */
+
 namespace ProjectSend\Classes;
 
 use BruteForceBlock;
@@ -228,11 +229,11 @@ class Auth
 
         /**
          * Using an external form
-        */
+         */
         if (!empty($_GET['external']) && $_GET['external'] == '1' && empty($_GET['ajax'])) {
             /**
              * Error
-            */
+             */
             if ($results['status'] == 'error') {
                 header('Location: ' . BASE_URI . '?error=invalid_credentials');
                 exit;
@@ -269,7 +270,7 @@ class Auth
                     /** @noinspection PhpUndefinedConstantInspection */
                     /** @noinspection PhpUndefinedConstantInspection */
                     if (CLIENTS_CAN_REGISTER == 1 && CLIENTS_AUTO_APPROVE == 0) {
-                        $error .= ' '.__("If you just registered, please wait until a system administrator approves your account.", 'cftp_admin');
+                        $error .= ' ' . __("If you just registered, please wait until a system administrator approves your account.", 'cftp_admin');
                     }
                     break;
                 case 'no_self_registration':
@@ -293,7 +294,7 @@ class Auth
                     break;
             }
         }
-        
+
         return $error;
     }
 
@@ -316,7 +317,7 @@ class Auth
 
         /**
          * Record the action log
-        */
+         */
         $this->logger->addEntry(
             [
                 'action' => 31,

@@ -44,7 +44,9 @@ if ($render_container == true) {
                 <?php
                 foreach ($actions_buttons as $index => $button) {
                     ?>
-                    <a href="#" class="log_action btn btn-sm btn-default <?php echo $button['action'] == $default_actions ? 'btn-inverse' : ''; ?>" data-action="<?php echo $button['action']; ?>">
+                    <a href="#"
+                       class="log_action btn btn-sm btn-default <?php echo $button['action'] == $default_actions ? 'btn-inverse' : ''; ?>"
+                       data-action="<?php echo $button['action']; ?>">
                         <?php echo $button['title']; ?>
                     </a>
                     <?php
@@ -62,7 +64,7 @@ if ($render_container == true) {
 
 /**
  * Low level accesses are not permited
-*/
+ */
 if (CURRENT_USER_LEVEL != 9) {
     prevent_direct_access();
 } else {
@@ -102,24 +104,25 @@ if (CURRENT_USER_LEVEL != 9) {
                 ); ?>
                 <li>
                     <div class="log_ico">
-                        <img src="<?php echo ASSETS_IMG_URL; ?>/log_icons/<?php echo html_output($rendered['icon']); ?>.png" alt="Action icon">
+                        <img src="<?php echo ASSETS_IMG_URL; ?>/log_icons/<?php echo html_output($rendered['icon']); ?>.png"
+                             alt="Action icon">
                     </div>
                     <div class="home_log_text">
                         <div class="date"><?php echo html_output($rendered['timestamp']); ?></div>
                         <div class="action">
-                <?php
-                if (!empty($rendered['1'])) {
-                    echo '<span>'.html_output($rendered['1']).'</span> ';
-                }
-                echo html_output($rendered['text']).' ';
+                            <?php
+                            if (!empty($rendered['1'])) {
+                                echo '<span>' . html_output($rendered['1']) . '</span> ';
+                            }
+                echo html_output($rendered['text']) . ' ';
                 if (!empty($rendered['2'])) {
-                    echo '<span class="secondary">'.html_output($rendered['2']).'</span> ';
+                    echo '<span class="secondary">' . html_output($rendered['2']) . '</span> ';
                 }
                 if (!empty($rendered['3'])) {
-                    echo ' '.html_output($rendered['3']).' ';
+                    echo ' ' . html_output($rendered['3']) . ' ';
                 }
                 if (!empty($rendered['4'])) {
-                    echo '<span>'.html_output($rendered['4']).'</span> ';
+                    echo '<span>' . html_output($rendered['4']) . '</span> ';
                 } ?>
                         </div>
                     </div>

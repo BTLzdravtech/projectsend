@@ -14,7 +14,7 @@ var dataExtraction = function (node) {
 var downloadTimeout;
 var check_download_cookie = function () {
     if (Cookies.get("download_started") === 1) {
-        Cookies.set("download_started", "false", { expires: 100 });
+        Cookies.set("download_started", "false", {expires: 100});
         remove_modal();
     } else {
         downloadTimeout = setTimeout(check_download_cookie, 1000);
@@ -25,7 +25,7 @@ var check_download_cookie = function () {
 var logdownloadTimeout;
 var check_log_download_cookie = function () {
     if (Cookies.get("log_download_started") === 1) {
-        Cookies.set("log_download_started", "false", { expires: 100 });
+        Cookies.set("log_download_started", "false", {expires: 100});
         remove_modal();
     } else {
         logdownloadTimeout = setTimeout(check_log_download_cookie, 1000);

@@ -10,7 +10,7 @@ function group_exists_id($id)
 {
     /**
      * @var PDO $dbh
-    */
+     */
     global $dbh;
     $statement = $dbh->prepare("SELECT * FROM " . TABLE_GROUPS . " WHERE id=:id" . (CURRENT_USER_LEVEL != 9 ? " AND owner_id=:owner_id" : ""));
     $statement->bindParam(':id', $id, PDO::PARAM_INT);
@@ -70,7 +70,7 @@ function get_groups($arguments)
     global $dbh;
 
     $group_ids = !empty($arguments['group_ids']) ? $arguments['group_ids'] : array();
-    $group_ids = is_array($group_ids) ? $group_ids : array( $group_ids );
+    $group_ids = is_array($group_ids) ? $group_ids : array($group_ids);
     $is_public = !empty($arguments['public']) ? $arguments['public'] : '';
     $owner_id = !empty($arguments['owner_id']) ? $arguments['owner_id'] : '';
     $created_by = !empty($arguments['created_by']) ? $arguments['created_by'] : '';
@@ -94,7 +94,7 @@ function get_groups($arguments)
     if (!empty($search)) {
         $parameters[] = "(name LIKE :name OR description LIKE :description)";
     }
-    
+
     if (!empty($parameters)) {
         $p = 1;
         foreach ($parameters as $parameter) {
@@ -104,7 +104,7 @@ function get_groups($arguments)
                 $connector = " AND ";
             }
             $p++;
-            
+
             $query .= $connector . $parameter;
         }
     }
@@ -139,23 +139,23 @@ function get_groups($arguments)
         $statement->bindValue(':name', $search_value);
         $statement->bindValue(':description', $search_value);
     }
-    
+
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
 
     $all_groups = array();
     while ($data_group = $statement->fetch()) {
         $all_groups[$data_group['id']] = array(
-                                    'id'            => $data_group['id'],
-                                    'name'          => $data_group['name'],
-                                    'description'   => $data_group['description'],
-                                    'created_by'    => $data_group['created_by'],
-                                    'owner_id'    => $data_group['owner_id'],
-                                    'public'        => $data_group['public'],
-                                    'public_token'  => $data_group['public_token'],
-                                );
+            'id' => $data_group['id'],
+            'name' => $data_group['name'],
+            'description' => $data_group['description'],
+            'created_by' => $data_group['created_by'],
+            'owner_id' => $data_group['owner_id'],
+            'public' => $data_group['public'],
+            'public_token' => $data_group['public_token'],
+        );
     }
-    
+
     if (!empty($all_groups) > 0) {
         return $all_groups;
     } else {
@@ -166,7 +166,7 @@ function get_groups($arguments)
 /**
  * Get a count of files assigned to a group
  *
- * @param  int $group_id
+ * @param int $group_id
  * @return int
  */
 function count_files_on_group($group_id)
@@ -174,7 +174,7 @@ function count_files_on_group($group_id)
     global $dbh;
 
     $group_id = (int)$group_id;
-    $allowed_levels = array(9,8);
+    $allowed_levels = array(9, 8);
     // Do a permissions check
     if (isset($allowed_levels) && current_role_in($allowed_levels)) {
         if (group_exists_id($group_id)) {
@@ -195,7 +195,7 @@ function count_files_on_group($group_id)
 /**
  * Get a count of members assigned to a group
  *
- * @param  int $group_id
+ * @param int $group_id
  * @return int
  */
 function count_members_on_group($group_id)
@@ -203,7 +203,7 @@ function count_members_on_group($group_id)
     global $dbh;
 
     $group_id = (int)$group_id;
-    $allowed_levels = array(9,8);
+    $allowed_levels = array(9, 8);
     // Do a permissions check
     if (isset($allowed_levels) && current_role_in($allowed_levels)) {
         if (group_exists_id($group_id)) {
@@ -221,17 +221,17 @@ function count_members_on_group($group_id)
     }
 }
 
- /**
-  * Delete an existing group.
-  *
-  * @param  int $group_id
-  * @return bool
-  */
+/**
+ * Delete an existing group.
+ *
+ * @param int $group_id
+ * @return bool
+ */
 function delete_group($group_id)
 {
     global $dbh;
 
-    $allowed_levels = array(9,8);
+    $allowed_levels = array(9, 8);
     if (isset($group_id)) {
         $group_id = (int)$group_id;
         // Do a permissions check
@@ -246,10 +246,10 @@ function delete_group($group_id)
                 // Record the action log
                 $logger = new ProjectSend\Classes\ActionsLog;
                 $log_action_args = array(
-                                        'action' => 18,
-                                        'owner_id' => CURRENT_USER_ID,
-                                        'affected_account_name' => $group_data['name']
-                                    );
+                    'action' => 18,
+                    'owner_id' => CURRENT_USER_ID,
+                    'affected_account_name' => $group_data['name']
+                );
                 $logger->addEntry($log_action_args);
 
                 return true;

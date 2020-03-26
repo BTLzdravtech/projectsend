@@ -8,7 +8,7 @@
 
 use ProjectSend\Classes\Groups;
 
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once '../bootstrap.php';
 
 global $dbh;
@@ -27,8 +27,8 @@ $new_group = new Groups($dbh);
     <div class="white-box-interior">
 
         <?php
-            // If the form was submited with errors, show them here.
-            echo $new_group->getValidationErrors();
+        // If the form was submited with errors, show them here.
+        echo $new_group->getValidationErrors();
 
         if (isset($new_response)) {
             /**

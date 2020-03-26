@@ -40,9 +40,9 @@ function extract_template_info($template_directory)
 
     foreach ($template_info as $data => $regex) {
         if (preg_match('/^[ \t\/*#@]*' . preg_quote($regex, '/') . ':(.*)$/mi', $file_info, $match) && $match[1]) {
-            $template_info[ $data ] = html_output($match[1]);
+            $template_info[$data] = html_output($match[1]);
         } else {
-            $template_info[ $data ] = '';
+            $template_info[$data] = '';
         }
     }
 
@@ -52,13 +52,13 @@ function extract_template_info($template_directory)
 
     // Location is the value saved on the DB.
     $template_info['location'] = $folder;
-    
+
     // Currently active template
     /** @noinspection PhpUndefinedConstantInspection */
     if ($folder == SELECTED_CLIENTS_TEMPLATE) {
         $template_info['active'] = 1;
     }
-    
+
     // Look for the screenshot
     $screenshot_file = $template_directory . DS . 'screenshot.png';
     $cover_file = $template_directory . DS . 'cover.png';
@@ -93,7 +93,7 @@ function look_for_templates()
         if (is_dir($directory) && !in_array($directory, $ignore)) {
             if (check_template_integrity($directory)) {
                 $template_info = extract_template_info($directory);
-                
+
                 // Generate the valid templates array
                 $templates[] = $template_info;
             } else {
@@ -146,7 +146,7 @@ function check_template_integrity($folder)
     }
 
     unset($miss);
-    
+
     return false;
 }
 

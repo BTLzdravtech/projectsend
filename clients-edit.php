@@ -8,8 +8,9 @@
 
 use ProjectSend\Classes\MembersActions;
 use ProjectSend\Classes\Users;
+use ProjectSend\Classes\WorkspacesUsers;
 
-$allowed_levels = array(9,8,0);
+$allowed_levels = array(9, 8, 0);
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -18,12 +19,12 @@ $active_nav = 'clients';
 
 /**
  * Create the object
-*/
+ */
 $edit_client = new Users($dbh);
 
 /**
  * Check if the id parameter is on the URI.
-*/
+ */
 if (isset($_GET['id'])) {
     $client_id = $_GET['id'];
     $page_status = (client_exists_id($client_id)) ? 1 : 2;
@@ -40,16 +41,16 @@ if ($page_status === 1) {
 
     /**
      * Get groups where this client is member
-    */
+     */
     $get_groups = new MembersActions;
     $get_arguments = array(
         'client_id' => $client_id,
     );
     $found_groups = $get_groups->client_get_groups($get_arguments);
-    
+
     /**
      * Get current membership requests
-    */
+     */
     $get_arguments['denied'] = 0;
     $found_requests = $get_groups->get_membership_requests($get_arguments);
 }
@@ -121,7 +122,7 @@ if ($_POST) {
 
     /**
      * Validate the information from the posted form.
-    */
+     */
     $edit_client->set($client_arguments);
     $edit_client->setType("existing_client");
     if ($edit_client->validate()) {
@@ -135,10 +136,22 @@ if ($_POST) {
             'request_by' => CURRENT_USER_USERNAME,
         );
 
-        if (in_array(CURRENT_USER_LEVEL, [8 ,9])) {
+        if (in_array(CURRENT_USER_LEVEL, [8, 9])) {
             $memberships->client_edit_groups($arguments);
         } else {
             $memberships->update_membership_requests($arguments);
+        }
+
+        $edit_workspaces = (!empty($_POST['workspaces_request'])) ? $_POST['workspaces_request'] : array();
+        $memberships = new WorkspacesUsers;
+        $arguments = array(
+            'user_id' => $client_id,
+            'workspace_ids' => $edit_workspaces,
+            'added_by' => CURRENT_USER_USERNAME,
+        );
+
+        if (in_array(CURRENT_USER_LEVEL, [8, 9])) {
+            $memberships->user_edit_workspaces($arguments, true);
         }
     }
 
@@ -157,77 +170,77 @@ $page_id = 'client_form';
 require_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-6">
-    <?php
+    <div class="col-xs-12 col-sm-12 col-lg-6">
+        <?php
         /**
          * Get the process state and show the corresponding ok or error message.
          */
-    if (isset($_GET['status'])) {
-        switch ($_GET['status']) {
-            case 1:
-                $msg = __('Client edited correctly.', 'cftp_admin');
-                if (isset($_GET['is_new'])) {
-                    $msg = __('Client created successfuly.', 'cftp_admin');
-                }
-                echo system_message('success', $msg);
-                break;
-            case 0:
-                $msg = __('There was an error. Please try again.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                break;
+        if (isset($_GET['status'])) {
+            switch ($_GET['status']) {
+                case 1:
+                    $msg = __('Client edited correctly.', 'cftp_admin');
+                    if (isset($_GET['is_new'])) {
+                        $msg = __('Client created successfuly.', 'cftp_admin');
+                    }
+                    echo system_message('success', $msg);
+                    break;
+                case 0:
+                    $msg = __('There was an error. Please try again.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    break;
+            }
         }
-    }
-        
+
         /**
          * Email notification with account information after creating it
          */
-    if (isset($_GET['notification'])) {
-        switch ($_GET['notification']) {
-            case 2:
-                $msg = __('A welcome message was not sent to the new account owner.', 'cftp_admin');
-                echo system_message('info', $msg);
-                break;
-            case 1:
-                $msg = __('A welcome message with login information was sent to the new account owner.', 'cftp_admin');
-                echo system_message('success', $msg);
-                break;
-            case 0:
-                $msg = __("E-mail notification couldn't be sent.", 'cftp_admin');
-                echo system_message('danger', $msg);
-                break;
+        if (isset($_GET['notification'])) {
+            switch ($_GET['notification']) {
+                case 2:
+                    $msg = __('A welcome message was not sent to the new account owner.', 'cftp_admin');
+                    echo system_message('info', $msg);
+                    break;
+                case 1:
+                    $msg = __('A welcome message with login information was sent to the new account owner.', 'cftp_admin');
+                    echo system_message('success', $msg);
+                    break;
+                case 0:
+                    $msg = __("E-mail notification couldn't be sent.", 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    break;
+            }
         }
-    }
-    ?>
-    <div class="white-box">
-        <div class="white-box-interior">
-    
-            <?php
+        ?>
+        <div class="white-box">
+            <div class="white-box-interior">
+
+                <?php
                 // If the form was submited with errors, show them here.
                 echo $edit_client->getValidationErrors();
 
                 $direct_access_error = __('This page is not intended to be accessed directly.', 'cftp_admin');
-            if ($page_status === 0) {
-                $msg = __('No client was selected.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                echo '<p>'.$direct_access_error.'</p>';
-            } elseif ($page_status === 2) {
-                $msg = __('There is no client with that ID number.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                echo '<p>'.$direct_access_error.'</p>';
-            } elseif ($page_status === 3) {
-                $msg = __("Your account type doesn't allow you to access this feature.", 'cftp_admin');
-                echo system_message('danger', $msg);
-            } else {
-                /**
-                 * Include the form.
-                 */
-                include_once FORMS_DIR . DS . 'clients.php';
-            }
-            ?>
+                if ($page_status === 0) {
+                    $msg = __('No client was selected.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    echo '<p>' . $direct_access_error . '</p>';
+                } elseif ($page_status === 2) {
+                    $msg = __('There is no client with that ID number.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    echo '<p>' . $direct_access_error . '</p>';
+                } elseif ($page_status === 3) {
+                    $msg = __("Your account type doesn't allow you to access this feature.", 'cftp_admin');
+                    echo system_message('danger', $msg);
+                } else {
+                    /**
+                     * Include the form.
+                     */
+                    include_once FORMS_DIR . DS . 'clients.php';
+                }
+                ?>
 
+            </div>
         </div>
     </div>
-</div>
 
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

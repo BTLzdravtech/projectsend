@@ -2,20 +2,19 @@
  * Very simple custom modal dialog
  */
 $.fn.psendmodal = function () {
-    var modal_structure = '<div class="modal_overlay"></div>'+
-                            '<div class="modal_psend">'+
-                                '<div class="modal_title">'+
-                                    '<span>&nbsp;</span>'+
-                                    '<a href="#" class="modal_close">&times;</a>'+
-                                '</div>'+
-                                '<div class="modal_content"></div>'+
-                            '</div>';
+    var modal_structure = '<div class="modal_overlay"></div>' +
+        '<div class="modal_psend">' +
+        '<div class="modal_title">' +
+        '<span>&nbsp;</span>' +
+        '<a href="#" class="modal_close">&times;</a>' +
+        '</div>' +
+        '<div class="modal_content"></div>' +
+        '</div>';
 
     $('body').append(modal_structure);
     show_modal();
 
-    function show_modal()
-    {
+    function show_modal() {
         $('.modal_overlay').stop(true, true).fadeIn();
         $('.modal_psend').stop(true, true).fadeIn();
     }

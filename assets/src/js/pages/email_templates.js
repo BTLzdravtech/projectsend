@@ -25,13 +25,13 @@
                                 if (result) {
                                     $.ajax(
                                         {
-                                            url: "emails/"+file,
+                                            url: "emails/" + file,
                                             cache: false,
                                             success: function (data) {
-                                                $('#'+textarea).val(data);
+                                                $('#' + textarea).val(data);
                                             },
                                             error: function () {
-                                                var alert =bootbox.alert(
+                                                var alert = bootbox.alert(
                                                     {
                                                         message: json_strings.translations.email_templates.loading_error,
                                                         buttons: {
@@ -52,11 +52,11 @@
                         }
                     );
                 });
-    
+
                 $('.preview').on('click', function (e) {
                     e.preventDefault();
-                    var type    = jQuery(this).data('preview');
-                    var url        = json_strings.uri.base+ 'email-preview.php?t=' + type;
+                    var type = jQuery(this).data('preview');
+                    var url = json_strings.uri.base + 'email-preview.php?t=' + type;
                     window.open(url, "previewWindow", "width=800,height=600,scrollbars=yes");
                 });
             }

@@ -13,7 +13,7 @@
 function get_category($id)
 {
     global $dbh;
-    
+
     $return = '';
 
     $statement = $dbh->prepare("SELECT COUNT(file_id) as count FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE cat_id = :cat_id GROUP BY cat_id");
@@ -41,7 +41,7 @@ function get_category($id)
             );
         }
     }
-    
+
     return $return;
 }
 
@@ -57,7 +57,7 @@ function get_categories($params = array())
     $id = (!empty($params['id'])) ? $params['id'] : array();
     // pagination
     $page = (!empty($params['page'])) ? $params['page'] : '';
-    
+
     /**
      * By default, count files assigned to each category.
      * Avoids doing this individually later if needed.
@@ -94,16 +94,16 @@ function get_categories($params = array())
 
     /**
      * Begin construction of the SQL sentence
-    */
+     */
     $sql = "SELECT * FROM " . TABLE_CATEGORIES;
-    
+
     /**
      * Add the search terms
-    */
+     */
     if (isset($params['search']) && !empty($params['search'])) {
         $conditions[] = "(name LIKE :name OR description LIKE :description)";
         $return['no_results_type'] = 'search';
-        $search_terms = '%'.$params['search'].'%';
+        $search_terms = '%' . $params['search'] . '%';
         $sql_params[':name'] = $search_terms;
         $sql_params[':description'] = $search_terms;
     }
@@ -114,9 +114,9 @@ function get_categories($params = array())
     }
 
     /**
-        Clients can only manage their own categories
-        TODO: Implement this
-    */
+     * Clients can only manage their own categories
+     * TODO: Implement this
+     */
     /*
     if (CURRENT_USER_LEVEL == '0') {
         $conditions[] = "created_by = :username";
@@ -141,17 +141,17 @@ function get_categories($params = array())
 
     /**
      * Count results and add the value to the response array
-    */
+     */
     $count = $statement->rowCount();
     $return['count'] = $count;
 
     /**
      * Repeat the query but this time, limited by pagination
      */
-    
+
     if ($count > 0) {
         $statement->setFetchMode(PDO::FETCH_ASSOC);
-        
+
         /**
          * Fetch all initially to only do it once.
          */
@@ -168,7 +168,7 @@ function get_categories($params = array())
                     $continue = true;
                 }
             }
-            
+
             if ($continue === true) {
                 $found_categories[$row['id']] = array(
                     'id' => $row['id'],
@@ -245,19 +245,19 @@ function generate_categories_options($categories, $parent = 0, $selected = array
                         }
                         break;
                     /** @noinspection PhpMissingBreakStatementInspection */ case 'exclude':
-                        if (in_array($category['id'], $filter_values)) {
-                            $add_to_results = false;
-                        }
-                        // no break
+                    if (in_array($category['id'], $filter_values)) {
+                        $add_to_results = false;
+                    }
+                    // no break
                     case 'exclude_and_children':
                         if (in_array($category['id'], $filter_values)) {
                             $add_to_results = false;
-                            $add_children    = false;
+                            $add_children = false;
                         }
                         break;
                 }
             }
-            
+
             if ($add_to_results === true) {
                 $format = "<option value='%s'%s>%s%s</option>\n";
                 $return .= sprintf($format, $category['id'], $is_selected, $depth, html_output($category['name']));
@@ -271,6 +271,6 @@ function generate_categories_options($categories, $parent = 0, $selected = array
             }
         }
     }
-    
+
     return $return;
 }

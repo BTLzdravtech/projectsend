@@ -86,7 +86,7 @@ class Options
 
         /**
          * In case an option should not be set as a const
-        */
+         */
         $exceptions = [
         ];
 
@@ -98,7 +98,7 @@ class Options
                 if (in_array($name, $exceptions)) {
                     continue;
                 }
-                
+
                 $const = strtoupper($name);
                 define($const, $value);
             }
@@ -109,12 +109,12 @@ class Options
              */
             /** @noinspection PhpUndefinedConstantInspection */
             date_default_timezone_set(TIMEZONE);
-            
+
             /**
              * Options that do not come from the db
-            */
+             */
             /** @noinspection PhpUndefinedConstantInspection */
-            define('TEMPLATE_PATH', ROOT_DIR.DS.'templates'.DS.SELECTED_CLIENTS_TEMPLATE.DS.'template.php');
+            define('TEMPLATE_PATH', ROOT_DIR . DS . 'templates' . DS . SELECTED_CLIENTS_TEMPLATE . DS . 'template.php');
 
             /* Recaptcha */
             /** @noinspection PhpUndefinedConstantInspection */
@@ -124,21 +124,21 @@ class Options
             }
 
             /* Landing page for public groups and files */
-            define('PUBLIC_DOWNLOAD_URL', BASE_URI.'download.php');
-            define('PUBLIC_LANDING_URI', BASE_URI.'public.php');
-            define('PUBLIC_GROUP_URL', BASE_URI.'public.php');
+            define('PUBLIC_DOWNLOAD_URL', BASE_URI . 'download.php');
+            define('PUBLIC_LANDING_URI', BASE_URI . 'public.php');
+            define('PUBLIC_GROUP_URL', BASE_URI . 'public.php');
 
             /* URLs */
-            define('THUMBNAILS_FILES_URL', BASE_URI.'upload/thumbnails');
-            define('EMAIL_TEMPLATES_URL', BASE_URI.'emails/');
-            define('TEMPLATES_URL', BASE_URI.'templates/');
-        
+            define('THUMBNAILS_FILES_URL', BASE_URI . 'upload/thumbnails');
+            define('EMAIL_TEMPLATES_URL', BASE_URI . 'emails/');
+            define('TEMPLATES_URL', BASE_URI . 'templates/');
+
             /* Widgets */
-            define('WIDGETS_URL', BASE_URI.'includes/widgets/');
-            
+            define('WIDGETS_URL', BASE_URI . 'includes/widgets/');
+
             /* Logo Uploads */
             define('ADMIN_UPLOADS_URI', BASE_URI . 'upload/admin/');
-        
+
             /* Assets */
             define('ASSETS_URL', BASE_URI . 'assets');
             define('ASSETS_CSS_URL', ASSETS_URL . '/css');
@@ -148,7 +148,7 @@ class Options
 
             /**
              * Client's landing URI
-            */
+             */
             define('CLIENT_VIEW_FILE_LIST_URL_PATH', 'my_files/');
             //define('CLIENT_VIEW_FILE_LIST_URL_PATH', 'private.php');
             define('CLIENT_VIEW_FILE_LIST_URL', BASE_URI . CLIENT_VIEW_FILE_LIST_URL_PATH);
@@ -161,7 +161,7 @@ class Options
 
             /**
              * Oauth login callback
-            */
+             */
             define('OAUTH_LOGIN_CALLBACK_URL', BASE_URI . 'login-callback.php');
             define('LOGIN_CALLBACK_URI_GOOGLE', OAUTH_LOGIN_CALLBACK_URL . '?service=google');
         } else {

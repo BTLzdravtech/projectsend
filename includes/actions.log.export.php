@@ -12,7 +12,7 @@ require_once '../bootstrap.php';
 
 /**
  * @var PDO $dbh
-*/
+ */
 global $dbh;
 
 if (!check_for_admin()) {
@@ -25,9 +25,9 @@ header('Content-Disposition: attachment; filename=data.csv');
 $output = fopen('php://output', 'w');
 
 
-$log_query    = "SELECT * FROM " . TABLE_LOG . " ORDER BY id DESC";
-$log_sql    = $dbh->query($log_query);
-$log_count    = $log_sql->rowCount();
+$log_query = "SELECT * FROM " . TABLE_LOG . " ORDER BY id DESC";
+$log_sql = $dbh->query($log_query);
+$log_count = $log_sql->rowCount();
 
 function filter_pipe($input)
 {
@@ -42,15 +42,15 @@ if ($log_count > 0) {
 
         $render = render_log_action(
             array(
-                                'action' => filter_pipe($log['action']),
-                                'timestamp' => filter_pipe($log['timestamp']),
-                                'owner_id' => filter_pipe($log['owner_id']),
-                                'owner_user' => filter_pipe($log['owner_user']),
-                                'affected_file' => filter_pipe($log['affected_file']),
-                                'affected_file_name' => filter_pipe($log['affected_file_name']),
-                                'affected_account' => filter_pipe($log['affected_account']),
-                                'affected_account_name'    => filter_pipe($log['affected_account_name'])
-                            )
+                'action' => filter_pipe($log['action']),
+                'timestamp' => filter_pipe($log['timestamp']),
+                'owner_id' => filter_pipe($log['owner_id']),
+                'owner_user' => filter_pipe($log['owner_user']),
+                'affected_file' => filter_pipe($log['affected_file']),
+                'affected_file_name' => filter_pipe($log['affected_file_name']),
+                'affected_account' => filter_pipe($log['affected_account']),
+                'affected_account_name' => filter_pipe($log['affected_account_name'])
+            )
         );
 
         if (!empty($render['timestamp'])) {

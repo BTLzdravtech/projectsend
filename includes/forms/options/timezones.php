@@ -23,7 +23,7 @@
             $zonen[$i]['subcity'] = isset($zone[2]) ? $zone[2] : '';
             $i++;
         }
-        
+
         asort($zonen);
         $structure = '';
 
@@ -49,30 +49,30 @@
                     /**
                      * Continent
                      */
-                    $structure .= '<optgroup id="opt_'.$continent.'" label="'.$continent.'">'."\n";
+                    $structure .= '<optgroup id="opt_' . $continent . '" label="' . $continent . '">' . "\n";
                 } elseif ($selectcontinent != $continent) {
                     /**
                      * Continent
                      */
-                    $structure .= '</optgroup>'."\n".'<optgroup label="'.$continent.'">'."\n";
+                    $structure .= '</optgroup>' . "\n" . '<optgroup label="' . $continent . '">' . "\n";
                 }
-            
+
                 if (isset($city) != '') {
                     if (!empty($subcity) != '') {
-                        $city = $city . '/'. $subcity;
+                        $city = $city . '/' . $subcity;
                     }
                     /**
                      * Timezone
                      */
-                    $structure .= "\t<option ".((($continent.'/'.$city)==$selectedzone)?'selected="selected" ':'')."value=\"".($continent.'/'.$city)."\">".str_replace('_', ' ', $city)."</option>\n";
+                    $structure .= "\t<option " . ((($continent . '/' . $city) == $selectedzone) ? 'selected="selected" ' : '') . "value=\"" . ($continent . '/' . $city) . "\">" . str_replace('_', ' ', $city) . "</option>\n";
                 } else {
                     if (!empty($subcity) != '') {
-                        $city = $city . '/'. $subcity;
+                        $city = $city . '/' . $subcity;
                     }
                     /**
                      * Timezone
                      */
-                    $structure .= "\t<option ".(($continent==$selectedzone)?'selected="selected" ':'')."value=\"".$continent."\">".$continent."</option>\n";
+                    $structure .= "\t<option " . (($continent == $selectedzone) ? 'selected="selected" ' : '') . "value=\"" . $continent . "\">" . $continent . "</option>\n";
                 }
                 $selectcontinent = $continent;
             }

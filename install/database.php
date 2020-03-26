@@ -25,15 +25,15 @@ if (defined('TRY_INSTALL')) {
     $install_queries = array(
 
         '0' => array(
-                    'table'    => TABLE_FILES,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES.'` (
+            'table' => TABLE_FILES,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_FILES . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `url` text NOT NULL,
 								  `original_url` text NOT NULL,
 								  `filename` text NOT NULL,
 								  `description` text NULL,
 								  `owner_id` INT(11),
-								  `uploader` varchar('.MAX_USER_CHARS.') NOT NULL,
+								  `uploader` varchar(' . MAX_USER_CHARS . ') NOT NULL,
 								  `expires` INT(1) NOT NULL default \'0\',
 								  `expiry_date` TIMESTAMP NOT NULL DEFAULT "' . $expiry_default . '",
 								  `public_allow` INT(1) NOT NULL default \'0\',
@@ -42,27 +42,27 @@ if (defined('TRY_INSTALL')) {
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '1' =>  array(
-                    'table'    => TABLE_OPTIONS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_OPTIONS.'` (
+        '1' => array(
+            'table' => TABLE_OPTIONS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_OPTIONS . '` (
 								  `id` int(10) NOT NULL AUTO_INCREMENT,
 								  `name` varchar(50) COLLATE utf8_general_ci NOT NULL,
 								  `value` text COLLATE utf8_general_ci NOT NULL,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '2' =>  array(
-                    'table'    => TABLE_USERS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_USERS.'` (
+        '2' => array(
+            'table' => TABLE_USERS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_USERS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
-								  `user` varchar('.MAX_USER_CHARS.') NOT NULL,
-								  `password` varchar('.MAX_PASS_CHARS.'),
+								  `user` varchar(' . MAX_USER_CHARS . ') NOT NULL,
+								  `password` varchar(' . MAX_PASS_CHARS . '),
 								  `name` text NOT NULL,
 								  `email` varchar(60) NOT NULL,
 								  `level` tinyint(1) NOT NULL DEFAULT \'0\',
@@ -71,7 +71,7 @@ if (defined('TRY_INSTALL')) {
 								  `notify` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `contact` text COLLATE utf8_general_ci NULL,
 								  `owner_id` INT(11),
-								  `created_by` varchar('.MAX_USER_CHARS.') NULL,
+								  `created_by` varchar(' . MAX_USER_CHARS . ') NULL,
 								  `active` tinyint(1) NOT NULL DEFAULT \'1\',
 								  `account_requested` tinyint(1) NOT NULL DEFAULT \'0\',
 								  `account_denied` tinyint(1) NOT NULL DEFAULT \'0\',
@@ -80,12 +80,12 @@ if (defined('TRY_INSTALL')) {
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '3' =>  array(
-                    'table'    => TABLE_GROUPS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_GROUPS.'` (
+        '3' => array(
+            'table' => TABLE_GROUPS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_GROUPS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `name` varchar(32) NOT NULL,
 								  `description` text NOT NULL,
@@ -97,28 +97,28 @@ if (defined('TRY_INSTALL')) {
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '4' =>  array(
-                    'table'    => TABLE_MEMBERS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS.'` (
+        '4' => array(
+            'table' => TABLE_MEMBERS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_MEMBERS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `added_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
 								  `group_id` int(11) NOT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`),
-								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+								  FOREIGN KEY (`client_id`) REFERENCES ' . TABLE_USERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`group_id`) REFERENCES ' . TABLE_GROUPS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '5' =>  array(
-                    'table'    => TABLE_MEMBERS_REQUESTS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_MEMBERS_REQUESTS.'` (
+        '5' => array(
+            'table' => TABLE_MEMBERS_REQUESTS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_MEMBERS_REQUESTS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `requested_by` varchar(32) NOT NULL,
 								  `client_id` int(11) NOT NULL,
@@ -126,34 +126,34 @@ if (defined('TRY_INSTALL')) {
 								  `denied` int(1) NOT NULL DEFAULT \'0\',
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  PRIMARY KEY (`id`),
-								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+								  FOREIGN KEY (`client_id`) REFERENCES ' . TABLE_USERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`group_id`) REFERENCES ' . TABLE_GROUPS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '6' =>  array(
-                    'table'    => TABLE_FOLDERS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_FOLDERS.'` (
+        '6' => array(
+            'table' => TABLE_FOLDERS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_FOLDERS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `parent` int(11) DEFAULT NULL,
 								  `name` varchar(32) NOT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
 								  `client_id` int(11) DEFAULT NULL,
 								  `group_id` int(11) DEFAULT NULL,
-								  FOREIGN KEY (`parent`) REFERENCES '.TABLE_FOLDERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`parent`) REFERENCES ' . TABLE_FOLDERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`client_id`) REFERENCES ' . TABLE_USERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`group_id`) REFERENCES ' . TABLE_GROUPS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '7' =>  array(
-                    'table'    => TABLE_FILES_RELATIONS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_FILES_RELATIONS.'` (
+        '7' => array(
+            'table' => TABLE_FILES_RELATIONS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_FILES_RELATIONS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `file_id` int(11) NOT NULL,
 								  `client_id` int(11) DEFAULT NULL,
@@ -162,19 +162,19 @@ if (defined('TRY_INSTALL')) {
 								  `hidden` int(1) NOT NULL,
 								  `download_count` int(16) NOT NULL DEFAULT \'0\',
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`group_id`) REFERENCES '.TABLE_GROUPS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`folder_id`) REFERENCES '.TABLE_FOLDERS.'(`id`) ON UPDATE CASCADE,
+								  FOREIGN KEY (`file_id`) REFERENCES ' . TABLE_FILES . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`client_id`) REFERENCES ' . TABLE_USERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`group_id`) REFERENCES ' . TABLE_GROUPS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`folder_id`) REFERENCES ' . TABLE_FOLDERS . '(`id`) ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '8' =>  array(
-                    'table'    => TABLE_LOG,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_LOG.'` (
+        '8' => array(
+            'table' => TABLE_LOG,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_LOG . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `action` int(2) NOT NULL,
 								  `owner_id` int(11) NOT NULL,
@@ -187,12 +187,12 @@ if (defined('TRY_INSTALL')) {
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '9' =>  array(
-                    'table'    => TABLE_NOTIFICATIONS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_NOTIFICATIONS.'` (
+        '9' => array(
+            'table' => TABLE_NOTIFICATIONS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_NOTIFICATIONS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `file_id` int(11) NOT NULL,
 								  `client_id` int(11) NOT NULL,
@@ -200,32 +200,32 @@ if (defined('TRY_INSTALL')) {
 								  `sent_status` int(2) NOT NULL,
 								  `times_failed` int(11) NOT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`client_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`file_id`) REFERENCES ' . TABLE_FILES . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`client_id`) REFERENCES ' . TABLE_USERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '10' =>  array(
-                    'table'    => TABLE_PASSWORD_RESET,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_PASSWORD_RESET.'` (
+        '10' => array(
+            'table' => TABLE_PASSWORD_RESET,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_PASSWORD_RESET . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) DEFAULT NULL,
 								  `token` varchar(32) NOT NULL,
 								  `used` int(1) DEFAULT \'0\',
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`user_id`) REFERENCES ' . TABLE_USERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '11' =>  array(
-                    'table'    => TABLE_DOWNLOADS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_DOWNLOADS.'` (
+        '11' => array(
+            'table' => TABLE_DOWNLOADS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_DOWNLOADS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `user_id` int(11) DEFAULT NULL,
 								  `file_id` int(11) NOT NULL,
@@ -233,17 +233,17 @@ if (defined('TRY_INSTALL')) {
 								  `remote_host` text NULL,
 								  `anonymous` tinyint(1) DEFAULT \'0\',
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  FOREIGN KEY (`user_id`) REFERENCES '.TABLE_USERS.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`user_id`) REFERENCES ' . TABLE_USERS . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`file_id`) REFERENCES ' . TABLE_FILES . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '12' =>  array(
-                    'table'    => '',
-                    'query'    => "INSERT INTO ".TABLE_OPTIONS." (name, value) VALUES
+        '12' => array(
+            'table' => '',
+            'query' => "INSERT INTO " . TABLE_OPTIONS . " (name, value) VALUES
 								('base_uri', :base_uri),
 								('max_thumbnail_width', '100'),
 								('max_thumbnail_height', '100'),
@@ -362,58 +362,58 @@ if (defined('TRY_INSTALL')) {
 								('email_limit_retention_subject', ''),
 								('email_limit_retention_text', ''),
 								",
-                    'params' => array(
-                                        ':base_uri'    => $base_uri,
-                                        ':title'    => $install_title,
-                                        ':email'    => $admin_email,
-                                        ':version'    => $current_version,
-                                        ':from'        => $this_install_title,
-                                        ':now'        => $now,
-                                ),
+            'params' => array(
+                ':base_uri' => $base_uri,
+                ':title' => $install_title,
+                ':email' => $admin_email,
+                ':version' => $current_version,
+                ':from' => $this_install_title,
+                ':now' => $now,
+            ),
         ),
 
-        '13' =>  array(
-                        'table'    => '',
-                        'query'    => "INSERT INTO ".TABLE_USERS." (id, user, password, name, email, level, active) VALUES
+        '13' => array(
+            'table' => '',
+            'query' => "INSERT INTO " . TABLE_USERS . " (id, user, password, name, email, level, active) VALUES
 									(1, :username, :password, :name, :email, 9, 1)",
-                        'params' => array(
-                                        ':username'    => $admin_username,
-                                        ':password'    => $admin_pass,
-                                        ':name'        => $admin_name,
-                                        ':email'    => $admin_email,
-                        ),
+            'params' => array(
+                ':username' => $admin_username,
+                ':password' => $admin_pass,
+                ':name' => $admin_name,
+                ':email' => $admin_email,
+            ),
         ),
 
-        '14' =>  array(
-                    'table'    => TABLE_CATEGORIES,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES.'` (
+        '14' => array(
+            'table' => TABLE_CATEGORIES,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_CATEGORIES . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `name` varchar(32) NOT NULL,
 								  `parent` int(11) DEFAULT NULL,
 								  `description` text NULL,
 								  `owner_id` INT(11),
-								  `created_by` varchar('.MAX_USER_CHARS.') NULL,
+								  `created_by` varchar(' . MAX_USER_CHARS . ') NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  FOREIGN KEY (`parent`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+								  FOREIGN KEY (`parent`) REFERENCES ' . TABLE_CATEGORIES . '(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
-        '15' =>  array(
-                    'table'    => TABLE_CATEGORIES_RELATIONS,
-                    'query'    => 'CREATE TABLE IF NOT EXISTS `'.TABLE_CATEGORIES_RELATIONS.'` (
+        '15' => array(
+            'table' => TABLE_CATEGORIES_RELATIONS,
+            'query' => 'CREATE TABLE IF NOT EXISTS `' . TABLE_CATEGORIES_RELATIONS . '` (
 								  `id` int(11) NOT NULL AUTO_INCREMENT,
 								  `file_id` int(11) NOT NULL,
 								  `cat_id` int(11) NOT NULL,
 								  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-								  FOREIGN KEY (`file_id`) REFERENCES '.TABLE_FILES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-								  FOREIGN KEY (`cat_id`) REFERENCES '.TABLE_CATEGORIES.'(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`file_id`) REFERENCES ' . TABLE_FILES . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+								  FOREIGN KEY (`cat_id`) REFERENCES ' . TABLE_CATEGORIES . '(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 								  PRIMARY KEY (`id`)
 								) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 								',
-                    'params' => array(),
+            'params' => array(),
         ),
 
     );

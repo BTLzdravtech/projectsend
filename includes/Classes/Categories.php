@@ -94,7 +94,7 @@ class Categories
         if ($statement->rowCount() == 0) {
             return false;
         }
-    
+
         while ($row = $statement->fetch()) {
             $this->name = html_output($row['name']);
             $this->parent = html_output($row['parent']);
@@ -116,7 +116,7 @@ class Categories
             'description' => $this->description,
         ];
     }
- 
+
     /**
      * Validate the information from the form.
      */
@@ -164,26 +164,26 @@ class Categories
 
         /**
          * Who is creating the category?
-        */
+         */
         $this->owner_id = CURRENT_USER_ID;
         $this->created_by = CURRENT_USER_USERNAME;
 
         /**
          * Insert the category information into the database
-        */
+         */
         $statement = $this->dbh->prepare(
             "INSERT INTO " . TABLE_CATEGORIES . " (name,parent,description,owner_id,created_by)"
-            ."VALUES (:name, :parent, :description, :owner_id, :created_by)"
+            . "VALUES (:name, :parent, :description, :owner_id, :created_by)"
         );
         $statement->bindParam(':name', $this->name);
-        
+
         if (empty($this->parent)) {
             $this->parent = 0;
             $statement->bindValue(':parent', $this->parent, PDO::PARAM_NULL);
         } else {
             $statement->bindValue(':parent', $this->parent, PDO::PARAM_INT);
         }
-        
+
         $statement->bindParam(':description', $this->description);
         $statement->bindParam(':owner_id', $this->owner_id);
         $statement->bindParam(':created_by', $this->created_by);
@@ -197,19 +197,19 @@ class Categories
 
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
-                'action'                => 34,
-                'owner_id'                => CURRENT_USER_ID,
-                'affected_account'        => $this->id,
-                'affected_account_name'    => $this->name
+                    'action' => 34,
+                    'owner_id' => CURRENT_USER_ID,
+                    'affected_account' => $this->id,
+                    'affected_account_name' => $this->name
                 ]
             );
         } else {
             /**
              * Query couldn't be executed
-            */
+             */
             $state['query'] = 0;
         }
 
@@ -226,10 +226,10 @@ class Categories
         }
 
         $state = array();
- 
+
         /**
          * SQL query
-        */
+         */
         $edit_category_query = "UPDATE " . TABLE_CATEGORIES . " SET 
             name = :name,
             parent = :parent,
@@ -258,13 +258,13 @@ class Categories
 
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
-                'action' => 35,
-                'owner_id' => CURRENT_USER_ID,
-                'affected_account' => $this->id,
-                'affected_account_name' => $this->name
+                    'action' => 35,
+                    'owner_id' => CURRENT_USER_ID,
+                    'affected_account' => $this->id,
+                    'affected_account_name' => $this->name
                 ]
             );
         } else {
@@ -285,15 +285,15 @@ class Categories
 
         /**
          * Do a permissions check
-        */
+         */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
             $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_CATEGORIES . ' WHERE id=:id');
             $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $sql->execute();
-            
+
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
                     'action' => 36,

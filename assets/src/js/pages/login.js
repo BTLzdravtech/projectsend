@@ -33,7 +33,7 @@
 
                             var url = $(form).attr('action');
                             $('.ajax_response').html('').removeClass('alert-danger alert-success').slideUp();
-                            $('#submit').html('<i class="fa fa-cog fa-spin fa-fw"></i><span class="sr-only"></span> '+button_loading_text+'...');
+                            $('#submit').html('<i class="fa fa-cog fa-spin fa-fw"></i><span class="sr-only"></span> ' + button_loading_text + '...');
                             $.ajax(
                                 {
                                     cache: false,
@@ -42,10 +42,10 @@
                                     data: $(form).serialize(),
                                     success: function (response) {
                                         var json = jQuery.parseJSON(response);
-                                        if (json.status === 'success' ) {
-                                            $('#submit').html('<i class="fa fa-check"></i><span class="sr-only"></span> '+button_redirecting_text+'...');
+                                        if (json.status === 'success') {
+                                            $('#submit').html('<i class="fa fa-check"></i><span class="sr-only"></span> ' + button_redirecting_text + '...');
                                             $('#submit').removeClass('btn-primary').addClass('btn-success');
-                                            setTimeout('window.location.href = "'+json.location+'"', 1000);
+                                            setTimeout('window.location.href = "' + json.location + '"', 1000);
                                         } else {
                                             $('.ajax_response').addClass('alert-danger').slideDown().html(json.message);
                                             $('#submit').html(button_text);

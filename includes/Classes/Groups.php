@@ -53,7 +53,7 @@ class Groups
     {
         $this->id = $id;
     }
-  
+
     /**
      * Return the ID
      *
@@ -102,7 +102,7 @@ class Groups
         if ($statement->rowCount() == 0) {
             return false;
         }
-    
+
         while ($row = $statement->fetch()) {
             $this->name = html_output($row['name']);
             $this->description = html_output($row['description']);
@@ -117,7 +117,7 @@ class Groups
         $statement = $this->dbh->prepare("SELECT client_id FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
         $statement->bindParam(':id', $this->id, PDO::PARAM_INT);
         $statement->execute();
-        
+
         if ($statement->rowCount() > 0) {
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             while ($member = $statement->fetch()) {
@@ -196,7 +196,7 @@ class Groups
             $this->validation_passed = false;
             $this->validation_errors = $validation->list_errors();
         }
-        
+
         return false;
     }
 
@@ -218,23 +218,23 @@ class Groups
     public function create()
     {
         $state = array();
-        
+
         if (!empty($this->name)) {
 
             /**
              * Who is creating the client?
-            */
+             */
             $this->owner_id = CURRENT_USER_ID;
             $this->created_by = CURRENT_USER_USERNAME;
 
             /**
              * Define the group information
-            */
+             */
             $this->public_token = generateRandomString(32);
 
             $sql_query = $this->dbh->prepare(
                 "INSERT INTO " . TABLE_GROUPS . " (name, description, public, public_token, owner_id, created_by)"
-                ." VALUES (:name, :description, :public, :token, :owner_id, :admin)"
+                . " VALUES (:name, :description, :public, :token, :owner_id, :admin)"
             );
             $sql_query->bindParam(':name', $this->name);
             $sql_query->bindParam(':description', $this->description);
@@ -251,12 +251,12 @@ class Groups
 
             /**
              * Create the members records
-            */
+             */
             if (!empty($this->members)) {
                 foreach ($this->members as $member) {
                     $sql_member = $this->dbh->prepare(
                         "INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-                        ." VALUES (:admin, :member, :id)"
+                        . " VALUES (:admin, :member, :id)"
                     );
                     $sql_member->bindParam(':admin', $this->created_by);
                     $sql_member->bindParam(':member', $member, PDO::PARAM_INT);
@@ -270,20 +270,20 @@ class Groups
 
                 /**
                  * Record the action log
-                */
+                 */
                 $this->logger->addEntry(
                     [
-                    'action' => 23,
-                    'owner_id' => CURRENT_USER_ID,
-                    'affected_account' => $this->id,
-                    'affected_account_name' => $this->name,
+                        'action' => 23,
+                        'owner_id' => CURRENT_USER_ID,
+                        'affected_account' => $this->id,
+                        'affected_account_name' => $this->name,
                     ]
                 );
             } else {
                 $state['query'] = 0;
             }
         }
-        
+
         return $state;
     }
 
@@ -300,12 +300,12 @@ class Groups
 
         /**
          * Who is creating the client?
-        */
+         */
         $this->created_by = CURRENT_USER_USERNAME;
 
         /**
          * SQL query
-        */
+         */
         $sql_query = $this->dbh->prepare("UPDATE " . TABLE_GROUPS . " SET name = :name, description = :description, public = :public WHERE id = :id");
         $sql_query->bindParam(':name', $this->name);
         $sql_query->bindParam(':description', $this->description);
@@ -315,19 +315,19 @@ class Groups
 
         /**
          * Clean the memmbers table
-        */
+         */
         $sql_clean = $this->dbh->prepare("DELETE FROM " . TABLE_MEMBERS . " WHERE group_id = :id");
         $sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
         $sql_clean->execute();
 
         /**
          * Create the members records
-        */
+         */
         if (!empty($this->members)) {
             foreach ($this->members as $member) {
                 $sql_member = $this->dbh->prepare(
                     "INSERT INTO " . TABLE_MEMBERS . " (added_by,client_id,group_id)"
-                    ." VALUES (:admin, :member, :id)"
+                    . " VALUES (:admin, :member, :id)"
                 );
                 $sql_member->bindParam(':admin', $this->created_by);
                 $sql_member->bindParam(':member', $member, PDO::PARAM_INT);
@@ -341,19 +341,19 @@ class Groups
 
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
-                'action' => 15,
-                'owner_id' => CURRENT_USER_ID,
-                'affected_account' => $this->id,
-                'affected_account_name' => $this->name,
+                    'action' => 15,
+                    'owner_id' => CURRENT_USER_ID,
+                    'affected_account' => $this->id,
+                    'affected_account_name' => $this->name,
                 ]
             );
         } else {
             $state['query'] = 0;
         }
-        
+
         return $state;
     }
 
@@ -368,21 +368,21 @@ class Groups
 
         /**
          * Do a permissions check
-        */
+         */
         if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
             $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_GROUPS . ' WHERE id=:id');
             $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
             $sql->execute();
         }
-        
+
         /**
          * Record the action log
-        */
+         */
         $this->logger->addEntry(
             [
-            'action' => 18,
-            'owner_id' => CURRENT_USER_ID,
-            'affected_account_name' => $this->name,
+                'action' => 18,
+                'owner_id' => CURRENT_USER_ID,
+                'affected_account_name' => $this->name,
             ]
         );
 

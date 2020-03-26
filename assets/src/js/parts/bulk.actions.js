@@ -79,15 +79,15 @@
                         if (action === 'log_download') {
                             e.preventDefault();
                             $(document).psendmodal();
-                            Cookies.set('log_download_started', 0, { expires: 100 });
+                            Cookies.set('log_download_started', 0, {expires: 100});
                             setTimeout(check_log_download_cookie, 1000);
 
                             $('.modal_content').html(
-                                '<p class="loading-img">'+
-                                                '<img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" /></p>'+
-                                                '<p class="lead text-center text-info">'+json_strings.translations.download_wait+'</p>'
+                                '<p class="loading-img">' +
+                                '<img src="' + json_strings.uri.assets_img + '/ajax-loader.gif" alt="Loading" /></p>' +
+                                '<p class="lead text-center text-info">' + json_strings.translations.download_wait + '</p>'
                             );
-                            $('.modal_content').append('<iframe src="'+json_strings.uri.base+'includes/actions.log.export.php?format=csv"></iframe>');
+                            $('.modal_content').append('<iframe src="' + json_strings.uri.base + 'includes/actions.log.export.php?format=csv"></iframe>');
 
                             return false;
                         }
@@ -124,12 +124,12 @@
 
                             $(document).psendmodal();
 
-                            Cookies.set('download_started', 0, { expires: 100 });
+                            Cookies.set('download_started', 0, {expires: 100});
                             setTimeout(check_download_cookie, 1000);
                             $('.modal_content').html(
-                                '<p class="loading-img"><img src="'+json_strings.uri.assets_img+'/ajax-loader.gif" alt="Loading" /></p>'+
-                                                '<p class="lead text-center text-info">'+json_strings.translations.download_wait+'</p>'+
-                                                '<p class="text-center text-info">'+json_strings.translations.download_long_wait+'</p>'
+                                '<p class="loading-img"><img src="' + json_strings.uri.assets_img + '/ajax-loader.gif" alt="Loading" /></p>' +
+                                '<p class="lead text-center text-info">' + json_strings.translations.download_wait + '</p>' +
+                                '<p class="text-center text-info">' + json_strings.translations.download_long_wait + '</p>'
                             );
                             $.ajax(
                                 {

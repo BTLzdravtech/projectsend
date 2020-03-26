@@ -5,7 +5,7 @@
  * @package    ProjectSend
  * @subpackage Files
  */
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -90,226 +90,230 @@ function list_file($data, $origin)
 }
 
 ?>
-<div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
+    <div class="col-xs-12 col-sm-12 col-lg-6 col-lg-offset-3">
 
-    <?php echo get_branding_layout(true); ?>
+        <?php echo get_branding_layout(true); ?>
 
-    <div class="white-box">
-        <div class="white-box-interior">
-            <div class="text-center">
-                <?php
-                switch ($mode) {
-                    case 'files':
+        <div class="white-box">
+            <div class="white-box-interior">
+                <div class="text-center">
+                    <?php
+                    switch ($mode) {
+                        case 'files':
                             $title = __('Public groups and files', 'cftp_admin');
                             $desc = ''; //__('Public navigation','cftp_admin');
-                        break;
-                    case 'group':
+                            break;
+                        case 'group':
                             $title = $test_group['name'];
                             $desc = $test_group['description'];
-                        break;
-                }
-                ?>
-                <h3><?php echo $title; ?></h3>
-                <div class="intro">
-                    <?php echo $desc; ?>
+                            break;
+                    }
+                    ?>
+                    <h3><?php echo $title; ?></h3>
+                    <div class="intro">
+                        <?php echo $desc; ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="treeview">
-                <div class="listing">
-                    <ul>
-                        <?php
-                        /**
-                         * 1- Make a list of files IDs
-                         */
-                        $all_files = array();
-                        $public_files = array();
-                        $expired_files = array();
-                        $remove_files = array(); // used to remove file ids from the complete list after showing the groups so the files don't appear again on the list.
-                        $files_sql = "SELECT * FROM " . TABLE_FILES;
-
-                        /**
-                         * All files or just the public ones?
-                        */
-                        /** @noinspection PhpUndefinedConstantInspection */
-                        if (PUBLIC_LISTING_SHOW_ALL_FILES != 1 && $mode != 'group') {
-                            $files_sql .= " WHERE public_allow=1";
-                        }
-
-                        $sql = $dbh->prepare($files_sql);
-                        $sql->execute();
-                        $sql->setFetchMode(PDO::FETCH_ASSOC);
-                        while ($row = $sql->fetch()) {
-
+                <div class="treeview">
+                    <div class="listing">
+                        <ul>
+                            <?php
                             /**
-                             * Does it expire?
-                            */
-                            $add_file = true;
-                            $expired = false;
-
-                            if ($row['expires'] == '1') {
-                                if (time() > strtotime($row['expiry_date'])) {
-                                    /** @noinspection PhpUndefinedConstantInspection */
-                                    if (EXPIRED_FILES_HIDE == '1') {
-                                        $add_file = false;
-                                    }
-                                    $expired = true;
-                                }
-                            }
-
-                            if ($add_file == true) {
-                                $filename_on_disk = (!empty($row['original_url'])) ? $row['original_url'] : $row['url'];
-
-                                $all_files[$row['id']] = array(
-                                    'id' => encode_html($row['id']),
-                                    'filename' => encode_html($filename_on_disk),
-                                    'title' => encode_html($row['filename']),
-                                    'public' => encode_html($row['public_allow']),
-                                    'token' => encode_html($row['public_token']),
-                                    'expired' => $expired,
-                                    'expiry_date' => encode_html($row['expiry_date']),
-                                );
-                                if ($row['public_allow'] == 1) {
-                                    $public_files[] = $row['id'];
-                                }
-                            } else {
-                                $expired_files[] = $row['id'];
-                            }
-                        }
-
-                        //print_array($all_files);
-
-                        /**
-                         * 2- Get public groups
-                         */
-                        $groups = array();
-                        $found_groups = get_groups(
-                            [
-                                'public' => true,
-                            ]
-                        );
-                        foreach ($found_groups as $group_id => $group_data) {
-                            $groups[$group_id] = array(
-                                'id' => $group_data['id'],
-                                'name' => $group_data['name'],
-                                'token' => $group_data['public_token'],
-                                'files' => array(),
-                            );
-                            /**
-                             * 3- Get list of files from this group
+                             * 1- Make a list of files IDs
                              */
-                            $group_files = array();
-                            $files_groups_sql = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id=:group_id AND hidden = '0'";
-                            // Don't include private files
+                            $all_files = array();
+                            $public_files = array();
+                            $expired_files = array();
+                            $remove_files = array(); // used to remove file ids from the complete list after showing the groups so the files don't appear again on the list.
+                            $files_sql = "SELECT * FROM " . TABLE_FILES;
+
+                            /**
+                             * All files or just the public ones?
+                             */
                             /** @noinspection PhpUndefinedConstantInspection */
-                            if (PUBLIC_LISTING_SHOW_ALL_FILES != 1) {
-                                $files_groups_sql .= " AND FIND_IN_SET(file_id, :public_files)";
+                            if (PUBLIC_LISTING_SHOW_ALL_FILES != 1 && $mode != 'group') {
+                                $files_sql .= " WHERE public_allow=1";
                             }
 
-                            // Don't include expired files
-                            /** @noinspection PhpUndefinedConstantInspection */
-                            if (EXPIRED_FILES_HIDE == '1') {
-                                $files_groups_sql .= " AND !FIND_IN_SET(file_id, :excluded_files)";
-                            }
-
-                            $sql = $dbh->prepare($files_groups_sql);
-                            $sql->bindParam(':group_id', $group_id, PDO::PARAM_INT);
-
-                            /** @noinspection PhpUndefinedConstantInspection */
-                            if (PUBLIC_LISTING_SHOW_ALL_FILES != 1) {
-                                $included_files = implode(',', array_map('intval', array_unique($public_files)));
-                                $sql->bindParam(':public_files', $included_files);
-                            }
-                            /** @noinspection PhpUndefinedConstantInspection */
-                            if (EXPIRED_FILES_HIDE == '1') {
-                                $excluded_files = implode(',', array_map('intval', array_unique($expired_files)));
-                                $sql->bindParam(':excluded_files', $excluded_files);
-                            }
-
+                            $sql = $dbh->prepare($files_sql);
                             $sql->execute();
                             $sql->setFetchMode(PDO::FETCH_ASSOC);
-
                             while ($row = $sql->fetch()) {
-                                $groups[$group_id]['files'][$row['file_id']] = $all_files[$row['file_id']];
-                                $remove_files[] = $row['file_id'];
-                            }
-                        }
-
-                        /**
-                         * Removes from the array of files those that are on, at least, one group
-                         * so in the list of groupless files they are not repeated.
-                         * Done here so if a file is on 2 groups, it won't get removed from any of them.
-                         */
-                        foreach ($remove_files as $file_id) {
-                            unset($all_files[$file_id]);
-                        }
-
-                        //print_r($groups);
-                        //print_r($all_files);
-
-                        /**
-                         * Finally, generate the list
-                         * 1- Groups
-                         */
-
-                        switch ($mode) {
-                            /**
-                            * 1- Loose files
-                            */
-                            case 'files':
-                                if (empty($all_files) && empty($groups)) {
-                                    _e("There are no files available.", 'cftp_admin');
-                                } else {
-                                    foreach ($groups as $group) {
-                                        $group_link = PUBLIC_GROUP_URL . '?group=' . $group['id'] . '&token=' . $group['token']; ?>
-                                            <li>
-                                                <a href="<?php echo $group_link; ?>">
-                                                    <i class="fa fa-th-large fa-fw" aria-hidden="true"></i> <?php echo $group['name']; ?>
-                                                </a>
-                                            </li>
-                                        <?php
-                                    }
-                                    foreach ($all_files as $id => $file_info) {
-                                        echo list_file($file_info, 'loose');
-                                    }
-                                }
-                                break;
 
                                 /**
-                                * 2- Group files
-                                */
-                            case 'group':
-                                if (!empty($groups[$test_group['id']]['files'])) {
-                                    foreach ($groups[$test_group['id']]['files'] as $id => $file_info) {
-                                        echo list_file($file_info, 'group');
+                                 * Does it expire?
+                                 */
+                                $add_file = true;
+                                $expired = false;
+
+                                if ($row['expires'] == '1') {
+                                    if (time() > strtotime($row['expiry_date'])) {
+                                        /** @noinspection PhpUndefinedConstantInspection */
+                                        if (EXPIRED_FILES_HIDE == '1') {
+                                            $add_file = false;
+                                        }
+                                        $expired = true;
+                                    }
+                                }
+
+                                if ($add_file == true) {
+                                    $filename_on_disk = (!empty($row['original_url'])) ? $row['original_url'] : $row['url'];
+
+                                    $all_files[$row['id']] = array(
+                                        'id' => encode_html($row['id']),
+                                        'filename' => encode_html($filename_on_disk),
+                                        'title' => encode_html($row['filename']),
+                                        'public' => encode_html($row['public_allow']),
+                                        'token' => encode_html($row['public_token']),
+                                        'expired' => $expired,
+                                        'expiry_date' => encode_html($row['expiry_date']),
+                                    );
+                                    if ($row['public_allow'] == 1) {
+                                        $public_files[] = $row['id'];
                                     }
                                 } else {
-                                    _e("There are no files available.", 'cftp_admin');
+                                    $expired_files[] = $row['id'];
                                 }
-                                break;
-                        }
+                            }
 
-                        //print_array($all_files);
-                        ?>
-                    </ul>
+                            //print_array($all_files);
+
+                            /**
+                             * 2- Get public groups
+                             */
+                            $groups = array();
+                            $found_groups = get_groups(
+                                [
+                                    'public' => true,
+                                ]
+                            );
+                            foreach ($found_groups as $group_id => $group_data) {
+                                $groups[$group_id] = array(
+                                    'id' => $group_data['id'],
+                                    'name' => $group_data['name'],
+                                    'token' => $group_data['public_token'],
+                                    'files' => array(),
+                                );
+                                /**
+                                 * 3- Get list of files from this group
+                                 */
+                                $group_files = array();
+                                $files_groups_sql = "SELECT id, file_id, client_id, group_id FROM " . TABLE_FILES_RELATIONS . " WHERE group_id=:group_id AND hidden = '0'";
+                                // Don't include private files
+                                /** @noinspection PhpUndefinedConstantInspection */
+                                if (PUBLIC_LISTING_SHOW_ALL_FILES != 1) {
+                                    $files_groups_sql .= " AND FIND_IN_SET(file_id, :public_files)";
+                                }
+
+                                // Don't include expired files
+                                /** @noinspection PhpUndefinedConstantInspection */
+                                if (EXPIRED_FILES_HIDE == '1') {
+                                    $files_groups_sql .= " AND !FIND_IN_SET(file_id, :excluded_files)";
+                                }
+
+                                $sql = $dbh->prepare($files_groups_sql);
+                                $sql->bindParam(':group_id', $group_id, PDO::PARAM_INT);
+
+                                /** @noinspection PhpUndefinedConstantInspection */
+                                if (PUBLIC_LISTING_SHOW_ALL_FILES != 1) {
+                                    $included_files = implode(',', array_map('intval', array_unique($public_files)));
+                                    $sql->bindParam(':public_files', $included_files);
+                                }
+                                /** @noinspection PhpUndefinedConstantInspection */
+                                if (EXPIRED_FILES_HIDE == '1') {
+                                    $excluded_files = implode(',', array_map('intval', array_unique($expired_files)));
+                                    $sql->bindParam(':excluded_files', $excluded_files);
+                                }
+
+                                $sql->execute();
+                                $sql->setFetchMode(PDO::FETCH_ASSOC);
+
+                                while ($row = $sql->fetch()) {
+                                    $groups[$group_id]['files'][$row['file_id']] = $all_files[$row['file_id']];
+                                    $remove_files[] = $row['file_id'];
+                                }
+                            }
+
+                            /**
+                             * Removes from the array of files those that are on, at least, one group
+                             * so in the list of groupless files they are not repeated.
+                             * Done here so if a file is on 2 groups, it won't get removed from any of them.
+                             */
+                            foreach ($remove_files as $file_id) {
+                                unset($all_files[$file_id]);
+                            }
+
+                            //print_r($groups);
+                            //print_r($all_files);
+
+                            /**
+                             * Finally, generate the list
+                             * 1- Groups
+                             */
+
+                            switch ($mode) {
+                                /**
+                                 * 1- Loose files
+                                 */
+                                case 'files':
+                                    if (empty($all_files) && empty($groups)) {
+                                        _e("There are no files available.", 'cftp_admin');
+                                    } else {
+                                        foreach ($groups as $group) {
+                                            $group_link = PUBLIC_GROUP_URL . '?group=' . $group['id'] . '&token=' . $group['token']; ?>
+                                            <li>
+                                                <a href="<?php echo $group_link; ?>">
+                                                    <i class="fa fa-th-large fa-fw"
+                                                       aria-hidden="true"></i> <?php echo $group['name']; ?>
+                                                </a>
+                                            </li>
+                                            <?php
+                                        }
+                                        foreach ($all_files as $id => $file_info) {
+                                            echo list_file($file_info, 'loose');
+                                        }
+                                    }
+                                    break;
+
+                                /**
+                                 * 2- Group files
+                                 */
+                                case 'group':
+                                    if (!empty($groups[$test_group['id']]['files'])) {
+                                        foreach ($groups[$test_group['id']]['files'] as $id => $file_info) {
+                                            echo list_file($file_info, 'group');
+                                        }
+                                    } else {
+                                        _e("There are no files available.", 'cftp_admin');
+                                    }
+                                    break;
+                            }
+
+                            //print_array($all_files);
+                            ?>
+                        </ul>
+                    </div>
+
                 </div>
-
             </div>
+        </div>
+
+        <div class="login_form_links">
+            <?php
+            /** @noinspection PhpUndefinedConstantInspection */
+            if (!check_for_session(false) && CLIENTS_CAN_REGISTER == '1') {
+                ?>
+                <p id="register_link"><?php _e("Don't have an account yet?", 'cftp_admin'); ?> <a
+                            href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.', 'cftp_admin'); ?></a>
+                </p>
+                <?php
+            }
+            ?>
+            <p><a href="<?php echo BASE_URI; ?>"
+                  target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
         </div>
     </div>
 
-    <div class="login_form_links">
-        <?php
-        /** @noinspection PhpUndefinedConstantInspection */
-        if (!check_for_session(false) && CLIENTS_CAN_REGISTER == '1') {
-            ?>
-                <p id="register_link"><?php _e("Don't have an account yet?", 'cftp_admin'); ?> <a href="<?php echo BASE_URI; ?>register.php"><?php _e('Register as a new client.', 'cftp_admin'); ?></a></p>
-            <?php
-        }
-        ?>
-        <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
-    </div>
-</div>
-
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

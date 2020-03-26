@@ -26,6 +26,6 @@ function validateCsrfToken()
 }
 
 if ($_POST && !validateCsrfToken()) {
-    header("Location: ".PAGE_STATUS_CODE_403);
+    header("Location: " . PAGE_STATUS_CODE_403);
     exit;
 }

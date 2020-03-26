@@ -10,7 +10,7 @@ use ProjectSend\Classes\Emails;
 
 /**
  * This file MUST be included by another one
-*/
+ */
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -48,7 +48,7 @@ $query = "SELECT * FROM " . TABLE_NOTIFICATIONS . " WHERE sent_status = '0' AND 
 $params[':times'] = NOTIFICATIONS_MAX_TRIES;
 /**
  * Add the time limit
-*/
+ */
 /** @noinspection PhpUndefinedConstantInspection */
 if (NOTIFICATIONS_MAX_DAYS != '0') {
     $query .= " AND timestamp >= DATE_SUB(NOW(), INTERVAL :days DAY)";
@@ -116,7 +116,7 @@ if (!empty($found_notifications)) {
         $creators[] = $row['created_by'];
         $mail_by_user[$row['user']] = $row['email'];
     }
-    
+
     /**
      * Add the creatros of the previous clients to the mails array.
      */
@@ -139,7 +139,7 @@ if (!empty($found_notifications)) {
             $mail_by_user[$row['user']] = $row['email'];
         }
     }
-    
+
     /**
      * Prepare the list of clients and admins that will be
      * notified, adding to each one the corresponding files.
@@ -157,7 +157,7 @@ if (!empty($found_notifications)) {
                     if ($notification['upload_type'] == '0') {
                         /**
                          * Add the file to the account's creator email
-                        */
+                         */
                         $use_id = $notification['file_id'];
                         $notes_to_admin[$client['created_by']][$client['name']][] = array(
                             'notif_id' => $notification['id'],
@@ -169,7 +169,7 @@ if (!empty($found_notifications)) {
                             if ($client['active'] == '1') {
                                 /**
                                  * If file is uploaded by user, add to client's email body
-                                */
+                                 */
                                 $use_id = $notification['file_id'];
                                 $notes_to_clients[$client['user']][] = array(
                                     'notif_id' => $notification['id'],
@@ -188,13 +188,13 @@ if (!empty($found_notifications)) {
 
     /**
      * Prepare the emails for CLIENTS
-    */
+     */
     if (!empty($notes_to_clients)) {
         foreach ($notes_to_clients as $mail_username => $mail_files) {
 
             /**
              * Reset the files list UL contents
-            */
+             */
             $files_list = '';
 
             $this_client_notifications = array();
@@ -202,13 +202,13 @@ if (!empty($found_notifications)) {
             foreach ($mail_files as $mail_file) {
                 /**
                  * Make the list of files
-                */
-                $files_list.= '<li style="margin-bottom:11px;">';
-                $files_list.= '<p style="font-weight:bold; margin:0 0 5px 0; font-size:14px;">'.$mail_file['file_name'].'</p>';
+                 */
+                $files_list .= '<li style="margin-bottom:11px;">';
+                $files_list .= '<p style="font-weight:bold; margin:0 0 5px 0; font-size:14px;">' . $mail_file['file_name'] . '</p>';
                 if (!empty($mail_file['description'])) {
-                    $files_list.= '<p>'.$mail_file['description'].'</p>';
+                    $files_list .= '<p>' . $mail_file['description'] . '</p>';
                 }
-                $files_list.= '</li>';
+                $files_list .= '</li>';
                 /**
                  * Add each notification to an array
                  */
@@ -218,7 +218,7 @@ if (!empty($found_notifications)) {
             $address = $mail_by_user[$mail_username];
             /**
              * Create the object and send the email
-            */
+             */
             $notify_client = new Emails;
             $email_arguments = array(
                 'type' => 'new_files_by_user',
@@ -233,46 +233,46 @@ if (!empty($found_notifications)) {
             }
         }
     }
-    
+
     /**
      * Prepare the emails for ADMINS
-    */
-    
+     */
+
     if (!empty($notes_to_admin)) {
         foreach ($notes_to_admin as $mail_username => $admin_files) {
-            
+
             /**
              * Check if the admin is active
-            */
+             */
             if (isset($creators_data[$mail_username]) && $creators_data[$mail_username]['active'] == '1') {
                 /**
                  * Reset the files list UL contents
-                */
+                 */
                 $files_list = '';
                 foreach ($admin_files as $client_uploader => $mail_files) {
-                    $files_list.= '<li style="font-size:15px; font-weight:bold; margin-bottom:5px;">'.$client_uploader.'</li>';
+                    $files_list .= '<li style="font-size:15px; font-weight:bold; margin-bottom:5px;">' . $client_uploader . '</li>';
 
                     $this_admin_notifications = array();
                     foreach ($mail_files as $mail_file) {
                         /**
                          * Make the list of files
-                        */
-                        $files_list.= '<li style="margin-bottom:11px;">';
-                        $files_list.= '<p style="font-weight:bold; margin:0 0 5px 0;">'.$mail_file['file_name'].'</p>';
+                         */
+                        $files_list .= '<li style="margin-bottom:11px;">';
+                        $files_list .= '<p style="font-weight:bold; margin:0 0 5px 0;">' . $mail_file['file_name'] . '</p>';
                         if (!empty($mail_file['description'])) {
-                            $files_list.= '<p>'.$mail_file['description'].'</p>';
+                            $files_list .= '<p>' . $mail_file['description'] . '</p>';
                         }
-                        $files_list.= '</li>';
+                        $files_list .= '</li>';
                         /**
                          * Add each notification to an array
                          */
                         $this_admin_notifications[] = $mail_file['notif_id'];
                     }
-    
+
                     $address = $mail_by_user[$mail_username];
                     /**
                      * Create the object and send the email
-                    */
+                     */
                     $notify_admin = new Emails;
                     $email_arguments = array(
                         'type' => 'new_files_by_client',
@@ -289,7 +289,7 @@ if (!empty($found_notifications)) {
             } else {
                 /**
                  * Admin is not active
-                */
+                 */
                 foreach ($admin_files as $mail_files) {
                     foreach ($mail_files as $mail_file) {
                         $notifications_inactive[] = $mail_file['notif_id'];
@@ -355,11 +355,11 @@ if (!empty($found_notifications)) {
     /**
      * DEBUG
      */
-     /*
-     echo '<h2>Notifications Found</h2><br /><pre>';
-     print_r($notes_to_admin);
-     echo '</pre><br /><br />';
+    /*
+    echo '<h2>Notifications Found</h2><br /><pre>';
+    print_r($notes_to_admin);
+    echo '</pre><br /><br />';
 
-     echo '<h2>Notifications sent query</h2><br />' . $notifications_sent_query . '<br /><br />';
-     */
+    echo '<h2>Notifications sent query</h2><br />' . $notifications_sent_query . '<br /><br />';
+    */
 }

@@ -1,4 +1,5 @@
 <?php
+
 use ProjectSend\Classes\Emails;
 
 require_once '../bootstrap.php';

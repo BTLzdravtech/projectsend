@@ -6,6 +6,7 @@
  *
  * @package ProjectSend
  */
+
 namespace ProjectSend\Classes;
 
 use \PDO;
@@ -67,13 +68,13 @@ class DoProcess
 
         /**
          * Do a permissions check for logged in user
-        */
-        $check_level = array(9,8,7,0);
+         */
+        $check_level = array(9, 8, 7, 0);
         if (isset($check_level) && current_role_in($check_level)) {
 
             /**
              * Get the file name
-            */
+             */
             $statement = $this->dbh->prepare("SELECT url, original_url, expires, expiry_date FROM " . TABLE_FILES . " WHERE id=:id");
             $statement->bindParam(':id', $file_id, PDO::PARAM_INT);
             $statement->execute();
@@ -133,7 +134,7 @@ class DoProcess
                         $log_action = 8;
                     }
                 }
-            } else if (CURRENT_USER_LEVEL < 9) {
+            } elseif (CURRENT_USER_LEVEL < 9) {
                 $user_id = CURRENT_USER_ID;
 
                 $fq = 'SELECT * FROM ' . TABLE_FILES . ' F INNER JOIN ' . TABLE_USERS . ' U ON F.owner_id = U.id AND (U.id = :user_id OR U.owner_id = :owner_id) WHERE F.id=:file_id';
@@ -202,7 +203,7 @@ class DoProcess
      */
     public function returnFilesIds($file_ids)
     {
-        $check_level = array(9,8,7,0);
+        $check_level = array(9, 8, 7, 0);
         if (isset($file_ids)) {
             // do a permissions check for logged in user
             if (isset($check_level) && current_role_in($check_level)) {
@@ -244,11 +245,11 @@ class DoProcess
          * Get the list of different groups the client belongs to.
          */
         $get_groups = new MembersActions();
-        $get_arguments    = array(
+        $get_arguments = array(
             'client_id' => CURRENT_USER_ID,
             'return' => 'list',
         );
-        $found_groups    = $get_groups->client_get_groups($get_arguments);
+        $found_groups = $get_groups->client_get_groups($get_arguments);
 
         $allowed_to_zip = []; // Files allowed to be downloaded
 
@@ -259,7 +260,7 @@ class DoProcess
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $row = $statement->fetch();
 
-            $this_file_id  = $row['id'];
+            $this_file_id = $row['id'];
             $this_file_on_disk = $row['url'];
             $this_file_save_as = (!empty($row['original_url'])) ? $row['original_url'] : $row['url'];
             $this_file_expires = $row['expires'];
@@ -286,7 +287,7 @@ class DoProcess
                     if ($row) {
                         /**
                          * Add the file
-                        */
+                         */
                         $allowed_to_zip[$row['file_id']] = array(
                             'on_disk' => $this_file_on_disk,
                             'save_as' => $this_file_save_as
@@ -303,7 +304,7 @@ class DoProcess
 
         /**
          * Start adding the files to the zip
-        */
+         */
         if (count($allowed_to_zip) > 0) {
             $zip_file = tempnam("tmp", "zip");
             $zip = new ZipArchive();
@@ -312,7 +313,7 @@ class DoProcess
             //echo $zip_file;print_array($allowed_to_zip); die();
 
             foreach ($allowed_to_zip as $allowed_file_id => $allowed_file_info) {
-                if ($zip->addFile(UPLOADED_FILES_DIR.DS.$allowed_file_info['on_disk'], $allowed_file_info['save_as'])) {
+                if ($zip->addFile(UPLOADED_FILES_DIR . DS . $allowed_file_info['on_disk'], $allowed_file_info['save_as'])) {
                     $added_files++;
 
                     /**
@@ -322,7 +323,7 @@ class DoProcess
                      */
                     $statement = $this->dbh->prepare(
                         "INSERT INTO " . TABLE_DOWNLOADS . " (user_id , file_id, remote_ip, remote_host)"
-                        ." VALUES (:user_id, :file_id, :remote_ip, :remote_host)"
+                        . " VALUES (:user_id, :file_id, :remote_ip, :remote_host)"
                     );
                     $statement->bindValue(':user_id', CURRENT_USER_ID, PDO::PARAM_INT);
                     $statement->bindParam(':file_id', $this_file_id, PDO::PARAM_INT);
@@ -332,7 +333,7 @@ class DoProcess
 
                     /**
                      * @todo log this specific file download
-                    */
+                     */
                 }
             }
 
@@ -341,7 +342,7 @@ class DoProcess
             if ($added_files > 0) {
                 /**
                  * Record the action log
-                */
+                 */
                 $this->logger->addEntry(
                     [
                         'action' => 9,
@@ -353,7 +354,7 @@ class DoProcess
                 if (file_exists($zip_file)) {
                     setCookie("download_started", 1, time() + 20, '/', "", false, false);
 
-                    $save_as = 'files_'.generateRandomString().'.zip';
+                    $save_as = 'files_' . generateRandomString() . '.zip';
                     $this->serveFile($zip_file, $save_as);
 
                     unlink($zip_file);
@@ -380,7 +381,7 @@ class DoProcess
         if (file_exists($file_location)) {
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
                     'action' => $log_action_number,
@@ -391,7 +392,7 @@ class DoProcess
                     'file_title_column' => true
                 ]
             );
-            
+
             $save_file_as = UPLOADED_FILES_DIR . DS . $save_as;
 
             $this->serveFile($file_location, $save_file_as);
@@ -405,8 +406,8 @@ class DoProcess
     /**
      * Send file to the browser
      *
-     * @param  string $filename absolute full path to the file on disk
-     * @param  string $save_as  original filename
+     * @param string $filename absolute full path to the file on disk
+     * @param string $save_as original filename
      * @return void
      */
     private function serveFile($filename, $save_as)
@@ -417,7 +418,7 @@ class DoProcess
                 ob_end_clean();
             }
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($save_as));
+            header('Content-Disposition: attachment; filename=' . basename($save_as));
             header('Expires: 0');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Pragma: public');
