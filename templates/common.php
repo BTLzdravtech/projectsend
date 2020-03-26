@@ -131,6 +131,7 @@ if (!empty($cat_ids)) {
     $get_categories = get_categories(
         array(
             'id' => $cat_ids,
+            'is_tree' => true
         )
     );
 }

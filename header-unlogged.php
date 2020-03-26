@@ -60,7 +60,7 @@ if (defined('IS_INSTALL')) {
 }
 
 if (!isset($body_class)) {
-    $body_class = '';
+    $body_class = array();
 }
 ?>
 <!doctype html>
