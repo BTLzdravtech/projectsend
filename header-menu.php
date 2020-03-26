@@ -429,7 +429,7 @@ foreach ($items as $item) {
     }
 
     if (current_role_in($item['level'])) {
-        $current = (!empty($active_nav) && $active_nav == $item['nav']) ? 'current_nav' : '';
+        $current = (!empty($active_nav) && $active_nav == $item['nav']) ? 'current_nav active' : '';
         $badge = (!empty($item['main']['badge'])) ? ' <span class="badge">' . $item['main']['badge'] . '</span>' : '';
         $icon = (!empty($item['main']['icon'])) ? '<i class="fa fa-' . $item['main']['icon'] . ' fa-fw" aria-hidden="true"></i>' : '';
 
