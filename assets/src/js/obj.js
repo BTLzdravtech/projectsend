@@ -1,8 +1,8 @@
 (function () {
-    'use strict';
+  'use strict'
 
-    window.admin = {
-        parts: {},
-        pages: {}
-    };
-})();
+  window.admin = {
+    parts: {},
+    pages: {}
+  }
+})()

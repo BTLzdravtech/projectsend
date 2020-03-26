@@ -3,14 +3,15 @@
   width: 95%;
   margin: 0 auto;
   padding: .5rem;
-
+  /* stylelint-disable-next-line */
   tag > div {
-    border: 1px solid #bcd8f3;
-    background: #e5f1fc;
     color: #666;
     font-size: .95rem;
-  }
 
+    background: #e5f1fc;
+    border: 1px solid #bcd8f3;
+  }
+  /* stylelint-disable-next-line */
   x {
     color: #666;
   }

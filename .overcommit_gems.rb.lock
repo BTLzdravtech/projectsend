@@ -1,0 +1,24 @@
+GIT
+  remote: https://github.com/BTLzdravtech/overcommit.git
+  revision: 4f26fb5260fe9c229aa9c616769d5c4d67eb20f1
+  specs:
+    overcommit (0.51.0)
+      childprocess (>= 0.6.3, < 4)
+      iniparse (~> 1.4)
+
+GEM
+  specs:
+    childprocess (3.0.0)
+    ffi (1.12.2-x64-mingw32)
+    iniparse (1.4.4)
+
+PLATFORMS
+  ruby
+  x64-mingw32
+
+DEPENDENCIES
+  ffi
+  overcommit!
+
+BUNDLED WITH
+   2.1.4

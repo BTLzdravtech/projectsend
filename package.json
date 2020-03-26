@@ -34,7 +34,29 @@
         "gulp-sass": "^3.1.0",
         "gulp-sourcemaps": "^2.4.1",
         "gulp-uglify": "^3.0.0",
-        "pump": "^1.0.3"
+        "pump": "^1.0.3",
+        "standard": "^14.3.1",
+        "stylelint": "^12.0.0",
+        "stylelint-config-rational-order": "^0.1.2",
+        "stylelint-config-recommended-scss": "github:kristerkari/stylelint-config-recommended-scss",
+        "stylelint-order": "^3.1.1",
+        "stylelint-scss": "^3.13.0"
+    },
+    "standard": {
+        "globals": [
+            "$",
+            "jQuery",
+            "CKEDITOR",
+            "admin",
+            "json_strings",
+            "Cookies",
+            "bootbox"
+        ],
+        "ignore": [
+            "assets/lib/**/*.js",
+            "assets/js/**/*.js",
+            "gulpfile.js"
+        ]
     },
     "//": {
         "semantic-ui": "^2.2.13"

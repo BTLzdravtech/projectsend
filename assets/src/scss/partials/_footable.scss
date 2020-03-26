@@ -1,28 +1,30 @@
 @font-face {
+  font-weight: normal;
   font-family: 'footable';
+  font-style: normal;
   src: url('../fonts/footable.eot');
   src: url('../fonts/footable.eot?#iefix') format('embedded-opentype'), url('../fonts/footable.woff') format('woff'), url('../fonts/footable.ttf') format('truetype'), url('../fonts/footable.svg#footable') format('svg');
-  font-weight: normal;
-  font-style: normal;
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   @font-face {
-    font-family: 'footable';
-    src: url('../fonts/footable.svg#footable') format('svg');
     font-weight: normal;
+    font-family: 'footable';
     font-style: normal;
+    src: url('../fonts/footable.svg#footable') format('svg');
   }
 }
 
 .footable {
+  margin: 10px auto 15px;
+
+  color: #444444;
+  font-size: 1em;
+
+  background: #ffffff;
+  border: 1px solid #ccc;
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid #ccc;
-  font-size: 1em;
-  color: #444444;
-  background: #ffffff;
-  margin: 10px auto 15px;
 
   .btn {
     margin-right: 5px;
@@ -34,23 +36,27 @@
 }
 
 .footable > thead > tr > th {
-  border-left: 1px solid #fff;
   padding: 1px 4px;
-  text-align: left;
+
   color: #333;
+  text-align: left;
+
+  border-left: 1px solid #fff;
 }
 
 .footable > thead > tr > th,
 .footable > thead > tr > td,
 .footable > thead > th.active {
   font-size: .8em;
-  background-color: #E2E5E9 !important;
   vertical-align: middle;
+
+  background-color: #E2E5E9 !important;
 }
 
 .footable > thead > tr > th a,
 .footable > thead > tr > td a {
   display: inline-block;
+
   color: #222;
   text-decoration: none;
 }
@@ -62,8 +68,9 @@
 .footable > thead > tr > th.footable-sorted,
 .footable > thead > tr > th.footable-sorted-asc,
 .footable > thead > tr > th.footable-sorted-desc {
-  background-color: $main_color !important;
   color: white !important;
+
+  background-color: $main_color !important;
 }
 
 .footable-sorted a, .footable-sorted-asc a, .footable-sorted-desc a {
@@ -89,6 +96,7 @@
 
 .footable-row-detail-name, .footable-row-detail-value {
   padding: 5px 0;
+
   border-bottom: 1px solid #dedede;
 }
 
@@ -102,6 +110,7 @@
 
 .footable > tbody > tr > td {
   padding: 7px 4px;
+
   text-align: left;
   vertical-align: middle;
 
@@ -122,13 +131,14 @@
   display: inline-block;
   margin: 0;
   padding: 0;
+
+  background-color: #ffffff;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   border-radius: 6px;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  background-color: #ffffff;
 }
 
 .footable .pagination > ul > li {
@@ -138,25 +148,28 @@
 .footable .pagination > ul > li > a, .footable .pagination > ul > li > span {
   float: left;
   padding: 4px 12px;
+
   line-height: 20px;
   text-decoration: none;
+
   border: 1px solid #cccccc;
   border-left-width: 0;
 }
 
 .footable .pagination > ul > li:first-child > a, .footable .pagination > ul > li:first-child > span {
-  -webkit-border-bottom-left-radius: 4px;
-  -moz-border-radius-bottomleft: 4px;
-  border-bottom-left-radius: 4px;
-  -webkit-border-top-left-radius: 4px;
-  -moz-border-radius-topleft: 4px;
-  border-top-left-radius: 4px;
   border-left-width: 1px;
+  -webkit-border-top-left-radius: 4px;
+  border-top-left-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  -moz-border-radius-topleft: 4px;
 }
 
 .footable .pagination > ul > li:last-child > a, .footable .pagination > ul > li:last-child > span {
   -webkit-border-top-right-radius: 4px;
   -moz-border-radius-topright: 4px;
+
   border-top-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
@@ -169,13 +182,15 @@
 
 .footable .pagination > ul > .active > a, .footable .pagination > ul > .active > span {
   color: #444444;
+
   cursor: default;
 }
 
 .footable .pagination > ul > .disabled > span, .footable .pagination > ul > .disabled > a, .footable .pagination > ul > .disabled > a:hover, .footable .pagination > ul > .disabled > a:focus {
   color: #cccccc;
-  cursor: default;
+
   background-color: #ebf3fc;
+  cursor: default;
 }
 
 .footable .pagination.pagination-centered {

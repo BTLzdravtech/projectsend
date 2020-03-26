@@ -1,0 +1,3 @@
+assets/lib/**/*.js
+assets/js/**/*.js
+gulpfile.js

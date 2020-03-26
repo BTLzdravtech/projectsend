@@ -21,12 +21,14 @@
 
 .btn-secondary {
   color: #fff;
+
   background: $main_lighten;
   border-color: $main_lighten;
 
   &:hover,
   &:focus {
     color: #fff;
+
     background: $main_color;
     border-color: #122b40;
   }
@@ -76,15 +78,17 @@ span.label {
 }
 
 .plupload_button {
-  color: white;
-  background: $main_color;
   margin-right: 4px;
   padding: 4px 30px;
-  font-family: $font_body;
+
+  color: white;
   font-size: 14px;
+  font-family: $font_body;
   line-height: 20px;
-  text-decoration: none;
   text-align: center;
+  text-decoration: none;
+
+  background: $main_color;
   border: 1px solid #004380;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -92,6 +96,7 @@ span.label {
 
   &:hover {
     color: white;
+
     background: $main_lighten;
   }
 

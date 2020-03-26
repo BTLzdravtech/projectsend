@@ -140,7 +140,7 @@ function load_js_header_files()
     <![endif]-->
 
     <script type="text/javascript">
-        var expiration_days = <?php echo defined('EXPIRATION_DAYS') ? EXPIRATION_DAYS : 30; ?>;
+        var expirationDays = <?php echo defined('EXPIRATION_DAYS') ? EXPIRATION_DAYS : 30; ?>;
     </script>
     <?php
 }
