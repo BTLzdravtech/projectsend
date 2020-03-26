@@ -4,9 +4,9 @@ PreCommit:
     enabled: false
   PhpCsFixer:
     enabled: true
-    required_executable: 'vendor/bin/php-cs-fixer'
-    command: 'vendor/bin/php-cs-fixer'
-    flags: ['fix', '-v', '--path-mode=intersection', '--dry-run']
+    required_executable: 'php-cs-fixer'
+    command: 'php-cs-fixer'
+    flags: ['fix', '-v', '--dry-run']
   Stylelint:
     enabled: true
   Standard:
