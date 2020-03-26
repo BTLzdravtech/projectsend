@@ -55,7 +55,8 @@
         "ignore": [
             "assets/lib/**/*.js",
             "assets/js/**/*.js",
-            "gulpfile.js"
+            "gulpfile.js",
+            "templates/pinboxes/js/**/*.js"
         ]
     },
     "//": {
