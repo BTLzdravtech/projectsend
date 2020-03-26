@@ -9,44 +9,44 @@ $.fn.psendmodal = function () {
     '<a href="#" class="modal_close">&times;</a>' +
     '</div>' +
     '<div class="modal_content"></div>' +
-    '</div>'
+    '</div>';
 
-  $('body').append(modalStructure)
-  showModal()
+  $('body').append(modalStructure);
+  showModal();
 
   function showModal () {
-    $('.modal_overlay').stop(true, true).fadeIn()
-    $('.modal_psend').stop(true, true).fadeIn()
+    $('.modal_overlay').stop(true, true).fadeIn();
+    $('.modal_psend').stop(true, true).fadeIn();
   }
 
   window.removeModal = function () {
     $('.modal_overlay').stop(true, true).fadeOut(500, function () {
-      $(this).remove()
-    })
+      $(this).remove();
+    });
     $('.modal_psend').stop(true, true).fadeOut(500, function () {
-      $(this).remove()
-    })
-    return false
-  }
+      $(this).remove();
+    });
+    return false;
+  };
 
   $('.modal_close').on('click', function (e) {
-    e.preventDefault()
+    e.preventDefault();
     // eslint-disable-next-line no-undef
-    removeModal()
-  })
+    removeModal();
+  });
 
   $('.modal_overlay').on('click', function (e) {
-    e.preventDefault()
+    e.preventDefault();
     // eslint-disable-next-line no-undef
-    removeModal()
-  })
+    removeModal();
+  });
 
   $(document).keyup(
     function (e) {
       if (e.keyCode === 27) { // Esc
         // eslint-disable-next-line no-undef
-        removeModal()
+        removeModal();
       }
     }
-  )
-}
+  );
+};

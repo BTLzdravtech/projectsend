@@ -1,5 +1,5 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.pages.install = function () {
     $(document).ready(function () {
@@ -38,9 +38,9 @@
           }
         },
         errorPlacement: function (error, element) {
-          error.appendTo(element.closest('div'))
+          error.appendTo(element.closest('div'));
         }
-      })
-    })
-  }
-})()
+      });
+    });
+  };
+})();

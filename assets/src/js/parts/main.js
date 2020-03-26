@@ -1,161 +1,161 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.parts.main = function () {
     $(document).ready(
       function () {
         $(document).ready(
           function () {
-            $('input:first').focus()
+            $('input:first').focus();
           }
-        )
+        );
 
         // Dismiss messages
         $('.message .close').on('click', function () {
-          $(this).closest('.message').transition('fade')
-        })
+          $(this).closest('.message').transition('fade');
+        });
 
         window.resizeChosen = function () {
           $('.chosen-container').each(
             function () {
-              $(this).attr('style', 'width: 100%')
+              $(this).attr('style', 'width: 100%');
             }
-          )
-        }
+          );
+        };
 
         window.prepare_sidebar = function () {
-          var windowWidth = jQuery(window).width()
+          var windowWidth = jQuery(window).width();
           if (windowWidth < 769) {
-            $('.main_menu .active .dropdown_content').hide()
-            $('.main_menu li').removeClass('active')
+            $('.main_menu .active .dropdown_content').hide();
+            $('.main_menu li').removeClass('active');
 
             if (!$('body').hasClass('menu_contracted')) {
-              $('body').addClass('menu_contracted')
+              $('body').addClass('menu_contracted');
             }
           }
-        }
+        };
 
         /**
          * Main side menu
          */
         // eslint-disable-next-line no-undef
-        prepare_sidebar()
+        prepare_sidebar();
 
         // eslint-disable-next-line no-undef
-        resizeChosen()
+        resizeChosen();
 
         $('.main_menu > li.has_dropdown .nav_top_level').on('click', function (e) {
-          e.preventDefault()
+          e.preventDefault();
 
-          var parent = $(this).parents('.has_dropdown')
+          var parent = $(this).parents('.has_dropdown');
           if ($(parent).hasClass('active')) {
-            $(parent).removeClass('active')
-            $(parent).find('.dropdown_content').stop().slideUp()
+            $(parent).removeClass('active');
+            $(parent).find('.dropdown_content').stop().slideUp();
           } else {
             if ($('body').hasClass('menu_contracted')) {
-              $('.main_menu li').removeClass('active')
-              $('.main_menu').find('.dropdown_content').stop().slideUp(100)
+              $('.main_menu li').removeClass('active');
+              $('.main_menu').find('.dropdown_content').stop().slideUp(100);
             }
-            $(parent).addClass('active')
-            $(parent).find('.dropdown_content').stop().slideDown()
+            $(parent).addClass('active');
+            $(parent).find('.dropdown_content').stop().slideDown();
           }
-        })
+        });
 
         $('.toggle_main_menu').on('click', function (e) {
-          e.preventDefault()
+          e.preventDefault();
 
-          var windowWidth = jQuery(window).width()
+          var windowWidth = jQuery(window).width();
           if (windowWidth > 768) {
-            $('body').toggleClass('menu_contracted')
+            $('body').toggleClass('menu_contracted');
             if ($('body').hasClass('menu_contracted')) {
-              Cookies.set('menu_contracted', 'true', { expires: 365 })
-              $('.main_menu li').removeClass('active')
-              $('.main_menu').find('.dropdown_content').stop().hide()
+              Cookies.set('menu_contracted', 'true', { expires: 365 });
+              $('.main_menu li').removeClass('active');
+              $('.main_menu').find('.dropdown_content').stop().hide();
             } else {
-              Cookies.set('menu_contracted', 'false', { expires: 365 })
-              $('.current_nav').addClass('active')
-              $('.current_nav').find('.dropdown_content').stop().show()
+              Cookies.set('menu_contracted', 'false', { expires: 365 });
+              $('.current_nav').addClass('active');
+              $('.current_nav').find('.dropdown_content').stop().show();
             }
           } else {
-            $('body').toggleClass('menu_hidden')
-            $('.main_menu li').removeClass('active')
+            $('body').toggleClass('menu_hidden');
+            $('.main_menu li').removeClass('active');
 
             if ($('body').hasClass('menu_hidden')) {
               // Cookies.set("menu_hidden", 'true', { expires: 365 } );
-              $('.main_menu').find('.dropdown_content').stop().hide()
+              $('.main_menu').find('.dropdown_content').stop().hide();
             } else {
               // Cookies.set("menu_hidden", 'false', { expires: 365 } );
             }
           }
-        })
+        });
 
         /**
          * Used on the public link modal on both manage files and the upload results
          */
         $(document).on('click', '.public_link_copy', function (e) {
-          $(this).select()
-          var copied
+          $(this).select();
+          var copied;
           if (document.execCommand('copy')) {
-            copied = '.copied'
+            copied = '.copied';
           } else {
-            copied = '.copied_not'
+            copied = '.copied_not';
           }
-          $(this).parents('.public_link_modal').find(copied).stop().fadeIn().delay(2000).fadeOut()
+          $(this).parents('.public_link_modal').find(copied).stop().fadeIn().delay(2000).fadeOut();
           $(this).mouseup(
             function () {
-              $(this).unbind('mouseup')
-              return false
+              $(this).unbind('mouseup');
+              return false;
             }
-          )
-        })
+          );
+        });
 
         /**
          * Common for all tables
          */
         $('#select_all').on('click', function () {
-          var status = $(this).prop('checked')
+          var status = $(this).prop('checked');
           /**
            * Uncheck all first in case you used pagination
            */
-          $('tr td input[type=checkbox].batch_checkbox').prop('checked', false)
-          $('tr:visible td input[type=checkbox].batch_checkbox').prop('checked', status)
-        })
+          $('tr td input[type=checkbox].batch_checkbox').prop('checked', false);
+          $('tr:visible td input[type=checkbox].batch_checkbox').prop('checked', status);
+        });
 
         if ($.isFunction($.fn.footable)) {
-          $('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd')
+          $('.footable').footable().find('> tbody > tr:not(.footable-row-detail):nth-child(even)').addClass('odd');
         }
 
         /**
          * Pagination
          */
         $('.go_to_page').on('click', 'button', function () {
-          var _page = $('.go_to_page #page_number').data('link')
-          var _pageNo = parseInt($('.go_to_page #page_number').val())
+          var _page = $('.go_to_page #page_number').data('link');
+          var _pageNo = parseInt($('.go_to_page #page_number').val());
           if (typeof _pageNo === 'number') {
-            _page = _page.replace('_pgn_', _pageNo)
+            _page = _page.replace('_pgn_', _pageNo);
           }
-          window.location.href = _page
-        })
+          window.location.href = _page;
+        });
 
         /**
          * Password generator
          */
         // eslint-disable-next-line no-undef
-        var hdl = new Jen(true)
-        hdl.hardening(true)
+        var hdl = new Jen(true);
+        hdl.hardening(true);
 
         $('body').on('click', '.btn_generate_password', function (e) {
-          var target = $(this).parents('.form-group').find('.password_toggle')
-          var minChars = $(this).data('min')
-          var maxChars = $(this).data('max')
-          $(target).val(hdl.password(minChars, maxChars))
-        })
+          var target = $(this).parents('.form-group').find('.password_toggle');
+          var minChars = $(this).data('min');
+          var maxChars = $(this).data('max');
+          $(target).val(hdl.password(minChars, maxChars));
+        });
 
         /**
          * File editor
          */
         if ($.isFunction($.fn.datepicker)) {
-          var todayDate = new Date().getDate()
+          var todayDate = new Date().getDate();
 
           $('.date-container .date-field').datepicker(
             {
@@ -166,55 +166,55 @@
               // eslint-disable-next-line no-undef
               endDate: new Date(new Date().setDate(todayDate + expirationDays))
             }
-          )
+          );
         }
 
         $('body').on('click', '.add-all', function () {
-          var selector = $(this).parent().prev().prev('select')
+          var selector = $(this).parent().prev().prev('select');
           $(selector).find('option').each(
             function () {
-              $(this).prop('selected', true)
+              $(this).prop('selected', true);
             }
-          )
-          $(selector).trigger('chosen:updated')
-          return false
-        })
+          );
+          $(selector).trigger('chosen:updated');
+          return false;
+        });
 
         $('body').on('click', '.remove-all', function () {
-          var selector = $(this).parent().prev().prev('select')
+          var selector = $(this).parent().prev().prev('select');
           $(selector).find('option').each(
             function () {
-              $(this).prop('selected', false)
+              $(this).prop('selected', false);
             }
-          )
-          $(selector).trigger('chosen:updated')
-          return false
-        })
+          );
+          $(selector).trigger('chosen:updated');
+          return false;
+        });
 
         /**
          * Misc
          */
         $('button').on('click', function () {
-          $(this).blur()
-        })
+          $(this).blur();
+        });
 
         /**
          * Modal: show a public file's URL
          */
         $('body').on('click', '.public_link', function (e) {
-          $(document).psendmodal()
-          var type = $(this).data('type')
-          var id = $(this).data('id')
-          var token = $(this).data('token')
+          $(document).psendmodal();
+          var type = $(this).data('type');
+          var id = $(this).data('id');
+          var token = $(this).data('token');
 
-          var linkBase
-          var noteText
+          var linkBase;
+          var noteText;
           if (type === 'group') {
-            linkBase = json_strings.uri.public_group + '?'
-            noteText = json_strings.translations.public_group_note
+            linkBase = json_strings.uri.public_group + '?';
+            noteText = json_strings.translations.public_group_note;
           } else if (type === 'file') {
-            linkBase = json_strings.uri.public_download + '?'
-            noteText = json_strings.translations.public_file_note
+            linkBase = json_strings.uri.public_download + '?';
+            noteText = json_strings.translations.public_file_note;
           }
 
           var content = '<div class="public_link_modal">' +
@@ -225,26 +225,26 @@
             '<textarea class="input-large public_link_copy form-control" rows="4" readonly>' + linkBase + 'id=' + id + '&token=' + token + '</textarea>' +
             '</div>' +
             '<span class="note">' + noteText + '</span>' +
-            '</div>'
-          var title = json_strings.translations.public_url
-          $('.modal_title span').html(title)
-          $('.modal_content').html(content)
-        })
+            '</div>';
+          var title = json_strings.translations.public_url;
+          $('.modal_title span').html(title);
+          $('.modal_content').html(content);
+        });
 
         /**
          * Modal: show a multiple public file's URL
          */
         $('body').on('click', '.public_links', function (e) {
-          $(document).psendmodal()
-          var linkBase = json_strings.uri.public_download + '?'
-          var noteText = json_strings.translations.public_file_note
-          var uploader = $(this).data('name')
-          var modalText = ''
+          $(document).psendmodal();
+          var linkBase = json_strings.uri.public_download + '?';
+          var noteText = json_strings.translations.public_file_note;
+          var uploader = $(this).data('name');
+          var modalText = '';
           $('#uploaded_files_tbl').find('.public_link').each(
             function (i, element) {
-              modalText += linkBase + 'id=' + $(element).data('id') + '&token=' + $(element).data('token') + '\n'
+              modalText += linkBase + 'id=' + $(element).data('id') + '&token=' + $(element).data('token') + '\n';
             }
-          )
+          );
 
           var content = '<div class="public_link_modal">' +
             '<strong>' + json_strings.translations.copy_click_select + '</strong>' +
@@ -275,10 +275,10 @@
             '<button type="submit" class="btn btn-wide btn-primary">' + json_strings.translations.send_links.submit + '</button>' +
             '</div>' +
             '</form>' +
-            '</div>'
-          var title = json_strings.translations.public_url
-          $('.modal_title span').html(title)
-          $('.modal_content').html(content)
+            '</div>';
+          var title = json_strings.translations.public_url;
+          $('.modal_title span').html(title);
+          $('.modal_content').html(content);
           $('#email_links').validate(
             {
               rules: {
@@ -292,13 +292,13 @@
                 }
               },
               errorPlacement: function (error, element) {
-                error.appendTo(element.closest('div'))
+                error.appendTo(element.closest('div'));
               }
             }
-          )
+          );
           $('#email_links').on('submit', function (event) {
-            event.preventDefault()
-            var form = $(this)
+            event.preventDefault();
+            var form = $(this);
             if (form.valid()) {
               $.ajax(
                 {
@@ -313,14 +313,14 @@
                   success: function (response) {
                     if (response.emails_send) {
                       // eslint-disable-next-line no-undef
-                      removeModal()
+                      removeModal();
                     }
                   }
                 }
-              )
+              );
             }
-          })
-        })
+          });
+        });
 
         // Edit file + upload form
         if ($.isFunction($.fn.chosen)) {
@@ -330,22 +330,22 @@
               width: '100%',
               search_contains: true
             }
-          )
+          );
         }
 
         // CKEditor
         if (typeof CKEDITOR !== 'undefined') {
-          CKEDITOR.replaceAll('.ckeditor')
+          CKEDITOR.replaceAll('.ckeditor');
           for (var i in CKEDITOR.instances) {
             (function (i) {
               CKEDITOR.instances[i].on('change', function () {
-                CKEDITOR.instances[i].updateElement()
-              })
-            })(i)
+                CKEDITOR.instances[i].updateElement();
+              });
+            })(i);
           }
         }
       }
-    )
+    );
 
     /**
      * Event: Scroll
@@ -353,7 +353,7 @@
     jQuery(window).scroll(
       function (event) {
       }
-    )
+    );
 
     /**
      * Event: Resize
@@ -361,11 +361,11 @@
     jQuery(window).resize(
       function ($) {
         // eslint-disable-next-line no-undef
-        prepare_sidebar()
+        prepare_sidebar();
 
         // eslint-disable-next-line no-undef
-        resizeChosen()
+        resizeChosen();
       }
-    )
-  }
-})()
+    );
+  };
+})();

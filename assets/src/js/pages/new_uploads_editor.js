@@ -1,5 +1,5 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.pages.newUploadsEditor = function () {
     $(document).ready(
@@ -7,12 +7,12 @@
         $('#files').validate(
           {
             errorPlacement: function (error, element) {
-              error.appendTo(element.closest('div'))
+              error.appendTo(element.closest('div'));
             }
           }
-        )
+        );
 
-        var file = $('input[name^="file"]')
+        var file = $('input[name^="file"]');
 
         file.filter('input[name$="[name]"]').each(
           function () {
@@ -21,9 +21,9 @@
               messages: {
                 required: json_strings.validation.no_name
               }
-            })
+            });
           }
-        )
+        );
 
         file.filter('input[name$="[expiry_date]"]').each(
           function () {
@@ -32,9 +32,9 @@
               messages: {
                 required: json_strings.validation.no_expires
               }
-            })
+            });
           }
-        )
+        );
 
         file.filter('input[name$="[expires]"]').each(
           function () {
@@ -43,9 +43,9 @@
               messages: {
                 required: json_strings.validation.no_file_expires
               }
-            })
+            });
           }
-        )
+        );
 
         /*
                 file.filter('input[name$="[public]"]').each(function () {
@@ -72,44 +72,44 @@
               },
               callback: function (result) {
                 if (result) {
-                  var type = $(event.target).data('type')
-                  var selector = $(event.target).closest('.file_data').find('.select-' + type)
+                  var type = $(event.target).data('type');
+                  var selector = $(event.target).closest('.file_data').find('.select-' + type);
 
-                  var selected = []
+                  var selected = [];
                   $(selector).find('option:selected').each(
                     function () {
-                      selected.push($(this).val())
+                      selected.push($(this).val());
                     }
-                  )
+                  );
 
                   $('.select-' + type).each(
                     function () {
                       $(this).find('option').each(
                         function () {
                           if ($.inArray($(this).val(), selected) === -1) {
-                            $(this).prop('selected', false)
+                            $(this).prop('selected', false);
                           } else {
-                            $(this).prop('selected', true)
+                            $(this).prop('selected', true);
                           }
                         }
-                      )
+                      );
                     }
-                  )
-                  $('select').trigger('chosen:updated')
+                  );
+                  $('select').trigger('chosen:updated');
                 }
               }
             }
-          )
-          return false
-        })
+          );
+          return false;
+        });
 
         // Autoclick the continue button
         // $('#upload-continue').click();
 
         $('.create-client').on('click', function (event) {
-          event.preventDefault()
-          var trigger = event.target
-          var type = $(event.target).data('type')
+          event.preventDefault();
+          var trigger = event.target;
+          var type = $(event.target).data('type');
           $.get('ajax/clients-add.php', function (data) {
             var dialog = bootbox.dialog(
               {
@@ -118,13 +118,13 @@
                 closeButton: true,
                 size: 'large'
               }
-            )
+            );
             dialog.on('hidden.bs.modal', function () {
-              $(this).remove()
-            })
+              $(this).remove();
+            });
             dialog.on('shown.bs.modal', function (event) {
-              admin.pages.clientForm()
-              admin.parts.passwordVisibilityToggle()
+              admin.pages.clientForm();
+              admin.parts.passwordVisibilityToggle();
               if ($.isFunction($.fn.chosen)) {
                 $(this).find('.chosen-select').chosen(
                   {
@@ -132,11 +132,11 @@
                     width: '100%',
                     search_contains: true
                   }
-                )
+                );
               }
               $(this).find('form').on('submit', function (event) {
-                event.preventDefault()
-                var form = $(this)
+                event.preventDefault();
+                var form = $(this);
                 if (form.valid()) {
                   $.ajax(
                     {
@@ -149,7 +149,7 @@
                       success: function (response) {
                         if (response.exists === 'true') {
                           // eslint-disable-next-line no-undef
-                          var _formatted = sprintf(json_strings.translations.confirm_taken, response.owner)
+                          var _formatted = sprintf(json_strings.translations.confirm_taken, response.owner);
                           bootbox.confirm(
                             {
                               message: _formatted,
@@ -163,11 +163,11 @@
                               },
                               callback: function (result) {
                                 if (result) {
-                                  form.closest('.white-box-interior').find('.alert').remove()
+                                  form.closest('.white-box-interior').find('.alert').remove();
                                   // eslint-disable-next-line no-undef
-                                  var formData = new FormData(form[0])
-                                  formData.append('ajax', 'true')
-                                  formData.append('transfer', 'on')
+                                  var formData = new FormData(form[0]);
+                                  formData.append('ajax', 'true');
+                                  formData.append('transfer', 'on');
                                   $.ajax(
                                     {
                                       url: 'clients-add.php',
@@ -177,33 +177,33 @@
                                       contentType: false,
                                       success: function (response) {
                                         if (response.status === 'true') {
-                                          var closestSelectId = $(trigger).closest('.file_data').find('.select-' + type).attr('id')
+                                          var closestSelectId = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
                                           $('.select-' + type).each(
                                             function () {
                                               if ($(this).attr('id') === closestSelectId) {
-                                                $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name + '</option>')
+                                                $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name + '</option>');
                                               } else {
-                                                $(this).append('<option value="' + response.client_id + '">' + response.client_name + '</option>')
+                                                $(this).append('<option value="' + response.client_id + '">' + response.client_name + '</option>');
                                               }
                                             }
-                                          )
-                                          $('.select-' + type).trigger('chosen:updated')
-                                          form.closest('.bootbox').modal('hide')
+                                          );
+                                          $('.select-' + type).trigger('chosen:updated');
+                                          form.closest('.bootbox').modal('hide');
                                         } else if (response.status === 'false') {
-                                          form.closest('.white-box-interior').prepend(response.message)
+                                          form.closest('.white-box-interior').prepend(response.message);
                                         }
                                       }
                                     }
-                                  )
+                                  );
                                 }
                               }
                             }
-                          )
+                          );
                         } else {
-                          form.closest('.white-box-interior').find('.alert').remove()
+                          form.closest('.white-box-interior').find('.alert').remove();
                           // eslint-disable-next-line no-undef
-                          var formData = new FormData(form[0])
-                          formData.append('ajax', 'true')
+                          var formData = new FormData(form[0]);
+                          formData.append('ajax', 'true');
                           $.ajax(
                             {
                               url: 'clients-add.php',
@@ -213,38 +213,38 @@
                               contentType: false,
                               success: function (response) {
                                 if (response.status === 'true') {
-                                  var closestSelectId = $(trigger).closest('.file_data').find('.select-' + type).attr('id')
+                                  var closestSelectId = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
                                   $('.select-' + type).each(
                                     function () {
                                       if ($(this).attr('id') === closestSelectId) {
-                                        $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name + '</option>')
+                                        $(this).append('<option value="' + response.client_id + '" selected>' + response.client_name + '</option>');
                                       } else {
-                                        $(this).append('<option value="' + response.client_id + '">' + response.client_name + '</option>')
+                                        $(this).append('<option value="' + response.client_id + '">' + response.client_name + '</option>');
                                       }
                                     }
-                                  )
-                                  $('.select-' + type).trigger('chosen:updated')
-                                  form.closest('.bootbox').modal('hide')
+                                  );
+                                  $('.select-' + type).trigger('chosen:updated');
+                                  form.closest('.bootbox').modal('hide');
                                 } else if (response.status === 'false') {
-                                  form.closest('.white-box-interior').prepend(response.message)
+                                  form.closest('.white-box-interior').prepend(response.message);
                                 }
                               }
                             }
-                          )
+                          );
                         }
                       }
                     }
-                  )
+                  );
                 }
-              })
-            })
-          })
-        })
+              });
+            });
+          });
+        });
 
         $('.create-group').on('click', function (event) {
-          event.preventDefault()
-          var trigger = event.target
-          var type = $(event.target).data('type')
+          event.preventDefault();
+          var trigger = event.target;
+          var type = $(event.target).data('type');
           $.get('ajax/groups-add.php', function (data) {
             var dialog = bootbox.dialog(
               {
@@ -253,12 +253,12 @@
                 closeButton: true,
                 size: 'large'
               }
-            )
+            );
             dialog.on('hidden.bs.modal', function () {
-              $(this).remove()
-            })
+              $(this).remove();
+            });
             dialog.on('shown.bs.modal', function (event) {
-              admin.pages.groupForm()
+              admin.pages.groupForm();
               if ($.isFunction($.fn.chosen)) {
                 $(this).find('.chosen-select').chosen(
                   {
@@ -266,27 +266,27 @@
                     width: '100%',
                     search_contains: true
                   }
-                )
+                );
               }
               if (typeof CKEDITOR !== 'undefined') {
-                CKEDITOR.replace('description')
+                CKEDITOR.replace('description');
                 for (var i in CKEDITOR.instances) {
                   (function (i) {
                     CKEDITOR.instances[i].on('change', function () {
-                      CKEDITOR.instances[i].updateElement()
-                    })
-                  })(i)
+                      CKEDITOR.instances[i].updateElement();
+                    });
+                  })(i);
                 }
               }
               $(this).find('form').submit(
                 function (event) {
-                  event.preventDefault()
-                  var form = $(this)
+                  event.preventDefault();
+                  var form = $(this);
                   if (form.valid()) {
-                    form.closest('.white-box-interior').find('.alert').remove()
+                    form.closest('.white-box-interior').find('.alert').remove();
                     // eslint-disable-next-line no-undef
-                    var formData = new FormData(form[0])
-                    formData.append('ajax', 'true')
+                    var formData = new FormData(form[0]);
+                    formData.append('ajax', 'true');
                     $.ajax(
                       {
                         url: 'groups-add.php',
@@ -296,31 +296,31 @@
                         contentType: false,
                         success: function (response) {
                           if (response.status === 'true') {
-                            var closestSelectId = $(trigger).closest('.file_data').find('.select-' + type).attr('id')
+                            var closestSelectId = $(trigger).closest('.file_data').find('.select-' + type).attr('id');
                             $('.select-' + type).each(
                               function () {
                                 if ($(this).attr('id') === closestSelectId) {
-                                  $(this).append('<option value="' + response.group_id + '" selected>' + response.group_name + '</option>')
+                                  $(this).append('<option value="' + response.group_id + '" selected>' + response.group_name + '</option>');
                                 } else {
-                                  $(this).append('<option value="' + response.group_id + '">' + response.group_name + '</option>')
+                                  $(this).append('<option value="' + response.group_id + '">' + response.group_name + '</option>');
                                 }
                               }
-                            )
-                            $('.select-' + type).trigger('chosen:updated')
-                            form.closest('.bootbox').modal('hide')
+                            );
+                            $('.select-' + type).trigger('chosen:updated');
+                            form.closest('.bootbox').modal('hide');
                           } else if (response.status === 'false') {
-                            form.closest('.white-box-interior').prepend(response.message)
+                            form.closest('.white-box-interior').prepend(response.message);
                           }
                         }
                       }
-                    )
+                    );
                   }
                 }
-              )
-            })
-          })
-        })
+              );
+            });
+          });
+        });
       }
-    )
-  }
-})()
+    );
+  };
+})();

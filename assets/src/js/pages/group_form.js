@@ -1,12 +1,12 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.pages.groupForm = function () {
     $(document).ready(
       function () {
         CKEDITOR.on('instanceReady', function (event) {
-          $('.cke_top').addClass('required_ck_editor')
-        })
+          $('.cke_top').addClass('required_ck_editor');
+        });
         $('#group_form').validate(
           {
             ignore: [],
@@ -27,11 +27,11 @@
               }
             },
             errorPlacement: function (error, element) {
-              error.appendTo(element.closest('div'))
+              error.appendTo(element.closest('div'));
             }
           }
-        )
+        );
       }
-    )
-  }
-})()
+    );
+  };
+})();

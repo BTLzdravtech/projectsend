@@ -1,10 +1,10 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.pages.userForm = function () {
     $(document).ready(
       function () {
-        var formType = $('#user_form').data('form-type')
+        var formType = $('#user_form').data('form-type');
 
         $('#user_form').validate(
           {
@@ -34,14 +34,14 @@
                   param: true,
                   depends: function (element) {
                     if (formType === 'new_user') {
-                      return true
+                      return true;
                     }
                     if (formType === 'edit_user' || formType === 'edit_user_self') {
                       if ($.trim($('#password').val()).length > 0) {
-                        return true
+                        return true;
                       }
                     }
-                    return false
+                    return false;
                   }
                 },
                 minlength: json_strings.character_limits.password_min,
@@ -78,14 +78,14 @@
             },
             errorPlacement: function (error, element) {
               if (element.attr('id') === 'password') {
-                error.insertAfter(element.closest('div'))
+                error.insertAfter(element.closest('div'));
               } else {
-                error.appendTo(element.closest('div'))
+                error.appendTo(element.closest('div'));
               }
             }
           }
-        )
+        );
       }
-    )
-  }
-})()
+    );
+  };
+})();

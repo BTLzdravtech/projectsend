@@ -1,5 +1,5 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.pages.resetPasswordEnterNew = function () {
     $(document).ready(
@@ -23,11 +23,11 @@
               }
             },
             errorPlacement: function (error, element) {
-              error.appendTo(element.closest('div'))
+              error.appendTo(element.closest('div'));
             }
           }
-        )
+        );
       }
-    )
-  }
-})()
+    );
+  };
+})();

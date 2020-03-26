@@ -1,72 +1,72 @@
 (function () {
-  'use strict'
+  'use strict';
 
   $(document).ready(function () {
-    admin.parts.bulkActions()
-    admin.parts.main()
-    admin.parts.jqueryValidationCustomMethods()
-    admin.parts.passwordVisibilityToggle()
-    admin.parts.bootboxInit()
+    admin.parts.bulkActions();
+    admin.parts.main();
+    admin.parts.jqueryValidationCustomMethods();
+    admin.parts.passwordVisibilityToggle();
+    admin.parts.bootboxInit();
 
     // Switch pages
     switch ($('body').data('page-id')) {
       case 'install':
-        admin.pages.install()
-        break
+        admin.pages.install();
+        break;
       case 'login':
-        admin.pages.loginForm()
-        break
+        admin.pages.loginForm();
+        break;
       case 'dashboard':
-        admin.pages.dashboard()
-        break
+        admin.pages.dashboard();
+        break;
       case 'categories_list':
-        admin.pages.categoriesAdmin()
-        break
+        admin.pages.categoriesAdmin();
+        break;
       case 'clients_memberships_requests':
-        admin.pages.clientsAccountsRequests()
-        break
+        admin.pages.clientsAccountsRequests();
+        break;
       case 'clients_accounts_requests':
-        admin.pages.clientsAccountsRequests()
-        break
+        admin.pages.clientsAccountsRequests();
+        break;
       case 'new_uploads_editor':
-        admin.pages.newUploadsEditor()
-        break
+        admin.pages.newUploadsEditor();
+        break;
       case 'file_editor':
-        admin.pages.fileEditor()
-        break
+        admin.pages.fileEditor();
+        break;
       case 'client_form':
-        admin.pages.clientForm()
-        break
+        admin.pages.clientForm();
+        break;
       case 'user_form':
-        admin.pages.userForm()
-        break
+        admin.pages.userForm();
+        break;
       case 'group_form':
-        admin.pages.groupForm()
-        break
+        admin.pages.groupForm();
+        break;
       case 'email_templates':
-        admin.pages.emailTemplates()
-        break
+        admin.pages.emailTemplates();
+        break;
       case 'reset_password_enter_email':
-        admin.pages.resetPasswordEnterEmail()
-        break
+        admin.pages.resetPasswordEnterEmail();
+        break;
       case 'reset_password_enter_new':
-        admin.pages.resetPasswordEnterNew()
-        break
+        admin.pages.resetPasswordEnterNew();
+        break;
       case 'upload_form':
-        admin.pages.uploadForm()
-        break
+        admin.pages.uploadForm();
+        break;
       case 'import_orphans':
-        admin.pages.importOrphans()
-        break
+        admin.pages.importOrphans();
+        break;
       case 'options':
-        admin.pages.options()
-        break
+        admin.pages.options();
+        break;
       case 'manage_files':
-        admin.pages.manageFiles()
-        break
+        admin.pages.manageFiles();
+        break;
       default:
         // do nothing
-        break
+        break;
     }
-  })
-})()
+  });
+})();

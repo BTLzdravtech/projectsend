@@ -9,5 +9,5 @@ PreCommit:
     flags: ['fix', '-v', '--dry-run']
   Stylelint:
     enabled: true
-  Standard:
+  SemiStandard:
     enabled: true

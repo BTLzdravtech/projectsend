@@ -1,12 +1,12 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.pages.manageFiles = function () {
     $(document).ready(function (e) {
       $('.delete-button').on('click', function (e) {
-        var button = $(this)
+        var button = $(this);
         // eslint-disable-next-line no-undef
-        var _formatted = sprintf(json_strings.translations.confirm_delete, 1)
+        var _formatted = sprintf(json_strings.translations.confirm_delete, 1);
         bootbox.confirm({
           message: _formatted,
           buttons: {
@@ -19,12 +19,12 @@
           },
           callback: function (result) {
             if (result) {
-              window.location.href = button.attr('href')
+              window.location.href = button.attr('href');
             }
           }
-        })
-        e.preventDefault()
-      })
-    })
-  }
-})()
+        });
+        e.preventDefault();
+      });
+    });
+  };
+})();

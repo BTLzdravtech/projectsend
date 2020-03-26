@@ -1,5 +1,5 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.parts.bootboxInit = function () {
     $(document).ready(
@@ -9,8 +9,8 @@
             closeButton: false,
             swapButtonOrder: true
           }
-        )
+        );
       }
-    )
-  }
-})()
+    );
+  };
+})();

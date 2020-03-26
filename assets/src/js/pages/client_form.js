@@ -1,10 +1,10 @@
 (function () {
-  'use strict'
+  'use strict';
 
   admin.pages.clientForm = function () {
     $(document).ready(
       function () {
-        var formType = $('#client_form').data('form-type')
+        var formType = $('#client_form').data('form-type');
         $('#client_form').validate(
           {
             rules: {
@@ -25,7 +25,7 @@
                 required: {
                   param: true,
                   depends: function (element) {
-                    return formType !== 'new_client_self'
+                    return formType !== 'new_client_self';
                   }
                 },
                 digits: true
@@ -35,14 +35,14 @@
                   param: true,
                   depends: function (element) {
                     if (formType === 'new_client' || formType === 'new_client_self') {
-                      return true
+                      return true;
                     }
                     if (formType === 'edit_client' || formType === 'edit_client_self') {
                       if ($.trim($('#password').val()).length > 0) {
-                        return true
+                        return true;
                       }
                     }
-                    return false
+                    return false;
                   }
                 },
                 minlength: json_strings.character_limits.password_min,
@@ -76,13 +76,13 @@
             },
             errorPlacement: function (error, element) {
               if (element.attr('id') === 'password') {
-                error.insertAfter(element.closest('div'))
+                error.insertAfter(element.closest('div'));
               } else {
-                error.appendTo(element.closest('div'))
+                error.appendTo(element.closest('div'));
               }
             }
           }
-        )
+        );
 
         if (!$('#client_form').closest('.white-box').hasClass('ajax')) {
           $('#client_form').on('submit', function (e) {
@@ -98,7 +98,7 @@
                   success: function (response) {
                     if (response.exists === 'true') {
                       // eslint-disable-next-line no-undef
-                      var _formatted = sprintf(json_strings.translations.confirm_taken, response.owner)
+                      var _formatted = sprintf(json_strings.translations.confirm_taken, response.owner);
                       bootbox.confirm(
                         {
                           message: _formatted,
@@ -112,26 +112,26 @@
                           },
                           callback: function (result) {
                             if (result) {
-                              $('#client_form').append("<input type='hidden' name='transfer' value='on'>")
-                              $('#client_form').unbind('submit')
-                              $('#client_form').find('button[type="submit"]').click()
+                              $('#client_form').append("<input type='hidden' name='transfer' value='on'>");
+                              $('#client_form').unbind('submit');
+                              $('#client_form').find('button[type="submit"]').click();
                             }
                           }
                         }
-                      )
-                      e.preventDefault()
+                      );
+                      e.preventDefault();
                     } else {
-                      $('#client_form').unbind('submit')
-                      $('#client_form').find('button[type="submit"]').click()
+                      $('#client_form').unbind('submit');
+                      $('#client_form').find('button[type="submit"]').click();
                     }
                   }
                 }
-              )
+              );
             }
-            e.preventDefault()
-          })
+            e.preventDefault();
+          });
         }
       }
-    )
-  }
-})()
+    );
+  };
+})();
