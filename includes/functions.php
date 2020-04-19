@@ -682,12 +682,19 @@ function get_file_assignations($file_id)
     $count = $statement->rowCount();
 
     $return = [
+        'users' => [],
         'clients' => [],
         'groups' => [],
     ];
 
     if ($count > 0) {
         while ($row = $statement->fetch()) {
+            if (!empty($row['user_id'])) {
+                $return['users'][$row['user_id']] = [
+                    'hidden' => $row['hidden'],
+                ];
+            }
+
             if (!empty($row['client_id'])) {
                 $return['clients'][$row['client_id']] = [
                     'hidden' => $row['hidden'],

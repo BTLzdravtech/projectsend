@@ -90,11 +90,21 @@ define('CAN_INCLUDE_FILES', true);
          * Fill the users array that will be used on the notifications process
          */
         $users = array();
-        $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . $owner_id_condition . " ORDER BY name");
+        $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . " WHERE level=8 OR level=7 ORDER BY name");
         $statement->execute();
         $statement->setFetchMode(PDO::FETCH_ASSOC);
         while ($row = $statement->fetch()) {
             $users[$row["id"]] = $row["name"];
+        }
+
+        /**
+         * Fill the clients array that will be used on the notifications process
+         */
+        $clients = array();
+        $statement = $dbh->prepare("SELECT id, name, level FROM " . TABLE_USERS . $owner_id_condition . " ORDER BY name");
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        while ($row = $statement->fetch()) {
             if ($row["level"] == '0') {
                 $clients[$row["id"]] = $row["name"];
             }
@@ -247,6 +257,7 @@ define('CAN_INCLUDE_FILES', true);
                             if ($process_file['database'] == true) {
                                 $add_arguments['new_file_id'] = $process_file['new_file_id'];
                                 $add_arguments['all_users'] = $users;
+                                $add_arguments['all_clients'] = $clients;
                                 $add_arguments['all_groups'] = $groups;
                                 /**
                                  * 2- Add the assignments to the database
@@ -543,11 +554,7 @@ define('CAN_INCLUDE_FILES', true);
                                     /** @noinspection PhpUndefinedConstantInspection */
                                     if ($global_level != 0 || CLIENTS_CAN_SET_EXPIRATION_DATE == '1') {
                                         ?>
-                                    <?php if (CATEGORIES_ENABLED) { ?>
-                                    <div class="col-sm-6 col-md-3 assigns column">
-                                        <?php } else { ?>
-                                        <div class="col-sm-6 col-md-4 assigns column">
-                                            <?php } ?>
+                                        <div class="col-sm-6 col-md-3 assigns column">
                                             <div class="file_data">
                                                 <?php
                                                 /**
@@ -636,11 +643,7 @@ define('CAN_INCLUDE_FILES', true);
                                          */
                                         if ($global_level != 0) {
                                             ?>
-                                        <?php if (CATEGORIES_ENABLED) { ?>
-                                        <div class="col-sm-6 col-md-3 assigns column">
-                                            <?php } else { ?>
-                                            <div class="col-sm-6 col-md-4 assigns column">
-                                                <?php } ?>
+                                            <div class="col-sm-6 col-md-3 assigns column">
                                                 <div class="file_data">
                                                     <?php
                                                     /**
@@ -648,7 +651,7 @@ define('CAN_INCLUDE_FILES', true);
                                                      * uploader is a system user, and not a client.
                                                      */
                                                     ?>
-                                                    <h3><?php _e('Assignations', 'cftp_admin'); ?></h3>
+                                                    <h3><?php _e('Assignations - clients', 'cftp_admin'); ?></h3>
                                                     <label for="select_clients_<?php echo $i; ?>"><?php _e('Clients', 'cftp_admin'); ?>
                                                         :</label>
                                                     <select multiple="multiple"
@@ -722,9 +725,38 @@ define('CAN_INCLUDE_FILES', true);
                                                     </div>
                                                 </div>
                                             </div>
-                                            <?php if (CATEGORIES_ENABLED) { ?>
-                                                <div class="col-sm-6 col-md-3 categories column">
-                                                    <div class="file_data">
+                                            <div class="col-sm-6 col-md-3 categories column">
+                                                <div class="file_data">
+                                                    <h3><?php _e('Assignations - users', 'cftp_admin'); ?></h3>
+                                                    <label for="select_users_<?php echo $i; ?>"><?php _e('Users', 'cftp_admin'); ?>
+                                                        :</label>
+                                                    <select multiple="multiple"
+                                                            name="file[<?php echo $i; ?>][assignments][users][]"
+                                                            id="select_users_<?php echo $i; ?>"
+                                                            class="form-control chosen-select select-users"
+                                                            data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin'); ?>">
+                                                        <?php
+                                                        /**
+                                                         * The clients list is generated early on the file so the
+                                                         * array doesn't need to be made once on every file.
+                                                         */
+                                                        foreach ($users as $user => $user_name) {
+                                                            ?>
+                                                            <option value="<?php echo $user; ?>">
+                                                                <?php echo $user_name; ?>
+                                                            </option>
+                                                            <?php
+                                                        } ?>
+                                                    </select>
+                                                    <div class="list_mass_members">
+                                                        <a href="#" class="btn btn-xs btn-primary add-all"
+                                                           data-type="users"><?php _e('Add all', 'cftp_admin'); ?></a>
+                                                        <a href="#" class="btn btn-xs btn-primary remove-all"
+                                                           data-type="users"><?php _e('Remove all', 'cftp_admin'); ?></a>
+                                                        <a href="#" class="btn btn-xs btn-danger copy-all"
+                                                           data-type="users"><?php _e('Copy selections', 'cftp_admin'); ?></a>
+                                                    </div>
+                                                    <?php if (CATEGORIES_ENABLED) { ?>
                                                         <h3><?php _e('Categories', 'cftp_admin'); ?></h3>
                                                         <label for="file[<?php echo $i; ?>][categories][]"><?php _e('Add to', 'cftp_admin'); ?>
                                                             :</label>
@@ -749,9 +781,9 @@ define('CAN_INCLUDE_FILES', true);
                                                             <a href="#" class="btn btn-xs btn-danger copy-all"
                                                                data-type="categories"><?php _e('Copy selections', 'cftp_admin'); ?></a>
                                                         </div>
-                                                    </div>
+                                                    <?php } ?>
                                                 </div>
-                                            <?php } ?>
+                                            </div>
                                             <?php
                                         }
                         /**

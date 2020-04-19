@@ -110,13 +110,12 @@ if ($_POST) {
         $statement->execute(array(':client_id' => $client['id']));
 
         // change owner of client files to old owner before transfer
-
         $statement = $dbh->prepare("UPDATE " . TABLE_FILES . " SET owner_id = :owner_id WHERE owner_id = :client_id");
         $statement->execute(array(':owner_id' => $transferred_from_id, 'client_id' => $client['id']));
 
         // change client owner_id
-        $statement = $dbh->prepare("UPDATE " . TABLE_USERS . " SET owner_id = :owner_id WHERE id = :id");
-        $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, 'id' => $client['id']));
+        $statement = $dbh->prepare("UPDATE " . TABLE_USERS . " SET owner_id = :owner_id, created_by = :created_by WHERE id = :id");
+        $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, ':created_by' => CURRENT_USER_USERNAME, 'id' => $client['id']));
         $logger = new ActionsLog;
         $logger->addEntry(
             [

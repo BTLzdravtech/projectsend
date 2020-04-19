@@ -94,7 +94,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 
                 <div class="form_actions_count">
                     <p class="form_count_total"><?php _e('Found', 'cftp_admin'); ?>:
-                        <span><?php echo $count_for_pagination; ?><?php _e('files', 'cftp_admin'); ?></span></p>
+                        <span><?php echo $count_for_pagination; ?> <?php _e('files', 'cftp_admin'); ?></span></p>
                 </div>
 
                 <div class="right_clear"></div>

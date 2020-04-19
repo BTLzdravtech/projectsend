@@ -1544,5 +1544,40 @@ if (current_role_in($allowed_update)) {
                 $updates_made++;
             }
         }
+
+        /**
+         * r1118 updates
+         * Add user_id to files relations.
+         */
+        if ($last_update < 1118) {
+            $q = $dbh->query("ALTER TABLE " . TABLE_FILES_RELATIONS . " ADD COLUMN user_id INT(11) AFTER file_id");
+            $q2 = $dbh->query("ALTER TABLE " . TABLE_FILES_RELATIONS . " ADD FOREIGN KEY (`user_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+            if ($q && $q2) {
+                $updates_made++;
+            }
+        }
+
+        /**
+         * r1119 updates
+         * Add user_id to notifications.
+         */
+        if ($last_update < 1119) {
+            $q = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD COLUMN user_id INT(11) AFTER file_id");
+            $q2 = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " ADD FOREIGN KEY (`user_id`) REFERENCES " . TABLE_USERS . "(`id`) ON DELETE CASCADE ON UPDATE CASCADE");
+            if ($q && $q2) {
+                $updates_made++;
+            }
+        }
+
+        /**
+         * r1120 updates
+         * Allow not null for client_id in notifications.
+         */
+        if ($last_update < 1120) {
+            $q = $dbh->query("ALTER TABLE " . TABLE_NOTIFICATIONS . " CHANGE client_id client_id INT(11) DEFAULT NULL");
+            if ($q) {
+                $updates_made++;
+            }
+        }
     }
 }

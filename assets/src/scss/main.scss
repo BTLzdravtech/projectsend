@@ -1818,6 +1818,10 @@ li .required.password_toggle {
   background-color: #eee !important;
 }
 
+.public_links {
+  margin-bottom: 15px;
+}
+
 // Misc Mobile only styles
 
 @include bk(xs) {

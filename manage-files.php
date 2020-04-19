@@ -291,6 +291,22 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                  * only show files uploaded by that account.
                  */
                 if (CURRENT_USER_LEVEL == '8') {
+                    $params[':owner_id'] = CURRENT_USER_ID;
+
+                    $files_query = "SELECT FR.id, FR.file_id, FR.client_id, FR.group_id FROM " . TABLE_FILES_RELATIONS . " FR INNER JOIN " . TABLE_FILES . " F ON FR.file_id = F.id WHERE (FR.user_id = :id";
+                    $files_query .= ") AND FR.hidden = '0' AND (F.expires = 0 OR (F.expires = 1 AND F.expiry_date > NOW()))";
+                    $files_sql = $dbh->prepare($files_query);
+
+                    $files_sql->bindParam(':id', $params[':owner_id'], PDO::PARAM_INT);
+                    $files_sql->execute();
+                    $files_sql->setFetchMode(PDO::FETCH_ASSOC);
+
+                    $files_from_other_users_ids = array();
+                    while ($row_files = $files_sql->fetch()) {
+                        $files_from_other_users_ids[] = $row_files['file_id'];
+                    }
+                    $users_condition = count($files_from_other_users_ids) > 0 ? "(files.id IN (" . join(",", $files_from_other_users_ids) . ") OR " : "";
+
                     $clients_condition = '';
                     foreach ($clients as $key => $client) {
                         if (strlen($clients_condition) > 0) {
@@ -299,10 +315,12 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                         $clients_condition .= ":client" . $key;
                         $params[":client" . $key] = $client;
                     }
-                    $conditions[] = "(owner_id = :owner_id" . (strlen($clients_condition) > 0 ? " OR owner_id IN (" . $clients_condition . ")" : "") . ")";
+                    if ($users_condition != "") {
+                        $conditions[] = $users_condition . "owner_id = :owner_id" . (strlen($clients_condition) > 0 ? " OR owner_id IN (" . $clients_condition . ")" : "") . ")";
+                    } else {
+                        $conditions[] = "(owner_id = :owner_id" . (strlen($clients_condition) > 0 ? " OR owner_id IN (" . $clients_condition . ")" : "") . ")";
+                    }
                     $no_results_error = 'account_level';
-
-                    $params[':owner_id'] = CURRENT_USER_ID;
                 }
             }
 
@@ -449,9 +467,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                             $workspace_object->get($_GET['workspace']);
                             $workspace_data = $workspace_object->getProperties();
 
-                            $owner_condition = " WHERE owner_id=" . CURRENT_USER_ID . (count(array_diff(array_merge($workspace_data['admins'], $workspace_data['users']), [CURRENT_USER_ID])) > 0 ? " OR owner_id IN(" . implode(',', array_diff(array_merge($workspace_data['admins'], $workspace_data['users']), [CURRENT_USER_ID])) . ")" : "");
+                            $owner_condition = " WHERE owner_id=" . CURRENT_USER_ID . (count(array_diff(array_merge($workspace_data['admins'], $workspace_data['users']), [CURRENT_USER_ID])) > 0 ? " OR owner_id IN(" . implode(',', array_diff(array_merge($workspace_data['admins'], $workspace_data['users']), [CURRENT_USER_ID])) . ")" : "") . (count($files_from_other_users_ids) > 0 ? " OR id IN (" . join(",", $files_from_other_users_ids) . ")" : "");
                         } else {
-                            $owner_condition = " WHERE owner_id=" . CURRENT_USER_ID . (count($clients) > 0 ? " OR owner_id IN(" . implode(',', $clients) . ")" : "");
+                            $owner_condition = " WHERE owner_id=" . CURRENT_USER_ID . (count($clients) > 0 ? " OR owner_id IN(" . implode(',', $clients) . ")" : "") . (count($files_from_other_users_ids) > 0 ? " OR id IN (" . join(",", $files_from_other_users_ids) . ")" : "");
                         }
                     }
 
@@ -729,6 +747,9 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                     $assignations = get_file_assignations($row['id']);
 
                     $count_assignations = 0;
+                    if (!empty($assignations['users'])) {
+                        $count_assignations += count($assignations['users']);
+                    }
                     if (!empty($assignations['clients'])) {
                         $count_assignations += count($assignations['clients']);
                     }
@@ -783,7 +804,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
                      */
                     if ($row['public_allow'] == '1') {
                         $visibility_link = '<a href="javascript:void(0);" class="btn btn-primary btn-sm public_link" data-type="file" data-id="' . $row['id'] . '" data-token="' . html_output($row['public_token']) . '">';
-                        $visibility_label = __('Download', 'cftp_admin');
+                        $visibility_label = __('URL', 'cftp_admin');
                     } else {
                         /** @noinspection PhpUndefinedConstantInspection */
                         if (ENABLE_LANDING_FOR_ALL_FILES == '1') {

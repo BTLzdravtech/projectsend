@@ -82,6 +82,8 @@ class ActionsLog
             42 => __("A workspace was edited", 'cftp_admin'),
             43 => __("A workspace was deleted", 'cftp_admin'),
             44 => __("A user created a new workspace", 'cftp_admin'),
+            46 => __('A file is assigned to a user', 'cftp_admin'),
+            47 => __('A file has been unassigned from a user.', 'cftp_admin'),
         );
     }
 

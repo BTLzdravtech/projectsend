@@ -19,8 +19,9 @@ class UploadFile
     private $dbh;
     private $logger;
 
-    private $groups;
     private $users;
+    private $clients;
+    private $groups;
 
     public $file_id;
     private $file_name;
@@ -366,6 +367,13 @@ class UploadFile
         $this->uploader_id = $arguments['uploader_id'];
         $this->groups = $arguments['all_groups'];
         $this->users = $arguments['all_users'];
+        $this->clients = $arguments['all_clients'];
+
+        if (!empty($arguments['assign_to']['users'])) {
+            foreach ($arguments['assign_to']['users'] as $user_id) {
+                self::saveAssignment('user', $user_id);
+            }
+        }
 
         if (!empty($arguments['assign_to']['clients'])) {
             foreach ($arguments['assign_to']['clients'] as $client_id) {
@@ -386,14 +394,19 @@ class UploadFile
             return false;
         }
 
-        if ($type != 'client' && $type != 'group') {
+        if ($type != 'user' && $type != 'client' && $type != 'group') {
             return false;
         }
 
         switch ($type) {
+            case 'user':
+                $add_to = 'user_id';
+                $account_name = $this->users[$id];
+                $action_number = 46;
+                break;
             case 'client':
                 $add_to = 'client_id';
-                $account_name = $this->users[$id];
+                $account_name = $this->clients[$id];
                 $action_number = 25;
                 break;
             case 'group':
@@ -457,6 +470,9 @@ class UploadFile
                 foreach ($assignments as $assignment) {
                     $id_only = $assignment;
                     switch ($key) {
+                        case 'users':
+                            $add_to = 'user_id';
+                            break;
                         case 'clients':
                             $add_to = 'client_id';
                             break;
@@ -486,11 +502,11 @@ class UploadFile
                             $current_assignment = $this->file_id . '-' . $add_notify;
                             if (!in_array($current_assignment, $distinct_notifications)) {
                                 $statement = $this->dbh->prepare(
-                                    "INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, client_id, upload_type, sent_status, times_failed)
-                                    VALUES (:file_id, :client_id, :type, '0', '0')"
+                                    "INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, $add_to, upload_type, sent_status, times_failed)
+                                    VALUES (:file_id, :notification, :type, '0', '0')"
                                 );
                                 $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-                                $statement->bindParam(':client_id', $add_notify, PDO::PARAM_INT);
+                                $statement->bindParam(':notification', $add_notify, PDO::PARAM_INT);
                                 $statement->bindParam(':type', $notif_uploader_type);
                                 $statement->execute();
 
@@ -512,6 +528,7 @@ class UploadFile
         $this->assign_to = $arguments['assign_to'];
         $this->file_id = $arguments['file_id'];
         $this->file_name = $arguments['file_name'];
+        $current_users = $arguments['current_users'];
         $current_clients = $arguments['current_clients'];
         $current_groups = $arguments['current_groups'];
         $owner_id = $arguments['owner_id'];
@@ -524,6 +541,9 @@ class UploadFile
         foreach ($this->assign_to as $type => $ids) {
             $id_only = $ids;
             switch ($type) {
+                case 'users':
+                    $assign_to_users = $id_only;
+                    break;
                 case 'clients':
                     $assign_to_clients = $id_only;
                     break;
@@ -533,6 +553,11 @@ class UploadFile
             }
         }
 
+        foreach ($current_users as $user) {
+            if (!in_array($user, $assign_to_users)) {
+                $delete_from_db_users[] = $user;
+            }
+        }
         foreach ($current_clients as $client) {
             if (!in_array($client, $assign_to_clients)) {
                 $delete_from_db_clients[] = $client;
@@ -545,6 +570,7 @@ class UploadFile
         }
 
         $delete_arguments = array(
+            'users' => $delete_from_db_users,
             'clients' => $delete_from_db_clients,
             'groups' => $delete_from_db_groups,
             'owner_id' => $owner_id
@@ -594,9 +620,49 @@ class UploadFile
      */
     private function deleteAssignments($arguments)
     {
+        $users = $arguments['users'];
         $clients = $arguments['clients'];
         $groups = $arguments['groups'];
         $owner_id = $arguments['owner_id'];
+
+        /**
+         * Get a list of users names for the log
+         */
+        if (!empty($users)) {
+            $delete_users = implode(',', array_unique($users));
+
+            $statement = $this->dbh->prepare("SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :users)");
+            $statement->bindParam(':users', $delete_users);
+            $statement->execute();
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            while ($row = $statement->fetch()) {
+                $users_names[$row['id']] = $row['name'];
+            }
+
+            /**
+             * Remove existing assignments of this file/clients
+             */
+            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(user_id, :users)");
+            $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+            $statement->bindParam(':users', $delete_users);
+            $statement->execute();
+
+            /**
+             * Record the action log
+             */
+            foreach ($users as $deleted_user) {
+                $this->logger->addEntry(
+                    [
+                        'action' => 47,
+                        'owner_id' => $owner_id,
+                        'affected_file' => $this->file_id,
+                        'affected_file_name' => $this->file_name,
+                        'affected_account' => $deleted_user,
+                        'affected_account_name' => $users_names[$deleted_user]
+                    ]
+                );
+            }
+        }
 
         /**
          * Get a list of clients names for the log

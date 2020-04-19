@@ -212,7 +212,7 @@ include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
             <div class="form_actions_count">
                 <p><?php _e('Found', 'cftp_admin'); ?>:
-                    <span><?php echo $count_for_pagination; ?><?php _e('clients', 'cftp_admin'); ?></span></p>
+                    <span><?php echo $count_for_pagination; ?> <?php _e('clients', 'cftp_admin'); ?></span></p>
             </div>
 
             <div class="clear"></div>
