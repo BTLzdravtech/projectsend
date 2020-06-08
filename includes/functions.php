@@ -51,7 +51,7 @@ function isNotUniqueUsername($string)
 {
     /**
      * @var PDO $dbh
-    */
+     */
     global $dbh;
     $statement = $dbh->prepare("SELECT * FROM " . TABLE_USERS . " WHERE user = :user");
     $statement->execute(array(':user' => $string));
@@ -105,7 +105,7 @@ function getJson($url, $cache_time)
 {
     $cache_dir = JSON_CACHE_DIR;
     $cacheFile = $cache_dir . DS . md5($url);
-    
+
     if (file_exists($cacheFile)) {
         $fh = fopen($cacheFile, 'r');
         $cacheTime = trim(fgets($fh));
@@ -143,7 +143,7 @@ function getJson($url, $cache_time)
 function sql_add_order($table, $column = 'id', $initial_order = 'ASC')
 {
     global $dbh;
-    $allowed_custom_sort_columns = array( 'download_count' );
+    $allowed_custom_sort_columns = array('download_count');
 
     $columns_query = $dbh->query('SELECT * FROM ' . $table . ' LIMIT 1');
     if ($columns_query->rowCount() > 0) {
@@ -187,14 +187,14 @@ function get_available_languages()
 {
     /**
      * Load the language and locales names list
-    */
+     */
     include_once ROOT_DIR . '/includes/language.locales.names.php';
 
     global $locales_names;
 
     $langs = array();
 
-    $mo_files = glob(ROOT_DIR.'/lang/*.mo');
+    $mo_files = glob(ROOT_DIR . '/lang/*.mo');
     foreach ($mo_files as $file) {
         $lang_file = pathinfo($file, PATHINFO_FILENAME);
         $extension = pathinfo($file, PATHINFO_EXTENSION);
@@ -210,7 +210,7 @@ function get_available_languages()
 
     /**
      * Sort alphabetically
-    */
+     */
     asort($langs, SORT_STRING);
 
     return $langs;
@@ -236,9 +236,9 @@ function generate_downloads_count($id = null)
         $sql .= ' WHERE file_id = :id';
     }
 
-    $sql .=  " GROUP BY file_id";
+    $sql .= " GROUP BY file_id";
 
-    $statement    = $dbh->prepare($sql);
+    $statement = $dbh->prepare($sql);
 
     if (!empty($id)) {
         $statement->bindValue(':id', $id, PDO::PARAM_INT);
@@ -263,7 +263,7 @@ function generate_downloads_count($id = null)
 /**
  * Check if a table exists in the current database.
  *
- * @param  string $table Table to search for.
+ * @param string $table Table to search for.
  * @return bool TRUE if table exists, FALSE if no table found.
  * by esbite on http://stackoverflow.com/questions/1717495/check-if-a-database-table-exists-using-php-pdo
  */
@@ -501,7 +501,7 @@ function get_user_by($user_type, $field, $value)
         $statement = $dbh->prepare("SELECT id FROM " . TABLE_USERS . " WHERE `$field`=:value");
         $statement->bindParam(':value', $value);
         $statement->execute();
-        
+
         $result = $statement->fetchColumn();
         if ($result) {
             $user_data = null;
@@ -611,7 +611,7 @@ function get_file_by_id($id)
     while ($row = $statement->fetch()) {
         $information = array(
             'id' => html_output($row['id']),
-            'title'=> html_output($row['filename']),
+            'title' => html_output($row['filename']),
             'original_url' => html_output($row['original_url']),
             'url' => html_output($row['url']),
             'description' => html_output($row['description']),
@@ -682,12 +682,19 @@ function get_file_assignations($file_id)
     $count = $statement->rowCount();
 
     $return = [
+        'users' => [],
         'clients' => [],
         'groups' => [],
     ];
 
     if ($count > 0) {
         while ($row = $statement->fetch()) {
+            if (!empty($row['user_id'])) {
+                $return['users'][$row['user_id']] = [
+                    'hidden' => $row['hidden'],
+                ];
+            }
+
             if (!empty($row['client_id'])) {
                 $return['clients'][$row['client_id']] = [
                     'hidden' => $row['hidden'],
@@ -719,7 +726,7 @@ function get_expired_file_ids()
 
     if ($count > 0) {
         while ($row = $statement->fetch()) {
-            $file_ids[] =  $row['id'];
+            $file_ids[] = $row['id'];
         }
     }
     return $file_ids;
@@ -737,16 +744,17 @@ function default_footer_info($logged = true)
     ?>
     <footer>
         <div id="footer">
-    <?php
-    if (defined('FOOTER_CUSTOM_ENABLE') && FOOTER_CUSTOM_ENABLE == '1') {
-        /** @noinspection PhpUndefinedConstantInspection */
-        echo '© ' . date("Y") . ', ' . strip_tags(FOOTER_CUSTOM_CONTENT, '<br><span><a><strong><em><b><i><u><s>');
-    } else {
-        _e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>" target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if ($logged == true) {
-            _e('version', 'cftp_admin');
-            echo ' ' . CURRENT_VERSION;
-        } ?> - <?php _e('Free software', 'cftp_admin');
-    } ?>
+            <?php
+            if (defined('FOOTER_CUSTOM_ENABLE') && FOOTER_CUSTOM_ENABLE == '1') {
+                /** @noinspection PhpUndefinedConstantInspection */
+                echo '© ' . date("Y") . ', ' . strip_tags(FOOTER_CUSTOM_CONTENT, '<br><span><a><strong><em><b><i><u><s>');
+            } else {
+                _e('Provided by', 'cftp_admin'); ?> <a href="<?php echo SYSTEM_URI; ?>"
+                                                       target="_blank"><?php echo SYSTEM_NAME; ?></a> <?php if ($logged == true) {
+                    _e('version', 'cftp_admin');
+                    echo ' ' . CURRENT_VERSION;
+                } ?> - <?php _e('Free software', 'cftp_admin');
+            } ?>
         </div>
     </footer>
     <?php
@@ -764,7 +772,7 @@ function render_json_variables()
     $output = json_encode($json_strings); ?>
     <script type="text/javascript">
         /*<![CDATA[*/
-            var json_strings = <?php echo $output; ?>;
+        var json_strings = <?php echo $output; ?>;
         /*]]>*/
     </script>
     <?php
@@ -813,7 +821,7 @@ function system_message($type, $message, $div_id = '', $text_center = false)
             break;
     }
 
-    $return = '<div class="alert alert-'.$type.($text_center ? ' text-center' : '').'"';
+    $return = '<div class="alert alert-' . $type . ($text_center ? ' text-center' : '') . '"';
     if (isset($div_id) && $div_id != '') {
         $return .= ' id="' . $div_id . '"';
     }
@@ -842,7 +850,7 @@ function current_role_in($levels)
     if (!is_array($levels)) {
         $levels = array($levels);
     }
-    
+
     if (isset($_SESSION['userlevel']) && (in_array($_SESSION['userlevel'], $levels))) {
         return true;
     } else {
@@ -937,7 +945,7 @@ function html_output($str, $flags = ENT_QUOTES, $encoding = CHARSET, $double_enc
 function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET, $doubleEncode = false)
 {
     $description = htmlentities($str, $quoteStyle, $charset, $doubleEncode);
-    $allowed_tags = array('i','b','strong','em','p','br','ul','ol','li','u','sup','sub','s');
+    $allowed_tags = array('i', 'b', 'strong', 'em', 'p', 'br', 'ul', 'ol', 'li', 'u', 'sup', 'sub', 's');
 
     $find = array();
     $replace = array();
@@ -945,12 +953,12 @@ function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET
     foreach ($allowed_tags as $tag) {
         /**
          * Opening tags
-        */
+         */
         $find[] = '&lt;' . $tag . '&gt;';
         $replace[] = '<' . $tag . '>';
         /**
          * Closing tags
-        */
+         */
         $find[] = '&lt;/' . $tag . '&gt;';
         $replace[] = '</' . $tag . '>';
     }
@@ -968,7 +976,7 @@ function htmlentities_allowed($str, $quoteStyle = ENT_COMPAT, $charset = CHARSET
  */
 function encode_html($str)
 {
-    $str = htmlentities($str, ENT_QUOTES, $encoding=CHARSET);
+    $str = htmlentities($str, ENT_QUOTES, $encoding = CHARSET);
     $str = nl2br($str);
     //$str = addslashes($str);
     return $str;
@@ -996,13 +1004,13 @@ function get_current_url()
     ** Fixing problems wth the old solution: $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"] when using a reverse proxy.
     ** HTTP_HOST already includes port number (if non-standard), no specific handling of port number necessary.
     */
-    $pageURL .= $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+    $pageURL .= $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 
     /**
      * Check if we are accesing the install folder or the index.php file directly
      */
     $extension = substr($pageURL, -4);
-    if ($extension=='.php') {
+    if ($extension == '.php') {
         $pageURL = substr($pageURL, 0, -17);
         return $pageURL;
     } else {
@@ -1022,8 +1030,8 @@ function format_file_size($file)
     if ($file < 1024) {
         /**
          * No digits so put a ? much better than just seeing Byte
-        */
-        $formatted = (ctype_digit($file))? $file . ' Byte' :  ' ? ' ;
+         */
+        $formatted = (ctype_digit($file)) ? $file . ' Byte' : ' ? ';
     } elseif ($file < 1048576) {
         $formatted = round($file / 1024, 2) . ' KB';
     } elseif ($file < 1073741824) {
@@ -1079,10 +1087,10 @@ function get_real_size($file)
 
     /**
      * Fix for 0kb downloads by AlanReiblein
-    */
+     */
     if (!ctype_digit($ff)) {
         /* returned value not a number so try filesize() */
-        $ff=filesize($file);
+        $ff = filesize($file);
     }
 
     return $ff;
@@ -1116,8 +1124,8 @@ function delete_recursive($dir)
                         delete_recursive($dir . $file . "/");
                         rmdir($dir . $file);
                     } else {
-                        chmod($dir.$file, 0777);
-                        unlink($dir.$file);
+                        chmod($dir . $file, 0777);
+                        unlink($dir . $file);
                     }
                 }
             }
@@ -1175,7 +1183,7 @@ function file_is_image($file)
     if (file_exists($file)) {
         /**
          * Check the extension
-        */
+         */
         $image_extensions = array('jpg', 'jpeg', 'jpe', 'png', 'gif');
         if (in_array($extension, $image_extensions)) {
             $is_image = true;
@@ -1215,20 +1223,20 @@ function file_is_svg($file)
 function make_thumbnail($file, $type = 'thumbnail', $width = THUMBS_MAX_WIDTH, $height = THUMBS_MAX_HEIGHT, $quality = THUMBS_QUALITY)
 {
     $thumbnail = array();
-    
+
     if (!file_exists($file)) {
         $thumbnail_file = 'thumb_unavailable_' . $width . 'x' . $height . '.png';
 
         $thumbnail['original']['url'] = ASSETS_IMG_URL . '/thumbnail-unavailable.png';
         $thumbnail['thumbnail']['location'] = THUMBNAILS_FILES_DIR . DS . $thumbnail_file;
         $thumbnail['thumbnail']['url'] = THUMBNAILS_FILES_URL . '/' . $thumbnail_file;
-        
+
         $file = ASSETS_IMG_DIR . DS . '/thumbnail-unavailable.png'; // Reset to make thumbnail
     } else {
         if (file_is_image($file)) {
             /**
              * Original extension
-            */
+             */
             $pathinfo = pathinfo($file);
             $filename = md5($pathinfo['basename']);
             $extension = strtolower($pathinfo['extension']);
@@ -1292,7 +1300,7 @@ function generate_logo_url()
 
     if (file_exists($branding['dir'])) {
         $branding['exists'] = true;
-        
+
         /* Make thumbnails for raster files */
         if (file_is_image($branding['dir'])) {
             $thumbnail = make_thumbnail($branding['dir'], 'proportional', LOGO_MAX_WIDTH, LOGO_MAX_HEIGHT);
@@ -1392,7 +1400,7 @@ function password_notes()
 
     $rules_active = array();
     /** @noinspection PhpUndefinedConstantInspection */
-    $rules  = array(
+    $rules = array(
         'lower' => array(
             'value' => PASS_REQUIRE_UPPER,
             'text' => $json_strings['validation']['req_upper'],
@@ -1437,7 +1445,7 @@ function add_body_class($custom = '')
 {
     /**
      * Remove query string
-    */
+     */
     $current_url = strtok($_SERVER['REQUEST_URI'], '?');
     $classes = array('body');
 
@@ -1477,7 +1485,7 @@ function add_page_id($id)
     $return = '';
 
     if (!empty($id)) {
-        $return .= 'data-page-id="'.$id.'"';
+        $return .= 'data-page-id="' . $id . '"';
     }
 
     return $return;
@@ -1491,7 +1499,7 @@ function add_page_id($id)
  */
 function make_download_link($file_info)
 {
-    return BASE_URI.'process.php?do=download&amp;id='.$file_info['id'];
+    return BASE_URI . 'process.php?do=download&amp;id=' . $file_info['id'];
 }
 
 /**
@@ -1526,7 +1534,7 @@ function option_file_upload($file, $validate_ext = '', $option = '', $action = '
 
     /**
      * Validate file extensions
-    */
+     */
     if (!empty($validate_ext)) {
         switch ($validate_ext) {
             case 'image':
@@ -1567,7 +1575,7 @@ function option_file_upload($file, $validate_ext = '', $option = '', $action = '
 
                 /**
                  * Record the action log
-                */
+                 */
                 if (!empty($action)) {
                     $logger = new ActionsLog();
                     $log_action_args = array(
@@ -1929,7 +1937,7 @@ function getGoogleLoginClient()
     /** @noinspection PhpUndefinedConstantInspection */
     $client->setClientSecret(GOOGLE_CLIENT_SECRET);
     $client->setRedirectUri(BASE_URI . 'google/callback.php');
-    $client->addScope(array('profile','email'));
+    $client->addScope(array('profile', 'email'));
     $client->setHostedDomain('btlnet.com');
 
     return $client;

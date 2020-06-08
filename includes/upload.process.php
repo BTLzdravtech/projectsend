@@ -5,7 +5,7 @@
 
 use ProjectSend\Classes\UploadFile;
 
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once '../bootstrap.php';
 
 /**
@@ -97,7 +97,7 @@ if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
 } else {
     die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
 }
-    
+
 
 // Look for the content type header
 if (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
@@ -163,4 +163,4 @@ if (!$chunks || $chunk == $chunks - 1) {
 
 
 // Return JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "'.$fileName.'"}');
+die('{"jsonrpc" : "2.0", "result" : null, "id" : "id", "NewFileName" : "' . $fileName . '"}');

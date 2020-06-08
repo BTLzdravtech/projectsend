@@ -14,7 +14,7 @@ require_once 'bootstrap.php';
 
 /**
  * @var PDO $dbh
-*/
+ */
 global $dbh;
 
 $active_nav = 'tools';
@@ -24,122 +24,122 @@ $page_title = __('Recent activities log', 'cftp_admin');
 require_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
-<div class="col-xs-12">
-<?php
-/**
- * Apply the corresponding action to the selected users.
- */
-if (isset($_GET['action']) && $_GET['action'] != 'none') {
-    /**
- * Continue only if 1 or more users were selected.
-*/
-    switch ($_GET['action']) {
-        case 'delete':
-            $selected_actions = $_GET['batch'];
-            $delete_ids = implode(',', $selected_actions);
+    <div class="col-xs-12">
+        <?php
+        /**
+         * Apply the corresponding action to the selected users.
+         */
+        if (isset($_GET['action']) && $_GET['action'] != 'none') {
+            /**
+             * Continue only if 1 or more users were selected.
+             */
+            switch ($_GET['action']) {
+                case 'delete':
+                    $selected_actions = $_GET['batch'];
+                    $delete_ids = implode(',', $selected_actions);
 
-            if (!empty($_GET['batch'])) {
-                $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE FIND_IN_SET(id, :delete)");
-                $params = array(
-                    ':delete' => $delete_ids,
-                );
-                $statement->execute($params);
+                    if (!empty($_GET['batch'])) {
+                        $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE FIND_IN_SET(id, :delete)");
+                        $params = array(
+                            ':delete' => $delete_ids,
+                        );
+                        $statement->execute($params);
 
-                $msg = __('The selected activities were deleted.', 'cftp_admin');
-                echo system_message('success', $msg);
-            } else {
-                $msg = __('Please select at least one activity.', 'cftp_admin');
-                echo system_message('danger', $msg);
+                        $msg = __('The selected activities were deleted.', 'cftp_admin');
+                        echo system_message('success', $msg);
+                    } else {
+                        $msg = __('Please select at least one activity.', 'cftp_admin');
+                        echo system_message('danger', $msg);
+                    }
+                    break;
+                case 'log_clear':
+                    $keep = '5,8,9';
+                    $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
+                    $params = array(
+                        ':keep' => $keep,
+                    );
+                    $statement->execute($params);
+
+                    $msg = __('The log was cleared. Only data used for statistics remained. You can delete them manually if you want.', 'cftp_admin');
+                    echo system_message('success', $msg);
+                    break;
             }
-            break;
-        case 'log_clear':
-            $keep = '5,8,9';
-            $statement = $dbh->prepare("DELETE FROM " . TABLE_LOG . " WHERE NOT ( FIND_IN_SET(action, :keep) ) ");
-            $params = array(
-                ':keep' => $keep,
-            );
-            $statement->execute($params);
+        }
 
-            $msg = __('The log was cleared. Only data used for statistics remained. You can delete them manually if you want.', 'cftp_admin');
-            echo system_message('success', $msg);
-            break;
-    }
-}
+        $params = array();
 
-$params    = array();
+        /**
+         * Get the actually requested items
+         */
+        $cq = "SELECT * FROM " . TABLE_LOG;
 
-/**
- * Get the actually requested items
- */
-$cq = "SELECT * FROM " . TABLE_LOG;
+        /**
+         * Add the search terms
+         */
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)";
+            $next_clause = ' AND';
+            $no_results_error = 'search';
 
-/**
- * Add the search terms
-*/
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $cq .= " WHERE (owner_user LIKE :owner OR affected_file_name LIKE :file OR affected_account_name LIKE :account)";
-    $next_clause = ' AND';
-    $no_results_error = 'search';
+            $search_terms = '%' . $_GET['search'] . '%';
+            $params[':owner'] = $search_terms;
+            $params[':file'] = $search_terms;
+            $params[':account'] = $search_terms;
+        } else {
+            $next_clause = ' WHERE';
+        }
 
-    $search_terms = '%'.$_GET['search'].'%';
-    $params[':owner'] = $search_terms;
-    $params[':file'] = $search_terms;
-    $params[':account'] = $search_terms;
-} else {
-    $next_clause = ' WHERE';
-}
+        /**
+         * Add the activities filter
+         */
+        if (isset($_GET['activity']) && $_GET['activity'] != 'all') {
+            $cq .= $next_clause . " action=:status";
 
-/**
- * Add the activities filter
-*/
-if (isset($_GET['activity']) && $_GET['activity'] != 'all') {
-    $cq .= $next_clause. " action=:status";
+            $status_filter = $_GET['activity'];
+            $params[':status'] = $status_filter;
 
-    $status_filter = $_GET['activity'];
-    $params[':status'] = $status_filter;
+            $no_results_error = 'filter';
+        }
 
-    $no_results_error = 'filter';
-}
+        /**
+         * Add the order.
+         * Defaults to order by: id, order: DESC
+         */
+        $cq .= sql_add_order(TABLE_LOG, 'id', 'DESC');
 
-/**
- * Add the order.
- * Defaults to order by: id, order: DESC
- */
-$cq .= sql_add_order(TABLE_LOG, 'id', 'DESC');
+        /**
+         * Pre-query to count the total results
+         */
+        $count_sql = $dbh->prepare($cq);
+        $count_sql->execute($params);
+        $count_for_pagination = $count_sql->rowCount();
 
-/**
- * Pre-query to count the total results
-*/
-$count_sql = $dbh->prepare($cq);
-$count_sql->execute($params);
-$count_for_pagination = $count_sql->rowCount();
+        /**
+         * Repeat the query but this time, limited by pagination
+         */
+        $cq .= " LIMIT :limit_start, :limit_number";
+        $sql = $dbh->prepare($cq);
 
-/**
- * Repeat the query but this time, limited by pagination
- */
-$cq .= " LIMIT :limit_start, :limit_number";
-$sql = $dbh->prepare($cq);
+        $pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
+        $pagination_start = ($pagination_page - 1) * RESULTS_PER_PAGE_LOG;
+        $params[':limit_start'] = $pagination_start;
+        $params[':limit_number'] = RESULTS_PER_PAGE_LOG;
 
-$pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
-$pagination_start = ($pagination_page - 1) * RESULTS_PER_PAGE_LOG;
-$params[':limit_start'] = $pagination_start;
-$params[':limit_number'] = RESULTS_PER_PAGE_LOG;
+        $sql->execute($params);
+        $count = $sql->rowCount();
 
-$sql->execute($params);
-$count = $sql->rowCount();
+        ?>
 
-?>
+        <div class="form_actions_left">
+            <div class="form_actions_limit_results">
+                <?php show_search_form('actions-log.php'); ?>
 
-    <div class="form_actions_left">
-        <div class="form_actions_limit_results">
-            <?php show_search_form('actions-log.php'); ?>
-
-            <form action="actions-log.php" name="actions_filters" method="get" class="form-inline form_filters">
-                <?php form_add_existing_parameters(array('activity')); ?>
-                <div class="form-group group_float">
-                    <label for="activity" class="sr-only"><?php _e('Filter activities', 'cftp_admin'); ?></label>
-                    <select name="activity" id="activity" class="form-control">
-                        <option value="all"><?php _e('All activities', 'cftp_admin'); ?></option>
+                <form action="actions-log.php" name="actions_filters" method="get" class="form-inline form_filters">
+                    <?php form_add_existing_parameters(array('activity')); ?>
+                    <div class="form-group group_float">
+                        <label for="activity" class="sr-only"><?php _e('Filter activities', 'cftp_admin'); ?></label>
+                        <select name="activity" id="activity" class="form-control">
+                            <option value="all"><?php _e('All activities', 'cftp_admin'); ?></option>
                             <?php
                             $logger = new ActionsLog;
                             $activities_references = $logger->getActivitiesReferences();
@@ -149,22 +149,25 @@ $count = $sql->rowCount();
                                 <?php
                             }
                             ?>
-                    </select>
-                </div>
-                <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
-            </form>
+                        </select>
+                    </div>
+                    <button type="submit" id="btn_proceed_filter_clients"
+                            class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <form action="actions-log.php" name="actions_list" method="get" class="form-inline batch_actions">
-        <?php form_add_existing_parameters(); ?>
-        <div class="form_actions_right">
-            <div class="form_actions">
-                <div class="form_actions_submit">
-                    <div class="form-group group_float">
-                        <label for="action" class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Activities actions', 'cftp_admin'); ?>:</label>
-                        <select name="action" id="action" class="form-control">
-                            <?php
+        <form action="actions-log.php" name="actions_list" method="get" class="form-inline batch_actions">
+            <?php form_add_existing_parameters(); ?>
+            <div class="form_actions_right">
+                <div class="form_actions">
+                    <div class="form_actions_submit">
+                        <div class="form-group group_float">
+                            <label for="action" class="control-label hidden-xs hidden-sm"><i
+                                        class="glyphicon glyphicon-check"></i> <?php _e('Activities actions', 'cftp_admin'); ?>
+                                :</label>
+                            <select name="action" id="action" class="form-control">
+                                <?php
                                 $actions_options = array(
                                     'none' => __('Select action', 'cftp_admin'),
                                     'log_download' => __('Download as csv', 'cftp_admin'),
@@ -177,36 +180,38 @@ $count = $sql->rowCount();
                                     <?php
                                 }
                                 ?>
-                        </select>
+                            </select>
+                        </div>
+                        <button type="submit" id="do_action"
+                                class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
-                    <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
                 </div>
             </div>
-        </div>
-        <div class="clear"></div>
+            <div class="clear"></div>
 
-        <div class="form_actions_count">
-            <p><?php _e('Found', 'cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('activities', 'cftp_admin'); ?></span></p>
-        </div>
+            <div class="form_actions_count">
+                <p><?php _e('Found', 'cftp_admin'); ?>:
+                    <span><?php echo $count_for_pagination; ?> <?php _e('activities', 'cftp_admin'); ?></span></p>
+            </div>
 
-        <div class="clear"></div>
+            <div class="clear"></div>
 
-        <?php
-        if (!$count) {
-            if (isset($no_results_error)) {
-                switch ($no_results_error) {
-                    case 'filter':
-                        $no_results_message = __('The filters you selected returned no results.', 'cftp_admin');
-                        break;
+            <?php
+            if (!$count) {
+                if (isset($no_results_error)) {
+                    switch ($no_results_error) {
+                        case 'filter':
+                            $no_results_message = __('The filters you selected returned no results.', 'cftp_admin');
+                            break;
+                    }
+                } else {
+                    $no_results_message = __('There are no activities recorded.', 'cftp_admin');
                 }
-            } else {
-                $no_results_message = __('There are no activities recorded.', 'cftp_admin');
+                echo system_message('danger', $no_results_message);
             }
-            echo system_message('danger', $no_results_message);
-        }
-        ?>
+            ?>
 
-        <?php
+            <?php
             /**
              * Generate the table using the class.
              */
@@ -220,7 +225,7 @@ $count = $sql->rowCount();
                 array(
                     'select_all' => true,
                     'attributes' => array(
-                        'class' => array( 'td_checkbox' ),
+                        'class' => array('td_checkbox'),
                     ),
                 ),
                 array(
@@ -254,7 +259,7 @@ $count = $sql->rowCount();
                 ),
             );
             $table->thead($thead_columns);
-            
+
             $sql->setFetchMode(PDO::FETCH_ASSOC);
             while ($log = $sql->fetch()) {
                 $this_action = render_log_action(
@@ -273,7 +278,7 @@ $count = $sql->rowCount();
                 $date = format_date($log['timestamp']);
 
                 $table->addRow();
-                
+
                 $tbody_cells = array(
                     array(
                         'checkbox' => true,
@@ -305,7 +310,7 @@ $count = $sql->rowCount();
 
                 $table->end_row();
             }
-            
+
             echo $table->render();
 
             /**
@@ -316,12 +321,12 @@ $count = $sql->rowCount();
                 'current' => $pagination_page,
                 'pages' => ceil($count_for_pagination / RESULTS_PER_PAGE_LOG),
             );
-            
+
             echo $table->pagination($pagination_args);
             ?>
-    </form>
-    
-</div>
+        </form>
+
+    </div>
 
 <?php
 

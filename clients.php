@@ -10,7 +10,7 @@
 use ProjectSend\Classes\TableGenerate;
 use ProjectSend\Classes\Users;
 
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
 
 /** @var PDO $dbh */
@@ -22,134 +22,134 @@ $page_title = __('Clients Administration', 'cftp_admin');
 include_once ADMIN_VIEWS_DIR . DS . 'header.php';
 ?>
 
-<div class="col-xs-12">
-<?php
-/**
- * Apply the corresponding action to the selected clients.
- */
-if (isset($_GET['action'])) {
-    /** Continue only if 1 or more clients were selected. */
-    if (!empty($_GET['batch'])) {
-        $selected_clients = $_GET['batch'];
+    <div class="col-xs-12">
+        <?php
+        /**
+         * Apply the corresponding action to the selected clients.
+         */
+        if (isset($_GET['action'])) {
+            /** Continue only if 1 or more clients were selected. */
+            if (!empty($_GET['batch'])) {
+                $selected_clients = $_GET['batch'];
 
-        switch ($_GET['action']) {
-            case 'activate':
-                /**
-                 * Changes the value on the "active" column value on the database.
-                 * Inactive clients are not allowed to log in.
-                 */
-                foreach ($selected_clients as $work_client) {
-                    $this_client = new Users($dbh);
-                    if ($this_client->get($work_client)) {
-                        $hide_user = $this_client->setActiveStatus(1);
-                    }
-                }
-
-                $msg = __('The selected clients were marked as active.', 'cftp_admin');
-                echo system_message('success', $msg);
-                break;
-            case 'deactivate':
-                /**
-                 * Reverse of the previous action. Setting the value to 0 means
-                 * that the client is inactive.
-                 */
-                foreach ($selected_clients as $work_client) {
-                    $this_client = new Users($dbh);
-                    if ($this_client->get($work_client)) {
-                        $hide_user = $this_client->setActiveStatus(0);
-                    }
-                }
-
-                $msg = __('The selected clients were marked as inactive.', 'cftp_admin');
-                echo system_message('success', $msg);
-                break;
-            case 'delete':
-                foreach ($selected_clients as $work_client) {
-                    $this_client = new Users($dbh);
-                    $this_file = new ProjectSend\Classes\FilesActions;
-                    if ($this_client->get($work_client)) {
-                        $statement = $dbh->prepare("SELECT id FROM btl_files WHERE (owner_id = {$work_client})");
-                        $statement->execute();
-                        $statement->setFetchMode(PDO::FETCH_ASSOC);
-                        while ($row = $statement->fetch()) {
-                            $file_ids[] = $row["id"];
-                        }
-                        if ($statement->rowCount() > 0) {
-                            foreach ($file_ids as $file_id) {
-                                $delete_files = $this_file->deleteFiles($file_id, true);
+                switch ($_GET['action']) {
+                    case 'activate':
+                        /**
+                         * Changes the value on the "active" column value on the database.
+                         * Inactive clients are not allowed to log in.
+                         */
+                        foreach ($selected_clients as $work_client) {
+                            $this_client = new Users($dbh);
+                            if ($this_client->get($work_client)) {
+                                $hide_user = $this_client->setActiveStatus(1);
                             }
                         }
-                        $delete_user = $this_client->delete();
-                    }
+
+                        $msg = __('The selected clients were marked as active.', 'cftp_admin');
+                        echo system_message('success', $msg);
+                        break;
+                    case 'deactivate':
+                        /**
+                         * Reverse of the previous action. Setting the value to 0 means
+                         * that the client is inactive.
+                         */
+                        foreach ($selected_clients as $work_client) {
+                            $this_client = new Users($dbh);
+                            if ($this_client->get($work_client)) {
+                                $hide_user = $this_client->setActiveStatus(0);
+                            }
+                        }
+
+                        $msg = __('The selected clients were marked as inactive.', 'cftp_admin');
+                        echo system_message('success', $msg);
+                        break;
+                    case 'delete':
+                        foreach ($selected_clients as $work_client) {
+                            $this_client = new Users($dbh);
+                            $this_file = new ProjectSend\Classes\FilesActions;
+                            if ($this_client->get($work_client)) {
+                                $statement = $dbh->prepare("SELECT id FROM btl_files WHERE (owner_id = {$work_client})");
+                                $statement->execute();
+                                $statement->setFetchMode(PDO::FETCH_ASSOC);
+                                while ($row = $statement->fetch()) {
+                                    $file_ids[] = $row["id"];
+                                }
+                                if ($statement->rowCount() > 0) {
+                                    foreach ($file_ids as $file_id) {
+                                        $delete_files = $this_file->deleteFiles($file_id, true);
+                                    }
+                                }
+                                $delete_user = $this_client->delete();
+                            }
+                        }
+
+                        $msg = __('The selected clients were deleted.', 'cftp_admin');
+                        echo system_message('success', $msg);
+                        break;
                 }
-
-                $msg = __('The selected clients were deleted.', 'cftp_admin');
-                echo system_message('success', $msg);
-                break;
+            } else {
+                $msg = __('Please select at least one client.', 'cftp_admin');
+                echo system_message('danger', $msg);
+            }
         }
-    } else {
-        $msg = __('Please select at least one client.', 'cftp_admin');
-        echo system_message('danger', $msg);
-    }
-}
 
-/** Query the clients */
-$params = array();
+        /** Query the clients */
+        $params = array();
 
-$cq = "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
+        $cq = "SELECT id FROM " . TABLE_USERS . " WHERE level='0' AND account_requested='0'";
 
-/** Add the search terms */
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $cq .= " AND (name LIKE :name OR user LIKE :user OR email LIKE :email)";
-    $no_results_error = 'search';
+        /** Add the search terms */
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $cq .= " AND (name LIKE :name OR user LIKE :user OR email LIKE :email)";
+            $no_results_error = 'search';
 
-    $search_terms = '%'.$_GET['search'].'%';
-    $params[':name'] = $search_terms;
-    $params[':user'] = $search_terms;
-    $params[':email'] = $search_terms;
-}
+            $search_terms = '%' . $_GET['search'] . '%';
+            $params[':name'] = $search_terms;
+            $params[':user'] = $search_terms;
+            $params[':email'] = $search_terms;
+        }
 
-if (CURRENT_USER_LEVEL == '8') {
-    $cq .= " AND owner_id = :owner_id";
-    $params[':owner_id'] = CURRENT_USER_ID;
-}
+        if (CURRENT_USER_LEVEL == '8') {
+            $cq .= " AND owner_id = :owner_id";
+            $params[':owner_id'] = CURRENT_USER_ID;
+        }
 
-/** Add the active filter */
-if (isset($_GET['active']) && $_GET['active'] != '2') {
-    $cq .= " AND active = :active";
-    $no_results_error = 'filter';
+        /** Add the active filter */
+        if (isset($_GET['active']) && $_GET['active'] != '2') {
+            $cq .= " AND active = :active";
+            $no_results_error = 'filter';
 
-    $params[':active'] = (int)$_GET['active'];
-}
+            $params[':active'] = (int)$_GET['active'];
+        }
 
-/**
- * Add the order.
- * Defaults to order by: name, order: ASC
- */
-$cq .= sql_add_order(TABLE_USERS, 'name', 'asc');
+        /**
+         * Add the order.
+         * Defaults to order by: name, order: ASC
+         */
+        $cq .= sql_add_order(TABLE_USERS, 'name', 'asc');
 
-/**
- * Pre-query to count the total results
-*/
-$count_sql = $dbh->prepare($cq);
-$count_sql->execute($params);
-$count_for_pagination = $count_sql->rowCount();
+        /**
+         * Pre-query to count the total results
+         */
+        $count_sql = $dbh->prepare($cq);
+        $count_sql->execute($params);
+        $count_for_pagination = $count_sql->rowCount();
 
-/**
- * Repeat the query but this time, limited by pagination
- */
-$cq .= " LIMIT :limit_start, :limit_number";
-$sql = $dbh->prepare($cq);
+        /**
+         * Repeat the query but this time, limited by pagination
+         */
+        $cq .= " LIMIT :limit_start, :limit_number";
+        $sql = $dbh->prepare($cq);
 
-$pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
-$pagination_start = ($pagination_page - 1) * RESULTS_PER_PAGE;
-$params[':limit_start'] = $pagination_start;
-$params[':limit_number'] = RESULTS_PER_PAGE;
+        $pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
+        $pagination_start = ($pagination_page - 1) * RESULTS_PER_PAGE;
+        $params[':limit_start'] = $pagination_start;
+        $params[':limit_number'] = RESULTS_PER_PAGE;
 
-$sql->execute($params);
-$count = $sql->rowCount();
+        $sql->execute($params);
+        $count = $sql->rowCount();
 
-?>
+        ?>
         <div class="form_actions_left">
             <div class="form_actions_limit_results">
                 <?php show_search_form('clients.php'); ?>
@@ -159,20 +159,21 @@ $count = $sql->rowCount();
                     <div class="form-group group_float">
                         <select name="active" id="active" class="txtfield form-control">
                             <?php
-                                $status_options = array(
-                                    '2' => __('All statuses', 'cftp_admin'),
-                                    '1' => __('Active', 'cftp_admin'),
-                                    '0' => __('Inactive', 'cftp_admin'),
-                                );
-                                foreach ($status_options as $val => $text) {
-                                    ?>
-                                    <option value="<?php echo $val; ?>" <?php echo isset($_GET['active']) && $_GET['active'] == $val ? 'selected="selected"' : ''; ?>><?php echo $text; ?></option>
-                                    <?php
-                                }
+                            $status_options = array(
+                                '2' => __('All statuses', 'cftp_admin'),
+                                '1' => __('Active', 'cftp_admin'),
+                                '0' => __('Inactive', 'cftp_admin'),
+                            );
+                            foreach ($status_options as $val => $text) {
                                 ?>
+                                <option value="<?php echo $val; ?>" <?php echo isset($_GET['active']) && $_GET['active'] == $val ? 'selected="selected"' : ''; ?>><?php echo $text; ?></option>
+                                <?php
+                            }
+                            ?>
                         </select>
                     </div>
-                    <button type="submit" id="btn_proceed_filter_clients" class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
+                    <button type="submit" id="btn_proceed_filter_clients"
+                            class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
                 </form>
             </div>
         </div>
@@ -183,31 +184,35 @@ $count = $sql->rowCount();
                 <div class="form_actions">
                     <div class="form_actions_submit">
                         <div class="form-group group_float">
-                            <label for="action" class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions', 'cftp_admin'); ?>:</label>
+                            <label for="action" class="control-label hidden-xs hidden-sm"><i
+                                        class="glyphicon glyphicon-check"></i> <?php _e('Selected clients actions', 'cftp_admin'); ?>
+                                :</label>
                             <select name="action" id="action" class="txtfield form-control">
                                 <?php
-                                    $actions_options = array(
-                                        'none' => __('Select action', 'cftp_admin'),
-                                        'activate' => __('Activate', 'cftp_admin'),
-                                        'deactivate' => __('Deactivate', 'cftp_admin'),
-                                        'delete' => __('Delete', 'cftp_admin'),
-                                    );
-                                    foreach ($actions_options as $val => $text) {
-                                        ?>
-                                        <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                                        <?php
-                                    }
+                                $actions_options = array(
+                                    'none' => __('Select action', 'cftp_admin'),
+                                    'activate' => __('Activate', 'cftp_admin'),
+                                    'deactivate' => __('Deactivate', 'cftp_admin'),
+                                    'delete' => __('Delete', 'cftp_admin'),
+                                );
+                                foreach ($actions_options as $val => $text) {
                                     ?>
+                                    <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+                                    <?php
+                                }
+                                ?>
                             </select>
                         </div>
-                        <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                        <button type="submit" id="do_action"
+                                class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
                 </div>
             </div>
             <div class="clear"></div>
 
             <div class="form_actions_count">
-                <p><?php _e('Found', 'cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('clients', 'cftp_admin'); ?></span></p>
+                <p><?php _e('Found', 'cftp_admin'); ?>:
+                    <span><?php echo $count_for_pagination; ?> <?php _e('clients', 'cftp_admin'); ?></span></p>
             </div>
 
             <div class="clear"></div>
@@ -243,7 +248,7 @@ $count = $sql->rowCount();
                     array(
                         'select_all' => true,
                         'attributes' => array(
-                            'class' => array( 'td_checkbox' ),
+                            'class' => array('td_checkbox'),
                         ),
                     ),
                     array(
@@ -286,6 +291,10 @@ $count = $sql->rowCount();
                         'hide' => 'phone',
                     ),
                     array(
+                        'content' => __('Workspaces on', 'cftp_admin'),
+                        'hide' => 'phone',
+                    ),
+                    array(
                         'content' => __('Notify', 'cftp_admin'),
                         'hide' => 'phone,tablet',
                     ),
@@ -321,6 +330,7 @@ $count = $sql->rowCount();
                     $client_data = $client_object->getProperties();
 
                     $count_groups = count($client_data['groups']);
+                    $count_workspaces = count($client_data['workspaces']);
 
                     /* Get account creation date */
                     $created_at = format_date($client_data['created_date']);
@@ -359,7 +369,7 @@ $count = $sql->rowCount();
 
                     /* Actions buttons */
                     if ($own_files + $groups_files > 0) {
-                        $files_link = 'manage-files.php?client_id='.$client_data["id"];
+                        $files_link = 'manage-files.php?client_id=' . $client_data["id"];
                         $files_button = 'btn-primary';
                     } else {
                         $files_link = 'javascript:void(0);';
@@ -367,11 +377,19 @@ $count = $sql->rowCount();
                     }
 
                     if ($count_groups > 0) {
-                        $groups_link = 'groups.php?member='.$client_data["id"];
+                        $groups_link = 'groups.php?member=' . $client_data["id"];
                         $groups_button = 'btn-primary';
                     } else {
                         $groups_link = 'javascript:void(0);';
                         $groups_button = 'btn-default disabled';
+                    }
+
+                    if ($count_workspaces > 0) {
+                        $workspaces_link = 'workspaces.php?member=' . $client_data["id"];
+                        $workspaces_button = 'btn-primary';
+                    } else {
+                        $workspaces_link = 'javascript:void(0);';
+                        $workspaces_button = 'btn-default disabled';
                     }
 
                     /**
@@ -407,6 +425,9 @@ $count = $sql->rowCount();
                             'content' => $count_groups,
                         ),
                         array(
+                            'content' => $count_workspaces,
+                        ),
+                        array(
                             'content' => ($client_data["notify_upload"] == '1') ? __('Yes', 'cftp_admin') : __('No', 'cftp_admin'),
                         ),
                         array(
@@ -417,13 +438,14 @@ $count = $sql->rowCount();
                         ),
                         array(
                             'actions' => true,
-                            'content' =>  '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __("Files", "cftp_admin") . '</a>' . "\n" .
-                                            '<a href="' . $groups_link . '" class="btn btn-sm ' . $groups_button . '">' . __("Groups", "cftp_admin") . '</a>' . "\n" .
-                                            '<a href="' . CLIENT_VIEW_FILE_LIST_URL . '?client=' . html_output($client_data["username"]) . '" class="btn btn-primary btn-sm" target="_blank">' . __('As client', 'cftp_admin') . '</a>' . "\n"
+                            'content' => '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __("Files", "cftp_admin") . '</a>' . "\n" .
+                                '<a href="' . $groups_link . '" class="btn btn-sm ' . $groups_button . '">' . __("Groups", "cftp_admin") . '</a>' . "\n" .
+                                '<a href="' . $workspaces_link . '" class="btn btn-sm ' . $workspaces_button . '">' . __("Workspaces", "cftp_admin") . '</a>' . "\n" .
+                                '<a href="' . CLIENT_VIEW_FILE_LIST_URL . '?client=' . html_output($client_data["username"]) . '" class="btn btn-primary btn-sm" target="_blank">' . __('As client', 'cftp_admin') . '</a>' . "\n"
                         ),
                         array(
                             'actions' => true,
-                            'content' =>  '<a href="clients-edit.php?id=' . $client_data["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n"
+                            'content' => '<a href="clients-edit.php?id=' . $client_data["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>' . "\n"
                         ),
                     );
 
@@ -450,7 +472,6 @@ $count = $sql->rowCount();
             ?>
         </form>
     </div>
-</div>
 
 <?php
-    include_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+include_once ADMIN_VIEWS_DIR . DS . 'footer.php';

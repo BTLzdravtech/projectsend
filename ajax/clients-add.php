@@ -8,7 +8,7 @@
 
 use ProjectSend\Classes\Users;
 
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once '../bootstrap.php';
 
 global $dbh;
@@ -34,8 +34,8 @@ $client_arguments = array(
 <div class="white-box ajax">
     <div class="white-box-interior">
         <?php
-            // If the form was submited with errors, show them here.
-            echo $new_client->getValidationErrors();
+        // If the form was submited with errors, show them here.
+        echo $new_client->getValidationErrors();
 
         if (isset($new_response)) {
             /**

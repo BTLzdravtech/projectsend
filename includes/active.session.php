@@ -12,7 +12,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
 /**
  * Check for a complete installation
-*/
+ */
 if (!is_projectsend_installed()) {
     header("Location:install/index.php");
     exit;
@@ -48,13 +48,13 @@ if ($global_level != 0) {
  */
 if ($global_account['active'] == '0') {
     /**
- * Prevent an infinite loop
-*/
+     * Prevent an infinite loop
+     */
     if (!isset($_SESSION['logout'])) {
         $_SESSION['logout'] = '1';
     } else {
         unset($_SESSION['logout']);
-        header("location:".BASE_URI.'process.php?do=logout');
+        header("location:" . BASE_URI . 'process.php?do=logout');
         exit;
     }
 }

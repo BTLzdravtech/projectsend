@@ -32,10 +32,10 @@ class Validation
         $this->dbh = $dbh;
         $this->allowed_upper = range('A', 'Z');
         $this->allowed_lower = range('a', 'z');
-        $this->allowed_numbers = array('0','1','2','3','4','5','6','7','8','9');
-        $this->allowed_symbols = array('`','!','"','?','$','%','^','&','*','(',')','_','-','+','=','{','[','}',']',':',';','@','~','#','|','<',',','>','.',"'","/",'\\');
+        $this->allowed_numbers = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        $this->allowed_symbols = array('`', '!', '"', '?', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+', '=', '{', '[', '}', ']', ':', ';', '@', '~', '#', '|', '<', ',', '>', '.', "'", "/", '\\');
     }
-    
+
     private function addError($error)
     {
         $this->errors[] = $error;
@@ -148,14 +148,14 @@ class Validation
                 'chars' => $this->allowed_symbols,
             ),
         );
-    
+
         $rules_active = array();
         foreach ($rules as $rule => $data) {
             if ($data['value'] == '1') {
                 $rules_active[$rule] = $data['chars'];
             }
         }
-        
+
         if (count($rules_active) > 0) {
             $char_errors = 0;
 
@@ -321,7 +321,7 @@ class Validation
                 break;
         }
     }
-    
+
     public function passed()
     {
         if (!empty($this->errors)) {
@@ -340,7 +340,7 @@ class Validation
         $validation_errors_title = __('The following errors were found', 'cftp_admin');
         $before_error = '<div class="alert alert-danger alert-block">
                             <a href="#" class="close" data-dismiss="alert">&times;</a>
-                            <p class="alert-title">'.$validation_errors_title.':</p>
+                            <p class="alert-title">' . $validation_errors_title . ':</p>
                             <ol>';
         $after_error = '</ol>
                     </div>';
@@ -348,12 +348,12 @@ class Validation
         if (!empty($this->errors)) {
             $return = $before_error;
             foreach ($this->errors as $error) {
-                $return .= "<li>".$error."</li>";
+                $return .= "<li>" . $error . "</li>";
             }
             $return .= $after_error;
 
             $this->errors = [];
-            
+
             return $return;
         }
     }

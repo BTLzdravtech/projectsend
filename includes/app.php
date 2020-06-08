@@ -16,16 +16,16 @@ session_start();
  * on the footer blocks.
  *
  */
- define('SYSTEM_NAME', 'ProjectSend');
- define('SYSTEM_URI', 'https://send.medictech.com/');
- define('SYSTEM_URI_LABEL', 'ProjectSend on github');
- define('DONATIONS_URL', 'https://www.projectsend.org/donations/');
- 
+define('SYSTEM_NAME', 'ProjectSend');
+define('SYSTEM_URI', 'https://send.medictech.com/');
+define('SYSTEM_URI_LABEL', 'ProjectSend on github');
+define('DONATIONS_URL', 'https://www.projectsend.org/donations/');
+
 /**
  * Current version.
  * Updated only when releasing a new downloadable complete version.
  */
-define('CURRENT_VERSION', 'r1116');
+define('CURRENT_VERSION', 'r1120');
 
 /**
  * Required software versions
@@ -38,7 +38,7 @@ define('REQUIRED_VERSION_MYSQL', '5.0');
  * Contribution by Scott Wright on
  * http://code.google.com/p/clients-oriented-ftp/issues/detail?id=230
  */
-define('PROTOCOL', empty($_SERVER['HTTPS'])? 'http' : 'https');
+define('PROTOCOL', empty($_SERVER['HTTPS']) ? 'http' : 'https');
 
 /**
  * DEBUG constant effects:
@@ -67,13 +67,16 @@ define('DB_CHARSET', 'utf8');
  * @link http://www.php.net/manual/en/function.error-reporting.php
  */
 if (DEBUG === true) {
+    ini_set('display_errors', 'on');
+    ini_set('error_reporting', 'E_ALL');
+    ini_set('display_startup_errors', 'On');
     error_reporting(E_ALL);
 } else {
     error_reporting(0);
 }
 
-define('GLOBAL_TIME_LIMIT', 240*60);
-define('UPLOAD_TIME_LIMIT', 120*60);
+define('GLOBAL_TIME_LIMIT', 240 * 60);
+define('UPLOAD_TIME_LIMIT', 120 * 60);
 @set_time_limit(GLOBAL_TIME_LIMIT);
 
 /**
@@ -93,7 +96,7 @@ define('UPDATES_FEED_URI', 'https://projectsend.org/serve/versions');
  *
  * @see sys.config.sample.php
  */
-if (!file_exists(ROOT_DIR.'/includes/sys.config.php')) {
+if (!file_exists(ROOT_DIR . '/includes/sys.config.php')) {
     if (!defined('IS_MAKE_CONFIG')) {
         // the following script returns only after the creation of the configuration file
         if (defined('IS_INSTALL')) {
@@ -103,7 +106,7 @@ if (!file_exists(ROOT_DIR.'/includes/sys.config.php')) {
         }
     }
 } else {
-    include_once ROOT_DIR.'/includes/sys.config.php';
+    include_once ROOT_DIR . '/includes/sys.config.php';
 }
 
 /**
@@ -167,27 +170,27 @@ define('TABLE_WORKSPACES', TABLES_PREFIX . 'workspaces');
 define('TABLE_WORKSPACES_USERS', TABLES_PREFIX . 'workspaces_users');
 
 $original_basic_tables = array(
-                                TABLE_FILES,
-                                TABLE_OPTIONS,
-                                TABLE_USERS
-                            );
+    TABLE_FILES,
+    TABLE_OPTIONS,
+    TABLE_USERS
+);
 
 $all_system_tables = array(
-                            'files',
-                            'files_relations',
-                            'downloads',
-                            'notifications',
-                            'options',
-                            'users',
-                            'groups',
-                            'members',
-                            'members_requests',
-                            'folders',
-                            'categories',
-                            'categories_relations',
-                            'actions_log',
-                            'password_reset',
-                        );
+    'files',
+    'files_relations',
+    'downloads',
+    'notifications',
+    'options',
+    'users',
+    'groups',
+    'members',
+    'members_requests',
+    'folders',
+    'categories',
+    'categories_relations',
+    'actions_log',
+    'password_reset',
+);
 
 //$current_tables = array(TABLE_FILES,TABLE_FILES_RELATIONS,TABLE_OPTIONS,TABLE_USERS,TABLE_GROUPS,TABLE_MEMBERS,TABLE_FOLDERS,TABLES_PREFIX,TABLE_LOG,TABLE_CATEGORIES,TABLE_CATEGORIES_RELATIONS);
 
@@ -195,7 +198,7 @@ $all_system_tables = array(
  * This values affect both validation methods (client and server side)
  * and also the maxlength value of the form fields.
  */
-define('MIN_USER_CHARS', 5);
+define('MIN_USER_CHARS', 2);
 define('MAX_USER_CHARS', 60);
 define('MIN_PASS_CHARS', 5);
 define('MAX_PASS_CHARS', 60);
@@ -207,10 +210,10 @@ define('MAX_GENERATE_PASS_CHARS', 20);
  * Cookie expiration time (in seconds).
  * Set by default to 30 days (60*60*24*30).
  */
-define('COOKIE_EXP_TIME', 60*60*24*30);
+define('COOKIE_EXP_TIME', 60 * 60 * 24 * 30);
 
 /* Password recovery */
-define('PASSWORD_RECOVERY_TOKEN_EXPIRATION_TIME', 60*60*24);
+define('PASSWORD_RECOVERY_TOKEN_EXPIRATION_TIME', 60 * 60 * 24);
 
 /**
  * Time (in seconds) after which the session becomes invalid.
@@ -218,7 +221,7 @@ define('PASSWORD_RECOVERY_TOKEN_EXPIRATION_TIME', 60*60*24);
  * Case uses must be analyzed before enabling this function
  */
 define('SESSION_TIMEOUT_EXPIRE', true);
-$session_expire_time = 31*24*60*60; // 31 days * 24 hours * 60 minutes * 60 seconds
+$session_expire_time = 31 * 24 * 60 * 60; // 31 days * 24 hours * 60 minutes * 60 seconds
 define('SESSION_EXPIRE_TIME', $session_expire_time);
 
 /* Define the folder where uploaded files will reside */
@@ -260,7 +263,7 @@ define('THUMBS_MAX_HEIGHT', 300);
 define('THUMBS_QUALITY', 90);
 
 /* Widgets */
-define('WIDGETS_FOLDER', ROOT_DIR.'/includes/widgets/');
+define('WIDGETS_FOLDER', ROOT_DIR . '/includes/widgets/');
 
 /* Default e-mail templates files */
 define('EMAIL_TEMPLATE_HEADER', 'header.html');

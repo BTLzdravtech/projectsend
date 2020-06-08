@@ -1,0 +1,11 @@
+{
+  "globals": {
+    "$": "readonly",
+    "jQuery": "readonly",
+    "CKEDITOR": "readonly",
+    "admin": "readonly",
+    "json_strings": "readonly",
+    "Cookies": "readonly",
+    "bootbox": "readonly"
+  }
+}

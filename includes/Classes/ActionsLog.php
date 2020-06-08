@@ -5,6 +5,7 @@
  * @package    ProjectSend
  * @subpackage Classes
  */
+
 namespace ProjectSend\Classes;
 
 use \PDO;
@@ -12,7 +13,6 @@ use \PDO;
 /**
  * More to be added soon.
  */
-
 class ActionsLog
 {
     private $action;
@@ -33,7 +33,7 @@ class ActionsLog
 
         $this->dbh = $dbh;
     }
-   
+
     public function getActivitiesReferences()
     {
         return array(
@@ -82,6 +82,8 @@ class ActionsLog
             42 => __("A workspace was edited", 'cftp_admin'),
             43 => __("A workspace was deleted", 'cftp_admin'),
             44 => __("A user created a new workspace", 'cftp_admin'),
+            46 => __('A file is assigned to a user', 'cftp_admin'),
+            47 => __('A file has been unassigned from a user.', 'cftp_admin'),
         );
     }
 
@@ -93,7 +95,7 @@ class ActionsLog
     {
         /**
          * Define the account information
-        */
+         */
         $this->action = $arguments['action'];
         $this->owner_id = $arguments['owner_id'];
         $this->owner_user = (!empty($arguments['owner_user'])) ? $arguments['owner_user'] : CURRENT_USER_NAME;
@@ -101,10 +103,10 @@ class ActionsLog
         $this->affected_account = (!empty($arguments['affected_account'])) ? $arguments['affected_account'] : null;
         $this->affected_file_name = (!empty($arguments['affected_file_name'])) ? $arguments['affected_file_name'] : null;
         $this->affected_account_name = (!empty($arguments['affected_account_name'])) ? $arguments['affected_account_name'] : null;
-        
+
         /**
          * Get the real name of the client or user
-        */
+         */
         if (!empty($arguments['username_column'])) {
             $user = get_user_by_username($this->affected_account_name);
             $this->affected_account_name = $user['name'];
@@ -112,7 +114,7 @@ class ActionsLog
 
         /**
          * Get the title of the file on downloads
-        */
+         */
         if (!empty($arguments['file_title_column'])) {
             $file = get_file_by_filename($this->affected_file_name);
             $this->affected_file_name = $file['title'];
@@ -120,9 +122,9 @@ class ActionsLog
 
         /**
          * Insert the client information into the database
-        */
+         */
         $lq = "INSERT INTO " . TABLE_LOG . " (action,owner_id,owner_user";
-        
+
         if (!empty($this->affected_file)) {
             $lq .= ",affected_file";
         }
@@ -135,15 +137,15 @@ class ActionsLog
         if (!empty($this->affected_account_name)) {
             $lq .= ",affected_account_name";
         }
-        
+
         $lq .= ") VALUES (:action, :owner_id, :owner_user";
 
         $params = array(
-            ':action'        => $this->action,
-            ':owner_id'        => $this->owner_id,
-            ':owner_user'    => $this->owner_user,
+            ':action' => $this->action,
+            ':owner_id' => $this->owner_id,
+            ':owner_user' => $this->owner_user,
         );
-        
+
         if (!empty($this->affected_file)) {
             $lq .= ", :file";
             $params['file'] = $this->affected_file;

@@ -1,6 +1,6 @@
 <?php /**
-       * @noinspection PhpUndefinedConstantInspection
-       */
+ * @noinspection PhpUndefinedConstantInspection
+ */
 
 /**
  * Class that handles all the actions and functions that can be applied to
@@ -46,7 +46,7 @@ class Users
 
     // Workspaces where the user is member
     private $workspaces;
-    
+
     // @todo implement meta data
     private $meta;
 
@@ -57,7 +57,7 @@ class Users
 
     // Permissions
     private $allowed_actions_roles;
-    
+
     public function __construct(PDO $dbh = null)
     {
         if (empty($dbh)) {
@@ -80,7 +80,7 @@ class Users
     {
         $this->id = $id;
     }
-  
+
     /**
      * Return the ID
      *
@@ -180,7 +180,7 @@ class Users
         if ($statement->rowCount() == 0) {
             return false;
         }
-    
+
         while ($row = $statement->fetch()) {
             $this->name = html_output($row['name']);
             $this->email = html_output($row['email']);
@@ -209,7 +209,7 @@ class Users
                     $this->files[] = $file['id'];
                 }
             }
-    
+
             // Groups
             $groups_object = new MembersActions($this->dbh);
             $this->groups = $groups_object->client_get_groups(
@@ -240,22 +240,22 @@ class Users
     public function getProperties()
     {
         return [
-           'id' => $this->id,
-           'name' => $this->name,
-           'email' => $this->email,
-           'username' => $this->username,
-           'password' => $this->password,
-           'role' => $this->role,
-           'active' => $this->active,
-           'max_file_size' => $this->max_file_size,
-           'created_date' => $this->created_date,
-           'notify_upload' => $this->notify_upload,
-           'files' => $this->files,
-           'groups' => $this->groups,
-           'workspaces' => $this->workspaces,
-           'meta' => $this->meta,
-           'objectguid' => $this->objectguid,
-           'google_user' => $this->google_user,
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'username' => $this->username,
+            'password' => $this->password,
+            'role' => $this->role,
+            'active' => $this->active,
+            'max_file_size' => $this->max_file_size,
+            'created_date' => $this->created_date,
+            'notify_upload' => $this->notify_upload,
+            'files' => $this->files,
+            'groups' => $this->groups,
+            'workspaces' => $this->workspaces,
+            'meta' => $this->meta,
+            'objectguid' => $this->objectguid,
+            'google_user' => $this->google_user,
         ];
     }
 
@@ -321,7 +321,7 @@ class Users
 
         /**
          * Password checks
-        */
+         */
         if (isset($validate_password) && $validate_password === true) {
             $validation->validate('completed', $this->password, $json_strings['validation']['no_pass']);
             $validation->validate('password', $this->password, $json_strings['validation']['valid_pass'] . " " . addslashes($json_strings['validation']['valid_chars']));
@@ -358,7 +358,7 @@ class Users
 
     private function hashPassword($password)
     {
-        return password_hash(password, PASSWORD_DEFAULT, [ 'cost' => HASH_COST_LOG2 ]);
+        return password_hash($password, PASSWORD_DEFAULT, ['cost' => HASH_COST_LOG2]);
     }
 
     /**
@@ -378,7 +378,7 @@ class Users
 
             /**
              * Who is creating the client?
-            */
+             */
             if (defined('CURRENT_USER_ID')) {
                 $this->owner_id = CURRENT_USER_ID;
             }
@@ -388,7 +388,7 @@ class Users
 
             /**
              * Insert the client information into the database
-            */
+             */
             $statement = $this->dbh->prepare(
                 "INSERT INTO " . TABLE_USERS . " (
                     name, user, password, level, email, notify, owner_id, created_by, active, account_requested, max_file_size, objectguid, google_user
@@ -427,7 +427,7 @@ class Users
 
                 /**
                  * Record the action log
-                */
+                 */
                 $created_by = !empty(CURRENT_USER_ID) ? CURRENT_USER_ID : $this->id;
                 $this->logger->addEntry(
                     [
@@ -450,10 +450,10 @@ class Users
                         $email_type = "new_user";
                         break;
                 }
-                
+
                 /**
                  * Send account data by email
-                */
+                 */
                 $notify_user = new Emails;
                 $email_arguments = array(
                     'type' => $email_type,
@@ -500,7 +500,7 @@ class Users
 
             /**
              * SQL query
-            */
+             */
             $query = "UPDATE " . TABLE_USERS . " SET
                 name = :name,
                 level = :role,
@@ -512,13 +512,13 @@ class Users
 
             /**
              * Add the password to the query if it's not the dummy value ''
-            */
+             */
             if (!empty($this->password)) {
                 $query .= ", password = :password";
             }
-            
+
             $query .= " WHERE id = :id";
-            
+
             $statement = $this->dbh->prepare($query);
             $statement->bindParam(':name', $this->name);
             $statement->bindParam(':role', $this->role, PDO::PARAM_INT);
@@ -551,7 +551,7 @@ class Users
 
                 /**
                  * Record the action log
-                */
+                 */
                 $this->logger->addEntry(
                     [
                         'action' => $log_action_number,
@@ -583,7 +583,7 @@ class Users
         if (isset($this->id)) {
             /**
              * Do a permissions check
-            */
+             */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
                 $sql = $this->dbh->prepare('DELETE FROM ' . TABLE_USERS . ' WHERE id=:id');
                 $sql->bindParam(':id', $this->id, PDO::PARAM_INT);
@@ -602,7 +602,7 @@ class Users
 
                 /**
                  * Record the action log
-                */
+                 */
                 $this->logger->addEntry(
                     [
                         'action' => $log_action_number,
@@ -610,11 +610,11 @@ class Users
                         'affected_account_name' => $this->name,
                     ]
                 );
-                
+
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -649,7 +649,7 @@ class Users
         if (isset($this->id)) {
             /**
              * Do a permissions check
-            */
+             */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
                 $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active_state WHERE id=:id');
                 $sql->bindParam(':active_state', $change_to, PDO::PARAM_INT);
@@ -658,7 +658,7 @@ class Users
 
                 /**
                  * Record the action log
-                */
+                 */
                 $this->logger->addEntry(
                     [
                         'action' => $log_action_number,
@@ -666,11 +666,11 @@ class Users
                         'affected_account_name' => $this->name,
                     ]
                 );
-                
+
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -683,7 +683,7 @@ class Users
         if (isset($this->id)) {
             /**
              * Do a permissions check
-            */
+             */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
                 $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:requested, account_denied=:denied WHERE id=:id');
                 $sql->bindValue(':active', 1, PDO::PARAM_INT);
@@ -694,7 +694,7 @@ class Users
 
                 /**
                  * Record the action log
-                */
+                 */
                 $this->logger->addEntry(
                     [
                         'action' => 38,
@@ -702,14 +702,14 @@ class Users
                         'affected_account_name' => $this->name,
                     ]
                 );
-                
+
                 return true;
             }
         }
 
         return false;
     }
- 
+
     /**
      * Deny account
      */
@@ -718,7 +718,7 @@ class Users
         if (isset($this->id)) {
             /**
              * Do a permissions check
-            */
+             */
             if (isset($this->allowed_actions_roles) && current_role_in($this->allowed_actions_roles)) {
                 $sql = $this->dbh->prepare('UPDATE ' . TABLE_USERS . ' SET active=:active, account_requested=:account_requested, account_denied=:account_denied WHERE id=:id');
                 $sql->bindValue(':active', 0, PDO::PARAM_INT);
@@ -729,7 +729,7 @@ class Users
 
                 /**
                  * Record the action log
-                */
+                 */
                 $this->logger->addEntry(
                     [
                         'action' => 38,
@@ -737,11 +737,11 @@ class Users
                         'affected_account_name' => $this->name,
                     ]
                 );
-                
+
                 return true;
             }
         }
- 
+
         return false;
     }
 }

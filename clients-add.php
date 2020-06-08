@@ -10,12 +10,12 @@ use ProjectSend\Classes\ActionsLog;
 use ProjectSend\Classes\MembersActions;
 use ProjectSend\Classes\Users;
 
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
 
 /**
  * @var PDO $dbh
-*/
+ */
 global $dbh;
 
 $active_nav = 'clients';
@@ -46,7 +46,7 @@ if ($_POST) {
      * and again on the form if validation failed.
      */
     $client_arguments = array(
-        'username'=> $_POST['username'],
+        'username' => $_POST['username'],
         'password' => $_POST['password'],
         'name' => $_POST['name'],
         'email' => $_POST['email'],
@@ -60,10 +60,10 @@ if ($_POST) {
     if (!isset($_POST['transfer'])) {
         /**
          * Validate the information from the posted form.
-        */
+         */
         /**
          * Create the user if validation is correct.
-        */
+         */
         $new_client->setType('new_client');
         $new_client->set($client_arguments);
 
@@ -110,20 +110,19 @@ if ($_POST) {
         $statement->execute(array(':client_id' => $client['id']));
 
         // change owner of client files to old owner before transfer
-
         $statement = $dbh->prepare("UPDATE " . TABLE_FILES . " SET owner_id = :owner_id WHERE owner_id = :client_id");
         $statement->execute(array(':owner_id' => $transferred_from_id, 'client_id' => $client['id']));
 
         // change client owner_id
-        $statement = $dbh->prepare("UPDATE " . TABLE_USERS . " SET owner_id = :owner_id WHERE id = :id");
-        $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, 'id' => $client['id']));
+        $statement = $dbh->prepare("UPDATE " . TABLE_USERS . " SET owner_id = :owner_id, created_by = :created_by WHERE id = :id");
+        $result = $statement->execute(array(':owner_id' => CURRENT_USER_ID, ':created_by' => CURRENT_USER_USERNAME, 'id' => $client['id']));
         $logger = new ActionsLog;
         $logger->addEntry(
             [
-            'action' => 41,
-            'owner_id' => $transferred_from_id,
-            'affected_account' => $client['id'],
-            'affected_account_name' => $client['name'],
+                'action' => 41,
+                'owner_id' => $transferred_from_id,
+                'affected_account' => $client['id'],
+                'affected_account_name' => $client['name'],
             ]
         );
         if (!isset($_POST['ajax'])) {
@@ -139,35 +138,35 @@ if ($_POST) {
 }
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-6">
-    <div class="white-box">
-        <div class="white-box-interior">
-            <?php
+    <div class="col-xs-12 col-sm-12 col-lg-6">
+        <div class="white-box">
+            <div class="white-box-interior">
+                <?php
                 // If the form was submited with errors, show them here.
                 echo $new_client->getValidationErrors();
 
-            if (isset($new_response)) {
-                /**
-                 * Get the process state and show the corresponding ok or error messages.
-                 */
-                switch ($new_response['query']) {
-                    case 0:
-                        $msg = __('There was an error. Please try again.', 'cftp_admin');
-                        echo system_message('danger', $msg);
-                        break;
+                if (isset($new_response)) {
+                    /**
+                     * Get the process state and show the corresponding ok or error messages.
+                     */
+                    switch ($new_response['query']) {
+                        case 0:
+                            $msg = __('There was an error. Please try again.', 'cftp_admin');
+                            echo system_message('danger', $msg);
+                            break;
+                    }
+                } else {
+                    /**
+                     * If not $new_response is set, it means we are just entering for the first time.
+                     * Include the form.
+                     */
+                    $clients_form_type = 'new_client';
+                    include_once FORMS_DIR . DS . 'clients.php';
                 }
-            } else {
-                /**
-                 * If not $new_response is set, it means we are just entering for the first time.
-                 * Include the form.
-                 */
-                $clients_form_type = 'new_client';
-                include_once FORMS_DIR . DS . 'clients.php';
-            }
-            ?>
+                ?>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

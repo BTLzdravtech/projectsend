@@ -17,11 +17,11 @@ $items = array();
 /**
  * Items for system users
  */
-if (current_role_in(array( 9,8,7 ))) {
+if (current_role_in(array(9, 8, 7))) {
 
     /**
      * Count inactive CLIENTS
-    */
+     */
     /*
     $sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level = '0' AND account_requested='0'" );
     $sql_inactive->execute();
@@ -32,21 +32,21 @@ if (current_role_in(array( 9,8,7 ))) {
 
     /**
      * Count new groups MEMBERSHIP requests
-    */
+     */
     $sql_requests = $dbh->prepare("SELECT DISTINCT TMR.id FROM " . TABLE_MEMBERS_REQUESTS . " TMR INNER JOIN " . TABLE_GROUPS . " TG ON TMR.group_id = TG.id WHERE denied='0'" . $tg_owner_id);
     $sql_requests->execute();
     define('COUNT_MEMBERSHIP_REQUESTS', $sql_requests->rowCount());
 
     /**
      * Count ALREADY DENIED groups MEMBERSHIP requests
-    */
+     */
     $sql_requests = $dbh->prepare("SELECT DISTINCT TMR.id FROM " . TABLE_MEMBERS_REQUESTS . " TMR INNER JOIN " . TABLE_GROUPS . " TG ON TMR.group_id = TG.id WHERE denied='1'" . $tg_owner_id);
     $sql_requests->execute();
     define('COUNT_MEMBERSHIP_DENIED', $sql_requests->rowCount());
 
     /**
      * Count new CLIENTS account requests
-    */
+     */
     $sql_requests = $dbh->prepare("SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE account_requested='1' AND account_denied='0'");
     $sql_requests->execute();
     define('COUNT_CLIENTS_REQUESTS', $sql_requests->rowCount());
@@ -61,7 +61,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     /**
      * Count inactive USERS
-    */
+     */
     /*
     $sql_inactive = $dbh->prepare( "SELECT DISTINCT user FROM " . TABLE_USERS . " WHERE active = '0' AND level != '0'" );
     $sql_inactive->execute();
@@ -70,7 +70,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['dashboard'] = array(
         'nav' => 'dashboard',
-        'level' => array( 9,8,7 ),
+        'level' => array(9, 8, 7),
         'main' => array(
             'label' => __('Dashboard', 'cftp_admin'),
             'icon' => 'tachometer',
@@ -144,7 +144,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['workspaces'] = array(
         'nav' => 'workspaces',
-        'level' => array( 9,8 ),
+        'level' => array(9, 8),
         'main' => array(
             'label' => __('Workspaces', 'cftp_admin'),
             'icon' => 'users'
@@ -162,7 +162,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['clients'] = array(
         'nav' => 'clients',
-        'level' => array( 9,8 ),
+        'level' => array(9, 8),
         'main' => array(
             'label' => __('Clients', 'cftp_admin'),
             'icon' => 'address-card',
@@ -195,7 +195,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['groups'] = array(
         'nav' => 'groups',
-        'level' => array( 9,8 ),
+        'level' => array(9, 8),
         'main' => array(
             'label' => __('Clients groups', 'cftp_admin'),
             'icon' => 'th-large',
@@ -227,7 +227,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['users'] = array(
         'nav' => 'users',
-        'level' => array( 9 ),
+        'level' => array(9),
         'main' => array(
             'label' => __('System Users', 'cftp_admin'),
             'icon' => 'users',
@@ -249,7 +249,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['templates'] = array(
         'nav' => 'templates',
-        'level' => array( 9 ),
+        'level' => array(9),
         'main' => array(
             'label' => __('Templates', 'cftp_admin'),
             'icon' => 'desktop',
@@ -264,7 +264,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['options'] = array(
         'nav' => 'options',
-        'level' => array( 9 ),
+        'level' => array(9),
         'main' => array(
             'label' => __('Options', 'cftp_admin'),
             'icon' => 'cog',
@@ -307,7 +307,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['emails'] = array(
         'nav' => 'emails',
-        'level' => array( 9 ),
+        'level' => array(9),
         'main' => array(
             'label' => __('E-mail templates', 'cftp_admin'),
             'icon' => 'envelope',
@@ -368,7 +368,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['tools'] = array(
         'nav' => 'tools',
-        'level' => array( 9 ),
+        'level' => array(9),
         'main' => array(
             'label' => __('Tools', 'cftp_admin'),
             'icon' => 'wrench',
@@ -385,7 +385,7 @@ if (current_role_in(array( 9,8,7 ))) {
     if (CLIENTS_CAN_UPLOAD == 1) {
         $items['upload'] = array(
             'nav' => 'upload',
-            'level' => array( 9,8,7,0 ),
+            'level' => array(9, 8, 7, 0),
             'main' => array(
                 'label' => __('Upload', 'cftp_admin'),
                 'link' => 'upload-from-computer.php',
@@ -396,7 +396,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['manage_files'] = array(
         'nav' => 'manage',
-        'level' => array( 9,8,7,0 ),
+        'level' => array(9, 8, 7, 0),
         'main' => array(
             'label' => __('Manage files', 'cftp_admin'),
             'link' => 'manage-files.php',
@@ -406,7 +406,7 @@ if (current_role_in(array( 9,8,7 ))) {
 
     $items['view_files'] = array(
         'nav' => 'template',
-        'level' => array( 9,8,7,0 ),
+        'level' => array(9, 8, 7, 0),
         'main' => array(
             'label' => __('View my files', 'cftp_admin'),
             'link' => CLIENT_VIEW_FILE_LIST_URL_PATH,
@@ -429,13 +429,13 @@ foreach ($items as $item) {
     }
 
     if (current_role_in($item['level'])) {
-        $current = (!empty($active_nav) && $active_nav == $item['nav']) ? 'current_nav' : '';
+        $current = (!empty($active_nav) && $active_nav == $item['nav']) ? 'current_nav active' : '';
         $badge = (!empty($item['main']['badge'])) ? ' <span class="badge">' . $item['main']['badge'] . '</span>' : '';
-        $icon = (!empty($item['main']['icon'])) ? '<i class="fa fa-'.$item['main']['icon'].' fa-fw" aria-hidden="true"></i>' : '';
+        $icon = (!empty($item['main']['icon'])) ? '<i class="fa fa-' . $item['main']['icon'] . ' fa-fw" aria-hidden="true"></i>' : '';
 
         /**
          * Top level tag
-        */
+         */
         if (!isset($item['sub'])) {
             $format = "<li class='%s'>\n\t<a href='%s' class='nav_top_level'>%s<span class='menu_label'>%s%s</span></a>\n</li>\n";
             $menu_output .= sprintf($format, $current, BASE_URI . $item['main']['link'], $icon, $badge, $item['main']['label']);
@@ -444,10 +444,10 @@ foreach ($items as $item) {
             $menu_output .= sprintf($format, $current, $icon, $item['main']['label'], $badge);
             /**
              * Submenu
-            */
+             */
             foreach ($item['sub'] as $subitem) {
                 $badge = (!empty($subitem['badge'])) ? ' <span class="badge">' . $subitem['badge'] . '</span>' : '';
-                $icon = (!empty($subitem['icon'])) ? '<i class="fa fa-'.$subitem['icon'].' fa-fw" aria-hidden="true"></i>' : '';
+                $icon = (!empty($subitem['icon'])) ? '<i class="fa fa-' . $subitem['icon'] . ' fa-fw" aria-hidden="true"></i>' : '';
                 if (!empty($subitem['divider'])) {
                     $menu_output .= "\t\t<li class='divider'></li>\n";
                 } else {

@@ -6,6 +6,7 @@
  * @package    ProjectSend
  * @subpackage Classes
  */
+
 namespace ProjectSend\Classes;
 
 use \PDO;
@@ -18,8 +19,9 @@ class UploadFile
     private $dbh;
     private $logger;
 
-    private $groups;
     private $users;
+    private $clients;
+    private $groups;
 
     public $file_id;
     private $file_name;
@@ -54,7 +56,7 @@ class UploadFile
     {
         $this->file_id = $id;
     }
-  
+
     /**
      * Return the ID
      *
@@ -74,7 +76,7 @@ class UploadFile
      * Original name: formatURL
      * John Magnolia / svick on StackOverflow
      *
-     * @param  string $unformatted
+     * @param string $unformatted
      * @return string
      * @link   http://stackoverflow.com/questions/2668854/sanitizing-strings-to-make-them-url-and-filename-safe
      */
@@ -83,26 +85,26 @@ class UploadFile
         $got = pathinfo(strtolower(trim($unformatted)));
         $url = $got['filename'];
         $ext = $got['extension'];
-    
+
         //replace accent characters, forien languages
         $search = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
         $replace = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o');
         $url = str_replace($search, $replace, $url);
-    
+
         //replace common characters
         $search = array('&', '£', '$');
         $replace = array('and', 'pounds', 'dollars');
-        $url= str_replace($search, $replace, $url);
-    
+        $url = str_replace($search, $replace, $url);
+
         // remove - for spaces and union characters
         $find = array(' ', '&', '\r\n', '\n', '+', ',', '//');
         $url = str_replace($find, '-', $url);
-    
+
         //delete and replace rest of special chars
         $find = array('/[^a-z0-9\-<>_]/', '/[\-]+/', '/<[^>]*>/');
         $replace = array('', '-', '');
         $uri = preg_replace($find, $replace, $url);
-    
+
         return $uri . '.' . $ext;
     }
 
@@ -120,7 +122,7 @@ class UploadFile
             $safe_filename = $filename;
             /** @noinspection PhpUndefinedConstantInspection */
             $allowed_file_types = str_replace(',', '|', ALLOWED_FILE_TYPES);
-            $file_types = "/^\.(".$allowed_file_types."){1}$/i";
+            $file_types = "/^\.(" . $allowed_file_types . "){1}$/i";
             if (preg_match($file_types, strrchr($safe_filename, '.'))) {
                 return true;
             }
@@ -156,7 +158,7 @@ class UploadFile
         $this->name = $name;
         $this->folder = $folder;
         $safe_filename = $this->generateSafeFilename($this->name);
-        if (rename($this->folder.'/'.$this->name, $this->folder.'/'.$safe_filename)) {
+        if (rename($this->folder . '/' . $this->name, $this->folder . '/' . $safe_filename)) {
             return $safe_filename;
         } else {
             return false;
@@ -178,9 +180,9 @@ class UploadFile
         $username = CURRENT_USER_USERNAME;
         $makehash = sha1($username);
 
-        $filename_on_disk = time().'-'.$makehash.'-'.$filename;
+        $filename_on_disk = time() . '-' . $makehash . '-' . $filename;
         //$this->file_final_name = $filename;
-        $path = UPLOADED_FILES_DIR.DS.$filename_on_disk;
+        $path = UPLOADED_FILES_DIR . DS . $filename_on_disk;
         if (rename($uploaded_name, $path)) {
             chmod($path, 0644);
             $path = array(
@@ -213,10 +215,10 @@ class UploadFile
         $is_public = (!empty($arguments['public'])) ? 1 : 0;
         $is_workspace = (!empty($arguments['workspaces'])) ? 1 : 0;
         $public_token = generateRandomString(32);
-        
+
         $statement = $this->dbh->prepare(
             "INSERT INTO " . TABLE_FILES . " (url, original_url, filename, description, owner_id, uploader, expires, expiry_date, public_allow, workspace_included, public_token)"
-            ."VALUES (:url, :original_url, :name, :description, :owner_id, :uploader, :expires, :expiry_date, :public, :workspace, :token)"
+            . "VALUES (:url, :original_url, :name, :description, :owner_id, :uploader, :expires, :expiry_date, :public, :workspace, :token)"
         );
         $statement->bindParam(':url', $file_on_disk);
         $statement->bindParam(':original_url', $post_file);
@@ -240,7 +242,7 @@ class UploadFile
         if (!empty($statement)) {
             /**
              * Record the action log
-            */
+             */
             if ($this->uploader_type == 'user') {
                 $action_type = 5;
             } elseif ($this->uploader_type == 'client') {
@@ -261,7 +263,7 @@ class UploadFile
         } else {
             $state['database'] = false;
         }
-        
+
         return $state;
     }
 
@@ -285,7 +287,7 @@ class UploadFile
         $is_public = (!empty($arguments['public'])) ? 1 : 0;
         $is_workspace = (!empty($arguments['workspaces'])) ? 1 : 0;
         $public_token = generateRandomString(32);
-        
+
         $statement = $this->dbh->prepare("SELECT id, public_allow, public_token FROM " . TABLE_FILES . " WHERE url = :url");
         $statement->bindParam(':url', $post_file);
         $statement->execute();
@@ -330,7 +332,7 @@ class UploadFile
         if (!empty($statement)) {
             /**
              * Record the action log
-            */
+             */
             if ($this->uploader_type == 'user') {
                 $action_type = 32;
             } elseif ($this->uploader_type == 'client') {
@@ -351,7 +353,7 @@ class UploadFile
         } else {
             $state['database'] = false;
         }
-        
+
         return $state;
     }
 
@@ -365,6 +367,13 @@ class UploadFile
         $this->uploader_id = $arguments['uploader_id'];
         $this->groups = $arguments['all_groups'];
         $this->users = $arguments['all_users'];
+        $this->clients = $arguments['all_clients'];
+
+        if (!empty($arguments['assign_to']['users'])) {
+            foreach ($arguments['assign_to']['users'] as $user_id) {
+                self::saveAssignment('user', $user_id);
+            }
+        }
 
         if (!empty($arguments['assign_to']['clients'])) {
             foreach ($arguments['assign_to']['clients'] as $client_id) {
@@ -378,21 +387,26 @@ class UploadFile
             }
         }
     }
-    
+
     private function saveAssignment($type, $id)
     {
         if (empty($type) || empty($id)) {
             return false;
         }
 
-        if ($type != 'client' && $type != 'group') {
+        if ($type != 'user' && $type != 'client' && $type != 'group') {
             return false;
         }
 
         switch ($type) {
+            case 'user':
+                $add_to = 'user_id';
+                $account_name = $this->users[$id];
+                $action_number = 46;
+                break;
             case 'client':
                 $add_to = 'client_id';
-                $account_name = $this->users[$id];
+                $account_name = $this->clients[$id];
                 $action_number = 25;
                 break;
             case 'group':
@@ -414,7 +428,7 @@ class UploadFile
         if ($this->uploader_type == 'user') {
             /**
              * Record the action log
-            */
+             */
             $this->logger->addEntry(
                 [
                     'action' => $action_number,
@@ -441,7 +455,7 @@ class UploadFile
 
         /**
          * Define type of uploader for the notifications queries.
-        */
+         */
         if ($this->uploader_type == 'user') {
             $notif_uploader_type = 1;
         } elseif ($this->uploader_type == 'client') {
@@ -456,6 +470,9 @@ class UploadFile
                 foreach ($assignments as $assignment) {
                     $id_only = $assignment;
                     switch ($key) {
+                        case 'users':
+                            $add_to = 'user_id';
+                            break;
                         case 'clients':
                             $add_to = 'client_id';
                             break;
@@ -485,11 +502,11 @@ class UploadFile
                             $current_assignment = $this->file_id . '-' . $add_notify;
                             if (!in_array($current_assignment, $distinct_notifications)) {
                                 $statement = $this->dbh->prepare(
-                                    "INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, client_id, upload_type, sent_status, times_failed)
-                                    VALUES (:file_id, :client_id, :type, '0', '0')"
+                                    "INSERT INTO " . TABLE_NOTIFICATIONS . " (file_id, $add_to, upload_type, sent_status, times_failed)
+                                    VALUES (:file_id, :notification, :type, '0', '0')"
                                 );
                                 $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
-                                $statement->bindParam(':client_id', $add_notify, PDO::PARAM_INT);
+                                $statement->bindParam(':notification', $add_notify, PDO::PARAM_INT);
                                 $statement->bindParam(':type', $notif_uploader_type);
                                 $statement->execute();
 
@@ -511,10 +528,11 @@ class UploadFile
         $this->assign_to = $arguments['assign_to'];
         $this->file_id = $arguments['file_id'];
         $this->file_name = $arguments['file_name'];
+        $current_users = $arguments['current_users'];
         $current_clients = $arguments['current_clients'];
         $current_groups = $arguments['current_groups'];
         $owner_id = $arguments['owner_id'];
-        
+
         $assign_to_clients = array();
         $assign_to_groups = array();
         $delete_from_db_clients = array();
@@ -523,6 +541,9 @@ class UploadFile
         foreach ($this->assign_to as $type => $ids) {
             $id_only = $ids;
             switch ($type) {
+                case 'users':
+                    $assign_to_users = $id_only;
+                    break;
                 case 'clients':
                     $assign_to_clients = $id_only;
                     break;
@@ -531,7 +552,12 @@ class UploadFile
                     break;
             }
         }
-        
+
+        foreach ($current_users as $user) {
+            if (!in_array($user, $assign_to_users)) {
+                $delete_from_db_users[] = $user;
+            }
+        }
         foreach ($current_clients as $client) {
             if (!in_array($client, $assign_to_clients)) {
                 $delete_from_db_clients[] = $client;
@@ -542,8 +568,9 @@ class UploadFile
                 $delete_from_db_groups[] = $group;
             }
         }
-        
+
         $delete_arguments = array(
+            'users' => $delete_from_db_users,
             'clients' => $delete_from_db_clients,
             'groups' => $delete_from_db_groups,
             'owner_id' => $owner_id
@@ -561,7 +588,7 @@ class UploadFile
         $this->file_id = $arguments['file_id'];
         $this->file_name = $arguments['file_name'];
         $owner_id = $arguments['owner_id'];
-        
+
         $delete_from_db_clients = array();
         $delete_from_db_groups = array();
 
@@ -576,7 +603,7 @@ class UploadFile
                 $delete_from_db_groups[] = $row['group_id'];
             }
         }
-        
+
         $delete_arguments = array(
             'clients' => $delete_from_db_clients,
             'groups' => $delete_from_db_groups,
@@ -593,9 +620,49 @@ class UploadFile
      */
     private function deleteAssignments($arguments)
     {
+        $users = $arguments['users'];
         $clients = $arguments['clients'];
         $groups = $arguments['groups'];
         $owner_id = $arguments['owner_id'];
+
+        /**
+         * Get a list of users names for the log
+         */
+        if (!empty($users)) {
+            $delete_users = implode(',', array_unique($users));
+
+            $statement = $this->dbh->prepare("SELECT id, name FROM " . TABLE_USERS . " WHERE FIND_IN_SET(id, :users)");
+            $statement->bindParam(':users', $delete_users);
+            $statement->execute();
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            while ($row = $statement->fetch()) {
+                $users_names[$row['id']] = $row['name'];
+            }
+
+            /**
+             * Remove existing assignments of this file/clients
+             */
+            $statement = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(user_id, :users)");
+            $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
+            $statement->bindParam(':users', $delete_users);
+            $statement->execute();
+
+            /**
+             * Record the action log
+             */
+            foreach ($users as $deleted_user) {
+                $this->logger->addEntry(
+                    [
+                        'action' => 47,
+                        'owner_id' => $owner_id,
+                        'affected_file' => $this->file_id,
+                        'affected_file_name' => $this->file_name,
+                        'affected_account' => $deleted_user,
+                        'affected_account_name' => $users_names[$deleted_user]
+                    ]
+                );
+            }
+        }
 
         /**
          * Get a list of clients names for the log
@@ -613,7 +680,7 @@ class UploadFile
 
             /**
              * Remove existing assignments of this file/clients
-            */
+             */
             $statement = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(client_id, :clients)");
             $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
             $statement->bindParam(':clients', $delete_clients);
@@ -621,7 +688,7 @@ class UploadFile
 
             /**
              * Record the action log
-            */
+             */
             foreach ($clients as $deleted_client) {
                 $this->logger->addEntry(
                     [
@@ -651,7 +718,7 @@ class UploadFile
 
             /**
              * Remove existing assignments of this file/groups
-            */
+             */
             $statement = $this->dbh->prepare("DELETE FROM " . TABLE_FILES_RELATIONS . " WHERE file_id = :file_id AND FIND_IN_SET(group_id, :groups)");
             $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
             $statement->bindParam(':groups', $delete_groups);
@@ -659,7 +726,7 @@ class UploadFile
 
             /**
              * Record the action log
-            */
+             */
             foreach ($groups as $deleted_group) {
                 $this->logger->addEntry(
                     [
@@ -681,13 +748,13 @@ class UploadFile
      */
     public function setCategories($arguments)
     {
-        $this->file_id        = $arguments['file_id'];
-        $categories    = $arguments['categories'];
-        
+        $this->file_id = $arguments['file_id'];
+        $categories = $arguments['categories'];
+
         if (!empty($categories)) {
-            $categories_current    = array();
-            $categories_to_delete    = array();
-            
+            $categories_current = array();
+            $categories_to_delete = array();
+
             $statement = $this->dbh->prepare("SELECT * FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
             $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
             $statement->execute();
@@ -695,7 +762,7 @@ class UploadFile
             while ($row = $statement->fetch()) {
                 $categories_current[$row['cat_id']] = $row['cat_id'];
             }
-    
+
             /**
              * Add existing -on DB- but not selected on the form to
              * the delete array. This uses the ID of the record.
@@ -714,7 +781,7 @@ class UploadFile
                 $statement->bindParam(':categories', $categories_to_delete);
                 $statement->execute();
             }
-    
+
             /**
              * Compare the ones passed through the form to the
              * ones that are already on the database.
@@ -724,7 +791,7 @@ class UploadFile
                 if (!in_array($cat, $categories_current)) {
                     $statement = $this->dbh->prepare(
                         "INSERT INTO " . TABLE_CATEGORIES_RELATIONS . " (file_id, cat_id)"
-                        ."VALUES (:file_id, :cat_id)"
+                        . "VALUES (:file_id, :cat_id)"
                     );
                     $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
                     $statement->bindParam(':cat_id', $cat, PDO::PARAM_INT);
@@ -734,7 +801,7 @@ class UploadFile
         } else {
             /**
              * No value came from the form, so delete all existing
-            */
+             */
             $statement = $this->dbh->prepare("DELETE FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE file_id = :file_id");
             $statement->bindParam(':file_id', $this->file_id, PDO::PARAM_INT);
             $statement->execute();

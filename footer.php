@@ -1,23 +1,23 @@
-                    </div> <!-- row -->
-                </div> <!-- container-fluid -->
+</div> <!-- row -->
+</div> <!-- container-fluid -->
 
-                <?php
-                /**
-                 * Footer for the backend. Outputs the default mark up and
-                 * information generated on functions.php.
-                 *
-                 * @package ProjectSend
-                 */
-                    default_footer_info();
+<?php
+/**
+ * Footer for the backend. Outputs the default mark up and
+ * information generated on functions.php.
+ *
+ * @package ProjectSend
+ */
+default_footer_info();
 
-                    render_json_variables();
+render_json_variables();
 
-                    load_js_files();
-                ?>
-            </div> <!-- main_content -->
-        </div> <!-- container-custom -->
+load_js_files();
+?>
+</div> <!-- main_content -->
+</div> <!-- container-custom -->
 
-    </body>
+</body>
 </html>
 <?php
 if (DEBUG === true) {
@@ -28,7 +28,7 @@ if (DEBUG === true) {
     // Print the total count of queries made by PDO
     _e('Executed queries', 'cftp_admin');
     echo ': ' . $dbh->GetCount();
-    echo "\n" . '-->' . "\n" ;
+    echo "\n" . '-->' . "\n";
 }
 
 ob_end_flush();

@@ -10,7 +10,7 @@
 use ProjectSend\Classes\Categories;
 use ProjectSend\Classes\TableGenerate;
 
-$allowed_levels = array(9,8,7);
+$allowed_levels = array(9, 8, 7);
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -50,7 +50,7 @@ if (isset($_GET['action'])) {
     if ($_GET['action'] != 'none') {
         /**
          * Continue only if 1 or more categories were selected.
-        */
+         */
         if (!empty($_GET['batch'])) {
             /**
              * Make a list of categories to avoid individual queries.
@@ -80,7 +80,7 @@ if (isset($_GET['action'])) {
 
 /**
  * Get all the existing categories
-*/
+ */
 $params = array();
 
 $results_show = 'arranged';
@@ -117,7 +117,7 @@ $form_information = array(
 
 /**
  * Loading the form in EDIT mode
-*/
+ */
 if ((!empty($_GET['action']) && $_GET['action'] == 'edit') or !empty($_POST['editing_id'])) {
     $action = 'edit';
     $editing = !empty($_POST['editing_id']) ? $_POST['editing_id'] : $_GET['id'];
@@ -147,7 +147,7 @@ if (isset($_POST['btn_process'])) {
     $category_name = $_POST['category_name'];
     $category_parent = $_POST['category_parent'];
     $category_description = $_POST['category_description'];
-    
+
     $category_object = new Categories($dbh);
 
     $arguments = array(
@@ -158,7 +158,7 @@ if (isset($_POST['btn_process'])) {
     if ($form_information['type'] == 'edit') {
         $arguments['id'] = ($_POST) ? $_POST['editing_id'] : $_GET['id'];
     }
-    
+
     $category_object->set($arguments);
     if ($category_object->validate()) {
         $method = $form_information['type'];
@@ -177,7 +177,7 @@ if (isset($_POST['btn_process'])) {
 
     /**
      * Redirect so the actions are reflected immediatly
-    */
+     */
     if (isset($redirect) && $redirect === true) {
         while (ob_get_level()) {
             ob_end_clean();
@@ -190,22 +190,25 @@ if (isset($_POST['btn_process'])) {
 }
 ?>
 
-<div class="col-xs-12 col-sm-12 col-md-8">
-    <div class="form_actions_left">
-        <div class="form_actions_limit_results">
-            <?php show_search_form('categories.php'); ?>
+    <div class="col-xs-12 col-sm-12 col-md-8">
+        <div class="form_actions_left">
+            <div class="form_actions_limit_results">
+                <?php show_search_form('categories.php'); ?>
+            </div>
         </div>
-    </div>
 
-    <form action="categories.php" class="form-inline batch_actions" name="selected_categories" id="selected_categories" method="get">
+        <form action="categories.php" class="form-inline batch_actions" name="selected_categories"
+              id="selected_categories" method="get">
 
-        <div class="form_actions_right form-inline">
-            <div class="form_actions">
-                <div class="form_actions_submit">
-                    <div class="form-group group_float">
-                        <label for="action" class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected categories actions', 'cftp_admin'); ?>:</label>
-                        <select name="action" id="action" class="txtfield form-control">
-                            <?php
+            <div class="form_actions_right form-inline">
+                <div class="form_actions">
+                    <div class="form_actions_submit">
+                        <div class="form-group group_float">
+                            <label for="action" class="control-label hidden-xs hidden-sm"><i
+                                        class="glyphicon glyphicon-check"></i> <?php _e('Selected categories actions', 'cftp_admin'); ?>
+                                :</label>
+                            <select name="action" id="action" class="txtfield form-control">
+                                <?php
                                 $actions_options = array(
                                     'none' => __('Select action', 'cftp_admin'),
                                     'delete' => __('Delete', 'cftp_admin'),
@@ -216,34 +219,36 @@ if (isset($_POST['btn_process'])) {
                                     <?php
                                 }
                                 ?>
-                        </select>
+                            </select>
+                        </div>
+                        <button type="submit" name="do_action" id="do_action"
+                                class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
                     </div>
-                    <button type="submit" name="do_action" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
                 </div>
             </div>
-        </div>
 
-        <div class="clear"></div>
+            <div class="clear"></div>
 
-        <div class="form_actions_count">
-            <p class="form_count_total"><?php _e('Found', 'cftp_admin'); ?>: <span><?php echo $get_categories['count']; ?> <?php _e('categories', 'cftp_admin'); ?></span></p>
-        </div>
+            <div class="form_actions_count">
+                <p class="form_count_total"><?php _e('Found', 'cftp_admin'); ?>:
+                    <span><?php echo $get_categories['count']; ?><?php _e('categories', 'cftp_admin'); ?></span></p>
+            </div>
 
-        <div class="clear"></div>
+            <div class="clear"></div>
 
-        <?php
-        if ($get_categories['count'] == 0) {
-            if (!empty($get_categories['no_results_type'])) {
-                switch ($get_categories['no_results_type']) {
-                    case 'search':
-                        $no_results_message = __('Your search keywords returned no results.', 'cftp_admin');
-                        break;
+            <?php
+            if ($get_categories['count'] == 0) {
+                if (!empty($get_categories['no_results_type'])) {
+                    switch ($get_categories['no_results_type']) {
+                        case 'search':
+                            $no_results_message = __('Your search keywords returned no results.', 'cftp_admin');
+                            break;
+                    }
+                } else {
+                    $no_results_message = __('There are no categories yet.', 'cftp_admin');
                 }
-            } else {
-                $no_results_message = __('There are no categories yet.', 'cftp_admin');
+                echo system_message('danger', $no_results_message);
             }
-            echo system_message('danger', $no_results_message);
-        }
 
             /**
              * Generate the table using the class.
@@ -258,7 +263,7 @@ if (isset($_POST['btn_process'])) {
                 array(
                     'select_all' => true,
                     'attributes' => array(
-                        'class' => array( 'td_checkbox' ),
+                        'class' => array('td_checkbox'),
                     ),
                 ),
                 array(
@@ -297,7 +302,7 @@ if (isset($_POST['btn_process'])) {
             $limit_amount = $limit_start + (int)RESULTS_PER_PAGE;
 
             $i = 0;
-            
+
             function format_category_row($arranged)
             {
                 global $table, $c, $i, $limit_start, $limit_amount;
@@ -327,9 +332,9 @@ if (isset($_POST['btn_process'])) {
                                 $files_link = 'javascript:void(0);';
                                 $files_button = 'btn-default disabled';
                             }
-                            
+
                             $count_format = '<span class="label label-' . $class . '">' . $total . '</span>';
-                            
+
                             $tbody_cells = array(
                                 array(
                                     'checkbox' => true,
@@ -348,16 +353,16 @@ if (isset($_POST['btn_process'])) {
                                     'content' => html_output($category["description"]),
                                 ),
                                 array(
-                                    'content' => '<a href="'. $files_link .'" class="btn btn-sm ' . $files_button . '">' . __('Manage files', 'cftp_admin') . '</a>',
+                                    'content' => '<a href="' . $files_link . '" class="btn btn-sm ' . $files_button . '">' . __('Manage files', 'cftp_admin') . '</a>',
                                 ),
                                 array(
-                                    'content' => '<a href="categories.php?action=edit&id=' . $category["id"] .'" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>'
+                                    'content' => '<a href="categories.php?action=edit&id=' . $category["id"] . '" class="btn btn-primary btn-sm"><i class="fa fa-pencil"></i><span class="button_label">' . __('Edit', 'cftp_admin') . '</span></a>'
                                 ),
                             );
                             foreach ($tbody_cells as $cell) {
                                 $table->addCell($cell);
                             }
-                            
+
                             $table->end_row();
                         }
 
@@ -383,14 +388,14 @@ if (isset($_POST['btn_process'])) {
                 'current' => $params['page'],
                 'pages' => ceil($get_categories['count'] / RESULTS_PER_PAGE),
             );
-            
+
             echo $table->pagination($pagination_args);
             ?>
-    </form>
-</div>
-<div class="col-xs-12 col-sm-12 col-md-4">
-    <?php require_once FORMS_DIR . DS . 'categories.php'; ?>
-</div>
+        </form>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-4">
+        <?php require_once FORMS_DIR . DS . 'categories.php'; ?>
+    </div>
 
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

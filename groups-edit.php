@@ -8,7 +8,7 @@
 
 use ProjectSend\Classes\Groups;
 
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -23,12 +23,12 @@ require_once ADMIN_VIEWS_DIR . DS . 'header.php';
 
 /**
  * Create the object
-*/
+ */
 $edit_group = new Groups($dbh);
 
 /**
  * Check if the id parameter is on the URI.
-*/
+ */
 if (isset($_GET['id'])) {
     $group_id = $_GET['id'];
     /**
@@ -69,7 +69,7 @@ if ($_POST) {
 
     /**
      * Validate the information from the posted form.
-    */
+     */
     $edit_group->set($group_arguments);
     if ($edit_group->validate()) {
         $edit_response = $edit_group->edit();
@@ -81,55 +81,55 @@ if ($_POST) {
 }
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-6">
-    <?php
-    /**
-     * Get the process state and show the corresponding ok or error message.
-     */
-    if (isset($_GET['status'])) {
-        switch ($_GET['status']) {
-            case 1:
-                $msg = __('Group edited correctly.', 'cftp_admin');
-                if (isset($_GET['is_new'])) {
-                    $msg = __('Group created successfuly.', 'cftp_admin');
-                }
+    <div class="col-xs-12 col-sm-12 col-lg-6">
+        <?php
+        /**
+         * Get the process state and show the corresponding ok or error message.
+         */
+        if (isset($_GET['status'])) {
+            switch ($_GET['status']) {
+                case 1:
+                    $msg = __('Group edited correctly.', 'cftp_admin');
+                    if (isset($_GET['is_new'])) {
+                        $msg = __('Group created successfuly.', 'cftp_admin');
+                    }
 
-                echo system_message('success', $msg);
-                break;
-            case 0:
-                $msg = __('There was an error. Please try again.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                break;
-        }
-    }
-    ?>
-
-    <div class="white-box">
-        <div class="white-box-interior">
-            <?php
-            // If the form was submited with errors, show them here.
-            echo $edit_group->getValidationErrors();
-
-            $direct_access_error = __('This page is not intended to be accessed directly.', 'cftp_admin');
-            if ($page_status === 0) {
-                $msg = __('No group was selected.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                echo '<p>'.$direct_access_error.'</p>';
-            } elseif ($page_status === 2) {
-                $msg = __('There is no group with that ID number.', 'cftp_admin');
-                echo system_message('danger', $msg);
-                echo '<p>'.$direct_access_error.'</p>';
-            } else {
-                /**
-                 * Include the form.
-                 */
-                $groups_form_type = 'edit_group';
-                include_once FORMS_DIR . DS . 'groups.php';
+                    echo system_message('success', $msg);
+                    break;
+                case 0:
+                    $msg = __('There was an error. Please try again.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    break;
             }
-            ?>
+        }
+        ?>
+
+        <div class="white-box">
+            <div class="white-box-interior">
+                <?php
+                // If the form was submited with errors, show them here.
+                echo $edit_group->getValidationErrors();
+
+                $direct_access_error = __('This page is not intended to be accessed directly.', 'cftp_admin');
+                if ($page_status === 0) {
+                    $msg = __('No group was selected.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    echo '<p>' . $direct_access_error . '</p>';
+                } elseif ($page_status === 2) {
+                    $msg = __('There is no group with that ID number.', 'cftp_admin');
+                    echo system_message('danger', $msg);
+                    echo '<p>' . $direct_access_error . '</p>';
+                } else {
+                    /**
+                     * Include the form.
+                     */
+                    $groups_form_type = 'edit_group';
+                    include_once FORMS_DIR . DS . 'groups.php';
+                }
+                ?>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

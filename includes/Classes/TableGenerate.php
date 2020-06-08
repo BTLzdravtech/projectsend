@@ -54,7 +54,7 @@ class TableGenerate
             $new_url_parameters = $_GET;
         }
         $new_url_parameters['orderby'] = $sort_url;
-        
+
         $order = 'desc';
         if (!empty($new_url_parameters['order'])) {
             $order = ($new_url_parameters['order'] == 'asc') ? 'desc' : 'asc';
@@ -75,13 +75,13 @@ class TableGenerate
             }
         }
         $query = http_build_query($params);
-        
+
         $build_url = BASE_URI . basename($url_parse['path']) . '?' . $query;
 
         $sortable_link = '<a href="' . $build_url . '">';
         $sortable_link .= $content;
         $sortable_link .= '</a>';
-        
+
         return $sortable_link;
     }
 
@@ -90,7 +90,7 @@ class TableGenerate
         $output = "<thead>\n<tr>";
         if (!empty($columns)) {
             foreach ($columns as $column) {
-                $continue    = (!isset($column['condition']) || !empty($column['condition'])) ? true : false;
+                $continue = (!isset($column['condition']) || !empty($column['condition'])) ? true : false;
                 if ($continue == true) {
                     $attributes = (!empty($column['attributes'])) ? $column['attributes'] : array();
                     $data_attr = (!empty($column['data_attr'])) ? $column['data_attr'] : array();
@@ -100,7 +100,7 @@ class TableGenerate
                     $order = (!empty($_GET['order'])) ? html_output($_GET['order']) : 'desc';
 
                     $is_current_sorted = false;
-    
+
                     if (!empty($column['hide'])) {
                         $data_attr['hide'] = $column['hide'];
                     }
@@ -117,20 +117,20 @@ class TableGenerate
                             $sort_next = $order;
                         }
                     }
-    
+
                     if (!empty($column['select_all']) && $column['select_all'] === true) {
                         $content = '<input type="checkbox" name="select_all" id="select_all" value="0" />';
                     }
-                    
+
                     if ($sortable == true && !empty($sort_url)) {
                         $content = self::buildSortableThContent($sort_url, $is_current_sorted, $content);
                     } else {
                         $data_attr['sort-ignore'] = 'true';
                     }
-    
+
                     /**
-                      * Generate the column
-                    */
+                     * Generate the column
+                     */
                     $output .= '<th';
                     foreach ($attributes as $tag => $value) {
                         if (is_array($value)) {
@@ -142,11 +142,11 @@ class TableGenerate
                         $output .= ' data-' . $tag . '="' . $value . '"';
                     }
                     $output .= '>' . $content;
-                    
+
                     if ($sortable == true) {
                         $output .= '<span class="footable-sort-indicator"></span>';
                     }
-    
+
                     $output .= '</th>';
                 }
             }
@@ -154,7 +154,7 @@ class TableGenerate
         $output .= "</tr>\n</thead>\n";
         $this->contents .= $output;
     }
-    
+
     public function tfoot($columns)
     {
         $output = "<tfoot>\n<tr>";
@@ -164,8 +164,8 @@ class TableGenerate
                 $data_attr = (!empty($column['data_attr'])) ? $column['data_attr'] : array();
                 $content = (!empty($column['content'])) ? $column['content'] : '';
                 /**
-                  * Generate the column
-                */
+                 * Generate the column
+                 */
                 $output .= '<td';
                 foreach ($attributes as $tag => $value) {
                     if (is_array($value)) {
@@ -177,14 +177,14 @@ class TableGenerate
                     $output .= ' data-' . $tag . '="' . $value . '"';
                 }
                 $output .= '>' . $content;
-                
+
                 $output .= '</td>';
             }
         }
         $output .= "</tr>\n</tfoot>\n";
         $this->contents .= $output;
     }
-    
+
     public function addRow()
     {
         if ($this->current_row == 1) {
@@ -199,17 +199,17 @@ class TableGenerate
     public function addCell($attributes)
     {
         $continue = (!isset($attributes['condition']) || !empty($attributes['condition'])) ? true : false;
-        
+
         if ($continue == true) {
             $attributes_local = (!empty($attributes['attributes'])) ? $attributes['attributes'] : array();
             $content = (!empty($attributes['content'])) ? $attributes['content'] : '';
             $is_checkbox = (!empty($attributes['checkbox'])) ? true : false;
             $value = (!empty($attributes['value'])) ? html_output($attributes['value']) : null;
-            
+
             if ($is_checkbox == true) {
                 $content = '<input type="checkbox" class="batch_checkbox" name="batch[]" value="' . $value . '" />' . "\n";
             }
-    
+
             $this->contents .= "<td";
             if (!empty($attributes_local)) {
                 foreach ($attributes_local as $tag => $value) {
@@ -246,7 +246,7 @@ class TableGenerate
     private function constructPaginationLink($link, $page = 1)
     {
         $params['page'] = $page;
-    
+
         /**
          * List of parameters to ignore when building the pagination links.
          * TODO: change it so it ignores all but 'search' instead? must check
@@ -259,7 +259,7 @@ class TableGenerate
             'do_action',
             'batch',
         );
-                                    
+
         if (!empty($_GET)) {
             foreach ($_GET as $param => $value) {
                 if (!in_array($param, $ignore_current_params)) {
@@ -268,7 +268,7 @@ class TableGenerate
             }
         }
         $query = http_build_query($params);
-        
+
         return BASE_URI . $link . '?' . $query;
     }
 
@@ -279,32 +279,32 @@ class TableGenerate
         } else {
             $params['current'] = (int)$params['current'];
         }
-        
+
         $output = '';
 
         if ($params['pages'] > 1) {
             $output = '<div class="container-fluid">
                             <div class="row">
                                 <div class="col-xs-12 text-center">
-                                    <nav aria-label="'. __('Results navigation', 'cftp_admin') . '">
+                                    <nav aria-label="' . __('Results navigation', 'cftp_admin') . '">
                                         <div class="pagination_wrapper">
                                             <ul class="pagination">';
 
             /**
              * First and previous
-            */
+             */
             if ($params['current'] > 1) {
                 $output .= '<li>
-                                <a href="' . self::constructPaginationLink($params['link']) .'" data-page="first"><span aria-hidden="true">&laquo;</span></a>
+                                <a href="' . self::constructPaginationLink($params['link']) . '" data-page="first"><span aria-hidden="true">&laquo;</span></a>
                             </li>
                             <li>
-                                <a href="'. self::constructPaginationLink($params['link'], $params['current'] - 1) .'" data-page="prev">&lsaquo;</a>
+                                <a href="' . self::constructPaginationLink($params['link'], $params['current'] - 1) . '" data-page="prev">&lsaquo;</a>
                             </li>';
             }
 
             /**
              * Pages
-            */
+             */
             $already_spaced = false;
             for ($i = 1; $i <= $params['pages']; $i++) {
                 if (($i < $params['current'] - 3 || $i > $params['current'] + 3)
@@ -317,25 +317,25 @@ class TableGenerate
                     continue;
                 }
                 if ($params['current'] == $i) {
-                    $output .= '<li class="active"><a href="#">' . $i .'</a></li>';
+                    $output .= '<li class="active"><a href="#">' . $i . '</a></li>';
                 } else {
-                    $output .= '<li><a href="' . self::constructPaginationLink($params['link'], $i) .'">' . $i .'</a></li>';
+                    $output .= '<li><a href="' . self::constructPaginationLink($params['link'], $i) . '">' . $i . '</a></li>';
                 }
-                
+
                 if ($i > $params['current']) {
                     $already_spaced = false;
                 }
             }
-            
+
             /**
              * Next and last
-            */
+             */
             if ($params['current'] != $params['pages']) {
                 $output .= '<li>
-                                <a href="' . self::constructPaginationLink($params['link'], $params['current'] + 1) .'" data-page="next">&rsaquo;</a>
+                                <a href="' . self::constructPaginationLink($params['link'], $params['current'] + 1) . '" data-page="next">&rsaquo;</a>
                             </li>
                             <li>
-                                <a href="' . self::constructPaginationLink($params['link'], $params['pages']) .'" data-page="last"><span aria-hidden="true">&raquo;</span></a>
+                                <a href="' . self::constructPaginationLink($params['link'], $params['pages']) . '" data-page="last"><span aria-hidden="true">&raquo;</span></a>
                             </li>';
             }
 
@@ -343,22 +343,22 @@ class TableGenerate
             $output .= '</ul>
                     </div>
                 </nav>';
-            
+
             $output .= '<div class="go_to_page">
                             <div class="form-group">
                                 <label class="control-label hidden-xs hidden-sm">' . __('Go to:', 'cftp_admin') . '</label>
-                                <input type="text" class="form-control" name="page" id="page_number" data-link="' . self::constructPaginationLink($params['link'], '_pgn_') .'" value="' . $params['current'] .'" />
+                                <input type="text" class="form-control" name="page" id="page_number" data-link="' . self::constructPaginationLink($params['link'], '_pgn_') . '" value="' . $params['current'] . '" />
                             </div>
                             <div class="form-group">
                                 <button type="button" class="form-control"><span aria-hidden="true" class="glyphicon glyphicon-ok"></span></button>
                             </div>
                         </div>';
-            
+
             $output .= '</div>
                     </div>
                 </div>';
         }
-        
+
         return $output;
     }
 }

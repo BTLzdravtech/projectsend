@@ -1,5 +1,5 @@
 <?php
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 $error_type = (!empty($_GET['e'])) ? $_GET['e'] : '401';
@@ -28,40 +28,41 @@ switch ($error_type) {
         break;
 }
 ?>
-<!doctype html>
-<html lang="<?php echo SITE_LANG; ?>">
+    <!doctype html>
+    <html lang="<?php echo SITE_LANG; ?>">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title><?php /** @noinspection PhpUndefinedConstantInspection */ echo html_output($page_title . ' &raquo; ' . THIS_INSTALL_TITLE); ?></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?php /** @noinspection PhpUndefinedConstantInspection */
+            echo html_output($page_title . ' &raquo; ' . THIS_INSTALL_TITLE); ?></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <?php meta_favicon(); ?>
-        
+
         <?php
-            require_once INCLUDES_DIR . DS . 'assets.php';
-    
-            load_js_header_files();
-            load_css_files();
+        require_once INCLUDES_DIR . DS . 'assets.php';
+
+        load_js_header_files();
+        load_css_files();
         ?>
     </head>
     <body class="backend forbidden">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    <h2><?php echo $page_title; ?></h2>
-                </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2><?php echo $page_title; ?></h2>
             </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="whiteform whitebox">
-                        <?php echo $error_message; ?>
-                    </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="whiteform whitebox">
+                    <?php echo $error_message; ?>
                 </div>
             </div>
         </div>
+    </div>
     </body>
-</html>
+    </html>
 <?php
-    exit;
+exit;

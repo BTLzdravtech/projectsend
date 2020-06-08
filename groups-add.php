@@ -8,7 +8,7 @@
 
 use ProjectSend\Classes\Groups;
 
-$allowed_levels = array(9,8);
+$allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -39,7 +39,7 @@ if ($_POST) {
 
     /**
      * Validate the information from the posted form.
-    */
+     */
     $new_group->set($group_arguments);
     if ($new_group->validate()) {
         $new_response = $new_group->create();
@@ -64,37 +64,37 @@ if ($_POST) {
     }
 }
 ?>
-<div class="col-xs-12 col-sm-12 col-lg-6">
-    <div class="white-box">
-        <div class="white-box-interior">
+    <div class="col-xs-12 col-sm-12 col-lg-6">
+        <div class="white-box">
+            <div class="white-box-interior">
 
-            <?php
+                <?php
                 // If the form was submited with errors, show them here.
                 echo $new_group->getValidationErrors();
 
-            if (isset($new_response)) {
-                /**
-                 * Get the process state and show the corresponding ok or error messages.
-                 */
-                switch ($new_response['query']) {
-                    case 0:
-                        $msg = __('There was an error. Please try again.', 'cftp_admin');
-                        echo system_message('danger', $msg);
-                        break;
+                if (isset($new_response)) {
+                    /**
+                     * Get the process state and show the corresponding ok or error messages.
+                     */
+                    switch ($new_response['query']) {
+                        case 0:
+                            $msg = __('There was an error. Please try again.', 'cftp_admin');
+                            echo system_message('danger', $msg);
+                            break;
+                    }
+                } else {
+                    /**
+                     * If not $new_response is set, it means we are just entering for the first time.
+                     * Include the form.
+                     */
+                    $groups_form_type = 'new_group';
+                    include_once FORMS_DIR . DS . 'groups.php';
                 }
-            } else {
-                /**
-                 * If not $new_response is set, it means we are just entering for the first time.
-                 * Include the form.
-                 */
-                $groups_form_type = 'new_group';
-                include_once FORMS_DIR . DS . 'groups.php';
-            }
-            ?>
+                ?>
 
+            </div>
         </div>
     </div>
-</div>
 
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

@@ -12,7 +12,7 @@
  * templates, it's necessary to define the allowed levels, or else
  * the files list will not be available.
  */
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 
 /**
  * Define a variable that will tell header.php if session_start()
@@ -29,24 +29,24 @@ $lang = SITE_LANG;
 if (!isset($ld)) {
     $ld = 'cftp_admin';
 }
-require_once ROOT_DIR.'/includes/classes/i18n.php';
+require_once ROOT_DIR . '/includes/classes/i18n.php';
 /** @noinspection PhpUndefinedConstantInspection */
-I18n::LoadDomain(ROOT_DIR.DS."templates".DS.SELECTED_CLIENTS_TEMPLATE."/lang/{$lang}.mo", $ld);
+I18n::LoadDomain(ROOT_DIR . DS . "templates" . DS . SELECTED_CLIENTS_TEMPLATE . "/lang/{$lang}.mo", $ld);
 
 /** @noinspection PhpUndefinedConstantInspection */
-$this_template = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/';
+$this_template = BASE_URI . 'templates/' . SELECTED_CLIENTS_TEMPLATE . '/';
 
-require_once ROOT_DIR.'/templates/session_check.php';
+require_once ROOT_DIR . '/templates/session_check.php';
 
 /**
  * URI to the default template CSS file.
  */
 /** @noinspection PhpUndefinedConstantInspection */
-$this_template_css = BASE_URI.'templates/'.SELECTED_CLIENTS_TEMPLATE.'/main.css';
+$this_template_css = BASE_URI . 'templates/' . SELECTED_CLIENTS_TEMPLATE . '/main.css';
 
 /**
  * @var PDO $dbh
-*/
+ */
 global $dbh;
 
 /**
@@ -57,19 +57,19 @@ $client_info = get_client_by_username($this_user);
 /**
  * Get the list of different groups the client belongs to.
  */
-$get_groups        = new ProjectSend\Classes\MembersActions;
-$get_arguments    = array(
-                        'client_id'    => $client_info['id'],
-                        'return'    => 'list',
-                    );
-$found_groups    = $get_groups->client_get_groups($get_arguments);
+$get_groups = new ProjectSend\Classes\MembersActions;
+$get_arguments = array(
+    'client_id' => $client_info['id'],
+    'return' => 'list',
+);
+$found_groups = $get_groups->client_get_groups($get_arguments);
 
 /**
  * Define the arrays so they can't be empty
  */
-$found_all_files_array    = array();
-$found_own_files_temp    = array();
-$found_group_files_temp    = array();
+$found_all_files_array = array();
+$found_own_files_temp = array();
+$found_group_files_temp = array();
 
 /**
  * Get the client's own files
@@ -93,17 +93,17 @@ $files_sql->setFetchMode(PDO::FETCH_ASSOC);
 
 while ($row_files = $files_sql->fetch()) {
     if (!is_null($row_files['client_id'])) {
-        $found_all_files_array[]    = $row_files['file_id'];
-        $found_own_files_temp[]        = $row_files['file_id'];
+        $found_all_files_array[] = $row_files['file_id'];
+        $found_own_files_temp[] = $row_files['file_id'];
     }
     if (!is_null($row_files['group_id'])) {
-        $found_all_files_array[]    = $row_files['file_id'];
-        $found_group_files_temp[]    = $row_files['file_id'];
+        $found_all_files_array[] = $row_files['file_id'];
+        $found_group_files_temp[] = $row_files['file_id'];
     }
 }
 
-$found_own_files_ids    = (!empty($found_own_files_temp)) ? implode(',', array_unique($found_own_files_temp)) : '';
-$found_group_files_ids    = (!empty($found_group_files_temp)) ? implode(',', array_unique($found_group_files_temp)) : '';
+$found_own_files_ids = (!empty($found_own_files_temp)) ? implode(',', array_unique($found_own_files_temp)) : '';
+$found_group_files_ids = (!empty($found_group_files_temp)) ? implode(',', array_unique($found_group_files_temp)) : '';
 
 $found_unique_files_ids = array_unique($found_all_files_array);
 
@@ -111,9 +111,9 @@ $found_unique_files_ids = array_unique($found_all_files_array);
  * Make an array of the categories containing the
  * files found for this account.
  */
-$cat_ids    = array();
-$file_ids    = array();
-$files_keep    = array();
+$cat_ids = array();
+$file_ids = array();
+$files_keep = array();
 
 $files_ids_to_search = implode(',', $found_unique_files_ids);
 $sql_sentence = "SELECT file_id, cat_id FROM " . TABLE_CATEGORIES_RELATIONS . " WHERE FIND_IN_SET(file_id, :files)";
@@ -123,15 +123,16 @@ $sql_client_categories->execute();
 $sql_client_categories->setFetchMode(PDO::FETCH_ASSOC);
 
 while ($row = $sql_client_categories->fetch()) {
-    $cat_ids[$row['cat_id']]        = $row['cat_id'];
-    $files_keep[$row['file_id']][]    = $row['cat_id'];
+    $cat_ids[$row['cat_id']] = $row['cat_id'];
+    $files_keep[$row['file_id']][] = $row['cat_id'];
 }
 
 if (!empty($cat_ids)) {
-    $get_categories    = get_categories(
+    $get_categories = get_categories(
         array(
-                                        'id'    => $cat_ids,
-                                    )
+            'id' => $cat_ids,
+            'is_tree' => true
+        )
     );
 }
 /**
@@ -152,7 +153,7 @@ if (!empty($category_filter) && $category_filter != '0') {
 
 /**
  * Create the files list
-*/
+ */
 $my_files = array();
 
 
@@ -160,19 +161,19 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
     $f = 0;
     $files_query = "SELECT * FROM " . TABLE_FILES . " WHERE FIND_IN_SET(id,:search_ids)";
 
-    $params        = array(
-                        ':search_ids' => $ids_to_search
-                    );
+    $params = array(
+        ':search_ids' => $ids_to_search
+    );
 
     /**
      * Add the search terms
-    */
+     */
     if (isset($_GET['search']) && !empty($_GET['search'])) {
-        $files_query        .= " AND (filename LIKE :title OR description LIKE :description)";
-        $no_results_error    = 'search';
+        $files_query .= " AND (filename LIKE :title OR description LIKE :description)";
+        $no_results_error = 'search';
 
-        $params[':title']        = '%'.$_GET['search'].'%';
-        $params[':description']    = '%'.$_GET['search'].'%';
+        $params[':title'] = '%' . $_GET['search'] . '%';
+        $params[':description'] = '%' . $_GET['search'] . '%';
     }
 
 
@@ -184,7 +185,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 
     /**
      * Pre-query to count the total results
-    */
+     */
     $count_sql = $dbh->prepare($files_query);
     $count_sql->execute($params);
     $count_for_pagination = $count_sql->rowCount();
@@ -195,22 +196,22 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
     $files_query .= " LIMIT :limit_start, :limit_number";
     $sql_files = $dbh->prepare($files_query);
 
-    $pagination_page            = (isset($_GET["page"])) ? $_GET["page"] : 1;
-    $pagination_start            = ($pagination_page - 1) * TEMPLATE_RESULTS_PER_PAGE;
-    $params[':limit_start']        = $pagination_start;
-    $params[':limit_number']    = TEMPLATE_RESULTS_PER_PAGE;
+    $pagination_page = (isset($_GET["page"])) ? $_GET["page"] : 1;
+    $pagination_start = ($pagination_page - 1) * TEMPLATE_RESULTS_PER_PAGE;
+    $params[':limit_start'] = $pagination_start;
+    $params[':limit_number'] = TEMPLATE_RESULTS_PER_PAGE;
 
     $sql_files->execute($params);
     $count = $sql_files->rowCount();
 
     $sql_files->setFetchMode(PDO::FETCH_ASSOC);
     while ($data = $sql_files->fetch()) {
-        $add_file    = true;
-        $expired    = false;
+        $add_file = true;
+        $expired = false;
 
         /**
          * Does it expire?
-        */
+         */
         if ($data['expires'] == '1') {
             if (time() > strtotime($data['expiry_date'])) {
                 /** @noinspection PhpUndefinedConstantInspection */
@@ -223,7 +224,7 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 
         /**
          * Make the list of files
-        */
+         */
         if ($add_file == true) {
             /*
             if (in_array($data['id'], $found_own_files_temp)) {
@@ -236,18 +237,18 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
             $pathinfo = pathinfo($data['url']);
 
             $my_files[$f] = array(
-                                //'origin'        => $origin,
-                                'id'            => $data['id'],
-                                'url'            => $data['url'],
-                                'save_as'        => (!empty($data['original_url'])) ? $data['original_url'] : $data['url'],
-                                'extension'        => strtolower($pathinfo['extension']),
-                                'name'            => $data['filename'],
-                                'description'    => $data['description'],
-                                'timestamp'        => $data['timestamp'],
-                                'expires'        => $data['expires'],
-                                'expiry_date'    => $data['expiry_date'],
-                                'expired'        => $expired,
-                            );
+                //'origin'        => $origin,
+                'id' => $data['id'],
+                'url' => $data['url'],
+                'save_as' => (!empty($data['original_url'])) ? $data['original_url'] : $data['url'],
+                'extension' => strtolower($pathinfo['extension']),
+                'name' => $data['filename'],
+                'description' => $data['description'],
+                'timestamp' => $data['timestamp'],
+                'expires' => $data['expires'],
+                'expiry_date' => $data['expiry_date'],
+                'expired' => $expired,
+            );
             $f++;
         }
     }
@@ -259,5 +260,5 @@ if (!empty($found_own_files_ids) || !empty($found_group_files_ids)) {
 
 /**
  * Get the url for the logo from "Branding"
-*/
+ */
 $logo_file_info = generate_logo_url();

@@ -1,0 +1,13 @@
+gemfile: .overcommit_gems.rb
+PreCommit:
+  MergeConflicts:
+    enabled: false
+  PhpCsFixer:
+    enabled: true
+    required_executable: 'php-cs-fixer'
+    command: 'php-cs-fixer'
+    flags: ['fix', '-v', '--dry-run']
+  Stylelint:
+    enabled: true
+  SemiStandard:
+    enabled: true

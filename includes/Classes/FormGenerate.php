@@ -37,7 +37,7 @@ class FormGenerate
     {
         global $dbh;
         $this->dbh = $dbh;
-        
+
         $this->close = "</form>\n";
         $this->output = '';
         $this->contents = '';
@@ -105,7 +105,7 @@ class FormGenerate
         }
 
         $result .= '<' . $element . ' ';
-        
+
         if ($add_type == true) {
             $properties['type'] = $type;
         }
@@ -120,7 +120,7 @@ class FormGenerate
 
         /**
          * If ID is not defined, use the name attr to add it
-        */
+         */
         if (!empty($attributes['name']) && empty($attributes['id'])) {
             $properties['id'] = $attributes['name'];
         }
@@ -147,27 +147,27 @@ class FormGenerate
                 $produce[] = $property;
             }
         }
-        
+
         /**
          * Add each attribute to the tag
-        */
+         */
         $result .= implode(' ', $produce);
 
         /**
          * Close the opening tag
-        */
+         */
         $result .= '>' . "\n";
 
         /**
          * Used on textarea
-        */
+         */
         if (!empty($content)) {
             $result .= $content;
         }
 
         /**
          * Used on select
-        */
+         */
         if (!empty($options)) {
             foreach ($options as $val => $name) {
                 $result .= $this->generate_option($val, $name, $selected);
@@ -176,7 +176,7 @@ class FormGenerate
 
         /**
          * Does the element need closing tag? (textarea, select...)
-        */
+         */
         if ($close_tag == true) {
             $result .= '</' . $type . '>' . "\n";
         }
@@ -202,7 +202,7 @@ class FormGenerate
         }
         /**
          * Add the properties
-        */
+         */
         $option .= implode(' ', $option_properties);
 
         $option .= '>' . $name;
@@ -246,12 +246,11 @@ class FormGenerate
     }
 
 
-    
     public function field($type, $arguments)
     {
         /**
          * Set default to avoid repetition
-        */
+         */
         $label_location = 'outside';
         $use_layout = (!in_array($type, $this->ignore_layout)) ? true : false;
 
@@ -271,10 +270,10 @@ class FormGenerate
                 $arguments['attributes']['class'][] = $this->field_class;
             }
         }
-        
+
         /**
          * Concat the classes
-        */
+         */
         if (!empty($arguments['attributes']['class'])) {
             $arguments['attributes']['class'] = implode(' ', $arguments['attributes']['class']);
         }
@@ -304,7 +303,7 @@ class FormGenerate
                 $field = $this->generate_separator();
                 break;
         }
-        
+
         /**
          * Format according to the Bootstrap 3 layout
          */
@@ -312,9 +311,9 @@ class FormGenerate
             $layout = '<div class="' . $this->group_class . '">' . "\n";
             switch ($label_location) {
                 case 'outside':
-                    $format    = "\t" . '<label for="%s" class="%s">%s</label>' . "\n";
-                    $layout    .= sprintf($format, $arguments['attributes']['name'], $this->label_class, $arguments['label']);
-                    $layout    .= "\t" . '<div class="' . $this->wrap_class . '">' . "\n";
+                    $format = "\t" . '<label for="%s" class="%s">%s</label>' . "\n";
+                    $layout .= sprintf($format, $arguments['attributes']['name'], $this->label_class, $arguments['label']);
+                    $layout .= "\t" . '<div class="' . $this->wrap_class . '">' . "\n";
 
                     if ($type == 'password') {
                         $layout .= "\t\t" . '<div class="' . $this->wrap_group . '">' . "\n";
@@ -351,10 +350,10 @@ class FormGenerate
         } else {
             $layout = $field;
         }
-        
+
         $this->contents .= $layout;
     }
-    
+
     public function output()
     {
         $this->output = $this->open . $this->contents . $this->close;

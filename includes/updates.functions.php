@@ -1,4 +1,5 @@
 <?php
+
 use function GuzzleHttp\json_encode;
 
 /**
@@ -12,9 +13,9 @@ function get_latest_version_data()
 {
     /**
      * Remove "r" from version
-    */
+     */
     $current_version = substr(CURRENT_VERSION, 1);
-    
+
     /**
      * Compare against the online value.
      */
@@ -86,14 +87,14 @@ function update_chmod_emails()
     global $updates_error_messages;
 
     $chmods = 0;
-    $emails_folder = ROOT_DIR.'/emails';
+    $emails_folder = ROOT_DIR . '/emails';
     if (@chmod($emails_folder, 0755)) {
         $chmods++;
     } else {
         $updates_errors++;
     }
 
-    $emails_files = glob($emails_folder."*", GLOB_NOSORT);
+    $emails_files = glob($emails_folder . "*", GLOB_NOSORT);
 
     foreach ($emails_files as $emails_file) {
         if (is_file($emails_file)) {
@@ -108,7 +109,7 @@ function update_chmod_emails()
     if ($chmods > 0) {
         $updates_made++;
     }
-    
+
     if ($updates_errors > 0) {
         $updates_error_messages[] = __("The chmod values of the emails folder and the html templates inside couldn't be set. If ProjectSend isn't sending notifications emails, please set them manually to 777.", 'cftp_admin');
     }
@@ -125,9 +126,9 @@ function chmod_main_files()
 
     $chmods = 0;
     $system_files = array(
-                            'sys' => ROOT_DIR.'/includes/app.php',
-                            'cfg' => ROOT_DIR.'/includes/sys.config.php'
-                        );
+        'sys' => ROOT_DIR . '/includes/app.php',
+        'cfg' => ROOT_DIR . '/includes/sys.config.php'
+    );
     foreach ($system_files as $sys_file) {
         if (!file_exists($sys_file)) {
             $updates_errors++;
@@ -143,7 +144,7 @@ function chmod_main_files()
     if ($chmods > 0) {
         $updates_made++;
     }
-    
+
     if ($updates_errors > 0) {
         $updates_error_messages[] = __("A safe chmod value couldn't be set for one or more system files. Please make sure that at least includes/sys.config.php has a chmod of 644 for security reasons.", 'cftp_admin');
     }
@@ -166,7 +167,7 @@ function import_files_relations()
     $imported_ok = 0;
     $imported_error = 0;
     $unimported_files = array();
-    
+
     /**
      * Get every file and it's important information from the files database table.
      */
@@ -175,16 +176,16 @@ function import_files_relations()
     $statement->setFetchMode(PDO::FETCH_ASSOC);
     while ($row = $statement->fetch()) {
         $files_to_import[$row['id']] = array(
-                                'file_id' => $row['id'],
-                                'title' => $row['filename'],
-                                'timestamp' => $row['timestamp'],
-                                'client_id' => $row['client_user'],
-                                'hidden' => $row['hidden'],
-                                'download_count' => $row['download_count']
-                            );
+            'file_id' => $row['id'],
+            'title' => $row['filename'],
+            'timestamp' => $row['timestamp'],
+            'client_id' => $row['client_user'],
+            'hidden' => $row['hidden'],
+            'download_count' => $row['download_count']
+        );
         $get_clients_info[] = $row['client_user'];
     }
-    
+
     /**
      * Get the information of each client found on the
      * previous step.
@@ -199,7 +200,7 @@ function import_files_relations()
     while ($row = $statement->fetch()) {
         $found_users[$row['user']] = $row['id'];
     }
-    
+
     /**
      * Create a new record on the files_relations table
      * using the information from the previous 2 queries, to
@@ -212,7 +213,7 @@ function import_files_relations()
         if (array_key_exists($this_file['client_id'], $found_users)) {
             $statement = $dbh->prepare(
                 "INSERT INTO " . TABLE_FILES_RELATIONS . " (timestamp, file_id, client_id, hidden, download_count)"
-                ." VALUES (:timestamp, :file_id, :client_id, :hidden, :download_count)"
+                . " VALUES (:timestamp, :file_id, :client_id, :hidden, :download_count)"
             );
             $statement->bindParam(':timestamp', $this_file['timestamp']);
             $statement->bindParam(':file_id', $this_file['file_id'], PDO::PARAM_INT);
@@ -226,13 +227,13 @@ function import_files_relations()
             } else {
                 $imported_error++;
                 $unimported_files[] = array(
-                                            'title' => $this_file['title'],
-                                            'client' => $found_users[$this_file['client_id']]
-                                        );
+                    'title' => $this_file['title'],
+                    'client' => $found_users[$this_file['client_id']]
+                );
             }
         }
     }
-    
+
     /**
      * Did any of the files relations fail?
      */
@@ -240,11 +241,11 @@ function import_files_relations()
         $updates_error_messages[100] = __("This version changes the way files-to-clients relationships are stored on the database making it possible to assign a file to multiple clients. However some files did not update successfully. The following files may need to be reassigned to their clients by using the \"Find orphan files\" tool:", 'cftp_admin');
         $updates_error_messages[100] .= '<ul>';
         foreach ($unimported_files as $unimported) {
-            $updates_error_messages[100] .= '<li>File: <strong>'.$unimported['title'].'</strong> Assigned to: <strong>'.$unimported['client'].'</strong></li>';
+            $updates_error_messages[100] .= '<li>File: <strong>' . $unimported['title'] . '</strong> Assigned to: <strong>' . $unimported['client'] . '</strong></li>';
         }
         $updates_error_messages[100] .= '</ul>';
     }
-    
+
     if ($imported_ok > 0) {
         $updates_made++;
     }

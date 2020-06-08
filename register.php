@@ -10,7 +10,7 @@ use ProjectSend\Classes\Emails;
 use ProjectSend\Classes\MembersActions;
 use ProjectSend\Classes\Users;
 
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 global $dbh;
@@ -25,7 +25,7 @@ require_once ADMIN_VIEWS_DIR . DS . 'header-unlogged.php';
 
 /**
  * The form was submitted
-*/
+ */
 if ($_POST) {
     if (defined('RECAPTCHA_AVAILABLE')) {
         $recaptcha_user_ip = $_SERVER["REMOTE_ADDR"];
@@ -37,7 +37,7 @@ if ($_POST) {
 
     /**
      * Arguments used on validation and client creation.
-    */
+     */
     /** @noinspection PhpUndefinedConstantInspection */
     $client_arguments = array(
         'username' => $_POST['username'],
@@ -48,7 +48,7 @@ if ($_POST) {
         'notify_upload' => (isset($_POST["notify_upload"])) ? 1 : 0,
         'notify_account' => (isset($_POST["notify_account"])) ? 1 : 0,
         'active' => (CLIENTS_AUTO_APPROVE == 0) ? 0 : 1,
-        'account_requested'    => (CLIENTS_AUTO_APPROVE == 0) ? 1 : 0,
+        'account_requested' => (CLIENTS_AUTO_APPROVE == 0) ? 1 : 0,
         'group' => (isset($_POST["groups_request"])) ? $_POST["groups_request"] : null,
         'type' => 'new_client',
         'recaptcha' => (defined('RECAPTCHA_AVAILABLE')) ? $recaptcha_request : null,
@@ -56,10 +56,10 @@ if ($_POST) {
 
     /**
      * Validate the information from the posted form.
-    */
+     */
     /**
      * Create the user if validation is correct.
-    */
+     */
     $new_client->setType('new_client');
     $new_client->set($client_arguments);
     if ($new_client->validate()) {
@@ -82,7 +82,7 @@ if ($_POST) {
                 'group_ids' => $group_id,
                 'added_by' => $admin_name,
             );
-        
+
             $execute = $autogroup->client_add_to_groups($arguments);
         }
 
@@ -96,7 +96,7 @@ if ($_POST) {
             'group_ids' => $client_arguments['group'],
             'request_by' => $admin_name,
         );
-    
+
         $execute_requests = $request->group_request_membership($arguments);
 
         /**
@@ -120,7 +120,7 @@ if ($_POST) {
 }
 ?>
 
-<div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
+    <div class="col-xs-12 col-sm-12 col-lg-4 col-lg-offset-4">
 
     <div class="row">
         <div class="col-xs-12 branding_unlogged">
@@ -139,15 +139,15 @@ if ($_POST) {
             } else {
                 // If the form was submited with errors, show them here.
                 echo $new_client->getValidationErrors();
-        
+
                 if (isset($new_response)) {
                     /**
                      * Get the process state and show the corresponding ok or error messages.
                      */
-    
+
                     $error_msg = '</p><br /><p>';
                     $error_msg .= __('Please contact a system administrator.', 'cftp_admin');
-    
+
                     switch ($new_response['query']) {
                         case 1:
                             $msg = __('Account added correctly.', 'cftp_admin');
@@ -204,10 +204,11 @@ if ($_POST) {
             ?>
 
             <div class="login_form_links">
-                <p><a href="<?php echo BASE_URI; ?>" target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
+                <p><a href="<?php echo BASE_URI; ?>"
+                      target="_self"><?php _e('Go back to the homepage.', 'cftp_admin'); ?></a></p>
             </div>
         </div>
     </div> <!-- main -->
 
 <?php
-    require_once ADMIN_VIEWS_DIR . DS . 'footer.php';
+require_once ADMIN_VIEWS_DIR . DS . 'footer.php';

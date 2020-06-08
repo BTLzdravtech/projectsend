@@ -28,7 +28,7 @@
 /**
  * Database driver to use with PDO.
  * Possible options: mysql, mssql
-*/
+ */
 define('DB_DRIVER', 'mysql');
 
 /** Database name */

@@ -31,7 +31,7 @@ class LDAP
 
     public function get_entry_attributes($username)
     {
-        $filter='(sAMAccountName=' . $username . ')';
+        $filter = '(sAMAccountName=' . $username . ')';
         $attributes = array('sAMAccountName', 'displayName', 'mail', 'objectGUID');
         /** @noinspection PhpUndefinedConstantInspection */
         $search_result = ldap_search($this->ldap, LDAP_BASEDN, $filter, $attributes);

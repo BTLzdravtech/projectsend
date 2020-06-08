@@ -18,13 +18,13 @@ if (!empty($_GET['category'])) {
     $category_filter = $_GET['category'];
 }
 
-require_once ROOT_DIR.'/templates/common.php'; // include the required functions for every template
+require_once ROOT_DIR . '/templates/common.php'; // include the required functions for every template
 
 $window_title = __('File downloads', 'cftp_template');
 
 $body_class = array('template', 'default-template', 'hide_title');
 
-require_once ROOT_DIR.'/header.php';
+require_once ROOT_DIR . '/header.php';
 
 define('TEMPLATE_THUMBNAILS_WIDTH', '50');
 define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
@@ -33,7 +33,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 <div class="col-xs-12">
     <div id="wrapper">
         <div id="right_column">
-    
+
             <div class="form_actions_left">
                 <div class="form_actions_limit_results">
                     <?php show_search_form(); ?>
@@ -41,58 +41,64 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                     <?php
                     if (!empty($cat_ids)) {
                         ?>
-                            <form action="" name="files_filters" method="get" class="form-inline form_filters">
-                        <?php form_add_existing_parameters(array('category', 'action')); ?>
-                                <div class="form-group group_float">
-                                    <select name="category" id="category" class="txtfield form-control">
-                                        <option value="0"><?php _e('All categories', 'cftp_admin'); ?></option>
-                        <?php
-                            $selected_parent = (isset($category_filter)) ? array( $category_filter ) : array();
+                        <form action="" name="files_filters" method="get" class="form-inline form_filters">
+                            <?php form_add_existing_parameters(array('category', 'action')); ?>
+                            <div class="form-group group_float">
+                                <select name="category" id="category" class="txtfield form-control">
+                                    <option value="0"><?php _e('All categories', 'cftp_admin'); ?></option>
+                                    <?php
+                                    $selected_parent = (isset($category_filter)) ? array($category_filter) : array();
                         echo generate_categories_options($get_categories['arranged'], 0, $selected_parent, 'include', $cat_ids); ?>
-                                    </select>
-                                </div>
-                                <button type="submit" id="btn_proceed_filter_files" class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
-                            </form>
+                                </select>
+                            </div>
+                            <button type="submit" id="btn_proceed_filter_files"
+                                    class="btn btn-sm btn-default"><?php _e('Filter', 'cftp_admin'); ?></button>
+                        </form>
                         <?php
                     }
                     ?>
                 </div>
             </div>
-        
+
             <form action="" name="files_list" method="get" class="form-inline batch_actions">
                 <?php form_add_existing_parameters(); ?>
                 <div class="form_actions_right">
                     <div class="form_actions">
                         <div class="form_actions_submit">
                             <div class="form-group group_float">
-                                <label for="action" class="control-label hidden-xs hidden-sm"><i class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions', 'cftp_admin'); ?>:</label>
+                                <label for="action" class="control-label hidden-xs hidden-sm"><i
+                                            class="glyphicon glyphicon-check"></i> <?php _e('Selected files actions', 'cftp_admin'); ?>
+                                    :</label>
                                 <select name="action" id="action" class="txtfield form-control">
                                     <?php
-                                        $actions_options = array(
-                                            'none' => __('Select action', 'cftp_admin'),
-                                            'zip' => __('Download zip', 'cftp_admin'),
-                                        );
-                                        foreach ($actions_options as $val => $text) {
-                                            ?>
-                                            <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
-                                            <?php
-                                        }
+                                    $actions_options = array(
+                                        'none' => __('Select action', 'cftp_admin'),
+                                        'zip' => __('Download zip', 'cftp_admin'),
+                                    );
+                                    foreach ($actions_options as $val => $text) {
                                         ?>
+                                        <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
+                                        <?php
+                                    }
+                                    ?>
                                 </select>
                             </div>
-                            <button type="submit" id="do_action" class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
+                            <button type="submit" id="do_action"
+                                    class="btn btn-sm btn-default"><?php _e('Proceed', 'cftp_admin'); ?></button>
                         </div>
                     </div>
                 </div>
-        
-                <div class="right_clear"></div><br />
+
+                <div class="right_clear"></div>
+                <br/>
 
                 <div class="form_actions_count">
-                    <p class="form_count_total"><?php _e('Found', 'cftp_admin'); ?>: <span><?php echo $count_for_pagination; ?> <?php _e('files', 'cftp_admin'); ?></span></p>
+                    <p class="form_count_total"><?php _e('Found', 'cftp_admin'); ?>:
+                        <span><?php echo $count_for_pagination; ?> <?php _e('files', 'cftp_admin'); ?></span></p>
                 </div>
-    
+
                 <div class="right_clear"></div>
-    
+
                 <?php
                 if (!$count_for_pagination) {
                     if (isset($no_results_error)) {
@@ -111,17 +117,17 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                     /**
                      * Generate the table using the class.
                      */
-                    $table_attributes    = array(
+                    $table_attributes = array(
                         'id' => 'files_list',
                         'class' => 'footable table',
                     );
                     $table = new TableGenerate($table_attributes);
-        
+
                     $thead_columns = array(
                         array(
                             'select_all' => true,
                             'attributes' => array(
-                                'class' => array( 'td_checkbox' ),
+                                'class' => array('td_checkbox'),
                             ),
                         ),
                         array(
@@ -139,7 +145,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                             'content' => __('Description', 'cftp_admin'),
                             'hide' => 'phone',
                             'attributes' => array(
-                                'class' => array( 'description' ),
+                                'class' => array('description'),
                             ),
                         ),
                         array(
@@ -165,7 +171,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                             'hide' => 'phone',
                         ),
                     );
-    
+
                     $table->thead($thead_columns);
 
                     foreach ($my_files as $file) {
@@ -179,48 +185,48 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
 
                         /**
                          * Checkbox
-                        */
+                         */
                         $checkbox = ($file['expired'] == false) ? '<input type="checkbox" name="files[]" value="' . $file["id"] . '" class="batch_checkbox" />' : null;
 
                         /**
                          * File title
-                        */
+                         */
                         $file_title_content = '<strong>' . htmlentities($file['name']) . '</strong>';
                         if ($file['expired'] == false) {
                             $filetitle = '<a href="' . $download_link . '" target="_blank">' . $file_title_content . '</a>';
                         } else {
                             $filetitle = $file_title_content;
                         }
-                            
+
                         /**
                          * Extension
-                        */
+                         */
                         $extension = strtolower($file['extension']);
                         $extension_cell = '<span class="label label-success label_big">' . $extension . '</span>';
 
                         /**
                          * Description
-                        */
+                         */
                         $description = htmlentities_allowed($file['description']);
-                            
+
                         /**
                          * File size
-                        */
+                         */
                         $file_size_cell = '-'; // default
                         $file_absolute_path = UPLOADED_FILES_DIR . DS . $file['url'];
                         if (file_exists($file_absolute_path)) {
-                            $this_file_size = get_real_size(UPLOADED_FILES_DIR.DS.$file['url']);
+                            $this_file_size = get_real_size(UPLOADED_FILES_DIR . DS . $file['url']);
                             $file_size_cell = format_file_size($this_file_size);
                         }
-                            
+
                         /**
                          * Date
-                        */
+                         */
                         $date = format_date($file['timestamp']);
-                            
+
                         /**
                          * Expiration
-                        */
+                         */
                         if ($file['expires'] == '1') {
                             if ($file['expired'] == false) {
                                 $class = 'primary';
@@ -234,25 +240,25 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                             $class = 'success';
                             $value = __('Never', 'cftp_template');
                         }
-                            
+
                         $expiration_cell = '<span class="label label-' . $class . ' label_big">' . $value . '</span>';
 
                         /**
                          * Thumbnail
-                        */
+                         */
                         $preview_cell = '';
                         if ($file['expired'] == false) {
                             if (file_is_image($file_absolute_path)) {
                                 $thumbnail = make_thumbnail($file_absolute_path, null, TEMPLATE_THUMBNAILS_WIDTH, TEMPLATE_THUMBNAILS_HEIGHT);
                                 if (!empty($thumbnail['thumbnail']['url'])) {
-                                    $preview_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . htmlentities($file['name']) .'" />';
+                                    $preview_cell = '<img src="' . $thumbnail['thumbnail']['url'] . '" class="thumbnail" alt="' . htmlentities($file['name']) . '" />';
                                 }
                             }
                         }
 
                         /**
                          * Download
-                        */
+                         */
                         if ($file['expired'] == true) {
                             $download_link = 'javascript:void(0);';
                             $download_btn_class = 'btn btn-danger btn-sm disabled';
@@ -270,19 +276,19 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                             array(
                                 'content' => $filetitle,
                                 'attributes' => array(
-                                    'class' => array( 'file_name' ),
+                                    'class' => array('file_name'),
                                 ),
                             ),
                             array(
                                 'content' => $extension_cell,
                                 'attributes' => array(
-                                    'class' => array( 'extra' ),
+                                    'class' => array('extra'),
                                 ),
                             ),
                             array(
                                 'content' => $description,
                                 'attributes' => array(
-                                    'class' => array( 'description' ),
+                                    'class' => array('description'),
                                 ),
                             ),
                             array(
@@ -297,13 +303,13 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                             array(
                                 'content' => $preview_cell,
                                 'attributes' => array(
-                                    'class' => array( 'extra' ),
+                                    'class' => array('extra'),
                                 ),
                             ),
                             array(
                                 'content' => $download_cell,
                                 'attributes' => array(
-                                    'class' => array( 'text-center' ),
+                                    'class' => array('text-center'),
                                 ),
                             ),
                         );
@@ -311,7 +317,7 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                         foreach ($tbody_cells as $cell) {
                             $table->addCell($cell);
                         }
-            
+
                         $table->end_row();
                     }
 
@@ -325,22 +331,22 @@ define('TEMPLATE_THUMBNAILS_HEIGHT', '50');
                         'current' => $pagination_page,
                         'pages' => ceil($count_for_pagination / TEMPLATE_RESULTS_PER_PAGE),
                     );
-                        
+
                     echo $table->pagination($pagination_args);
                 }
                 ?>
             </form>
-        
+
         </div> <!-- right_column -->
     </div> <!-- wrapper -->
-    
+
     <?php default_footer_info(); ?>
 
 </div>
 <?php
-    render_json_variables();
+render_json_variables();
 
-    load_js_files();
+load_js_files();
 ?>
 </body>
 </html>

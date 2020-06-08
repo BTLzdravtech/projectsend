@@ -15,7 +15,7 @@ global $updates_made;
 
 /**
  * Remove "r" from version
-*/
+ */
 $current_version = substr(CURRENT_VERSION, 1);
 
 $statement = $dbh->prepare("SELECT value FROM " . TABLE_OPTIONS . " WHERE name = 'last_update'");
@@ -60,8 +60,8 @@ if ($last_update < $current_version) {
      * Password reset support is now supported.
      */
     if ($last_update < 520) {
-        $q = $dbh->query("ALTER TABLE " . TABLE_USERS . " MODIFY user VARCHAR(".MAX_USER_CHARS.") NOT NULL");
-        $q2 = $dbh->query("ALTER TABLE " . TABLE_USERS . " MODIFY password VARCHAR(".MAX_PASS_CHARS.") NOT NULL");
+        $q = $dbh->query("ALTER TABLE " . TABLE_USERS . " MODIFY user VARCHAR(" . MAX_USER_CHARS . ") NOT NULL");
+        $q2 = $dbh->query("ALTER TABLE " . TABLE_USERS . " MODIFY password VARCHAR(" . MAX_PASS_CHARS . ") NOT NULL");
         if ($q && $q2) {
             $updates_made++;
         }

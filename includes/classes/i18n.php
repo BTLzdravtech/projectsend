@@ -15,15 +15,15 @@
  * Define this constant to be use as the default domain
  * using in auxilar functions around {@link I18n} class.
  */
-if (! defined('I18N_DEFAULT_DOMAIN')) {
+if (!defined('I18N_DEFAULT_DOMAIN')) {
     define('I18N_DEFAULT_DOMAIN', '');
 }
 
 /**
  * Get a translated string
  *
- * @param  String $string To be translated
- * @param  String $domain String domain text
+ * @param String $string To be translated
+ * @param String $domain String domain text
  * @return String Translated string if possible
  */
 function __($string, $domain = I18N_DEFAULT_DOMAIN)
@@ -45,10 +45,10 @@ function _e($string, $domain = I18N_DEFAULT_DOMAIN)
 /**
  * Get a translated singular or plural string
  *
- * @param  String  $singular Singular string version
- * @param  String  $plural   Plural string version
- * @param  Integer $count    Determine what string version use
- * @param  String  $domain   String domain text
+ * @param String $singular Singular string version
+ * @param String $plural Plural string version
+ * @param Integer $count Determine what string version use
+ * @param String $domain String domain text
  * @return String Translated string if possible
  */
 function _n($singular, $plural, $count, $domain = I18N_DEFAULT_DOMAIN)
@@ -59,10 +59,10 @@ function _n($singular, $plural, $count, $domain = I18N_DEFAULT_DOMAIN)
 /**
  * Print a translated singular or plural string
  *
- * @param String  $singular Singular string version
- * @param String  $plural   Plural string version
- * @param Integer $count    Determine what string version use
- * @param String  $domain   String domain text
+ * @param String $singular Singular string version
+ * @param String $plural Plural string version
+ * @param Integer $count Determine what string version use
+ * @param String $domain String domain text
  */
 function _ne($singular, $plural, $count, $domain = I18N_DEFAULT_DOMAIN)
 {
@@ -105,11 +105,11 @@ class I18n
     private static $pluralFunc = array();
 
     /**
-* #@-
-*/
+     * #@-
+     */
 
     /**
-* #@+
+     * #@+
      *
      * @final
      * @access private
@@ -150,8 +150,8 @@ class I18n
      *
      * More than one domain text (and MO files) can be loaded.
      *
-     * @param  String $moFile MO file path to be loaded
-     * @param  String $domain Text domain to store the messages
+     * @param String $moFile MO file path to be loaded
+     * @param String $domain Text domain to store the messages
      * @return Boolean True on success or False on failure
      */
     public static function LoadDomain($moFile, $domain)
@@ -168,14 +168,14 @@ class I18n
      * In other words, the existence of {@link t()} have sense because
      * the identifier is tiny and fast, ideal to a profuse use.
      *
-     * @param  String $string To be translate
-     * @param  String $domain Text domain where find
+     * @param String $string To be translate
+     * @param String $domain Text domain where find
      * @return String Translated string if possible
      */
     public static function Translate($string, $domain)
     {
-        if (isset(self::$messages[ $domain ][ $string ])) {
-            $string = self::$messages[ $domain ][ $string ][1][0];
+        if (isset(self::$messages[$domain][$string])) {
+            $string = self::$messages[$domain][$string][1][0];
         }
 
         return $string;
@@ -187,26 +187,26 @@ class I18n
      * Same as {@link Translate()}, you find more useful to use
      * this method from {@link n()} function.
      *
-     * @param  String  $singular Singular string version
-     * @param  String  $plural   Plural string version
-     * @param  Integer $count    Determine what string version use
-     * @param  String  $domain   String domain text
+     * @param String $singular Singular string version
+     * @param String $plural Plural string version
+     * @param Integer $count Determine what string version use
+     * @param String $domain String domain text
      * @return String Translated string if possible
      */
     public static function NTranslate($singular, $plural, $count, $domain)
     {
-        if (isset(self::$messages[ $domain ][ $singular ])) {
+        if (isset(self::$messages[$domain][$singular])) {
             $fn = self::$pluralFunc;
-      
+
             $n = $fn($count);
 
-            if (isset(self::$messages[ $domain ][ $singular ][1][ $n ])) {
-                return self::$messages[ $domain ][ $singular ][1][ $n ];
+            if (isset(self::$messages[$domain][$singular][1][$n])) {
+                return self::$messages[$domain][$singular][1][$n];
             }
         }
         /**
          * fall-through else for both cases
-        */
+         */
         return $count == 1 ? $singular : $plural;
     }
 
@@ -223,8 +223,8 @@ class I18n
     /**
      * Load MO files
      *
-     * @param  String $moPath MO file path to be loaded
-     * @param  String $domain Text domain messages to set
+     * @param String $moPath MO file path to be loaded
+     * @param String $domain Text domain messages to set
      * @return Boolean True on success or False on failure
      */
     private static function LoadFile($moPath, $domain)
@@ -248,19 +248,19 @@ class I18n
      * I think originally writen to PHP-gettext by Danilo Segan
      * <danilo@kvota.net>.
      *
-     * @param  String $moPath Absolute MO file path
-     * @param  String $domain Text domain messages to set
+     * @param String $moPath Absolute MO file path
+     * @param String $domain Text domain messages to set
      * @return Boolean True on success or False on failure
      */
     private static function ParseFile($moPath, $domain)
     {
-        if (! is_readable($moPath)) {
+        if (!is_readable($moPath)) {
             return false;
         }
         if (filesize($moPath) < 24) {
             /**
              * Invalid .MO file
-            */
+             */
             return false;
         }
 
@@ -270,10 +270,10 @@ class I18n
 
         /**
          * Determine endianness
-        */
+         */
         $littleEndian = true;
-        
-        list(, $magic)= unpack('V1', substr($data, 0, 4));
+
+        list(, $magic) = unpack('V1', substr($data, 0, 4));
 
         switch ($magic & 0xFFFFFFFF) {
             case (int)0x950412de:
@@ -285,8 +285,8 @@ class I18n
                 break;
             default:
                 /**
-                   * Invalid magic number
-                */
+                 * Invalid magic number
+                 */
                 return false;
         }
 
@@ -294,7 +294,7 @@ class I18n
         if ($revision != 0) {
             /**
              * Unknown revision number
-            */
+             */
             return false;
         }
 
@@ -307,44 +307,44 @@ class I18n
             if ($header['msgblock'] + ($header['msgcount'] - 1) * 8 > filesize($moPath)) {
                 /**
                  * Message count out of bounds
-                */
+                 */
                 return false;
             }
 
             $lo = "{$l}1length/{$l}1offset";
 
-            for ($msgindex = 0; $msgindex < $header[ 'msgcount' ]; $msgindex++) {
+            for ($msgindex = 0; $msgindex < $header['msgcount']; $msgindex++) {
                 $msginfo = unpack(
                     $lo,
-                    substr($data, $header[ 'msgblock' ] + $msgindex * 8, 8)
+                    substr($data, $header['msgblock'] + $msgindex * 8, 8)
                 );
 
                 $msgids = explode(
                     '\0',
-                    substr($data, $msginfo[ 'offset' ], $msginfo[ 'length' ])
+                    substr($data, $msginfo['offset'], $msginfo['length'])
                 );
 
                 $transinfo = unpack(
                     $lo,
-                    substr($data, $header[ 'transblock' ] + $msgindex * 8, 8)
+                    substr($data, $header['transblock'] + $msgindex * 8, 8)
                 );
 
                 $transids = explode(
                     '\0',
-                    substr($data, $transinfo[ 'offset' ], $transinfo[ 'length' ])
+                    substr($data, $transinfo['offset'], $transinfo['length'])
                 );
 
-                self::$messages[ $domain ][ $msgids[0] ] = array( $msgids, $transids );
+                self::$messages[$domain][$msgids[0]] = array($msgids, $transids);
             }
         }
 
         self::$pluralFunc = self::GetPluralFunc(
-            self::$messages[ $domain ][''][1][0]
+            self::$messages[$domain][''][1][0]
         );
 
         return
-        isset(self::$messages[ $domain ])
-        && count(self::$messages[ $domain ]) > 0;
+            isset(self::$messages[$domain])
+            && count(self::$messages[$domain]) > 0;
     }
 
     /**
@@ -371,7 +371,7 @@ class I18n
         ) {
             /**
              * sanitize
-            */
+             */
             $nplurals = preg_replace('/[^0-9]/', '', $matches[1]);
 
             $plural = preg_replace(
@@ -381,14 +381,14 @@ class I18n
             );
 
             $body = str_replace(
-                array( 'plural',  'n',  '$n$plurals', ),
-                array( '$plural', '$n', '$nplurals', ),
+                array('plural', 'n', '$n$plurals',),
+                array('$plural', '$n', '$nplurals',),
                 "nplurals={$nplurals}; plural={$plural}"
             );
 
             /**
              * Add parens (important since PHP's ternary evaluates from left to right)
-            */
+             */
             $body .= ';';
 
             $res = '';
@@ -397,29 +397,29 @@ class I18n
 
             for ($i = 0; $i < strlen($body); $i++) {
                 $ch = $body[$i];
-        
+
                 switch ($ch) {
                     case '?':
-                        $res.= ' ? (';
+                        $res .= ' ? (';
                         $p++;
                         break;
 
                     case ':':
-                        $res.= ') : (';
+                        $res .= ') : (';
                         break;
 
                     case ';':
-                        $res.= str_repeat(')', $p) . ';';
+                        $res .= str_repeat(')', $p) . ';';
                         $p = 0;
                         break;
 
                     default:
-                        $res.= $ch;
+                        $res .= $ch;
                 }
             }
 
             $body = $res . 'return ( $plural >= $nplurals ? $nplurals - 1: $plural );';
-      
+
             $fn = create_function('$n', $body);
         } else {
             /**
@@ -440,6 +440,6 @@ class I18n
     }
 
     /**
-* #@-
-*/
+     * #@-
+     */
 }

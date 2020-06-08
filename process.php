@@ -3,7 +3,7 @@
 
 use ProjectSend\Classes\DoProcess;
 
-$allowed_levels = array(9,8,7,0);
+$allowed_levels = array(9, 8, 7, 0);
 require_once 'bootstrap.php';
 
 /** @var PDO $dbh */
