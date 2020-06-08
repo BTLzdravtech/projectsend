@@ -198,7 +198,7 @@ $all_system_tables = array(
  * This values affect both validation methods (client and server side)
  * and also the maxlength value of the form fields.
  */
-define('MIN_USER_CHARS', 5);
+define('MIN_USER_CHARS', 2);
 define('MAX_USER_CHARS', 60);
 define('MIN_PASS_CHARS', 5);
 define('MAX_PASS_CHARS', 60);
