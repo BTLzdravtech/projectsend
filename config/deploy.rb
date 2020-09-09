@@ -8,6 +8,8 @@ set :deploy_to, '/home/deployer/projectsend'
 
 set :local_user, -> { `git config user.name`.chomp }
 
+set :format_options, color: true
+
 append :linked_files, 'includes/sys.config.php'
 append :linked_dirs, 'cache'
 
