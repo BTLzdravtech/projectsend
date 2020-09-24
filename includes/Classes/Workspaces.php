@@ -329,7 +329,7 @@ class Workspaces
         /**
          * Clean the users table
          */
-        $sql_clean = $this->dbh->prepare("DELETE WU.* FROM " . TABLE_WORKSPACES_USERS . " WU INNER JOIN " . TABLE_WORKSPACES . " W ON W.id = WU.workspace_id WHERE WU.user_id <> W.owner_id AND workspace_id = :id AND client = false");
+        $sql_clean = $this->dbh->prepare("DELETE WU.* FROM " . TABLE_WORKSPACES_USERS . " WU INNER JOIN " . TABLE_WORKSPACES . " W ON W.id = WU.workspace_id WHERE WU.user_id <> W.owner_id AND workspace_id = :id");
         $sql_clean->bindParam(':id', $this->id, PDO::PARAM_INT);
         $sql_clean->execute();
 

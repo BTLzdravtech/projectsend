@@ -93,7 +93,7 @@ if ($workspace_id == null) {
             <select multiple="multiple" id="members" class="form-control chosen-select" name="users[]"
                     data-placeholder="<?php _e('Select one or more options. Type to search.', 'cftp_admin'); ?>">
                 <?php
-                $sql = $dbh->prepare("SELECT U.* FROM " . TABLE_USERS . " U" . $users_inner_join . " WHERE U.level IN ('9', '8') ORDER BY name");
+                $sql = $dbh->prepare("SELECT U.* FROM " . TABLE_USERS . " U" . $users_inner_join . " WHERE U.level IN ('9', '8') OR U.owner_id = " . CURRENT_USER_ID . " ORDER BY name");
                 $sql->execute();
                 $sql->setFetchMode(PDO::FETCH_ASSOC);
 
