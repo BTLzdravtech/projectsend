@@ -75,7 +75,7 @@ class Workspaces
     public function set($arguments = [])
     {
         $this->name = (!empty($arguments['name'])) ? encode_html($arguments['name']) : null;
-        $this->description = (!empty($arguments['description'])) ? encode_html($arguments['description']) : null;
+        $this->description = (!empty($arguments['description'])) ? encode_html($arguments['description']) : "";
         $this->admins = (!empty($arguments['admins'])) ? $arguments['admins'] : [];
         $this->users = (!empty($arguments['users'])) ? $arguments['users'] : null;
         $this->users = array_diff($this->users, $this->admins);
@@ -175,7 +175,7 @@ class Workspaces
          * when editing an existing one.
          */
         $validation->validate('completed', $this->name, $json_strings['validation']['no_name']);
-        $validation->validate('completed', $this->description, $json_strings['validation']['no_description']);
+        //$validation->validate('completed', $this->description, $json_strings['validation']['no_description']);
 
         if ($validation->passed()) {
             $this->validation_passed = true;
