@@ -1,0 +1,25 @@
+name: Merge to development branches
+
+on:
+  push:
+    branches: [ development ]
+
+jobs:
+  merge-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Merge to development-hruskat branch
+        uses: devmasx/merge-branch@v1.1.0
+        with:
+          type: now
+          target_branch: 'development-hruskat'
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Merge to development-sireko branch
+        uses: devmasx/merge-branch@v1.1.0
+        with:
+          type: now
+          target_branch: 'development-sireko'
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

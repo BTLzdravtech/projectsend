@@ -57,6 +57,7 @@ test-results
 
 # Misc
 .idea/
+.env
 
 # Logs
 log
