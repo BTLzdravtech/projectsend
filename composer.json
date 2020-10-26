@@ -27,7 +27,6 @@
         "moxiecode/plupload": "3.1.*",
         "phpmailer/phpmailer": "~6.0",
 		"tamtamchik/simple-flash": "^1.2",
-		"airbrake/phpbrake": "v0.6.2",
 		"google/apiclient": "v2.4.0",
 		"squizlabs/php_codesniffer": "^3.5.4",
 		"friendsofphp/php-cs-fixer": "3.0.x-dev",
@@ -37,7 +36,9 @@
 		"ext-zip": "*",
 		"ext-ctype": "*",
 		"ext-fileinfo": "*",
-		"ext-ldap": "*"
+		"ext-ldap": "*",
+		"sentry/sdk": "^3.0",
+		"vlucas/phpdotenv": "^5.2"
 	},
 	"scripts": {
 		"phpcs": "phpcs --standard=ruleset.xml",
