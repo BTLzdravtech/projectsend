@@ -9,6 +9,7 @@
 use ProjectSend\Classes\ActionsLog;
 use ProjectSend\Classes\MembersActions;
 use ProjectSend\Classes\Users;
+use ProjectSend\Classes\WorkspacesUsers;
 
 $allowed_levels = array(9, 8);
 require_once 'bootstrap.php';
@@ -81,6 +82,19 @@ if ($_POST) {
                 );
 
                 $memberships->client_add_to_groups($arguments);
+            }
+
+            $add_to_workspaces = (!empty($_POST['workspaces_request'])) ? $_POST['workspaces_request'] :  '';
+            if (!empty($add_to_workspaces)) {
+                array_map('encode_html', $add_to_workspaces);
+                $memberships = new WorkspacesUsers;
+                $arguments = array(
+                    'user_id' => $new_client->getId(),
+                    'workspace_ids' => $add_to_workspaces,
+                    'added_by' => CURRENT_USER_USERNAME,
+                );
+
+                $memberships->user_add_to_workspaces($arguments, true);
             }
 
             if (!empty($new_response['id'])) {

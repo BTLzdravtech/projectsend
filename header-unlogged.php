@@ -82,21 +82,28 @@ if (!isset($body_class)) {
     load_js_header_files();
     load_css_files();
     ?>
-    <script type="text/javascript" src='https://cdn.jsdelivr.net/npm/airbrake-js@1.6.8/dist/client.min.js'></script>
-    <script type="text/javascript">
-        if (location.hostname !== 'localhost') {
-            var airbrake = new airbrakeJs.Client({
-                projectId: 1,
-                projectKey: 'c5219993229b4611584ff66a14a80fa4',
-                reporter: 'xhr',
-                host: 'https://errbit.medictech.com'
+    <?php
+    if (!is_null($_ENV['SENTRY_JS_DSN'])) {
+        ?>
+        <script src="<?php echo $_ENV['SENTRY_JS_DSN'] ?>" crossorigin="anonymous" data-lazy="no"></script>
+        <script type="text/javascript">
+            Sentry.onLoad(function() {
+                Sentry.init({
+                    environment: "production",
+                    release: "<?php echo Sentry\SentrySdk::getCurrentHub()->getClient()->getOptions()->getRelease() ?>",
+                    ignoreErrors: ['ResizeObserver loop limit exceeded'],
+                    beforeSend(event) {
+                        if (event.user === undefined) {
+                            event.user = <?php echo !is_null(CURRENT_USER_ID) && !is_null(CURRENT_USER_EMAIL) ? "{id:" . CURRENT_USER_ID . ", email: '" . CURRENT_USER_EMAIL . "'}" : "{}" ?>
+                        }
+                        return event;
+                    }
+                });
             });
-            airbrake.addFilter(function (notice) {
-                notice.context.environment = 'production';
-                return notice;
-            });
-        }
-    </script>
+        </script>
+    <?php
+    }
+    ?>
 </head>
 
 <body <?php echo add_body_class($body_class); ?> <?php echo !empty($page_id) ? add_page_id($page_id) : ''; ?>>

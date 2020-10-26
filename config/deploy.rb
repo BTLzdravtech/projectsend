@@ -8,7 +8,9 @@ set :deploy_to, '/home/deployer/projectsend'
 
 set :local_user, -> { `git config user.name`.chomp }
 
-append :linked_files, 'includes/sys.config.php'
+set :format_options, color: true
+
+append :linked_files, '.env', 'includes/sys.config.php'
 append :linked_dirs, 'cache'
 
 set :npm_flags, '--silent --no-progress'
