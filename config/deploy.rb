@@ -10,7 +10,7 @@ set :local_user, -> { `git config user.name`.chomp }
 
 set :format_options, color: true
 
-append :linked_files, 'includes/sys.config.php'
+append :linked_files, '.env', 'includes/sys.config.php'
 append :linked_dirs, 'cache'
 
 set :npm_flags, '--silent --no-progress'

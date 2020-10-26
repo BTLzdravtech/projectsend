@@ -11,6 +11,9 @@ define('DS', DIRECTORY_SEPARATOR);
 /** Composer autoload */
 require_once ROOT_DIR . '/vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 /** Basic system constants */
 require_once ROOT_DIR . '/includes/app.php';
 
@@ -74,20 +77,30 @@ require_once ROOT_DIR . '/includes/functions.workspaces.php';
 require_once ROOT_DIR . '/includes/security/csrf.php';
 require_once ROOT_DIR . '/includes/security/brute_force_block.php';
 
-if ($_SERVER['HTTP_HOST'] != 'localhost') {
-    /** Airbrake - Errbit */
-    $notifier = new Airbrake\Notifier([
-        'projectId' => 1,
-        'projectKey' => 'c5219993229b4611584ff66a14a80fa4',
-        'host' => 'https://errbit.medictech.com',
+if (!is_null($_ENV['SENTRY_DSN'])) {
+    if (!is_null($_SERVER['SENTRY_RELEASE']) && !empty($_SERVER['SENTRY_RELEASE'])) {
+        $revision = trim($_SERVER['SENTRY_RELEASE']);
+    } elseif (file_exists($revisionFile = __DIR__ . '/.git')) {
+        exec("git rev-parse HEAD 2>&1", $output, $exit_code);
+        if (!is_null($output) && !empty($output[0]) && $exit_code == 0) {
+            $revision = trim($output[0]);
+        }
+    } elseif (file_exists($revisionFile = __DIR__ . '/REVISION')) {
+        $revision = trim(file_get_contents($revisionFile));
+    }
+
+    Sentry\init([
+        'dsn' => $_ENV['SENTRY_DSN'],
+        'release' => $revision ?? null,
         'environment' => 'production',
-        'keysBlacklist' => ['/password/i', '/user_pass/i', '/item[current_password]/i', '/item[password1]/i', '/item[password2]/i']
+        'send_default_pii' => true,
+        'error_types' => E_ALL,
+        'before_send' => function (Sentry\Event $event): ?Sentry\Event {
+            if (!is_null(CURRENT_USER_ID) && !is_null(CURRENT_USER_EMAIL)) {
+                $event->getUser()->setId(CURRENT_USER_ID);
+                $event->getUser()->setEmail(CURRENT_USER_EMAIL);
+            }
+            return $event;
+        }
     ]);
-
-    // Set global notifier instance.
-    Airbrake\Instance::set($notifier);
-
-    // Register error and exception handlers.
-    $handler = new Airbrake\ErrorHandler($notifier);
-    $handler->register();
 }
