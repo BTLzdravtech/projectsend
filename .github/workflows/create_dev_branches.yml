@@ -1,0 +1,28 @@
+name: Create development branches
+on:
+  push:
+    branches: 
+      - master
+jobs:
+  create_dev_branches:
+    if: github.event.before == '0000000000000000000000000000000000000000'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: development branch
+        uses: peterjgrainger/action-create-branch@v2.0.0
+        with:
+          branch: 'development'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: development-hruskat branch
+        uses: peterjgrainger/action-create-branch@v2.0.0
+        with:
+          branch: 'development-hruskat'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: development-sireko branch
+        uses: peterjgrainger/action-create-branch@v2.0.0
+        with:
+          branch: 'development-sireko'
