@@ -1,0 +1,20 @@
+name: Merge dev hruskat
+on:
+  push:
+    branches: 
+      - development
+jobs:
+  merge-dev-hruskat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Merge to development-hruskat branch
+        uses: robotology/gh-action-nightly-merge@v1.2.0
+        with:
+          stable_branch: 'development'
+          development_branch: 'development-hruskat'
+          allow_ff: true
+          ff_only: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
