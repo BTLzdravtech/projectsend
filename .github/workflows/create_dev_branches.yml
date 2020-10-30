@@ -1,7 +1,7 @@
 name: Create development branches
 on:
   push:
-    branches: 
+    branches:
       - master
 jobs:
   create_dev_branches:
@@ -14,14 +14,10 @@ jobs:
         uses: peterjgrainger/action-create-branch@v2.0.0
         with:
           branch: 'development'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: development-hruskat branch
         uses: peterjgrainger/action-create-branch@v2.0.0
         with:
           branch: 'development-hruskat'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: development-sireko branch
         uses: peterjgrainger/action-create-branch@v2.0.0
         with:
